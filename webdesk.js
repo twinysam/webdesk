@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // MODULE: I18nManager
   // Internationalization and Localization Logic
   // ==========================================================================
-  const I18nManager = {
+  window.I18nManager = {
     LANG_KEY: "userLang",
     
     // Default to 'en' if not set
@@ -190,7 +190,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // MODULE: ProfileManager
   // User Identity
   // ==========================================================================
-  const ProfileManager = {
+  window.ProfileManager = {
     STORAGE_KEY: "userProfile",
 
     getProfile: () => JSON.parse(localStorage.getItem(ProfileManager.STORAGE_KEY)) || null,

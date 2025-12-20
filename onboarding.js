@@ -60,10 +60,10 @@ window.OnboardingManager = {
               ProfileManager.setProfile("User", "1985-10-17", "en"); // Defaults
           }
 
-          alert("Import successful! Reloading...");
-          location.reload();
+          Utils.showAlert("Import successful! Reloading...", "success");
+          setTimeout(() => location.reload(), 2000);
         } catch (err) {
-          alert("Error importing: " + err.message);
+          Utils.showAlert("Error importing: " + err.message, "danger");
         }
       };
       reader.readAsText(file);
@@ -76,7 +76,7 @@ window.OnboardingManager = {
     const lang = document.getElementById("ob-lang").value;
 
     if (!name || !dob) {
-      alert("Please fill in all fields.");
+      Utils.showAlert("Please fill in all fields.", "warning");
       return;
     }
 
@@ -201,7 +201,7 @@ window.OnboardingManager = {
         ProfileManager.setProfile(name, birthday, lang);
         
     } catch(e) {
-        alert("Error saving setup: " + e.message);
+        Utils.showAlert("Error saving setup: " + e.message, "danger");
     }
   }
 };

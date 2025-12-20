@@ -517,3 +517,32 @@ ul.columns {
   background: rgba(255,255,255,0.2);
   border-radius: 4px;
 }
+
+/* Floating Alerts */
+#alertContainer {
+  /* Positioned by class fixed-top but we add specifics if needed, 
+     though bootstrap fixed-top handles top:0 left:0 right:0. 
+     We want it centered and specific top offset. */
+  top: 20px; 
+  z-index: 10000;
+  pointer-events: none; /* Let clicks pass through container */
+}
+
+#alertContainer .alert {
+  pointer-events: auto; /* Re-enable clicks on the alert itself */
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+  animation: slideDown 0.4s ease-out forwards;
+  min-width: 300px;
+  max-width: 90%;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
