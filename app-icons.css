@@ -1,0 +1,424 @@
+.item a.whatsapp {
+  background-image: url(images/app_whatsapp.png);
+}
+
+.item a.yahoo-mail {
+  background-image: url(https://play-lh.googleusercontent.com/7LS-YzVxXiIShTwjiDIkl_b5kHZMNDJEEwofGxNKPh1kVmZdPr8IvChty8F-pP3-xbg);
+}
+
+.item a.banco.nacion {
+  background-image: url(https://i.imgur.com/N39FcGb.jpg);
+}
+
+.item a.google-drive {
+  background-image: url(images/app_google-drive.png);
+}
+
+.item a.meli {
+  background-image: url(images/app_meli.png);
+}
+
+.item a.calendar {
+  background-image: url(images/app_google-calendar.png);
+  background-size: 95%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: white;
+}
+
+.item a.google {
+  background-image: url(https://play-lh.googleusercontent.com/6UgEjh8Xuts4nwdWzTnWH8QtLuHqRMUB7dp24JYVE2xcYzq4HA8hFfcAbU-R-PC_9uA1);
+}
+
+.item a.mercado-pago {
+  background-image: url(images/app_mercado-pago.png);
+}
+
+.item a.youtube {
+  background-image: url(images/app_youtube.webp);
+}
+
+.item a.reddit {
+  background-image: url(images/app_reddit.png);
+}
+
+.item a.gmail {
+  background-image: url(images/app_gmail.png);
+}
+
+.item a.outlook {
+  background-image: url(images/app_outlook.png);
+}
+
+.item a.netflix {
+  background-image: url(images/app_netflix.png);
+}
+
+.item a.github {
+  background-image: url(images/app_github.png);
+}
+
+.item a.santander {
+  background-image: url(images/app_santander.png);
+  background-position: center;
+  background-size: 105%;
+}
+
+.item a.letterboxd {
+  background-image: url(images/app_letterboxd.png);
+}
+
+.item a.telecentro {
+  background-image: url(images/app_telecentro.png);
+}
+
+.item a.lichess {
+  background-image: url(images/app_lichess.png);
+}
+
+.item a.piratebay {
+  background-image: url(images/app_piratebay.png);
+}
+
+.item a.calm {
+  background-image: url(images/app_calm.png);
+}
+
+.item a.todo {
+  background-image: url(images/app_todo.png);
+}
+
+.item a.instagram {
+  background-image: url(images/app_instagram.webp);
+}
+
+.item a.trello {
+  background-image: url(images/app_trello.png);
+}
+
+.item a.sesse {
+  background-image: url(images/app_sesse.png);
+}
+
+.item a.eztv {
+  background-image: url(images/app_eztv.png);
+}
+
+.item a.yts {
+  background-image: url(images/app_yts.png);
+}
+
+.item a.pocket {
+  background-image: url(images/app_pocket.png);
+}
+
+.item a.instapaper {
+  background-image: url(images/app_instapaper.png);
+}
+
+.item a.google-news {
+  background-image: url(images/app_google-news.png);
+}
+
+.item a.google-maps {
+  background-image: url(images/app_google-maps.png);
+}
+
+.item a.yt-music {
+  background-image: url(images/app_ytm.png);
+}
+
+.item a.btc-wisdom {
+  background-image: url(images/app_btc-wisdom.png);
+}
+
+.item a.telegram {
+  background-image: url(images/app_telegram.png);
+}
+
+.item a.appletv {
+  background-image: url(images/app_appletv.png);
+}
+
+.item a.messenger {
+  background-image: url(images/app_messenger.png);
+}
+
+.item a.tuenti {
+  background-image: url(images/app_tuenti.png);
+  /*background-size: 120%;*/
+  background-position: center;
+}
+
+.item a.remote {
+  background-color: white;
+  background-image: url(images/app_google-remote-desktop.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 85%;
+}
+
+.item a.amazon {
+  background-image: url(images/app_amazon.png);
+}
+
+.item a.trailers {
+  background-image: url(images/app_apple-trailers.webp);
+}
+
+.item a.paypal {
+  background-image: url(images/app_paypal.webp);
+}
+
+.item a.cinemark {
+  background-image: url(images/app_cinemark.png);
+}
+
+.item a.lanacion {
+  background-image: url(images/app_lanacion.png);
+}
+
+.item a.mundomaravilloso {
+  background-image: url(https://i.scdn.co/image/ab67656300005f1fab18024f3bd0776585bd0307);
+}
+
+.item a.vscode {
+  background-color: white;
+  background-image: url(https://upload.wikimedia.org/wikipedia/commons/9/9a/Visual_Studio_Code_1.35_icon.svg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 75%;
+}
+
+.item a.phcode {
+  background-color: white;
+  background-image: url(images/app_phcode.png);
+}
+
+.item a.localbitcoins {
+  background-image: url(https://play-lh.googleusercontent.com/sRWNV14Ue-hXbyFxHSIDOqbr4O6-t3OuTFVtGRUBPUUh8O-B66j6wOA4mwjlRTei7ec);
+}
+
+.item a.simplenote {
+  background-image: url(images/app_simplenote.png);
+}
+
+.item a.sube {
+  background-image: url(images/app_sube.png);
+}
+
+.item a.preev {
+  background-image: url(images/app_preev.jpg);
+}
+
+.item a.wordle {
+  background-image: url(https://www.nytimes.com/games-assets/v2/metadata/wordle-apple-touch-icon.png?v=v2209071210);
+}
+
+.item a.hackernews {
+  background-image: url(images/app_hackernews.svg);
+}
+
+.item a.duckduckgo {
+  background-image: url(images/app_duckduckgo.png);
+}
+
+.item a.google-contacts {
+  background-image: url(https://upload.wikimedia.org/wikipedia/commons/a/a8/Google_Contacts_icon_%282022%29.svg);
+  background-color: white;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 65%;
+}
+
+.item a.radiogarden {
+  background-image: url(https://radio.garden/public/icons/ios/ios-appicon-180-180.png);
+  background-color: black;
+}
+
+.item a.duolingo {
+  background-image: url(https://play-lh.googleusercontent.com/HUJ3xT5CSAnqIYesKhzLwSZwZFRSKE_raGfbYtNCv5J85DIJXvFs3n0VZWPkiQlPPg);
+}
+
+.item a.disneyplus {
+  background-image: url(images/app_disneyplus.png);
+}
+
+.item a.memrise {
+  background-image: url(https://play-lh.googleusercontent.com/9TS8y2GaNYqSW64771--Vs7h75yPlRj94eyInveRtsEvtdJGjrVIO4urwFZYunbA1X8);
+}
+
+.item a.kindle {
+  background-image: url(https://play-lh.googleusercontent.com/48wwD4kfFSStoxwuwCIu6RdM2IeZmZKfb1ZeQkga0qEf1JKsiD-hK3Qf8qvxHL09lQ);
+}
+
+.item a.todoist {
+  background-image: url(https://play-lh.googleusercontent.com/GK0SwEBVqlFBpRkPjY6y_1go6E6xZzAN0Ivzfgbuf28J4TTOoOsgWnqR4oJ_RhIhsg);
+}
+
+.item a.udemy {
+  background-image: url(https://play-lh.googleusercontent.com/dsCkmJE2Fa8IjyXERAcwc5YeQ8_NvbZ4_OI8LgqyjILpXUfS5YhEcnAMajKPrZI-og);
+}
+
+.item a.mixnmojo {
+  background-image: url(https://i.imgur.com/lsfNHF2.png);
+}
+
+.item a.anydo {
+  background-image: url(https://play-lh.googleusercontent.com/zgOLUXCHkF91H8xuMTMLT17smwgLPwSBjUlKVWF-cZRFjlv-Uvtman7DiHEii54fbEE);
+}
+
+.item a.remember {
+  background-image: url(https://play-lh.googleusercontent.com/xmnal18taauP2mjQFEhr1PhcItQ_W32IRuaD86IoL2U_4E-mfeKiliKtkISgOuA6Ln9n);
+  background-color: white;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 85%;
+}
+
+.item a.telecentro-play {
+  background-image: url(https://play-lh.googleusercontent.com/o_20y0hHi8AV4TtyxVouJRDY42b09Pso-DPTVyDcnZefM_1Qb-hGNWyGVLF6X59xfwgb);
+}
+
+.item a.nytimes {
+  background-image: url(https://play-lh.googleusercontent.com/GXQPzhxRLfAvOAo2KQQJ8MP8nW9eER-k8H8iXUka92pf5dX-V1VIIlgB_gdVNIWmAMxV);
+}
+
+.item a.guardian {
+  background-image: url(https://play-lh.googleusercontent.com/0IoGNBJeaga47hJgxtTzXXlPQmZYGjrzghS1NLoCrtjJTkm_GSRs5e44FmrXxxCUYJs);
+}
+
+.item a.izquierda {
+  background-image: url(https://play-lh.googleusercontent.com/IeWhP1ARfkTiyAttZK1b3DhHrBlTVHghzqh88cnhq-MTTpwpsStv1100EaZQsk1K9X3f);
+  background-color: white;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 85%;
+}
+
+.item a.pagina12 {
+  background-image: url(https://play-lh.googleusercontent.com/m0mEGh9sv0sKZb8pYTpT8lcUt9DYMU05pw65n-DglY0stXk5E2Ot-edpTLGPCy0fcEw);
+}
+
+.item a.google-photos {
+  background-image: url(https://play-lh.googleusercontent.com/ZyWNGIfzUyoajtFcD7NhMksHEZh37f-MkHVGr5Yfefa-IX7yj9SMfI82Z7a2wpdKCA);
+}
+
+.item a.panini {
+  background-image: url(https://play-lh.googleusercontent.com/m4Esui31Jn1YbCZeMQCR42i3i67TBAZRJ55ln1KuVlg_o99TUqM40Q5Stq02goe5h_A=w580-h580);
+  background-size: 135%;
+  background-position: center;
+}
+
+.item a.twitter {
+  background-image: url(https://play-lh.googleusercontent.com/tT_cdvQunsvESsJKAwiEUFUrTDak8foyjX_DLgp3BdNiBcPsh5ttjHcAE0QapZnmOYlr);
+}
+
+.item a.qatar {
+  background-image: url(https://play-lh.googleusercontent.com/IK9BZatH-e5rQxvaQlwCZOOD6uilnusCtARm7jxqPh8JzmuHw1_H9GxnmeDdpU36ijM);
+}
+
+.item a.icloud {
+  background-image: url(https://apps.apple.com/redeem/assets/images/icon_icloud_152@3x.png);
+}
+
+.item a.substack {
+  background-image: url(https://play-lh.googleusercontent.com/wZa8ZTV09nrxME6OzWIKxik9kcRcbI-k0Xx_c2bqz4n2rmMqMwV4fcmGwQP_g3OY3Q);
+  background-color: white;
+}
+
+.item a.hbo-max {
+  background-image: url(images/app_hbo-max.png);
+}
+
+.item a.pulp {
+  background-image: url(https://static-cdn.play.date/static/images/apple-touch-icon.588a13acdab4.png);
+}
+
+.item a.phcode {
+  background-image: url(https://phcode.dev/assets/phoenix-splash/images/phoenix-logo.svg);
+  background-color: white;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.item a.gemini {
+  background-image: url(images/app_gemini.png);
+}
+
+.item a.eltrece {
+  background-image: url(images/app_eltrece.jpg);
+}
+
+.item a.twitch {
+  background-image: url(images/app_twitch.png);
+}
+
+.item a.mitelefe {
+  background-image: url(images/app_mitelefe.png);
+}
+
+.item a.copilot {
+  background-image: url(images/app_copilot.png);
+}
+
+.item a.mangadex {
+  background-image: url(images/app_mangadex.svg);
+  background-color: #2c2c2c;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 85%;
+}
+
+.item a.deepseek {
+  background-image: url(images/app_deepseek.png);
+}
+
+.item a.wikipedia {
+  background-image: url(images/app_wikipedia.png);
+}
+
+.item a.x {
+  background-image: url(images/app_x.png);
+}
+
+.item a.chatgpt {
+  background-image: url(images/app_chatgpt.png);
+}
+
+.item a.metaai {
+  background-image: url(images/app_metaai.png);
+}
+
+.item a.grok {
+  background-image: url(images/app_grok.png);
+}
+
+.item a.newyorker {
+  background-image: url(images/app_newyorker.png);
+}
+
+.item a.facebook {
+  background-image: url(images/app_facebook.png);
+}
+
+.item a.pinterest {
+  background-image: url(images/app_pinterest.png);
+}
+
+.item a.colab {
+  background-image: url(images/app_colab.png);
+  background-color: white;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 85%;
+}
+
+.item a.aspen {
+  background-image: url(images/app_aspen.png);
+}
+
+.item a.meet {
+  background-image: url(images/app_meet.png);
+}

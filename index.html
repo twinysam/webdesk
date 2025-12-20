@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="robots" content="noindex" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebDesk</title>
+    <meta name="Author" content="Santiago Mendez" />
+    <link rel="shortcut icon" href="icons/Coda.ico" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Exo:wght@100;200&family=Inconsolata&family=Nunito:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@latest/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" type="text/css" href="app-icons.css" />
+    <link rel="stylesheet" type="text/css" href="tv-icons.css" />
+  </head>
+  <body>
+    <div class="caja">
+      <h1 id="polite"></h1>
+      <div class="first-line">
+        <div id="fecha"></div>
+      </div>
+      <div class="links"></div>
+      <hr />
+      <h2><i class="bi bi-link-45deg"></i> Links</h2>
+      <ul>
+        <li><a href="lugares.html" target="_blank">Santi Lugares</a></li>
+        <li><a href="europa_2024.html" target="_blank">Europa 2024</a></li>
+        <li><a href="settings.html"><i class="bi bi-gear-fill"></i> Settings</a></li>
+      </ul>
+    </div>
+    <div class="tree">
+      <img src="images/tree_spring.png" />
+    </div>
+
+    <!-- ONBOARDING OVERLAY -->
+    <div id="onboarding-overlay" class="d-none">
+       <div class="onboarding-card">
+          <!-- STEP 1: WELCOME -->
+          <div id="step-welcome" class="step-container active">
+              <h1 style="font-size: 3rem; margin-bottom: 2rem;">WebDesk Setup</h1>
+              <p class="mb-5 lead">First time here?</p>
+              <div class="d-flex justify-content-center gap-3">
+                  <button class="btn btn-primary btn-lg px-5" onclick="OnboardingManager.confirmStart()">Yes, Start Fresh</button>
+                  <button class="btn btn-outline-light btn-lg px-5" onclick="OnboardingManager.confirmImport()">No, Import Backup</button>
+              </div>
+              <input type="file" id="importInput" accept=".json" style="display:none" onchange="OnboardingManager.handleImport(event)">
+          </div>
+
+          <!-- STEP 2: PROFILE -->
+          <div id="step-profile" class="step-container">
+              <h2>Let's get to know you</h2>
+              <div class="mb-3 text-start">
+                  <label class="form-label">Language / Idioma</label>
+                  <select id="ob-lang" class="form-select bg-dark text-white border-secondary">
+                      <option value="en">English</option>
+                      <option value="es">Español</option>
+                  </select>
+              </div>
+              <div class="mb-3 text-start">
+                  <label class="form-label">Name</label>
+                  <input type="text" id="ob-name" class="form-control bg-dark text-white border-secondary" placeholder="Your Name">
+              </div>
+              <div class="mb-4 text-start">
+                  <label class="form-label">Birthday</label>
+                  <input type="date" id="ob-dob" class="form-control bg-dark text-white border-secondary">
+              </div>
+              <button class="btn btn-primary px-5" onclick="OnboardingManager.saveProfileStep()">Next <i class="bi bi-arrow-right"></i></button>
+          </div>
+
+          <!-- STEP 3: APPS -->
+          <div id="step-apps" class="step-container">
+              <h2>Select your Apps</h2>
+              <p class="text-muted mb-3">Pick the apps you want on your dashboard.</p>
+              
+              <div class="app-selection-container">
+                  <div class="catalog-section">
+                      <input type="text" id="ob-search" class="form-control bg-dark text-white border-secondary mb-2" placeholder="Search available apps..." oninput="OnboardingManager.filterCatalog(this.value)">
+                      <div id="ob-catalog-list" class="app-grid-scroll">
+                          <!-- Catalog Items -->
+                      </div>
+                  </div>
+                  <div class="my-apps-section">
+                      <h5 class="border-bottom pb-2">My Desk</h5>
+                      <div id="ob-myapps-list" class="my-apps-scroll">
+                          <!-- Selected Items -->
+                      </div>
+                  </div>
+              </div>
+              
+              <button class="btn btn-success btn-lg mt-4 px-5" onclick="OnboardingManager.finish()">Finish Setup <i class="bi bi-check-lg"></i></button>
+          </div>
+       </div>
+    </div>
+    
+    <script src="onboarding.js"></script>
+    <script id="item-template" type="text/x-handlebars-template">
+      {{#each this}}
+        <div class="item">
+          <a
+            href="{{url}}"
+            target="_blank"
+            class="{{icon}}"
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+            title="{{title}}"
+          >{{name}}</a>
+        </div>
+      {{/each}}
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+      integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.min.js"
+      integrity="sha384-lpyLfhYuitXl2zRZ5Bn2fqnhNAKOAaM/0Kr9laMspuaMiZfGmfwRNFh8HlMy49eQ"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js"
+      integrity="sha512-LGXaggshOkD/at6PFNcp2V2unf9LzFq6LE+sChH7ceMTDP0g2kn6Vxwgg7wkPP7AAtX+lmPqPdxB47A0Nz0cMQ=="
+      crossorigin="anonymous"
+    ></script>
+    <script src="webdesk.js"></script>
+  </body>
+</html>

@@ -1,0 +1,80 @@
+[
+  {
+    "name": "CBS News",
+    "url": "https://www.cbsnews.com/live/",
+    "icon": "tv-cbsnews",
+    "title": "CBS News"
+  },
+  {
+    "name": "Telefe",
+    "url": "https://mitelefe.com/vivo/",
+    "icon": "app-telefe",
+    "title": "Mi Telefe"
+  },
+  {
+    "name": "El Trece",
+    "url": "https://eltrecetv.com.ar/vivo",
+    "icon": "app-eltrece",
+    "title": "El Trece"
+  },
+  {
+    "name": "TV Pública",
+    "url": "https://www.tvpublica.com.ar/vivo",
+    "icon": "tv-tvp",
+    "title": "TV Pública"
+  },
+  {
+    "name": "TN",
+    "url": "https://www.youtube.com/@todonoticias",
+    "icon": "tv-tn",
+    "title": "Todo Noticias"
+  },
+  {
+    "name": "Crónica TV",
+    "url": "https://www.youtube.com/@cronica",
+    "icon": "tv-cronica",
+    "title": "Crónica TV"
+  },
+  {
+    "name": "A24",
+    "url": "https://www.youtube.com/@a24com",
+    "icon": "tv-a24",
+    "title": "A24"
+  },
+  {
+    "name": "C5N",
+    "url": "https://www.youtube.com/@c5n",
+    "icon": "tv-c5n",
+    "title": "C5N"
+  },
+  {
+    "name": "NHK World",
+    "url": "https://www3.nhk.or.jp/nhkworld/en/live/",
+    "icon": "tv-nhk",
+    "title": "NHK World Live"
+  },
+  {
+    "name": "América TV",
+    "url": "https://www.youtube.com/@americaenvivo",
+    "icon": "tv-america",
+    "title": "América TV"
+  },
+  {
+    "name": "Canal 26",
+    "url": "https://www.youtube.com/@canal26",
+    "icon": "tv-canal26",
+    "title": "Canal 26"
+  },
+  {
+    "name": "France 24 Español",
+    "url": "https://www.france24.com/es/en-vivo",
+    "icon": "tv-france24es",
+    "title": "France 24 Español"
+  },
+  {
+    "name": "Canal de la Ciudad",
+    "url": "https://buenosaires.gob.ar/secretariadecomunicacion/canal-de-la-ciudad-0",
+    "icon": "tv-canaldelaciudad",
+    "title": "Canal de la Ciudad"
+  }
+]

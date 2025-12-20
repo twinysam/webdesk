@@ -1,0 +1,42 @@
+/* tv-icons.css: TV channel icons for TV en Vivo section */
+
+/* Example: .tv-tvp { background-image: url('images/tv_tvp.jpg'); } */
+.tv-cbsnews {
+  background-image: url("images/tv_cbsnews.jpg");
+}
+.tv-tvp {
+  background-image: url("images/tv_tvp.jpg");
+}
+.tv-tn {
+  background-image: url("images/tv_tn.jpg");
+}
+.tv-cronica {
+  background-image: url("images/tv_cronica.jpg");
+}
+.tv-a24 {
+  background-image: url("images/tv_a24.jpg");
+}
+.tv-c5n {
+  background-image: url("images/tv_c5n.jpg");
+}
+.app-telefe {
+  background-image: url("images/app_mitelefe.png");
+}
+.app-eltrece {
+  background-image: url("images/app_eltrece.jpg");
+}
+.tv-nhk {
+  background-image: url("images/tv_nhkworld.jpg");
+}
+.tv-america {
+  background-image: url("images/tv_america.jpg");
+}
+.tv-canal26 {
+  background-image: url("images/tv_canal26.jpg");
+}
+.tv-france24es {
+  background-image: url("images/tv_france24es.jpg");
+}
+.tv-canaldelaciudad {
+  background-image: url("images/tv_canaldelaciudad.jpg");
+}
