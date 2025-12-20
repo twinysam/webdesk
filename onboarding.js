@@ -14,13 +14,13 @@ window.OnboardingManager = {
     overlay.classList.remove("d-none");
     OnboardingManager.goToStep("welcome");
     
-    // Load Catalog once
-    Promise.all([
-        fetch("items.json").then(res => res.json()).catch(() => []),
-        fetch("tv-items.json").then(res => res.json()).catch(() => [])
-    ]).then(([apps, tv]) => {
-        OnboardingManager.fullCatalog = [...apps, ...tv].sort((a,b) => a.name.localeCompare(b.name));
-    });
+    // Load Catalog (Ignore TV for now per user request)
+    fetch("items.json")
+      .then(res => res.json())
+      .then(apps => {
+        OnboardingManager.fullCatalog = apps.sort((a,b) => a.name.localeCompare(b.name));
+      })
+      .catch(err => console.error("Error loading items.json", err));
   },
 
   goToStep: (stepId) => {
@@ -51,14 +51,12 @@ window.OnboardingManager = {
           if (data.stats) localStorage.setItem("clickStats", JSON.stringify(data.stats));
           if (data.config) localStorage.setItem("appConfig", JSON.stringify(data.config));
           if (data.customEvents) localStorage.setItem("customEvents", JSON.stringify(data.customEvents));
+          if (data.myApps) localStorage.setItem("myApps", JSON.stringify(data.myApps)); // Fix: Ensure myApps is imported
           
           // Legacy support (older backups didn't have profile, presumably)
-          // Just reload and let it work.
-          // IF we define profile as "isSetup" requirement, we might need to mock it if missing?
-          // Let's assume user backup implies setup.
-          // If the backup doesn't have "userProfile" (new key), we might be stuck looping onboarding?
-          // We should create a dummy profile if missing.
-          if (!localStorage.getItem("userProfile")) {
+          if (data.profile) {
+              localStorage.setItem("userProfile", JSON.stringify(data.profile));
+          } else if (!localStorage.getItem("userProfile")) {
               ProfileManager.setProfile("User", "1985-10-17", "en"); // Defaults
           }
 
@@ -128,25 +126,48 @@ window.OnboardingManager = {
         
         const div = document.createElement("div");
         div.className = "my-app-item";
-        div.draggable = true; // TODO: Implement drag sort?
+        div.dataset.name = appObj.name; // For Sortable
         div.innerHTML = `
-             <div class="app-icon-mini" style="background-image: url('${fullApp.icon ? 'icons/'+fullApp.icon : ''}')"></div>
-            <span>${appObj.name}</span>
+             <div class="d-flex align-items-center gap-2">
+                 <i class="bi bi-list sort-handle text-secondary me-2"></i>
+                 <div class="app-icon-mini" style="background-image: url('${fullApp.icon ? 'icons/'+fullApp.icon : ''}')"></div>
+                 <span>${appObj.name}</span>
+             </div>
             <button class="btn-action" onclick="OnboardingManager.removeApp(${index})"><i class="bi bi-dash-lg"></i></button>
         `;
         container.appendChild(div);
     });
+
+    // Destroy old sortable if exists (not critical as we clear innerHTML but good practice)
+    // Re-init Sortable (Sortable is loaded in index.html)
+    if(window.Sortable) {
+        new Sortable(container, {
+            handle: '.sort-handle',
+            animation: 150,
+            ghostClass: 'ghost-class',
+            onEnd: (evt) => {
+               // Update state based on DOM order
+               const newOrder = [];
+               container.querySelectorAll(".my-app-item").forEach(el => {
+                   newOrder.push({ name: el.dataset.name });
+               });
+               OnboardingManager.tempConfig.selectedApps = newOrder;
+            }
+        });
+    }
   },
 
   addApp: (appName) => {
     OnboardingManager.tempConfig.selectedApps.push({ name: appName });
-    OnboardingManager.renderCatalog(document.getElementById("ob-search").value);
+    const searchVal = document.getElementById("ob-search").value;
+    OnboardingManager.renderCatalog(searchVal);
     OnboardingManager.renderMyApps();
   },
 
   removeApp: (index) => {
     OnboardingManager.tempConfig.selectedApps.splice(index, 1);
-    OnboardingManager.renderCatalog(document.getElementById("ob-search").value);
+    const searchVal = document.getElementById("ob-search").value;
+    OnboardingManager.renderCatalog(searchVal);
     OnboardingManager.renderMyApps();
   },
   
@@ -158,22 +179,29 @@ window.OnboardingManager = {
     // Save Everything
     const { name, birthday, lang, selectedApps } = OnboardingManager.tempConfig;
     
-    // 1. Save Profile (This triggers reload in ProfileManager implementation... wait)
-    // ProfileManager.setProfile triggers location.reload(). We should do that LAST.
-    
-    // 2. Save Apps
-    localStorage.setItem("myApps", JSON.stringify(selectedApps));
-    
-    // 3. Save Config (default)
-    // Ensure "appConfig" exists with the correct order
+    // 1. Save Config (Order & Default Filters)
+    // We map only names for the order array in config (legacy support + syncing)
     const config = {
         order: selectedApps.map(a => a.name),
         hidden: [],
         filters: { hideNeverClicked: false, minClicks: 0 }
     };
-    localStorage.setItem("appConfig", JSON.stringify(config));
-
-    // 4. Save Profile & Reload
-    ProfileManager.setProfile(name, birthday, lang);
+    
+    try {
+        localStorage.setItem("myApps", JSON.stringify(selectedApps));
+        localStorage.setItem("appConfig", JSON.stringify(config));
+        
+        // 2. Save Profile (Triggers Reload internally? NO, ProfileManager.setProfile calls location.reload())
+        // But we want to ensure everything is saved BEFORE reloading.
+        // ProfileManager.setProfile logic:
+        // localStorage.setItem(ProfileManager.STORAGE_KEY, JSON.stringify(profile));
+        // I18nManager.setLang(lang);
+        // location.reload();
+        
+        ProfileManager.setProfile(name, birthday, lang);
+        
+    } catch(e) {
+        alert("Error saving setup: " + e.message);
+    }
   }
 };

@@ -5,7 +5,8 @@ document.addEventListener("DOMContentLoaded", function () {
   // Centralized date/time helpers and constants
   // ==========================================================================
   const DateUtils = {
-    START_DATE: moment("17/10/1985", "DD/MM/YYYY"),
+    // START_DATE defaults to today if unknown, or will be overwritten by Profile data
+    START_DATE: moment(),
 
     getToday: () => moment(),
     getTomorrow: () => moment().add(1, "days"),
@@ -448,10 +449,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     initCalculator: () => {
       const t = I18nManager.getString;
-      const userBirthday = ProfileManager.getBirthday() || "1985-10-17"; // Fallback to Santi's
+      const userBirthday = ProfileManager.getBirthday();
       
       // Update START_DATE if user has one
       if(userBirthday) DateUtils.START_DATE = moment(userBirthday, "YYYY-MM-DD");
+      
+      const calcMinDate = userBirthday || "1900-01-01";
 
       const calcDiv = document.createElement("div");
       calcDiv.className = "dias-calc-section";
@@ -463,7 +466,7 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
         <div class="input-group mb-3">
           <span class="input-group-text">${t("calcDate")}</span>
-          <input type="date" class="form-control dias-calc-date" min="${userBirthday}" max="${moment().format("YYYY-MM-DD")}">
+          <input type="date" class="form-control dias-calc-date" min="${calcMinDate}" max="${moment().format("YYYY-MM-DD")}">
           <span class="ms-3 dias-calc-dia"></span>
         </div>
       `;
