@@ -1,0 +1,511 @@
+[
+  {
+    "name": "Gmail",
+    "url": "https://mail.google.com",
+    "icon": "gmail",
+    "order": 1,
+    "title": "Gmail"
+  },
+  {
+    "name": "YouTube",
+    "url": "https://www.youtube.com/",
+    "icon": "youtube",
+    "order": 2,
+    "title": "YouTube"
+  },
+  {
+    "name": "YouTube Music",
+    "url": "https://music.youtube.com/",
+    "icon": "yt-music",
+    "order": 3,
+    "title": "YouTube Music"
+  },
+  {
+    "name": "Google Contacts",
+    "url": "https://contacts.google.com/",
+    "icon": "google-contacts",
+    "order": 4,
+    "title": "Google Contacts"
+  },
+  {
+    "name": "Google Maps",
+    "url": "https://www.google.com/maps/",
+    "icon": "google-maps",
+    "order": 5,
+    "title": "Google Maps"
+  },
+  {
+    "name": "Google Calendar",
+    "url": "https://calendar.google.com/",
+    "icon": "calendar",
+    "order": 6,
+    "title": "Google Calendar"
+  },
+  {
+    "name": "Google Photos",
+    "url": "https://photos.google.com/",
+    "icon": "google-photos",
+    "order": 7,
+    "title": "Google Photos"
+  },
+  {
+    "name": "Google Drive",
+    "url": "https://drive.google.com/",
+    "icon": "google-drive",
+    "order": 8,
+    "title": "Google Drive"
+  },
+  {
+    "name": "Mercado Libre",
+    "url": "https://www.mercadolibre.com.ar/",
+    "icon": "meli",
+    "order": 9,
+    "title": "Mercado Libre"
+  },
+  {
+    "name": "Mercado Pago",
+    "url": "https://www.mercadopago.com.ar/home",
+    "icon": "mercado-pago",
+    "order": 10,
+    "title": "Mercado Pago"
+  },
+  {
+    "name": "Eztv",
+    "url": "https://eztvx.to/home",
+    "icon": "eztv",
+    "order": 11,
+    "title": "Eztv"
+  },
+  {
+    "name": "YTS",
+    "url": "https://yts.lt/",
+    "icon": "yts",
+    "order": 12,
+    "title": "YTS"
+  },
+  {
+    "name": "The Pirate Bay",
+    "url": "https://thepiratebay10.info/",
+    "icon": "piratebay",
+    "order": 13,
+    "title": "The Pirate Bay"
+  },
+  {
+    "name": "Letterboxd",
+    "url": "https://www.letterboxd.com/",
+    "icon": "letterboxd",
+    "order": 14,
+    "title": "Letterboxd"
+  },
+  {
+    "name": "Copilot",
+    "url": "https://copilot.microsoft.com/",
+    "icon": "copilot",
+    "order": 15,
+    "title": "Microsoft Copilot"
+  },
+  {
+    "name": "Google Gemini",
+    "url": "https://gemini.google.com/",
+    "icon": "gemini",
+    "order": 16,
+    "title": "Google Gemini"
+  },
+  {
+    "name": "DeepSeek",
+    "url": "https://chat.deepseek.com",
+    "icon": "deepseek",
+    "order": 17,
+    "title": "DeepSeek"
+  },
+  {
+    "name": "ChatGPT",
+    "url": "https://chatgpt.com/",
+    "icon": "chatgpt",
+    "order": 18,
+    "title": "ChatGPT"
+  },
+  {
+    "name": "Meta AI",
+    "url": "https://www.meta.ai/",
+    "icon": "metaai",
+    "order": 19,
+    "title": "Meta AI"
+  },
+  {
+    "name": "Grok",
+    "url": "https://grok.com/",
+    "icon": "grok",
+    "order": 20,
+    "title": "Grok"
+  },
+  {
+    "name": "Disney+",
+    "url": "https://www.disneyplus.com",
+    "icon": "disneyplus",
+    "order": 21,
+    "title": "Disney+"
+  },
+  {
+    "name": "HBO Max",
+    "url": "https://www.hbomax.com",
+    "icon": "hbo-max",
+    "order": 22,
+    "title": "HBO Max"
+  },
+  {
+    "name": "Telecentro",
+    "url": "https://telecentro.com.ar/sucursal-virtual",
+    "icon": "telecentro",
+    "order": 22,
+    "title": "Telecentro"
+  },
+  {
+    "name": "Lichess",
+    "url": "https://www.lichess.org/",
+    "icon": "lichess",
+    "order": 23,
+    "title": "Lichess"
+  },
+  {
+    "name": "Instagram",
+    "url": "https://www.instagram.com",
+    "icon": "instagram",
+    "order": 24,
+    "title": "Instagram"
+  },
+  {
+    "name": "Instapaper",
+    "url": "https://www.instapaper.com/u",
+    "icon": "instapaper",
+    "order": 25,
+    "title": "Instapaper"
+  },
+  {
+    "name": "Substack",
+    "url": "https://substack.com/inbox",
+    "icon": "substack",
+    "order": 26,
+    "title": "Substack"
+  },
+  {
+    "name": "Twitch",
+    "url": "https://www.twitch.tv/",
+    "icon": "twitch",
+    "order": 27,
+    "title": "Twitch"
+  },
+  {
+    "name": "Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Main_Page",
+    "icon": "wikipedia",
+    "order": 28,
+    "title": "Wikipedia"
+  },
+  {
+    "name": "Cinemark Hoyts",
+    "url": "https://www.cinemarkhoyts.com.ar/",
+    "icon": "cinemark",
+    "order": 29,
+    "title": "Cinemark Hoyts"
+  },
+  {
+    "name": "Sube",
+    "url": "https://tarjetasube.sube.gob.ar/SubeWeb/Webforms/Account/Views/login.aspx",
+    "icon": "sube",
+    "order": 30,
+    "title": "Sube"
+  },
+  {
+    "name": "Santander",
+    "url": "https://www2.personas.santander.com.ar/obp-webapp/angular/#!/login",
+    "icon": "santander",
+    "order": 31,
+    "title": "Santander"
+  },
+  {
+    "name": "Paypal",
+    "url": "https://www.paypal.com/myaccount/summary?intl=0",
+    "icon": "paypal",
+    "order": 32,
+    "title": "Paypal"
+  },
+  {
+    "name": "BitcoinWisdom",
+    "url": "https://bitcoinwisdom.io/markets/bitfinex/btcusd",
+    "icon": "btc-wisdom",
+    "order": 33,
+    "title": "BitcoinWisdom"
+  },
+  {
+    "name": "MangaDex",
+    "url": "https://mangadex.org",
+    "icon": "mangadex",
+    "order": 34,
+    "title": "MangaDex"
+  },
+  {
+    "name": "Tuenti",
+    "url": "https://app.tuenti.com.ar/",
+    "icon": "tuenti",
+    "order": 35,
+    "title": "Tuenti"
+  },
+  {
+    "name": "Github",
+    "url": "https://github.com/",
+    "icon": "github",
+    "order": 36,
+    "title": "Github"
+  },
+  {
+    "name": "Hacker News",
+    "url": "https://news.ycombinator.com/",
+    "icon": "hackernews",
+    "order": 37,
+    "title": "Hacker News"
+  },
+  {
+    "name": "Sesse Chess",
+    "url": "http://analysis.sesse.net/",
+    "icon": "sesse",
+    "order": 38,
+    "title": "Sesse Chess"
+  },
+  {
+    "name": "Mixnmojo",
+    "url": "https://mixnmojo.com",
+    "icon": "mixnmojo",
+    "order": 39,
+    "title": "Mixnmojo"
+  },
+  {
+    "name": "Radio Garden",
+    "url": "https://radio.garden/",
+    "icon": "radiogarden",
+    "order": 40,
+    "title": "Radio Garden"
+  },
+  {
+    "name": "Facebook",
+    "url": "https://www.facebook.com/",
+    "icon": "facebook",
+    "title": "Facebook"
+  },
+  {
+    "name": "The New Yorker",
+    "url": "https://www.newyorker.com/",
+    "icon": "newyorker",
+    "title": "The New Yorker"
+  },
+  {
+    "name": "Amazon",
+    "url": "https://www.amazon.com",
+    "icon": "amazon",
+    "title": "Amazon"
+  },
+  {
+    "name": "Duolingo",
+    "url": "https://www.duolingo.com/learn",
+    "icon": "duolingo",
+    "title": "Duolingo"
+  },
+  {
+    "name": "Simplenote",
+    "url": "https://app.simplenote.com/",
+    "icon": "simplenote",
+    "title": "Simplenote"
+  },
+  {
+    "name": "Outlook Live",
+    "url": "https://outlook.live.com/mail/inbox",
+    "icon": "outlook",
+    "title": "Outlook"
+  },
+  {
+    "name": "Microsoft To Do",
+    "url": "https://to-do.live.com/tasks/",
+    "icon": "todo",
+    "title": "Microsoft To Do"
+  },
+  {
+    "name": "Reddit",
+    "url": "https://www.reddit.com/",
+    "icon": "reddit",
+    "title": "Reddit"
+  },
+  {
+    "name": "Twitter",
+    "url": "https://www.twitter.com/",
+    "icon": "twitter",
+    "title": "Twitter"
+  },
+  {
+    "name": "Playdate Pulp",
+    "url": "https://play.date/pulp/",
+    "icon": "pulp",
+    "title": "Playdate Pulp"
+  },
+  {
+    "name": "Chrome Remote Desktop",
+    "url": "https://remotedesktop.google.com/access/",
+    "icon": "remote",
+    "title": "Chrome Remote Desktop"
+  },
+  {
+    "name": "WhatsApp Web",
+    "url": "https://web.whatsapp.com/",
+    "icon": "whatsapp",
+    "title": "WhatsApp Web"
+  },
+  {
+    "name": "Telegram",
+    "url": "https://web.telegram.org/z",
+    "icon": "telegram",
+    "title": "Telegram"
+  },
+  {
+    "name": "DuckDuckGo",
+    "url": "https://duckduckgo.com/",
+    "icon": "duckduckgo",
+    "title": "DuckDuckGo"
+  },
+  {
+    "name": "Todoist",
+    "url": "https://todoist.com/app/",
+    "icon": "todoist",
+    "title": "Todoist"
+  },
+  {
+    "name": "Any.do",
+    "url": "https://desktop.any.do/",
+    "icon": "anydo",
+    "title": "Any.do"
+  },
+  {
+    "name": "Memrise",
+    "url": "https://app.memrise.com/dashboard",
+    "icon": "memrise",
+    "title": "Memrise"
+  },
+  {
+    "name": "Visual Studio Code",
+    "url": "https://vscode.dev/",
+    "icon": "vscode",
+    "title": "Visual Studio Code"
+  },
+  {
+    "name": "Phoenix Code Editor",
+    "url": "https://phcode.dev/",
+    "icon": "phcode",
+    "title": "Phoenix Code Editor"
+  },
+  {
+    "name": "Página 12",
+    "url": "https://www.pagina12.com.ar",
+    "icon": "pagina12",
+    "title": "Página 12"
+  },
+  {
+    "name": "La Izquierda Diario",
+    "url": "https://www.laizquierdadiario.com/",
+    "icon": "izquierda",
+    "title": "La Izquierda Diario"
+  },
+  {
+    "name": "La Nación",
+    "url": "https://www.lanacion.com.ar/",
+    "icon": "lanacion",
+    "title": "La Nación"
+  },
+  {
+    "name": "Wordle",
+    "url": "https://www.nytimes.com/games/wordle/index.html",
+    "icon": "wordle",
+    "title": "Wordle"
+  },
+  {
+    "name": "Google News",
+    "url": "https://news.google.com/",
+    "icon": "google-news",
+    "title": "Google News"
+  },
+  {
+    "name": "Calm",
+    "url": "https://app.www.calm.com/homepage",
+    "icon": "calm",
+    "title": "Calm"
+  },
+  {
+    "name": "Apple Trailers",
+    "url": "https://trailers.apple.com/",
+    "icon": "trailers",
+    "title": "Apple Trailers"
+  },
+  {
+    "name": "Trello",
+    "url": "https://www.trello.com",
+    "icon": "trello",
+    "title": "Trello"
+  },
+  {
+    "name": "Kindle",
+    "url": "https://read.amazon.com/kindle-library",
+    "icon": "kindle",
+    "title": "Kindle"
+  },
+  {
+    "name": "Udemy",
+    "url": "https://www.udemy.com/",
+    "icon": "udemy",
+    "title": "Udemy"
+  },
+  {
+    "name": "Remember The Milk",
+    "url": "https://www.rememberthemilk.com/app/",
+    "icon": "remember",
+    "title": "Remember The Milk"
+  },
+  {
+    "name": "Telecentro Gateway",
+    "url": "https://192.168.0.1",
+    "icon": "telecentro-play",
+    "title": "Telecentro Gateway"
+  },
+  {
+    "name": "New York Times",
+    "url": "https://nytimes.com",
+    "icon": "nytimes",
+    "title": "New York Times"
+  },
+  {
+    "name": "The Guardian",
+    "url": "https://www.guardian.com",
+    "icon": "guardian",
+    "title": "The Guardian"
+  },
+  {
+    "name": "PREEV",
+    "url": "http://preev.com/",
+    "icon": "preev",
+    "title": "PREEV"
+  },
+  {
+    "name": "iCloud",
+    "url": "https://www.icloud.com",
+    "icon": "icloud",
+    "title": "iCloud"
+  },
+  {
+    "name": "Facebook Messenger",
+    "url": "https://www.messenger.com",
+    "icon": "messenger",
+    "title": "Facebook Messenger"
+  },
+  {
+    "name": "Un Mundo Maravilloso",
+    "url": "https://open.spotify.com/show/0zGFAX8zeYbDjEX4sC7bbk",
+    "icon": "mundomaravilloso",
+    "title": "Un Mundo Maravilloso"
+  }
+]
