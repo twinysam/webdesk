@@ -1,4 +1,4 @@
-const OnboardingManager = {
+window.OnboardingManager = {
   // Config state during onboarding
   tempConfig: {
     name: "",
