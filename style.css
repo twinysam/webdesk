@@ -550,7 +550,7 @@ ul.columns {
 /* Top Right Settings Icon */
 .settings-icon, .home-icon {
   position: absolute;
-  top: 20px;
+  top: 15px;
   right: 20px;
   z-index: 1000;
 }

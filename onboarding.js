@@ -62,7 +62,7 @@ window.OnboardingManager = {
           }
 
           Utils.showAlert("Import successful! Reloading...", "success");
-          setTimeout(() => location.reload(), 2000);
+          setTimeout(() => location.reload(), 500);
         } catch (err) {
           Utils.showAlert("Error importing: " + err.message, "danger");
         }
