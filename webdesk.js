@@ -700,7 +700,7 @@ document.addEventListener("DOMContentLoaded", function () {
       container.classList.add(colClass);
 
       const h2 = document.createElement("h2");
-      h2.innerHTML = '<i class="bi bi-link-45deg"></i> Links';
+      h2.innerHTML = '<hr /><i class="bi bi-link-45deg"></i> Links';
       container.appendChild(h2);
 
       const ul = document.createElement("ul");
