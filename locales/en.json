@@ -1,0 +1,36 @@
+{
+  "strings": {
+    "greeting_morning": "Good Morning",
+    "greeting_afternoon": "Good Afternoon",
+    "greeting_evening": "Good Evening",
+    "greeting_night": "Good Night",
+    "greeting_generic": "Hello",
+    "birthday_message": "Happy Birthday!",
+    "day_0": "Day 0",
+    "day_X": "Day {days}",
+    
+    "today_is": "Today",
+    "tomorrow_is": "Tomorrow",
+    "birthday_turns": "turns",
+    "birthday_is": "is turning",
+    "also_today": "Also today:",
+    "also_tomorrow": "Also tomorrow:",
+    
+    "phrase_birthdays_today": "Today is {names}'s birthday",
+    "phrase_birthdays_tomorrow": "Tomorrow is {names}'s birthday",
+    "phrase_events_today": "Today: {events}",
+    "phrase_events_tomorrow": "Tomorrow: {events}",
+    
+    "list_separator": ", ",
+    "list_last_separator": " and "
+  },
+  "greetingRules": {
+    "morningStart": 5,
+    "morningEnd": 12,
+    "afternoonStart": 12,
+    "afternoonEnd": 18,
+    "eveningStart": 18,
+    "eveningEnd": 22
+  },
+  "version": 1
+}

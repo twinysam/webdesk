@@ -421,6 +421,8 @@
           if(!name || !birthday) return showAlert("Please fill all fields", "danger");
           
           const { profile } = getData();
+          const oldLang = profile.lang;
+          
           profile.name = name;
           profile.birthday = birthday;
           profile.lang = lang;
@@ -429,7 +431,16 @@
           // Also set lang key for I18nManager
           localStorage.setItem("userLang", lang);
           
-          showAlert("Profile Saved!", "success");
+          if (oldLang !== lang) {
+              // Clear cache to force reload of new language file
+              const cacheKey = "i18n_cache_" + lang;
+              localStorage.removeItem(cacheKey);
+              
+              showAlert("Profile and Language Saved! Reloading...", "success");
+              setTimeout(() => location.reload(), 1000); // Reload to apply language
+          } else {
+              showAlert("Profile Saved!", "success");
+          }
       });
 
       // --- TAB 1: APP MANAGER ---

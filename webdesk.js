@@ -108,80 +108,81 @@ document.addEventListener("DOMContentLoaded", function () {
   // ==========================================================================
   window.I18nManager = {
     LANG_KEY: "userLang",
+    CACHE_KEY_PREFIX: "i18n_cache_",
     
-    // Default to 'en' if not set
-    getLang: () => localStorage.getItem(I18nManager.LANG_KEY) || "en",
-    setLang: (lang) => localStorage.setItem(I18nManager.LANG_KEY, lang),
-
-    strings: {
-      en: {
-        morning: '<i class="bi bi-brightness-alt-high-fill"></i> Good morning',
-        afternoon: '<i class="bi bi-brightness-high-fill"></i> Good afternoon',
-        evening: '<i class="bi bi-moon-fill"></i> Good evening',
-        late: '<i class="bi bi-moon-stars-fill"></i> Late Late Show',
-        birthday: '<i class="bi bi-balloon-fill"></i> Happy birthday!',
-        newYear: 'Happy New Year!',
-        goodbyeYear: 'Yay! Goodbye',
-        // Calculator
-        calcDay: "Day",
-        calcDate: "Date",
-        calcTitle: '<i class="bi bi-calculator"></i> Life Calculator',
-        // TV
-        tvTitle: '<i class="bi bi-tv"></i> Live TV',
-        // Events
-        today: "Today",
-        tomorrow: "Tomorrow",
-        alsoToday: "Also today:",
-        alsoTomorrow: "Also tomorrow:",
-        birthdays: "birthdays",
-        isBirthday: "is turning", // Simplification for "cumple"
-        turns: "turns",
-      },
-      es: {
-        morning: '<i class="bi bi-brightness-alt-high-fill"></i> Buenos días',
-        afternoon: '<i class="bi bi-brightness-high-fill"></i> Buenas tardes',
-        evening: '<i class="bi bi-moon-fill"></i> Buenas noches',
-        late: '<i class="bi bi-moon-stars-fill"></i> Trasnoche',
-        birthday: '<i class="bi bi-balloon-fill"></i> Feliz cumpleaños!',
-        newYear: '¡Feliz Año Nuevo!',
-        goodbyeYear: '¡Yay! Chau',
-        // Calculator
-        calcDay: "Día",
-        calcDate: "Fecha",
-        calcTitle: '<i class="bi bi-calculator"></i> Calculadora de Vida',
-        // TV
-        tvTitle: '<i class="bi bi-tv"></i> TV en Vivo',
-        // Events
-        today: "Hoy",
-        tomorrow: "Mañana",
-        alsoToday: "También hoy:",
-        alsoTomorrow: "También mañana:",
-        birthdays: "cumpleaños",
-        isBirthday: "cumple",
-        turns: "cumple",
-      }
+    // Default Data (fallback)
+    data: {
+        strings: {
+            "greeting_morning": "Good Morning",
+            "greeting_afternoon": "Good Afternoon",
+            "greeting_evening": "Good Evening",
+            "greeting_night": "Good Night",
+            "greeting_generic": "Hello",
+            "birthday_message": "Happy Birthday!",
+            "day_0": "Day 0",
+            "day_X": "Day {days}"
+        },
+        greetingRules: {
+            morningStart: 5, morningEnd: 12,
+            afternoonStart: 12, afternoonEnd: 18,
+            eveningStart: 18, eveningEnd: 22
+        }
     },
 
-    getString: (key) => {
-      const lang = I18nManager.getLang();
-      return I18nManager.strings[lang][key] || I18nManager.strings["en"][key];
+    init: async () => {
+       const storedLang = JSON.parse(localStorage.getItem(ProfileManager.STORAGE_KEY))?.lang || "en";
+       await I18nManager.loadLocale(storedLang);
     },
 
-    getGreetingTime: (hour) => {
-      const lang = I18nManager.getLang();
-      if (lang === "es") {
-        // Spanish Logic
-        if (hour < 5) return "late";
-        if (hour < 13) return "morning"; // Until 1 PM
-        if (hour < 20) return "afternoon"; // Until 8 PM
-        return "evening";
-      } else {
-        // English Logic
-        if (hour < 5) return "late";
-        if (hour < 12) return "morning"; // Until Noon
-        if (hour < 18) return "afternoon"; // Until 6 PM
-        return "evening";
-      }
+    loadLocale: async (lang) => {
+        const cacheKey = I18nManager.CACHE_KEY_PREFIX + lang;
+        const cached = localStorage.getItem(cacheKey);
+
+        if (cached) {
+            try {
+                const parsed = JSON.parse(cached);
+                if(parsed.version) {
+                     I18nManager.data = parsed;
+                     console.log("I18n: Loaded from cache (" + lang + ")");
+                     return;
+                }
+            } catch(e) { console.warn("I18n: Cache invalid, fetching..."); }
+        }
+
+        try {
+            const response = await fetch(`locales/${lang}.json`);
+            if(!response.ok) throw new Error("Locale not found");
+            const json = await response.json();
+            
+            I18nManager.data = json;
+            localStorage.setItem(cacheKey, JSON.stringify(json));
+            console.log("I18n: Fetched and cached (" + lang + ")");
+        } catch (err) {
+            console.error("I18n Error:", err);
+        }
+    },
+
+    getString: (key, params = {}) => {
+      let str = I18nManager.data.strings[key] || key;
+      Object.keys(params).forEach(k => {
+          str = str.replace(`{${k}}`, params[k]);
+      });
+      return str;
+    },
+
+    getGreetingTime: (m) => {
+      const g = null;
+      if(!m || !m.isValid()) return "generic";
+
+      const hour = parseFloat(m.format("H"));
+      const rules = I18nManager.data.greetingRules;
+
+      if (hour >= rules.morningStart && hour < rules.morningEnd) return "morning";
+      if (hour >= rules.afternoonStart && hour < rules.afternoonEnd) return "afternoon";
+      if (hour >= rules.eveningStart && hour < rules.eveningEnd) return "evening";
+      if (hour >= rules.eveningEnd || hour < rules.morningStart) return "night";
+      
+      return "generic";
     }
   };
 
@@ -326,11 +327,28 @@ document.addEventListener("DOMContentLoaded", function () {
       } else if (todayStr === "31/12") {
         message = `${t("goodbyeYear")} ${now.locale(lang).format("YYYY")}`;
       } else if (todayStr === "01/01") {
-        message = `${t("newYear")} Hello ${now.locale(lang).format("YYYY")}`;
+  // ==========================================================================
+  // MODULE: GreetingManager
+  // Handles the main big greeting text
+  // ==========================================================================
+  const GreetingManager = {
+    updateGreeting: () => {
+      const now = moment();
+      const timeType = I18nManager.getGreetingTime(now);
+      const greetingKey = `greeting_${timeType}`;
+      const greetingText = I18nManager.getString(greetingKey);
+      
+      const userProfile = ProfileManager.getProfile();
+      let finalHtml = `${greetingText}`;
+      
+      if (userProfile && userProfile.name) {
+          finalHtml += `, <span class="name-highlight">${userProfile.name}</span>.`;
+      } else {
+          finalHtml += ".";
       }
 
-      const politeElem = document.getElementById("polite");
-      if (politeElem) politeElem.innerHTML = message;
+      const politeEl = document.getElementById("polite");
+      if (politeEl) politeEl.innerHTML = finalHtml;
     },
 
     updateVisuals: () => {
@@ -358,10 +376,10 @@ document.addEventListener("DOMContentLoaded", function () {
     },
 
     init: () => {
-      GreetingManager.updateMessage();
+      GreetingManager.updateGreeting();
       GreetingManager.updateVisuals();
       GreetingManager.startAnimationControl();
-      setInterval(GreetingManager.updateMessage, 300000); // 5 mins
+      setInterval(GreetingManager.updateGreeting, 60000 * 10);
     }
   };
 
@@ -383,9 +401,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const todayFull = DateUtils.getTodayFull();
         const tomorrowFull = DateUtils.getTomorrowFull();
         
-        const t = I18nManager.getString;
+        const t = (key) => I18nManager.getString(key);
 
-        let baseMsg = `${todayFull} - ${t("calcDay")} ${DateUtils.getDaysSinceStart()}`;
+        let baseMsg = `${todayFull} - ${t("day")} ${DateUtils.getDaysSinceStart()}`;
         
         const matches = {
           cumplesToday: [], cumplesTomorrow: [],
