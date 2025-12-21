@@ -548,18 +548,23 @@ ul.columns {
 }
 
 /* Top Right Settings Icon */
-.settings-icon {
+.settings-icon, .home-icon {
   position: absolute;
   top: 20px;
   right: 20px;
   z-index: 1000;
 }
-.settings-icon a {
+.home-icon {
+  right: auto;
+  left: 20px; /* Top Left for Home */
+}
+
+.settings-icon a, .home-icon a {
   color: rgba(255, 255, 255, 0.5);
   font-size: 1.5rem;
   transition: color 0.3s;
 }
-.settings-icon a:hover {
+.settings-icon a:hover, .home-icon a:hover {
   color: white;
 }
 
@@ -575,11 +580,11 @@ ul.columns {
 .links-cols-3 { column-count: 3; }
 .links-cols-4 { column-count: 4; }
 
-.custom-links-container ul {
+/*.custom-links-container ul {
   list-style: none;
   padding: 0;
   margin: 0;
-}
+}*/
 
 .custom-links-container li {
   margin-bottom: 5px;
@@ -589,7 +594,7 @@ ul.columns {
 .custom-links-container a {
   color: #ddd;
   text-decoration: none;
-  font-size: 1.1rem;
+  font-size: 1em;
   transition: color 0.2s;
 }
 .custom-links-container a:hover {
