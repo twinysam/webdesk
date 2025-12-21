@@ -672,6 +672,54 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   // ==========================================================================
+  // MODULE: LinksManager
+  // Custom User Links
+  // ==========================================================================
+  const LinksManager = {
+    STORAGE_KEY: "userLinks",
+
+    getLinks: () => JSON.parse(localStorage.getItem(LinksManager.STORAGE_KEY)) || [],
+
+    render: () => {
+      const links = LinksManager.getLinks();
+      const container = document.getElementById("custom-links-container");
+      if (!container) return;
+
+      container.innerHTML = "";
+      container.className = "custom-links-container"; // Reset classes
+
+      if (links.length === 0) return;
+
+      // Determine columns
+      const count = links.length;
+      let colClass = "links-cols-1";
+      if (count > 21) colClass = "links-cols-4";
+      else if (count > 14) colClass = "links-cols-3";
+      else if (count > 7) colClass = "links-cols-2";
+
+      container.classList.add(colClass);
+
+      const h2 = document.createElement("h2");
+      h2.innerHTML = '<i class="bi bi-link-45deg"></i> Links';
+      container.appendChild(h2);
+
+      const ul = document.createElement("ul");
+      links.forEach(link => {
+        const li = document.createElement("li");
+        const displayName = link.name || link.url;
+        li.innerHTML = `<a href="${link.url}" target="_blank">${displayName}</a>`;
+        ul.appendChild(li);
+      });
+      container.appendChild(ul);
+    },
+
+    init: () => {
+      LinksManager.render();
+    }
+  };
+
+
+  // ==========================================================================
   // INITIALIZATION
   // ==========================================================================
   
@@ -682,5 +730,6 @@ document.addEventListener("DOMContentLoaded", function () {
   GreetingManager.init();
   EventsManager.init();
   AppManager.init();
+  LinksManager.init();
 
 });

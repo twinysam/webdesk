@@ -51,7 +51,8 @@ window.OnboardingManager = {
           if (data.stats) localStorage.setItem("clickStats", JSON.stringify(data.stats));
           if (data.config) localStorage.setItem("appConfig", JSON.stringify(data.config));
           if (data.customEvents) localStorage.setItem("customEvents", JSON.stringify(data.customEvents));
-          if (data.myApps) localStorage.setItem("myApps", JSON.stringify(data.myApps)); // Fix: Ensure myApps is imported
+          if (data.myApps) localStorage.setItem("myApps", JSON.stringify(data.myApps));
+          if (data.userLinks) localStorage.setItem("userLinks", JSON.stringify(data.userLinks)); // Fix: Ensure myApps is imported
           
           // Legacy support (older backups didn't have profile, presumably)
           if (data.profile) {

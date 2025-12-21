@@ -134,6 +134,9 @@
           <button class="nav-link" id="apps-tab" data-bs-toggle="tab" data-bs-target="#apps" type="button" role="tab"><i class="bi bi-grid-3x3-gap-fill"></i> App Manager</button>
         </li>
         <li class="nav-item" role="presentation">
+            <button class="nav-link" id="links-tab" data-bs-toggle="tab" data-bs-target="#links" type="button" role="tab"><i class="bi bi-link-45deg"></i> Custom Links</button>
+        </li>
+        <li class="nav-item" role="presentation">
           <button class="nav-link" id="events-tab" data-bs-toggle="tab" data-bs-target="#events" type="button" role="tab"><i class="bi bi-calendar-event"></i> Events</button>
         </li>
         <li class="nav-item" role="presentation">
@@ -236,6 +239,41 @@
           </div>
         </div>
 
+        <!-- Tab: Custom Links -->
+        <div class="tab-pane fade" id="links" role="tabpanel">
+             <div class="card bg-dark border-secondary p-4 text-white">
+                 <h4 class="mb-4">Manage Custom Links</h4>
+                 <form id="linkForm" class="row g-3 mb-4">
+                     <div class="col-md-4">
+                         <label for="linkName" class="form-label">Name (Optional)</label>
+                         <input type="text" class="form-control bg-dark text-white border-secondary" id="linkName" placeholder="My Site">
+                     </div>
+                     <div class="col-md-6">
+                         <label for="linkUrl" class="form-label">URL</label>
+                         <input type="url" class="form-control bg-dark text-white border-secondary" id="linkUrl" placeholder="https://..." required>
+                     </div>
+                     <div class="col-md-2 d-flex align-items-end">
+                         <button type="submit" class="btn btn-success w-100"><i class="bi bi-plus-lg"></i> Add</button>
+                     </div>
+                 </form>
+                 
+                 <div class="table-responsive">
+                    <table class="table table-dark table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>URL</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="linksListBody">
+                            <!-- Links -->
+                        </tbody>
+                    </table>
+                 </div>
+             </div>
+        </div>
+
         <!-- Tab 4: Events Manager -->
         <div class="tab-pane fade" id="events" role="tabpanel">
            <div class="card bg-dark border-secondary p-4 text-white">
@@ -331,7 +369,8 @@
         const myApps = JSON.parse(localStorage.getItem(MYAPPS_KEY)) || [];
         
         if (!config.filters) config.filters = defaultConfig.filters; // ensure structure
-        return { stats, config, customEvents, profile, myApps };
+        const userLinks = JSON.parse(localStorage.getItem("userLinks")) || [];
+        return { stats, config, customEvents, profile, myApps, userLinks };
       }
 
       function saveData(key, data) {
@@ -606,6 +645,33 @@
         }
       };
 
+      // --- TAB 5: CUSTOM LINKS ---
+      function loadLinksManager() {
+        const { userLinks = [] } = getData();
+        const tbody = document.getElementById("linksListBody");
+        tbody.innerHTML = "";
+
+        userLinks.forEach((link, index) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${link.name || '<em class="text-secondary">No Name</em>'}</td>
+                <td><a href="${link.url}" target="_blank" class="text-info text-decoration-none">${link.url}</a></td>
+                <td class="text-end">
+                    <button class="btn btn-sm btn-danger" onclick="deleteLink(${index})"><i class="bi bi-trash"></i></button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+      }
+
+      window.deleteLink = (index) => {
+          const { userLinks = [] } = getData();
+          userLinks.splice(index, 1);
+          saveData("userLinks", userLinks);
+          loadLinksManager();
+          showAlert("Link deleted!", "success");
+      };
+
       // --- INIT ---
       document.addEventListener("DOMContentLoaded", () => {
         loadProfile();
@@ -613,6 +679,7 @@
         loadFilters();
         renderStats();
         loadEventsManager();
+        loadLinksManager();
         
         // Restrict date picker to today+
         const dateInput = document.getElementById("eventDate");
@@ -651,6 +718,25 @@
             });
         }
 
+        // Links
+        const linkForm = document.getElementById("linkForm");
+        if(linkForm) {
+            linkForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const name = document.getElementById("linkName").value.trim();
+                const url = document.getElementById("linkUrl").value.trim();
+
+                const { userLinks = [] } = getData();
+                userLinks.push({ name, url });
+                saveData("userLinks", userLinks);
+                
+                loadLinksManager();
+                linkForm.reset();
+                showAlert("Link added successfully!", "success");
+            });
+        }
+
+
         const btnExportEvents = document.getElementById("btnExportEvents");
         if(btnExportEvents) {
             btnExportEvents.addEventListener("click", () => {
@@ -688,9 +774,9 @@
 
         // Backup
         document.getElementById("btnExport").addEventListener("click", () => {
-          const { stats, config, customEvents, profile, myApps } = getData();
+          const { stats, config, customEvents, profile, myApps, userLinks } = getData();
           const exportData = {
-            stats, config, customEvents, profile, myApps,
+            stats, config, customEvents, profile, myApps, userLinks,
             version: 3,
             date: new Date().toISOString()
           };
@@ -726,6 +812,7 @@
               if (data.customEvents) saveData("customEvents", data.customEvents);
               if (data.profile) saveData(PROFILE_KEY, data.profile);
               if (data.myApps) saveData(MYAPPS_KEY, data.myApps);
+              if (data.userLinks) saveData("userLinks", data.userLinks);
               
               // Legacy
                if (!data.config && !data.stats) { 

@@ -27,6 +27,10 @@
     <link rel="stylesheet" type="text/css" href="tv-icons.css" />
   </head>
   <body>
+    <div class="settings-icon">
+      <a href="settings.html"><i class="bi bi-gear-fill"></i></a>
+    </div>
+
     <div class="caja">
       <div id="alertContainer" class="mb-3 fixed-top d-flex justify-content-center" style="top: 20px; pointer-events: none;"></div>
       <h1 id="polite"></h1>
@@ -34,13 +38,11 @@
         <div id="fecha"></div>
       </div>
       <div class="links"></div>
+      
       <hr />
-      <h2><i class="bi bi-link-45deg"></i> Links</h2>
-      <ul>
-        <li><a href="lugares.html" target="_blank">Santi Lugares</a></li>
-        <li><a href="europa_2024.html" target="_blank">Europa 2024</a></li>
-        <li><a href="settings.html"><i class="bi bi-gear-fill"></i> Settings</a></li>
-      </ul>
+      
+      <!-- Dynamic Links Container -->
+      <div id="custom-links-container" class="custom-links-container"></div>
     </div>
     <div class="tree">
       <img src="images/tree_spring.png" />
