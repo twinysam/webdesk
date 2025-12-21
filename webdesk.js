@@ -450,10 +450,6 @@ document.addEventListener("DOMContentLoaded", function () {
     initCalculator: () => {
       const t = I18nManager.getString;
       const userBirthday = ProfileManager.getBirthday();
-      
-      // Update START_DATE if user has one
-      if(userBirthday) DateUtils.START_DATE = moment(userBirthday, "YYYY-MM-DD");
-      
       const calcMinDate = userBirthday || "1900-01-01";
 
       const calcDiv = document.createElement("div");
@@ -511,6 +507,10 @@ document.addEventListener("DOMContentLoaded", function () {
     },
 
     init: () => {
+      // Ensure START_DATE is correct before checking events
+      const userBirthday = ProfileManager.getBirthday();
+      if(userBirthday) DateUtils.START_DATE = moment(userBirthday, "YYYY-MM-DD");
+      
       EventsManager.checkDailyEvents();
     }
   };
