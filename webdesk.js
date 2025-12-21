@@ -384,7 +384,7 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
 
-  // ==========================================================================
+// ==========================================================================
   // MODULE: EventsManager
   // Birthdays, Custom Events, Calculator
   // ==========================================================================
@@ -393,9 +393,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     checkDailyEvents: () => {
       Promise.all([
-        fetch("cumples.json").then(res => res.json()).catch(() => ({ people: [] })), // Graceful fail
+        fetch("cumples.json").then(res => res.json()).catch(() => ([])), // Expecting array based on example
         fetch("events.json").then(res => res.json()).catch(() => ([])),
-      ]).then(([cumplesData, eventsData]) => {
+      ]).then(([cumplesFile, eventsData]) => {
         const today = DateUtils.getTodayStr();
         const tomorrow = DateUtils.getTomorrowStr();
         const todayFull = DateUtils.getTodayFull();
@@ -410,17 +410,31 @@ document.addEventListener("DOMContentLoaded", function () {
           eventsToday: [], eventsTomorrow: []
         };
 
-        // Filter Birthdays
-        if(cumplesData.people) {
-            cumplesData.people.forEach(b => {
-              if (b.birthday === today) matches.cumplesToday.push(`<span>${b.name}</span>`);
-              if (b.birthday === tomorrow) matches.cumplesTomorrow.push(b.name);
-            });
+        // --- MERGE BIRTHDAYS (File + LocalStorage) ---
+        // 1. Get File Data (Structure: [{ people: [...] }] or just plain array if simplified)
+        let fileBirthdays = [];
+        if (Array.isArray(cumplesFile) && cumplesFile.length > 0 && cumplesFile[0].people) {
+            fileBirthdays = cumplesFile[0].people;
+        } else if (Array.isArray(cumplesFile)) {
+             // Fallback if structure is just objects
+             fileBirthdays = cumplesFile;
         }
 
-        // Merge file events with localStorage events (Deduplication)
+        // 2. Get Local Storage Data
+        const userBirthdays = JSON.parse(localStorage.getItem("userBirthdays")) || [];
+
+        // 3. Combine
+        const allBirthdays = [...fileBirthdays, ...userBirthdays];
+
+        // 4. Check Dates
+        allBirthdays.forEach(b => {
+             if (b.birthday === today) matches.cumplesToday.push(`<span>${b.name}</span>`);
+             if (b.birthday === tomorrow) matches.cumplesTomorrow.push(b.name);
+        });
+
+
+        // --- MERGE EVENTS ---
         const customEvents = JSON.parse(localStorage.getItem("customEvents")) || [];
-        
         const eventMap = new Map();
         
         [...eventsData, ...customEvents].forEach(e => {
@@ -430,7 +444,6 @@ document.addEventListener("DOMContentLoaded", function () {
         
         const allEvents = Array.from(eventMap.values());
 
-        // Filter Events
         allEvents.forEach(e => {
           const nameHtml = e.url ? `<a href="${e.url}" target="_blank"><span>${e.name}</span></a>` : `<span>${e.name}</span>`;
           const nameText = e.url ? `<a href="${e.url}" target="_blank">${e.name}</a>` : e.name;
