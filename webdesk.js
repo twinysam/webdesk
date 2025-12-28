@@ -127,7 +127,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // ==========================================================================
   window.I18nManager = {
     LANG_KEY: "userLang",
-    CACHE_KEY_PREFIX: "i18n_cache_",
+    CACHE_KEY_PREFIX: "i18n_cache_v2_",
 
     // Default Data (fallback)
     data: {
