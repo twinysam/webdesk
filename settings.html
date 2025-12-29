@@ -675,17 +675,13 @@
         async load(lang) {
             this.lang = lang;
             try {
-                const res = await fetch(`locales/${lang}.json`);
+                // Cache buster to ensure fresh loading if version changes
+                const res = await fetch(`locales/${lang}.json?v=${new Date().getTime()}`);
                 const data = await res.json();
-                this.dict = data.settings || {}; // Use 'settings' namespace if structure implies
-                // Merging root keys if needed or just using flat based on previous step
-                // My JSON structure was:
-                // { ..., "settings_title": "...", "settings": { ... } } ??
-                // Wait, I added keys to the ROOT of locales/en.json in previous step?
-                // Let me check my previous edit.
-                // I added direct keys like "tab_schedule": "Schedule" to the root of JSON.
-                // So I should use `data` directly, but filter maybe? Or just use data.
-                this.dict = data; 
+                
+                // DATA STRUCTURE: { strings: { keys... }, greetingRules: { ... } }
+                this.dict = data.strings || {}; 
+                
                 this.apply();
             } catch(e) {
                 console.error("Failed to load generic i18n", e);
