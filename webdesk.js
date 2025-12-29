@@ -402,6 +402,15 @@ document.addEventListener("DOMContentLoaded", function () {
         (document.body.style.animationPlayState = state);
       window.addEventListener("blur", () => setAnim("paused"));
       window.addEventListener("focus", () => setAnim("running"));
+      
+      let resizeTimeout;
+      window.addEventListener("resize", () => {
+          clearTimeout(resizeTimeout);
+          resizeTimeout = setTimeout(() => {
+              const fechaEl = document.getElementById("fecha");
+              if(fechaEl && fechaEl.innerHTML) EventsManager.handleOverflow(fechaEl);
+          }, 100);
+      });
     },
 
     init: () => {
@@ -522,7 +531,11 @@ document.addEventListener("DOMContentLoaded", function () {
           if (extraMsg) baseMsg += " - " + extraMsg;
 
           const fechaEl = document.getElementById("fecha");
-          if (fechaEl) fechaEl.innerHTML = baseMsg.trim();
+          if (fechaEl) {
+             fechaEl.innerHTML = baseMsg.trim();
+             // Check overflow after rendering
+             setTimeout(() => EventsManager.handleOverflow(fechaEl), 0);
+          }
         })
         .catch((err) => console.error("Error loading events:", err));
     },
@@ -674,6 +687,37 @@ document.addEventListener("DOMContentLoaded", function () {
         DateUtils.START_DATE = moment(userBirthday, "YYYY-MM-DD");
 
       EventsManager.checkDailyEvents();
+    },
+
+    handleOverflow: (element) => {
+      // 1. Reset (in case of re-run)
+      element.classList.remove("expandable-text");
+      const oldArrow = element.querySelector(".expandable-arrow");
+      if (oldArrow) oldArrow.remove();
+
+      // 2. Check Overflow
+      // Temporarily force nowrap to check if it WOULD overflow
+      const prevWS = element.style.whiteSpace;
+      element.style.whiteSpace = "nowrap";
+      const isOverflowing = element.scrollWidth > element.clientWidth;
+      element.style.whiteSpace = prevWS;
+
+      if (isOverflowing) {
+        element.classList.add("expandable-text");
+
+        const arrow = document.createElement("span");
+        arrow.className = "expandable-arrow";
+        arrow.innerHTML = "▼";
+        arrow.title = "Show full text";
+        
+        arrow.onclick = (e) => {
+          e.stopPropagation();
+          element.classList.remove("expandable-text");
+          arrow.remove();
+        };
+
+        element.appendChild(arrow);
+      }
     },
   };
 
