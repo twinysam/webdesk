@@ -640,6 +640,8 @@
     ></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+    <script src="js/date-utils.js"></script>
+    <script src="js/i18n.js"></script>
 
     <script>
       function goHome(e) {
@@ -668,42 +670,10 @@
       // Global Catalog Cache
       let fullCatalog = [];
       
-      // I18n Manager
+      // I18n Manager -> MOVED TO js/i18n.js
+      // (Using global I18nManager)
       const I18n = {
-        dict: {},
-        lang: 'en',
-        async load(lang) {
-            this.lang = lang;
-            try {
-                // Cache buster to ensure fresh loading if version changes
-                const res = await fetch(`locales/${lang}.json?v=${new Date().getTime()}`);
-                const data = await res.json();
-                
-                // DATA STRUCTURE: { strings: { keys... }, greetingRules: { ... } }
-                this.dict = data.strings || {}; 
-                
-                this.apply();
-            } catch(e) {
-                console.error("Failed to load generic i18n", e);
-            }
-        },
-        t(key) {
-            return this.dict[key] || key;
-        },
-        apply() {
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if(key.startsWith('[placeholder]')) {
-                   const realKey = key.replace('[placeholder]', '');
-                   el.placeholder = this.t(realKey);
-                } else {
-                   el.innerHTML = this.t(key);
-                }
-            });
-            
-            // Tab label specific
-            // The Schedule tab has a span with data-i18n, so it's covered.
-        }
+         t: (key) => I18nManager.getString(key) // Adapter for existing code
       };
 
       // Load Data
@@ -1183,7 +1153,7 @@
       };
 
       // --- INIT ---
-      document.addEventListener("DOMContentLoaded", () => {
+      document.addEventListener("DOMContentLoaded", async () => {
         loadProfile();
         loadAppManager();
         loadFilters();
@@ -1195,7 +1165,14 @@
 
         // Init I18n
         const { profile } = getData();
-        I18n.load(profile.lang || 'en');
+        const userLang = profile.lang || "en";
+        
+        await I18nManager.init(); 
+        // Sync check
+        if(I18nManager.getLang() !== userLang) {
+             await I18nManager.loadLocale(userLang);
+        }
+        I18nManager.applyToPage();
 
         // Update Tab Label - No longer needed manually as I18n handles it
         // if (profile.lang === "es") { ... } 

@@ -3,224 +3,33 @@ document.addEventListener("DOMContentLoaded", function () {
   // MODULE: DateUtils
   // Centralized date/time helpers and constants
   // ==========================================================================
-  const DateUtils = {
-    START_DATE: moment(), // Will be updated by ProfileManager if available
-
-    getToday: () => moment(),
-    getTomorrow: () => moment().add(1, "days"),
-
-    getTodayStr: () => moment().format("DD/MM"),
-    getTodayFull: () => moment().format("DD/MM/YYYY"),
-
-    getTomorrowStr: () => moment().add(1, "days").format("DD/MM"),
-    getTomorrowFull: () => moment().add(1, "days").format("DD/MM/YYYY"),
-
-    getDaysSinceStart: (date = moment()) =>
-      date.diff(DateUtils.START_DATE, "days"),
-
-    getSeason: (date = moment()) => {
-      const month = date.month(); // 0-indexed
-      const day = date.date();
-
-      // Spring: Sept 21 - Nov 20 | Summer: Dec 21 - Feb 20 | Fall: Mar 21 - May 20 | Winter: Jun 21 - Sept 20
-      if (
-        (month === 8 && day >= 21) ||
-        (month > 8 && month < 11) ||
-        (month === 11 && day < 21)
-      ) {
-        return { season: "spring", isFirstDay: month === 8 && day === 21 };
-      }
-      if (
-        (month === 11 && day >= 21) ||
-        month > 11 ||
-        month < 2 ||
-        (month === 2 && day < 21)
-      ) {
-        return { season: "summer", isFirstDay: month === 11 && day === 21 };
-      }
-      if (
-        (month === 2 && day >= 21) ||
-        (month > 2 && month < 5) ||
-        (month === 5 && day < 21)
-      ) {
-        return { season: "fall", isFirstDay: month === 2 && day === 21 };
-      }
-      return { season: "winter", isFirstDay: month === 5 && day === 21 };
-    },
-
-    isTodayEaster: (date) => {
-      const year = date.getFullYear();
-      const a = year % 19;
-      const b = Math.floor(year / 100);
-      const c = year % 100;
-      const d = Math.floor(b / 4);
-      const e = b % 4;
-      const f = Math.floor((b + 8) / 25);
-      const g = Math.floor((b - f + 1) / 3);
-      const h = (19 * a + b - d - g + 15) % 30;
-      const i = Math.floor(c / 4);
-      const k = c % 4;
-      const l = (32 + 2 * e + 2 * i - h - k) % 7;
-      const m = Math.floor((a + 11 * h + 22 * l) / 451);
-      const month = Math.floor((h + l - 7 * m + 114) / 31);
-      const day = ((h + l - 7 * m + 114) % 31) + 1;
-      return date.getDate() === day && date.getMonth() + 1 === month;
-    },
-
-    getChineseNewYearDate: (year) => {
-      const corrections = { 2033: "2033-01-31", 2034: "2034-02-19" };
-      if (corrections[year])
-        return moment(corrections[year], "YYYY-MM-DD").toDate();
-
-      const WINTER_SOLSTICE = moment.utc({
-        year: year - 1,
-        month: 11,
-        day: 21,
-      });
-      const SYNODIC_MONTH = 29.530588853;
-      const baseNewMoon = moment.utc("2024-01-11");
-      const monthsBetween =
-        WINTER_SOLSTICE.diff(baseNewMoon, "days") / SYNODIC_MONTH;
-      const lastNewMoon = baseNewMoon
-        .clone()
-        .add(Math.floor(monthsBetween) * SYNODIC_MONTH, "days");
-      const firstNewMoon = lastNewMoon.clone().add(SYNODIC_MONTH, "days");
-      let secondNewMoon = firstNewMoon.clone().add(SYNODIC_MONTH, "days");
-
-      if (secondNewMoon.date() < 21 && secondNewMoon.month() === 0) {
-        secondNewMoon = secondNewMoon.clone().add(SYNODIC_MONTH, "days");
-      }
-      return moment(secondNewMoon).local().toDate();
-    },
-
-    getChineseZodiac: (year) => {
-      const animals = [
-        { sign: "Rat", emoji: "🐀" },
-        { sign: "Ox", emoji: "🐂" },
-        { sign: "Tiger", emoji: "🐅" },
-        { sign: "Rabbit", emoji: "🐇" },
-        { sign: "Dragon", emoji: "🐉" },
-        { sign: "Snake", emoji: "🐍" },
-        { sign: "Horse", emoji: "🐎" },
-        { sign: "Goat", emoji: "🐐" },
-        { sign: "Monkey", emoji: "🐒" },
-        { sign: "Rooster", emoji: "🐓" },
-        { sign: "Dog", emoji: "🐕" },
-        { sign: "Pig", emoji: "🐖" },
-      ];
-      return animals[((year - 2020) % 12) + ((year - 2020) % 12 < 0 ? 12 : 0)];
-    },
-
-    isTodayChineseNewYear: (date) => {
-      const cny = DateUtils.getChineseNewYearDate(date.getFullYear());
-      return (
-        date.getFullYear() === cny.getFullYear() &&
-        date.getMonth() === cny.getMonth() &&
-        date.getDate() === cny.getDate()
-      );
-    },
-  };
+  // ==========================================================================
+  // MODULE: DateUtils -> MOVED TO js/date-utils.js
+  // ==========================================================================
+  // (DateUtils is now global)
 
   // ==========================================================================
-  // MODULE: I18nManager
-  // Internationalization and Localization Logic
+  // MODULE: I18nManager -> MOVED TO js/i18n.js
   // ==========================================================================
-  window.I18nManager = {
-    LANG_KEY: "userLang",
-    CACHE_KEY_PREFIX: "i18n_cache_v2_",
-
-    // Default Data (fallback)
-    data: {
-      strings: {
-        greeting_morning: "Good Morning",
-        greeting_afternoon: "Good Afternoon",
-        greeting_evening: "Good Evening",
-        greeting_night: "Good Night",
-        greeting_generic: "Hello",
-        birthday: "Happy Birthday!",
-        day: "Day",
-        today: "Today",
-        tomorrow: "Tomorrow",
-        turns: "turns",
-        isBirthday: "is birthday of",
-        alsoToday: "Also today: ",
-        alsoTomorrow: "Also tomorrow: ",
-        calcTitle: "Life Calculator",
-        calcDay: "Day",
-        calcDate: "Date",
-        tvTitle: "Live TV",
-      },
-      greetingRules: {
-        morningStart: 5,
-        morningEnd: 12,
-        afternoonStart: 12,
-        afternoonEnd: 18,
-        eveningStart: 18,
-        eveningEnd: 22,
-      },
-    },
-
-    init: async () => {
-      const storedLang = localStorage.getItem("userLang") || "en";
-      await I18nManager.loadLocale(storedLang);
-    },
-
-    getLang: () => localStorage.getItem("userLang") || "en",
-
-    loadLocale: async (lang) => {
-      const cacheKey = I18nManager.CACHE_KEY_PREFIX + lang;
-      const cached = localStorage.getItem(cacheKey);
-
-      if (cached) {
-        try {
-          const parsed = JSON.parse(cached);
-          if (parsed.version) {
-            I18nManager.data = parsed;
-            console.log("I18n: Loaded from cache (" + lang + ")");
-            return;
+  // Extending I18nManager with time-based logic which depends on Moment (loaded here)
+  if (window.I18nManager) {
+      window.I18nManager.getGreetingTime = (m) => {
+          const g = window.I18nManager.data.greetingRules || {}; // fallback
+          if (!m || !m.isValid()) return "generic";
+      
+          const currentHour = parseFloat(m.format("H"));
+      
+          if (currentHour >= g.morningStart && currentHour < g.morningEnd) {
+            return "morning";
+          } else if (currentHour >= g.afternoonStart && currentHour < g.afternoonEnd) {
+            return "afternoon";
+          } else if (currentHour >= g.eveningStart && currentHour < g.eveningEnd) {
+            return "evening";
+          } else {
+            return "night";
           }
-        } catch (e) {
-          console.warn("I18n: Cache invalid, fetching...");
-        }
-      }
-
-      try {
-        const response = await fetch(`locales/${lang}.json`);
-        if (!response.ok) throw new Error("Locale not found");
-        const json = await response.json();
-
-        I18nManager.data = json;
-        localStorage.setItem(cacheKey, JSON.stringify(json));
-        console.log("I18n: Fetched and cached (" + lang + ")");
-      } catch (err) {
-        console.error("I18n Error:", err);
-      }
-    },
-
-    getString: (key, params = {}) => {
-      let str = I18nManager.data.strings[key] || key;
-      Object.keys(params).forEach((k) => {
-        str = str.replace(`{${k}}`, params[k]);
-      });
-      return str;
-    },
-
-    getGreetingTime: (m) => {
-      if (!m || !m.isValid()) return "generic";
-
-      const hour = parseFloat(m.format("H"));
-      const rules = I18nManager.data.greetingRules;
-
-      if (hour >= rules.morningStart && hour < rules.morningEnd)
-        return "morning";
-      if (hour >= rules.afternoonStart && hour < rules.afternoonEnd)
-        return "afternoon";
-      if (hour >= rules.eveningStart && hour < rules.eveningEnd)
-        return "evening";
-
-      return "night";
-    },
-  };
+      };
+  }
 
   // ==========================================================================
   // MODULE: ProfileManager
