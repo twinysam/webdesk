@@ -4,7 +4,6 @@
 // ==========================================================================
 window.I18nManager = {
     LANG_KEY: "userLang",
-    CACHE_KEY_PREFIX: "i18n_cache_v3_", // v3 cache key
 
     // Default Data (fallback)
     data: {
@@ -45,32 +44,16 @@ window.I18nManager = {
     getLang: () => localStorage.getItem("userLang") || "en",
 
     loadLocale: async (lang) => {
-      const cacheKey = window.I18nManager.CACHE_KEY_PREFIX + lang;
-      const cached = localStorage.getItem(cacheKey);
-
-      if (cached) {
-        try {
-          const parsed = JSON.parse(cached);
-          // Simple validation: check if it has strings
-          if (parsed && parsed.strings) {
-            window.I18nManager.data = parsed;
-            console.log("I18n: Loaded from cache (" + lang + ")");
-            return;
-          }
-        } catch (e) {
-          console.warn("I18n: Cache invalid, fetching...");
-        }
-      }
-
       try {
-        // Cache busting
+        // Always fetch fresh data.
+        // using timestamp to bypass browser cache during development
         const response = await fetch(`locales/${lang}.json?v=${new Date().getTime()}`);
+        
         if (!response.ok) throw new Error(`Locale not found: ${response.statusText}`);
         const json = await response.json();
 
         window.I18nManager.data = json;
-        localStorage.setItem(cacheKey, JSON.stringify(json));
-        console.log("I18n: Fetched and cached (" + lang + ")");
+        console.log("I18n: Fetched (" + lang + ")");
       } catch (err) {
         console.error("I18n Error loading " + lang, err);
       }

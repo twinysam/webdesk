@@ -95,8 +95,6 @@
     "morningEnd": 12,
     "afternoonStart": 12,
     "afternoonEnd": 18,
-    "eveningStart": 18,
-    "eveningEnd": 22
-  },
-  "version": 5
+    "eveningStart": 18
+  }
 }

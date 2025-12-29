@@ -761,8 +761,6 @@
           localStorage.setItem("userLang", lang);
 
           if (oldLang !== lang) {
-            const cacheKey = "i18n_cache_" + lang;
-            localStorage.removeItem(cacheKey);
             showAlert(I18n.t("alert_profile_saved"), "success");
             setTimeout(() => location.reload(), 1000);
           } else {
