@@ -123,7 +123,7 @@
     </div>
     <div class="caja settings-container">
       <div id="alertContainer" class="mb-3"></div>
-      <h1><i class="bi bi-gear-fill"></i> Settings & Stats</h1>
+      <h1><i class="bi bi-gear-fill"></i> <span data-i18n="settings_title">Settings & Stats</span></h1>
 
       <ul class="nav nav-tabs nav-fill" id="settingsTabs" role="tablist">
         <li class="nav-item" role="presentation">
@@ -135,7 +135,7 @@
             type="button"
             role="tab"
           >
-            <i class="bi bi-person-fill"></i> Profile
+            <i class="bi bi-person-fill"></i> <span data-i18n="tab_profile">Profile</span>
           </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -147,7 +147,7 @@
             type="button"
             role="tab"
           >
-            <i class="bi bi-bar-chart-fill"></i> Statistics
+            <i class="bi bi-bar-chart-fill"></i> <span data-i18n="tab_stats">Statistics</span>
           </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -159,7 +159,7 @@
             type="button"
             role="tab"
           >
-            <i class="bi bi-funnel-fill"></i> Filters
+            <i class="bi bi-funnel-fill"></i> <span data-i18n="tab_filters">Filters</span>
           </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -171,7 +171,7 @@
             type="button"
             role="tab"
           >
-            <i class="bi bi-grid-3x3-gap-fill"></i> Apps
+            <i class="bi bi-grid-3x3-gap-fill"></i> <span data-i18n="tab_apps">Apps</span>
           </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -183,7 +183,7 @@
             type="button"
             role="tab"
           >
-            <i class="bi bi-link-45deg"></i> Links
+            <i class="bi bi-link-45deg"></i> <span data-i18n="tab_links">Links</span>
           </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -195,7 +195,7 @@
             type="button"
             role="tab"
           >
-            <i class="bi bi-balloon-fill"></i> Birthdays
+            <i class="bi bi-balloon-fill"></i> <span data-i18n="tab_birthdays">Birthdays</span>
           </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -207,7 +207,7 @@
             type="button"
             role="tab"
           >
-            <i class="bi bi-calendar-event"></i> <span id="label-events-tab">Schedule</span>
+            <i class="bi bi-calendar-event"></i> <span id="label-events-tab" data-i18n="tab_schedule">Schedule</span>
           </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -219,7 +219,7 @@
             type="button"
             role="tab"
           >
-            <i class="bi bi-hdd-fill"></i> Backup
+            <i class="bi bi-hdd-fill"></i> <span data-i18n="tab_backup">Backup</span>
           </button>
         </li>
       </ul>
@@ -227,9 +227,9 @@
       <div class="tab-content" id="settingsTabsContent">
         <div class="tab-pane fade" id="profile" role="tabpanel">
           <div class="card bg-dark border-secondary p-4 text-white">
-            <h4 class="mb-4">User Profile</h4>
+            <h4 class="mb-4" data-i18n="profile_header">User Profile</h4>
             <div class="mb-3">
-              <label class="form-label">Language / Idioma</label>
+              <label class="form-label" data-i18n="label_lang">Language / Idioma</label>
               <select
                 id="setting-lang"
                 class="form-select bg-dark text-white border-secondary"
@@ -239,7 +239,7 @@
               </select>
             </div>
             <div class="mb-3">
-              <label class="form-label">Name</label>
+              <label class="form-label" data-i18n="label_name">Name</label>
               <input
                 type="text"
                 id="setting-name"
@@ -247,7 +247,7 @@
               />
             </div>
             <div class="mb-3">
-              <label class="form-label">Birthday</label>
+              <label class="form-label" data-i18n="label_birthday">Birthday</label>
               <input
                 type="date"
                 id="setting-dob"
@@ -255,42 +255,44 @@
               />
             </div>
             <button id="btnSaveProfile" class="btn btn-primary">
-              <i class="bi bi-save"></i> Save Profile
+              <i class="bi bi-save"></i> <span data-i18n="btn_save_profile">Save Profile</span>
             </button>
           </div>
         </div>
 
         <div class="tab-pane fade show active" id="stats" role="tabpanel">
-          <h3 class="mt-2"><i class="bi bi-grid-fill"></i> Apps</h3>
+          <h3 class="mt-2"><i class="bi bi-grid-fill"></i> <span data-i18n="header_apps">Apps</span></h3>
           <table class="table table-dark table-striped table-hover">
             <thead>
               <tr>
                 <th scope="col">#</th>
-                <th scope="col">App Name</th>
-                <th scope="col">Last Clicked</th>
-                <th scope="col" class="text-end">Clicks</th>
+                <th scope="col" data-i18n="col_app_name">App Name</th>
+                <th scope="col" data-i18n="col_last_clicked">Last Clicked</th>
+                <th scope="col" class="text-end" data-i18n="col_clicks">Clicks</th>
               </tr>
             </thead>
             <tbody id="appsBody"></tbody>
           </table>
 
-          <h3 class="mt-5"><i class="bi bi-tv"></i> TV Channels</h3>
-          <table class="table table-dark table-striped table-hover">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Channel Name</th>
-                <th scope="col">Last Clicked</th>
-                <th scope="col" class="text-end">Clicks</th>
-              </tr>
-            </thead>
-            <tbody id="tvBody"></tbody>
-          </table>
+          <div id="tvStatsSection">
+            <h3 class="mt-5"><i class="bi bi-tv"></i> <span data-i18n="header_tv">TV Channels</span></h3>
+            <table class="table table-dark table-striped table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col" data-i18n="col_channel_name">Channel Name</th>
+                  <th scope="col" data-i18n="col_last_clicked">Last Clicked</th>
+                  <th scope="col" class="text-end" data-i18n="col_clicks">Clicks</th>
+                </tr>
+              </thead>
+              <tbody id="tvBody"></tbody>
+            </table>
+          </div>
         </div>
 
         <div class="tab-pane fade" id="filters" role="tabpanel">
           <div class="card bg-dark border-secondary p-4 text-white">
-            <h4 class="mb-4">Visibility Rules</h4>
+            <h4 class="mb-4" data-i18n="header_visibility">Visibility Rules</h4>
 
             <div class="form-check form-switch mb-3">
               <input
@@ -301,13 +303,14 @@
               <label
                 class="form-check-label text-light"
                 for="checkHideNeverClicked"
+                data-i18n="check_hide_never"
                 >Hide apps that have <strong>never</strong> been clicked</label
               >
             </div>
 
             <div class="mb-3">
               <label for="inputMinClicks" class="form-label text-light"
-                >Hide apps with fewer clicks than:</label
+                data-i18n="label_min_clicks">Hide apps with fewer clicks than:</label
               >
               <input
                 type="number"
@@ -317,31 +320,31 @@
                 min="0"
                 style="max-width: 100px"
               />
-              <div class="form-text text-light">
+              <div class="form-text text-light" data-i18n="text_disable_rule">
                 Set to 0 to disable this rule.
               </div>
             </div>
 
             <button id="btnSaveFilters" class="btn btn-success mt-3">
-              <i class="bi bi-save"></i> Save Filters
+              <i class="bi bi-save"></i> <span data-i18n="btn_save_filters">Save Filters</span>
             </button>
           </div>
         </div>
 
         <div class="tab-pane fade" id="apps" role="tabpanel">
           <p class="text-light mb-3">
-            <i class="bi bi-info-circle"></i> Add apps from the catalog. Drag
-            "My Apps" to reorder.
+            <i class="bi bi-info-circle"></i> <span data-i18n="text_catalog_info">Add apps from the catalog. Drag "My Apps" to reorder.</span>
           </p>
 
           <div class="row">
             <div class="col-md-6">
-              <h5 class="text-white border-bottom pb-2">Catalog</h5>
+              <h5 class="text-white border-bottom pb-2" data-i18n="header_catalog">Catalog</h5>
               <input
                 type="text"
                 id="catalog-search"
                 class="form-control bg-dark text-white border-secondary mb-3"
                 placeholder="Search..."
+                data-i18n="[placeholder]placeholder_search"
               />
               <div
                 id="catalog-list"
@@ -349,7 +352,7 @@
               ></div>
             </div>
             <div class="col-md-6">
-              <h5 class="text-white border-bottom pb-2">My Apps</h5>
+              <h5 class="text-white border-bottom pb-2" data-i18n="header_my_apps">My Apps</h5>
               <div
                 id="myapp-list"
                 class="list-group"
@@ -361,10 +364,10 @@
 
         <div class="tab-pane fade" id="links" role="tabpanel">
           <div class="card bg-dark border-secondary p-4 text-white">
-            <h4 class="mb-4">Manage Custom Links</h4>
+            <h4 class="mb-4" data-i18n="header_custom_links">Manage Custom Links</h4>
             <form id="linkForm" class="row g-3 mb-4">
               <div class="col-md-4">
-                <label for="linkName" class="form-label">Name (Optional)</label>
+                <label for="linkName" class="form-label" data-i18n="label_link_name">Name (Optional)</label>
                 <input
                   type="text"
                   class="form-control bg-dark text-white border-secondary"
@@ -373,7 +376,7 @@
                 />
               </div>
               <div class="col-md-6">
-                <label for="linkUrl" class="form-label">URL</label>
+                <label for="linkUrl" class="form-label" data-i18n="label_url">URL</label>
                 <input
                   type="url"
                   class="form-control bg-dark text-white border-secondary"
@@ -384,7 +387,7 @@
               </div>
               <div class="col-md-2 d-flex align-items-end">
                 <button type="submit" class="btn btn-success w-100">
-                  <i class="bi bi-plus-lg"></i> Add
+                  <i class="bi bi-plus-lg"></i> <span data-i18n="btn_add">Add</span>
                 </button>
               </div>
             </form>
@@ -393,9 +396,9 @@
               <table class="table table-dark table-striped table-hover">
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>URL</th>
-                    <th class="text-end">Action</th>
+                    <th data-i18n="col_name">Name</th>
+                    <th data-i18n="col_url">URL</th>
+                    <th class="text-end" data-i18n="col_action">Action</th>
                   </tr>
                 </thead>
                 <tbody id="linksListBody"></tbody>
@@ -406,21 +409,22 @@
 
         <div class="tab-pane fade" id="birthdays" role="tabpanel">
           <div class="card bg-dark border-secondary p-4 text-white">
-            <h4 class="mb-4">Birthdays</h4>
-            <p class="text-muted small">Celebrations with balloons!</p>
+            <h4 class="mb-4" data-i18n="header_birthdays">Birthdays</h4>
+            <p class="text-muted small" data-i18n="text_birthdays_sub">Celebrations with balloons!</p>
             <form id="birthdayForm" class="row g-3 mb-4">
               <div class="col-md-6">
-                <label for="bdayName" class="form-label">Name</label>
+                <label for="bdayName" class="form-label" data-i18n="label_name">Name</label>
                 <input
                   type="text"
                   class="form-control bg-dark text-white border-secondary"
                   id="bdayName"
                   required
                   placeholder="Name of person or event"
+                  data-i18n="[placeholder]placeholder_bday_name"
                 />
               </div>
               <div class="col-md-2">
-                <label for="bdayMonth" class="form-label">Month</label>
+                <label for="bdayMonth" class="form-label" data-i18n="label_month">Month</label>
                 <select id="bdayMonth" class="form-select bg-dark text-white border-secondary">
                   <option value="01">January</option>
                   <option value="02">February</option>
@@ -437,12 +441,12 @@
                 </select>
               </div>
               <div class="col-md-2">
-                 <label for="bdayDay" class="form-label">Day</label>
+                 <label for="bdayDay" class="form-label" data-i18n="label_day">Day</label>
                  <select id="bdayDay" class="form-select bg-dark text-white border-secondary"></select>
               </div>
               <div class="col-md-2 d-flex align-items-end">
                 <button type="submit" class="btn btn-success w-100">
-                  <i class="bi bi-plus-lg"></i> Add
+                  <i class="bi bi-plus-lg"></i> <span data-i18n="btn_add">Add</span>
                 </button>
               </div>
             </form>
@@ -454,9 +458,9 @@
               <table class="table table-dark table-striped table-hover">
                 <thead>
                   <tr>
-                    <th>Date</th>
-                    <th>Name</th>
-                    <th class="text-end">Action</th>
+                    <th data-i18n="col_date">Date</th>
+                    <th data-i18n="col_name">Name</th>
+                    <th class="text-end" data-i18n="col_action">Action</th>
                   </tr>
                 </thead>
                 <tbody id="birthdaysListBody"></tbody>
@@ -466,21 +470,22 @@
 
           <!-- ANNUAL EVENTS SECTION -->
           <div class="card bg-dark border-secondary p-4 text-white mt-4">
-            <h4 class="mb-4">Annual Events</h4>
-            <p class="text-muted small">Anniversaries and yearly reminders (no balloons).</p>
+            <h4 class="mb-4" data-i18n="header_annual">Annual Events</h4>
+            <p class="text-muted small" data-i18n="text_annual_sub">Anniversaries and yearly reminders (no balloons).</p>
             <form id="annualEventForm" class="row g-3 mb-4">
               <div class="col-md-4">
-                <label for="annualName" class="form-label">Name</label>
+                <label for="annualName" class="form-label" data-i18n="label_name">Name</label>
                 <input
                   type="text"
                   class="form-control bg-dark text-white border-secondary"
                   id="annualName"
                   required
                   placeholder="Event Name"
+                  data-i18n="[placeholder]placeholder_event_name"
                 />
               </div>
               <div class="col-md-3">
-                <label for="annualUrl" class="form-label">URL (Optional)</label>
+                <label for="annualUrl" class="form-label" data-i18n="label_url_optional">URL (Optional)</label>
                 <input
                   type="url"
                   class="form-control bg-dark text-white border-secondary"
@@ -489,7 +494,7 @@
                 />
               </div>
               <div class="col-md-2">
-                <label for="annualMonth" class="form-label">Month</label>
+                <label for="annualMonth" class="form-label" data-i18n="label_month">Month</label>
                 <select id="annualMonth" class="form-select bg-dark text-white border-secondary">
                   <option value="01">January</option>
                   <option value="02">February</option>
@@ -506,12 +511,12 @@
                 </select>
               </div>
               <div class="col-md-2">
-                 <label for="annualDay" class="form-label">Day</label>
+                 <label for="annualDay" class="form-label" data-i18n="label_day">Day</label>
                  <select id="annualDay" class="form-select bg-dark text-white border-secondary"></select>
               </div>
               <div class="col-md-2 d-flex align-items-end">
                 <button type="submit" class="btn btn-warning w-100">
-                  <i class="bi bi-plus-lg"></i> Add
+                  <i class="bi bi-plus-lg"></i> <span data-i18n="btn_add">Add</span>
                 </button>
               </div>
             </form>
@@ -523,9 +528,9 @@
               <table class="table table-dark table-striped table-hover">
                 <thead>
                   <tr>
-                    <th>Date</th>
-                    <th>Name</th>
-                    <th class="text-end">Action</th>
+                    <th data-i18n="col_date">Date</th>
+                    <th data-i18n="col_name">Name</th>
+                    <th class="text-end" data-i18n="col_action">Action</th>
                   </tr>
                 </thead>
                 <tbody id="annualEventsListBody"></tbody>
@@ -536,13 +541,13 @@
 
         <div class="tab-pane fade" id="events" role="tabpanel">
           <div class="card bg-dark border-secondary p-4 text-white">
-            <h4 class="mb-4">One-Time Events</h4>
-            <p class="text-muted small">
+            <h4 class="mb-4" data-i18n="header_onetime">One-Time Events</h4>
+            <p class="text-muted small" data-i18n="text_onetime_sub">
               Specific dates (e.g., Doctor appointment, Concert).
             </p>
             <form id="eventForm" class="row g-3 mb-4">
               <div class="col-md-4">
-                <label for="eventName" class="form-label">Event Name</label>
+                <label for="eventName" class="form-label" data-i18n="label_event_name">Event Name</label>
                 <input
                   type="text"
                   class="form-control bg-dark text-white border-secondary"
@@ -551,7 +556,7 @@
                 />
               </div>
               <div class="col-md-3">
-                <label for="eventDate" class="form-label">Date</label>
+                <label for="eventDate" class="form-label" data-i18n="label_date">Date</label>
                 <input
                   type="date"
                   class="form-control bg-dark text-white border-secondary"
@@ -560,7 +565,7 @@
                 />
               </div>
               <div class="col-md-4">
-                <label for="eventUrl" class="form-label">URL (Optional)</label>
+                <label for="eventUrl" class="form-label" data-i18n="label_url_optional">URL (Optional)</label>
                 <input
                   type="url"
                   class="form-control bg-dark text-white border-secondary"
@@ -594,10 +599,10 @@
             <table class="table table-dark table-striped table-hover">
               <thead>
                 <tr>
-                  <th>Date</th>
-                  <th>Name</th>
-                  <th>URL</th>
-                  <th class="text-end">Action</th>
+                  <th data-i18n="col_date">Date</th>
+                  <th data-i18n="col_name">Name</th>
+                  <th data-i18n="col_url">URL</th>
+                  <th class="text-end" data-i18n="col_action">Action</th>
                 </tr>
               </thead>
               <tbody id="eventsListBody"></tbody>
@@ -607,15 +612,15 @@
 
         <div class="tab-pane fade" id="data" role="tabpanel">
           <div class="text-center p-5">
-            <p class="mb-4">
+            <p class="mb-4" data-i18n="text_backup_info">
               Backup your stats, settings, birthdays, events, and links in a
               single file.
             </p>
             <button id="btnExport" class="btn btn-primary btn-lg me-3">
-              <i class="bi bi-download"></i> Export Full Backup
+              <i class="bi bi-download"></i> <span data-i18n="btn_export">Export Full Backup</span>
             </button>
             <button id="btnImport" class="btn btn-warning btn-lg">
-              <i class="bi bi-upload"></i> Import Full Backup
+              <i class="bi bi-upload"></i> <span data-i18n="btn_import">Import Full Backup</span>
             </button>
             <input
               type="file"
@@ -662,6 +667,48 @@
 
       // Global Catalog Cache
       let fullCatalog = [];
+      
+      // I18n Manager
+      const I18n = {
+        dict: {},
+        lang: 'en',
+        async load(lang) {
+            this.lang = lang;
+            try {
+                const res = await fetch(`locales/${lang}.json`);
+                const data = await res.json();
+                this.dict = data.settings || {}; // Use 'settings' namespace if structure implies
+                // Merging root keys if needed or just using flat based on previous step
+                // My JSON structure was:
+                // { ..., "settings_title": "...", "settings": { ... } } ??
+                // Wait, I added keys to the ROOT of locales/en.json in previous step?
+                // Let me check my previous edit.
+                // I added direct keys like "tab_schedule": "Schedule" to the root of JSON.
+                // So I should use `data` directly, but filter maybe? Or just use data.
+                this.dict = data; 
+                this.apply();
+            } catch(e) {
+                console.error("Failed to load generic i18n", e);
+            }
+        },
+        t(key) {
+            return this.dict[key] || key;
+        },
+        apply() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(key.startsWith('[placeholder]')) {
+                   const realKey = key.replace('[placeholder]', '');
+                   el.placeholder = this.t(realKey);
+                } else {
+                   el.innerHTML = this.t(key);
+                }
+            });
+            
+            // Tab label specific
+            // The Schedule tab has a span with data-i18n, so it's covered.
+        }
+      };
 
       // Load Data
       function getData() {
@@ -735,7 +782,7 @@
           const lang = document.getElementById("setting-lang").value;
 
           if (!name || !birthday)
-            return showAlert("Please fill all fields", "danger");
+            return showAlert(I18n.t("alert_fill_fields"), "danger");
 
           const { profile } = getData();
           const oldLang = profile.lang;
@@ -750,10 +797,10 @@
           if (oldLang !== lang) {
             const cacheKey = "i18n_cache_" + lang;
             localStorage.removeItem(cacheKey);
-            showAlert("Profile and Language Saved! Reloading...", "success");
+            showAlert(I18n.t("alert_profile_saved"), "success");
             setTimeout(() => location.reload(), 1000);
           } else {
-            showAlert("Profile Saved!", "success");
+            showAlert(I18n.t("alert_profile_saved_simple"), "success");
           }
         });
 
@@ -938,10 +985,13 @@
             '<tr><td colspan="4" class="text-center text-white">No data</td></tr>';
         else apps.forEach((item, i) => renderRow(item, i, appsBody));
 
-        if (tv.length === 0)
-          tvBody.innerHTML =
-            '<tr><td colspan="4" class="text-center text-white">No data</td></tr>';
-        else tv.forEach((item, i) => renderRow(item, i, tvBody));
+        const tvSection = document.getElementById("tvStatsSection");
+        if (tv.length === 0) {
+           if(tvSection) tvSection.style.display = 'none';
+        } else {
+           if(tvSection) tvSection.style.display = 'block';
+           tv.forEach((item, i) => renderRow(item, i, tvBody));
+        }
       }
 
       // --- TAB 4: EVENTS ---
@@ -998,7 +1048,7 @@
           customEvents.splice(realIndex, 1);
           saveData(EVENTS_KEY, customEvents);
           loadEventsManager();
-          showAlert("Event deleted successfully!", "success");
+          showAlert(I18n.t("alert_event_deleted"), "success");
         }
       };
 
@@ -1047,7 +1097,7 @@
           userBirthdays.splice(realIndex, 1);
           saveData(BIRTHDAYS_KEY, userBirthdays);
           loadBirthdaysManager();
-          showAlert("Birthday deleted!", "success");
+          showAlert(I18n.t("alert_birthday_deleted"), "success");
         }
       };
 
@@ -1099,7 +1149,7 @@
           annualEvents.splice(realIndex, 1);
           saveData(ANNUAL_EVENTS_KEY, annualEvents);
           loadAnnualEventsManager();
-          showAlert("Annual event deleted!", "success");
+          showAlert(I18n.t("alert_annual_deleted"), "success");
         }
       };
 
@@ -1133,7 +1183,7 @@
         userLinks.splice(index, 1);
         saveData(LINKS_KEY, userLinks);
         loadLinksManager();
-        showAlert("Link deleted!", "success");
+        showAlert(I18n.t("alert_link_deleted"), "success");
       };
 
       // --- INIT ---
@@ -1147,12 +1197,12 @@
         loadBirthdaysManager();
         loadAnnualEventsManager();
 
-        // Update Tab Label
+        // Init I18n
         const { profile } = getData();
-        if (profile.lang === "es") {
-             const tabLabel = document.getElementById("label-events-tab");
-             if(tabLabel) tabLabel.textContent = "Agendar";
-        }
+        I18n.load(profile.lang || 'en');
+
+        // Update Tab Label - No longer needed manually as I18n handles it
+        // if (profile.lang === "es") { ... } 
 
         // Restrict date picker to today+
         const dateInput = document.getElementById("eventDate");
@@ -1171,7 +1221,7 @@
             config.filters.minClicks =
               parseInt(document.getElementById("inputMinClicks").value) || 0;
             saveData(CONFIG_KEY, config);
-            showAlert("Filters Saved!", "success");
+            showAlert(I18n.t("alert_filters_saved"), "success");
           });
 
         // Birthday Form
@@ -1214,7 +1264,7 @@
             birthdayForm.reset();
             monthSelect.value = "01";
             updateDays(monthSelect, daySelect);
-            showAlert("Birthday added!", "success");
+            showAlert(I18n.t("alert_birthday_added"), "success");
           });
 
           // Annual Events Form Logic
@@ -1243,7 +1293,7 @@
                   annualForm.reset();
                   annualMonth.value = "01";
                   updateDays(annualMonth, annualDay);
-                  showAlert("Annual event added!", "success");
+                  showAlert(I18n.t("alert_annual_added"), "success");
               });
           }
         }
@@ -1265,7 +1315,7 @@
 
             loadEventsManager();
             e.target.reset();
-            showAlert("Event added successfully!", "success");
+            showAlert(I18n.t("alert_event_added"), "success");
           });
         }
 
@@ -1283,7 +1333,7 @@
 
             loadLinksManager();
             linkForm.reset();
-            showAlert("Link added successfully!", "success");
+            showAlert(I18n.t("alert_link_added"), "success");
           });
         }
 
@@ -1302,7 +1352,7 @@
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            showAlert("Events exported successfully!", "success");
+            showAlert(I18n.t("alert_events_exported"), "success");
           });
         }
 
@@ -1321,7 +1371,7 @@
 
             saveData(EVENTS_KEY, filteredEvents);
             loadEventsManager();
-            showAlert("Past events removed!", "success");
+            showAlert(I18n.t("alert_past_removed"), "success");
           });
         }
 
@@ -1362,7 +1412,7 @@
           a.click();
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
-          showAlert("Full backup exported successfully!", "success");
+          showAlert(I18n.t("alert_backup_exported"), "success");
         });
 
         document
