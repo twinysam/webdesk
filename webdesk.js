@@ -477,8 +477,12 @@ document.addEventListener("DOMContentLoaded", function () {
           // --- ANNUAL EVENTS (Treat as regular events for display) ---
           const annualEvents = JSON.parse(localStorage.getItem("annualEvents")) || [];
           annualEvents.forEach((e) => {
-            const nameHtml = `<span>${e.name}</span>`;
-            const nameText = e.name;
+            const nameHtml = e.url
+              ? `<a href="${e.url}" target="_blank"><span>${e.name}</span></a>`
+              : `<span>${e.name}</span>`;
+            const nameText = e.url
+              ? `<a href="${e.url}" target="_blank">${e.name}</a>`
+              : e.name;
             if (e.date === today) matches.eventsToday.push(nameHtml);
             if (e.date === tomorrow) matches.eventsTomorrow.push(nameText);
           });
@@ -530,12 +534,22 @@ document.addEventListener("DOMContentLoaded", function () {
       let parts = [];
 
       // Today
-      if (hasCT)
-        parts.push(
-          `${t("today")} ${t(
-            cumplesToday.length > 1 ? "turns" : "isBirthday"
-          )} ${EventsManager.formatList(cumplesToday)}`
-        );
+      if (hasCT) {
+         if (I18nManager.getLang() === 'en') {
+             // ENGLISH LOGIC
+             const list = EventsManager.formatList(cumplesToday);
+             // "Today is [Name]'s birthday" / "Today are [Name] and [Name]'s birthdays"
+             const suffix = cumplesToday.length > 1 ? "'s birthdays" : "'s birthday";
+             parts.push(`${t("today")} is ${list}${suffix}`);
+         } else {
+             // SPANISH / DEFAULT LOGIC
+             parts.push(
+               `${t("today")} ${t(
+                 cumplesToday.length > 1 ? "turns" : "isBirthday"
+               )} ${EventsManager.formatList(cumplesToday)}`
+             );
+         }
+      }
       if (hasET)
         parts.push(
           `${
@@ -544,12 +558,20 @@ document.addEventListener("DOMContentLoaded", function () {
         );
 
       // Tomorrow
-      if (hasCTM)
-        parts.push(
-          `${t("tomorrow")} ${t(
-            cumplesTomorrow.length > 1 ? "turns" : "isBirthday"
-          )} ${EventsManager.formatList(cumplesTomorrow)}`
-        );
+      if (hasCTM) {
+         if (I18nManager.getLang() === 'en') {
+             // ENGLISH LOGIC
+             const list = EventsManager.formatList(cumplesTomorrow);
+             const suffix = cumplesTomorrow.length > 1 ? "'s birthdays" : "'s birthday";
+             parts.push(`${t("tomorrow")} is ${list}${suffix}`);
+         } else {
+             parts.push(
+               `${t("tomorrow")} ${t(
+                 cumplesTomorrow.length > 1 ? "turns" : "isBirthday"
+               )} ${EventsManager.formatList(cumplesTomorrow)}`
+             );
+         }
+      }
       if (hasETM)
         parts.push(
           `${

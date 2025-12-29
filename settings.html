@@ -469,7 +469,7 @@
             <h4 class="mb-4">Annual Events</h4>
             <p class="text-muted small">Anniversaries and yearly reminders (no balloons).</p>
             <form id="annualEventForm" class="row g-3 mb-4">
-              <div class="col-md-6">
+              <div class="col-md-4">
                 <label for="annualName" class="form-label">Name</label>
                 <input
                   type="text"
@@ -477,6 +477,15 @@
                   id="annualName"
                   required
                   placeholder="Event Name"
+                />
+              </div>
+              <div class="col-md-3">
+                <label for="annualUrl" class="form-label">URL (Optional)</label>
+                <input
+                  type="url"
+                  class="form-control bg-dark text-white border-secondary"
+                  id="annualUrl"
+                  placeholder="https://..."
                 />
               </div>
               <div class="col-md-2">
@@ -1059,6 +1068,11 @@
           tr.innerHTML = `
                   <td>${evt.date}</td>
                   <td>${evt.name}</td>
+                  <td>${
+                    evt.url
+                      ? `<a href="${evt.url}" target="_blank" class="text-info"><i class="bi bi-link-45deg"></i> Link</a>`
+                      : "-"
+                  }</td>
                   <td class="text-end">
                       <button class="btn btn-sm btn-danger" onclick="deleteAnnualEvent(${index})"><i class="bi bi-trash"></i></button>
                   </td>
@@ -1214,13 +1228,15 @@
 
               annualForm.addEventListener("submit", (e) => {
                   e.preventDefault();
+
                   const name = document.getElementById("annualName").value.trim();
+                  const url = document.getElementById("annualUrl").value.trim();
                   const month = annualMonth.value;
                   const day = annualDay.value;
                   const dateStr = `${day}/${month}`;
 
                   const { annualEvents } = getData();
-                  annualEvents.push({ name, date: dateStr });
+                  annualEvents.push({ name, date: dateStr, url });
                   saveData(ANNUAL_EVENTS_KEY, annualEvents);
 
                   loadAnnualEventsManager();
