@@ -474,6 +474,15 @@ document.addEventListener("DOMContentLoaded", function () {
             if (b.birthday === tomorrow) matches.cumplesTomorrow.push(b.name);
           });
 
+          // --- ANNUAL EVENTS (Treat as regular events for display) ---
+          const annualEvents = JSON.parse(localStorage.getItem("annualEvents")) || [];
+          annualEvents.forEach((e) => {
+            const nameHtml = `<span>${e.name}</span>`;
+            const nameText = e.name;
+            if (e.date === today) matches.eventsToday.push(nameHtml);
+            if (e.date === tomorrow) matches.eventsTomorrow.push(nameText);
+          });
+
           // --- MERGE EVENTS ---
           const customEvents =
             JSON.parse(localStorage.getItem("customEvents")) || [];

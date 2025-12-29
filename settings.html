@@ -207,7 +207,7 @@
             type="button"
             role="tab"
           >
-            <i class="bi bi-calendar-event"></i> Events
+            <i class="bi bi-calendar-event"></i> <span id="label-events-tab">Schedule</span>
           </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -406,8 +406,8 @@
 
         <div class="tab-pane fade" id="birthdays" role="tabpanel">
           <div class="card bg-dark border-secondary p-4 text-white">
-            <h4 class="mb-4">Birthdays & Annual Events</h4>
-            <p class="text-muted small">These events repeat every year.</p>
+            <h4 class="mb-4">Birthdays</h4>
+            <p class="text-muted small">Celebrations with balloons!</p>
             <form id="birthdayForm" class="row g-3 mb-4">
               <div class="col-md-6">
                 <label for="bdayName" class="form-label">Name</label>
@@ -460,6 +460,66 @@
                   </tr>
                 </thead>
                 <tbody id="birthdaysListBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ANNUAL EVENTS SECTION -->
+          <div class="card bg-dark border-secondary p-4 text-white mt-4">
+            <h4 class="mb-4">Annual Events</h4>
+            <p class="text-muted small">Anniversaries and yearly reminders (no balloons).</p>
+            <form id="annualEventForm" class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label for="annualName" class="form-label">Name</label>
+                <input
+                  type="text"
+                  class="form-control bg-dark text-white border-secondary"
+                  id="annualName"
+                  required
+                  placeholder="Event Name"
+                />
+              </div>
+              <div class="col-md-2">
+                <label for="annualMonth" class="form-label">Month</label>
+                <select id="annualMonth" class="form-select bg-dark text-white border-secondary">
+                  <option value="01">January</option>
+                  <option value="02">February</option>
+                  <option value="03">March</option>
+                  <option value="04">April</option>
+                  <option value="05">May</option>
+                  <option value="06">June</option>
+                  <option value="07">July</option>
+                  <option value="08">August</option>
+                  <option value="09">September</option>
+                  <option value="10">October</option>
+                  <option value="11">November</option>
+                  <option value="12">December</option>
+                </select>
+              </div>
+              <div class="col-md-2">
+                 <label for="annualDay" class="form-label">Day</label>
+                 <select id="annualDay" class="form-select bg-dark text-white border-secondary"></select>
+              </div>
+              <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-warning w-100">
+                  <i class="bi bi-plus-lg"></i> Add
+                </button>
+              </div>
+            </form>
+
+            <div
+              class="table-responsive"
+              style="max-height: 500px; overflow-y: auto"
+            >
+              <table class="table table-dark table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Name</th>
+                    <th class="text-end">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="annualEventsListBody"></tbody>
               </table>
             </div>
           </div>
@@ -580,7 +640,8 @@
       const MYAPPS_KEY = "myApps";
       const LINKS_KEY = "userLinks";
       const EVENTS_KEY = "customEvents";
-      const BIRTHDAYS_KEY = "userBirthdays"; // New Key
+      const BIRTHDAYS_KEY = "userBirthdays"; 
+      const ANNUAL_EVENTS_KEY = "annualEvents"; // New Key
 
       // Default Config
       const defaultConfig = {
@@ -608,6 +669,8 @@
         const userLinks = JSON.parse(localStorage.getItem(LINKS_KEY)) || [];
         const userBirthdays =
           JSON.parse(localStorage.getItem(BIRTHDAYS_KEY)) || [];
+        const annualEvents =
+          JSON.parse(localStorage.getItem(ANNUAL_EVENTS_KEY)) || [];
 
         if (!config.filters) config.filters = defaultConfig.filters;
 
@@ -618,7 +681,9 @@
           profile,
           myApps,
           userLinks,
+          userLinks,
           userBirthdays,
+          annualEvents,
         };
       }
 
@@ -977,6 +1042,53 @@
         }
       };
 
+      // --- TAB ANNUAL EVENTS ---
+      function loadAnnualEventsManager() {
+        const { annualEvents } = getData();
+        const tbody = document.getElementById("annualEventsListBody");
+        tbody.innerHTML = "";
+
+        const sorted = [...annualEvents].sort((a, b) => {
+          const mA = moment(a.date, "DD/MM");
+          const mB = moment(b.date, "DD/MM");
+          return mA.dayOfYear() - mB.dayOfYear();
+        });
+
+        sorted.forEach((evt, index) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+                  <td>${evt.date}</td>
+                  <td>${evt.name}</td>
+                  <td class="text-end">
+                      <button class="btn btn-sm btn-danger" onclick="deleteAnnualEvent(${index})"><i class="bi bi-trash"></i></button>
+                  </td>
+              `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      window.deleteAnnualEvent = (index) => {
+        const { annualEvents } = getData();
+        const sorted = [...annualEvents].sort((a, b) => {
+          const mA = moment(a.date, "DD/MM");
+          const mB = moment(b.date, "DD/MM");
+          return mA.dayOfYear() - mB.dayOfYear();
+        });
+
+        const itemToDelete = sorted[index];
+        const realIndex = annualEvents.findIndex(
+          (e) =>
+            e.name === itemToDelete.name && e.date === itemToDelete.date
+        );
+
+        if (realIndex !== -1) {
+          annualEvents.splice(realIndex, 1);
+          saveData(ANNUAL_EVENTS_KEY, annualEvents);
+          loadAnnualEventsManager();
+          showAlert("Annual event deleted!", "success");
+        }
+      };
+
       // --- TAB 5: CUSTOM LINKS ---
       function loadLinksManager() {
         const { userLinks = [] } = getData();
@@ -1019,6 +1131,14 @@
         loadEventsManager();
         loadLinksManager();
         loadBirthdaysManager();
+        loadAnnualEventsManager();
+
+        // Update Tab Label
+        const { profile } = getData();
+        if (profile.lang === "es") {
+             const tabLabel = document.getElementById("label-events-tab");
+             if(tabLabel) tabLabel.textContent = "Agendar";
+        }
 
         // Restrict date picker to today+
         const dateInput = document.getElementById("eventDate");
@@ -1046,49 +1166,70 @@
         const daySelect = document.getElementById("bdayDay");
 
         if (birthdayForm && monthSelect && daySelect) {
-           const updateDays = () => {
-              const month = parseInt(monthSelect.value);
+           const updateDays = (monthEl, dayEl, val) => {
+              const month = parseInt(monthEl.value);
               let maxDays = 31;
               if (month === 4 || month === 6 || month === 9 || month === 11) maxDays = 30;
               else if (month === 2) maxDays = 29; // Assume leap year for safety
               
-              const currentDay = daySelect.value;
-              daySelect.innerHTML = "";
+              dayEl.innerHTML = "";
               for(let i=1; i<=maxDays; i++) {
                  const d = i < 10 ? "0" + i : i;
                  const opt = document.createElement("option");
                  opt.value = d;
                  opt.textContent = i;
-                 daySelect.appendChild(opt);
+                 dayEl.appendChild(opt);
               }
-              if (currentDay && parseInt(currentDay) <= maxDays) daySelect.value = currentDay;
+              if (val && parseInt(val) <= maxDays) dayEl.value = val;
            };
 
-           monthSelect.addEventListener("change", updateDays);
-           // Init days
-           updateDays();
+           monthSelect.addEventListener("change", () => updateDays(monthSelect, daySelect, daySelect.value));
+           updateDays(monthSelect, daySelect);
 
           birthdayForm.addEventListener("submit", (e) => {
             e.preventDefault();
             const name = document.getElementById("bdayName").value.trim();
             const month = monthSelect.value;
             const day = daySelect.value;
-
             // DD/MM
             const bdayStr = `${day}/${month}`;
-
             const { userBirthdays } = getData();
             userBirthdays.push({ name, birthday: bdayStr });
             saveData(BIRTHDAYS_KEY, userBirthdays);
-
             loadBirthdaysManager();
             birthdayForm.reset();
-            // Reset selectors
             monthSelect.value = "01";
-            updateDays();
-            
+            updateDays(monthSelect, daySelect);
             showAlert("Birthday added!", "success");
           });
+
+          // Annual Events Form Logic
+          const annualForm = document.getElementById("annualEventForm");
+          const annualMonth = document.getElementById("annualMonth");
+          const annualDay = document.getElementById("annualDay");
+
+          if (annualForm && annualMonth && annualDay) {
+              annualMonth.addEventListener("change", () => updateDays(annualMonth, annualDay, annualDay.value));
+              updateDays(annualMonth, annualDay);
+
+              annualForm.addEventListener("submit", (e) => {
+                  e.preventDefault();
+                  const name = document.getElementById("annualName").value.trim();
+                  const month = annualMonth.value;
+                  const day = annualDay.value;
+                  const dateStr = `${day}/${month}`;
+
+                  const { annualEvents } = getData();
+                  annualEvents.push({ name, date: dateStr });
+                  saveData(ANNUAL_EVENTS_KEY, annualEvents);
+
+                  loadAnnualEventsManager();
+                  annualForm.reset();
+                  annualMonth.value = "01";
+                  updateDays(annualMonth, annualDay);
+                  showAlert("Annual event added!", "success");
+              });
+          }
         }
 
         // Events
@@ -1178,6 +1319,7 @@
             myApps,
             userLinks,
             userBirthdays,
+            annualEvents,
           } = getData();
           const exportData = {
             stats,
@@ -1187,6 +1329,7 @@
             myApps,
             userLinks,
             userBirthdays,
+            annualEvents,
             version: 4,
             date: new Date().toISOString(),
           };
@@ -1235,6 +1378,8 @@
               if (data.userLinks) saveData(LINKS_KEY, data.userLinks);
               if (data.userBirthdays)
                 saveData(BIRTHDAYS_KEY, data.userBirthdays);
+              if (data.annualEvents)
+                saveData(ANNUAL_EVENTS_KEY, data.annualEvents);
 
               // Legacy
               if (!data.config && !data.stats) {

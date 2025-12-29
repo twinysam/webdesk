@@ -19,7 +19,8 @@
     "calcDate": "Fecha",
     "tvTitle": "TV en Vivo",
     "list_separator": ", ",
-    "list_last_separator": " y "
+    "list_last_separator": " y ",
+    "tab_schedule": "Agendar"
   },
   "greetingRules": {
     "morningStart": 6,

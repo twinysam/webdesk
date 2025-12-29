@@ -19,7 +19,8 @@
     "calcDate": "Date",
     "tvTitle": "Live TV",
     "list_separator": ", ",
-    "list_last_separator": " and "
+    "list_last_separator": " and ",
+    "tab_schedule": "Schedule"
   },
   "greetingRules": {
     "morningStart": 5,
