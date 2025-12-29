@@ -761,15 +761,15 @@
       async function loadAppManager() {
         if (fullCatalog.length === 0) {
           try {
-            const [apps, tv] = await Promise.all([
+            const [apps] = await Promise.all([
               fetch("items.json")
                 .then((res) => res.json())
                 .catch(() => []),
-              fetch("tv-items.json")
+              /* fetch("tv-items.json")
                 .then((res) => res.json())
-                .catch(() => []),
+                .catch(() => []), */
             ]);
-            fullCatalog = [...apps, ...tv].sort((a, b) =>
+            fullCatalog = [...apps].sort((a, b) =>
               a.name.localeCompare(b.name)
             );
           } catch (e) {
@@ -802,7 +802,7 @@
                     }')"></div>
                     <span>${app.name}</span>
                 </div>
-                <button class="btn btn-sm btn-outline-success" onclick="addApp('${
+                <button class="btn btn-sm btn-outline-success me-3" onclick="addApp('${
                   app.name
                 }')"><i class="bi bi-plus-lg"></i></button>
               `;

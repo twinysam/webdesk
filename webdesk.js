@@ -417,7 +417,14 @@ document.addEventListener("DOMContentLoaded", function () {
   // Birthdays, Custom Events, Calculator
   // ==========================================================================
   const EventsManager = {
-    formatList: (arr) => arr.join(", ").replace(/, ([^,]*)$/, " y $1"),
+    formatList: (arr) => {
+      const sep = I18nManager.getString("list_separator") || ", ";
+      const lastSep = I18nManager.getString("list_last_separator") || " y ";
+      if (arr.length === 0) return "";
+      if (arr.length === 1) return arr[0];
+      const last = arr.pop();
+      return arr.join(sep) + lastSep + last;
+    },
 
     checkDailyEvents: () => {
       Promise.all([
@@ -435,6 +442,7 @@ document.addEventListener("DOMContentLoaded", function () {
           const tomorrowFull = DateUtils.getTomorrowFull();
 
           const t = (key) => I18nManager.getString(key);
+          const tSafe = (key) => I18nManager.data.strings[key] || key; // Direct access helper
 
           let baseMsg = `${todayFull} - ${t(
             "day"
@@ -536,11 +544,20 @@ document.addEventListener("DOMContentLoaded", function () {
       // Today
       if (hasCT) {
          if (I18nManager.getLang() === 'en') {
-             // ENGLISH LOGIC
+             // ENGLISH LOGIC ("Today is/are...")
              const list = EventsManager.formatList(cumplesToday);
-             // "Today is [Name]'s birthday" / "Today are [Name] and [Name]'s birthdays"
-             const suffix = cumplesToday.length > 1 ? "'s birthdays" : "'s birthday";
-             parts.push(`${t("today")} is ${list}${suffix}`);
+             // Use "are" for plural to be grammatically correct, but "It's" or "Today is" is often used colloquially.
+             // Users request: "Today is... birthdays" -> "Today is [Name] and [Name]'s birthdays"
+             // Correction: "Today are" is technically correct for plural "birthdays", but sounds stiff. 
+             // "It is [Name] and [Name]'s birthday(s) today" is better.
+             // Let's go with: "Today is [Name]'s birthday" (Singular) / "Today are [Name] and [Name]'s birthdays" (Plural)
+             // User prompt: "Today is vs Today are... suggest better".
+             // Suggestion: "Happy Birthday to [List]!" -> Simple, classic.
+             // But following the "Today is..." pattern:
+             const isPlural = cumplesToday.length > 1;
+             const verb = isPlural ? "are" : "is";
+             const suffix = isPlural ? "'s birthdays" : "'s birthday";
+             parts.push(`${t("today")} ${verb} ${list}${suffix}`);
          } else {
              // SPANISH / DEFAULT LOGIC
              parts.push(
@@ -553,7 +570,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (hasET)
         parts.push(
           `${
-            hasCT ? t("alsoToday") : t("today") + ":"
+            hasCT ? t("alsoToday") + " " : t("today") + ": "
           }${EventsManager.formatList(eventsToday)}`
         );
 
@@ -562,8 +579,10 @@ document.addEventListener("DOMContentLoaded", function () {
          if (I18nManager.getLang() === 'en') {
              // ENGLISH LOGIC
              const list = EventsManager.formatList(cumplesTomorrow);
-             const suffix = cumplesTomorrow.length > 1 ? "'s birthdays" : "'s birthday";
-             parts.push(`${t("tomorrow")} is ${list}${suffix}`);
+             const isPlural = cumplesTomorrow.length > 1;
+             const verb = isPlural ? "are" : "is";
+             const suffix = isPlural ? "'s birthdays" : "'s birthday";
+             parts.push(`${t("tomorrow")} ${verb} ${list}${suffix}`);
          } else {
              parts.push(
                `${t("tomorrow")} ${t(
@@ -575,7 +594,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (hasETM)
         parts.push(
           `${
-            hasCTM ? t("alsoTomorrow") : t("tomorrow") + ":"
+            hasCTM ? t("alsoTomorrow") + " " : t("tomorrow") + ": "
           }${EventsManager.formatList(eventsTomorrow)}`
         );
 
