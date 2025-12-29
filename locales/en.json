@@ -4,6 +4,7 @@
     "greeting_afternoon": "<i class=\"bi bi-brightness-high-fill\"></i> Good Afternoon",
     "greeting_evening": "<i class=\"bi bi-moon-fill\"></i> Good Evening",
     "greeting_night": "<i class=\"bi bi-moon-stars-fill\"></i> Good Night",
+    "greeting_latelateshow": "<i class=\"bi bi-moon-stars-fill\"></i> {name}'s Late Late Show",
     "greeting_generic": "Hello",
     "birthday": "Happy Birthday!",
     "day": "Day",

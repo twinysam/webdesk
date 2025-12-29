@@ -332,9 +332,18 @@ document.addEventListener("DOMContentLoaded", function () {
       let message;
 
       // 1. Time-based defaults
-      const timeKey = I18nManager.getGreetingTime(now);
-      const greetingText = t(`greeting_${timeKey}`);
-      message = `${greetingText}, <span class="name-highlight">${name}</span>.`;
+      let timeKey = I18nManager.getGreetingTime(now);
+      if (time < 5) timeKey = "latelateshow"; // Late Late Show override
+
+      const greetingText = t(`greeting_${timeKey}`, { name: name }); // Pass name for Late Late Show
+      
+      // If the localized string already contains the name (checked by presence of {name} placeholder in source), 
+      // t() handles it if we passed params. If it's a standard greeting without placeholder, we append name.
+      if (greetingText.includes(name)) {
+         message = greetingText;
+      } else {
+         message = `${greetingText}, <span class="name-highlight">${name}</span>`;
+      }
 
       // 2. Overrides
       const { season, isFirstDay } = DateUtils.getSeason(now);
