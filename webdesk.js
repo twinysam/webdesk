@@ -544,20 +544,13 @@ document.addEventListener("DOMContentLoaded", function () {
       // Today
       if (hasCT) {
          if (I18nManager.getLang() === 'en') {
-             // ENGLISH LOGIC ("Today is/are...")
+             // ENGLISH LOGIC: "[Name]'s birthday is today" / "[Names]'s birthdays are today"
              const list = EventsManager.formatList(cumplesToday);
-             // Use "are" for plural to be grammatically correct, but "It's" or "Today is" is often used colloquially.
-             // Users request: "Today is... birthdays" -> "Today is [Name] and [Name]'s birthdays"
-             // Correction: "Today are" is technically correct for plural "birthdays", but sounds stiff. 
-             // "It is [Name] and [Name]'s birthday(s) today" is better.
-             // Let's go with: "Today is [Name]'s birthday" (Singular) / "Today are [Name] and [Name]'s birthdays" (Plural)
-             // User prompt: "Today is vs Today are... suggest better".
-             // Suggestion: "Happy Birthday to [List]!" -> Simple, classic.
-             // But following the "Today is..." pattern:
              const isPlural = cumplesToday.length > 1;
+             const subject = isPlural ? "birthdays" : "birthday";
              const verb = isPlural ? "are" : "is";
-             const suffix = isPlural ? "'s birthdays" : "'s birthday";
-             parts.push(`${t("today")} ${verb} ${list}${suffix}`);
+             // e.g. "Spike's birthday is today" / "Carlos and Vivi's birthdays are today"
+             parts.push(`${list}'s ${subject} ${verb} ${t("today")}`);
          } else {
              // SPANISH / DEFAULT LOGIC
              parts.push(
@@ -580,9 +573,11 @@ document.addEventListener("DOMContentLoaded", function () {
              // ENGLISH LOGIC
              const list = EventsManager.formatList(cumplesTomorrow);
              const isPlural = cumplesTomorrow.length > 1;
+             const subject = isPlural ? "birthdays" : "birthday";
              const verb = isPlural ? "are" : "is";
-             const suffix = isPlural ? "'s birthdays" : "'s birthday";
-             parts.push(`${t("tomorrow")} ${verb} ${list}${suffix}`);
+             parts.push(`${list}'s ${subject} ${verb} ${t("today") === "Today" ? "tomorrow" : t("tomorrow")}`);
+             // Note: t("today") check is a hack if "tomorrow" key isn't strictly just "tomorrow". 
+             // Better: just hardcode "tomorrow" since this IS the English block.
          } else {
              parts.push(
                `${t("tomorrow")} ${t(
