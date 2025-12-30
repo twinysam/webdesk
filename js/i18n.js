@@ -60,14 +60,21 @@ window.I18nManager = {
     },
 
     // Get string (support nested keys not implemented here for speed, just flat access to data.strings)
-    getString: (key) => {
+    // Get string with optional parameter replacement (e.g. {name})
+    getString: (key, params = {}) => {
       const strings = window.I18nManager.data.strings || {};
-      return strings[key] || key;
+      let str = strings[key] || key;
+      
+      Object.keys(params).forEach((k) => {
+        str = str.replace(`{${k}}`, params[k]);
+      });
+      
+      return str;
     },
     
     // Alias for settings compatibility
-    t: (key) => {
-        return window.I18nManager.getString(key);
+    t: (key, params = {}) => {
+        return window.I18nManager.getString(key, params);
     },
 
     // Helper to apply to DOM (used by Settings)
