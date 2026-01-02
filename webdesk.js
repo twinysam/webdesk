@@ -23,10 +23,10 @@ document.addEventListener("DOMContentLoaded", function () {
             return "morning";
           } else if (currentHour >= g.afternoonStart && currentHour < g.afternoonEnd) {
             return "afternoon";
-          } else if (currentHour >= g.eveningStart && currentHour < g.eveningEnd) {
+          } else if (currentHour >= g.eveningStart) {
             return "evening";
           } else {
-            return "night";
+            return "generic";
           }
       };
   }

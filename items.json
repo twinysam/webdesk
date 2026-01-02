@@ -70,11 +70,11 @@
     "title": "Mercado Pago"
   },
   {
-    "name": "Eztv",
+    "name": "EZTV",
     "url": "https://eztvx.to/home",
     "icon": "eztv",
     "order": 11,
-    "title": "Eztv"
+    "title": "EZTV"
   },
   {
     "name": "YTS",
@@ -341,6 +341,12 @@
     "title": "Twitter"
   },
   {
+    "name": "X",
+    "url": "https://x.com/",
+    "icon": "x",
+    "title": "X"
+  },
+  {
     "name": "Playdate Pulp",
     "url": "https://play.date/pulp/",
     "icon": "pulp",
@@ -507,5 +513,29 @@
     "url": "https://open.spotify.com/show/0zGFAX8zeYbDjEX4sC7bbk",
     "icon": "mundomaravilloso",
     "title": "Un Mundo Maravilloso"
+  },
+  {
+    "name": "Bing",
+    "url": "https://www.bing.com/",
+    "icon": "bing",
+    "title": "Bing"
+  },
+  {
+    "name": "TikTok",
+    "url": "https://www.tiktok.com/",
+    "icon": "tiktok",
+    "title": "TikTok"
+  },
+  {
+    "name": "Yahoo",
+    "url": "https://www.yahoo.com/",
+    "icon": "yahoo",
+    "title": "Yahoo"
+  },
+  {
+    "name": "LinkedIn",
+    "url": "https://www.linkedin.com/",
+    "icon": "linkedin",
+    "title": "LinkedIn"
   }
 ]

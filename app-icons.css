@@ -228,7 +228,7 @@
   background-color: white;
   background-position: center;
   background-repeat: no-repeat;
-  background-size: 65%;
+  background-size: 75%;
 }
 
 .item a.radiogarden {
@@ -383,6 +383,10 @@
   background-image: url(images/app_x.png);
 }
 
+.item a.bing {
+  background-image: url(images/app_bing.png);
+}
+
 .item a.chatgpt {
   background-image: url(images/app_chatgpt.png);
 }
@@ -422,3 +426,17 @@
 .item a.meet {
   background-image: url(images/app_meet.png);
 }
+
+.item a.tiktok {
+  background-image: url(images/app_tiktok.png);
+}
+
+.item a.yahoo {
+  background-image: url(images/app_yahoo.png);
+}
+
+.item a.linkedin {
+  background-image: url(images/app_linkedin.png);
+}
+
+
