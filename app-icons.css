@@ -439,4 +439,26 @@
   background-image: url(images/app_linkedin.png);
 }
 
+.item a.ebay {
+  background-image: url(images/app_ebay.png);
+}
 
+.item a.temu {
+  background-image: url(images/app_temu.png);
+}
+
+.item a.canva {
+  background-image: url(images/app_canva.png);
+}
+
+.item a.etsy {
+  background-image: url(images/app_etsy.png);
+}
+
+.item a.ipsy {
+  background-image: url(images/app_ipsy.png);
+}
+
+.item a.walmart {
+  background-image: url(images/app_walmart.png);
+}

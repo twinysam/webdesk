@@ -537,5 +537,41 @@
     "url": "https://www.linkedin.com/",
     "icon": "linkedin",
     "title": "LinkedIn"
+  },
+  {
+    "name": "eBay",
+    "url": "https://www.ebay.com/",
+    "icon": "ebay",
+    "title": "eBay"
+  },
+  {
+    "name": "Temu",
+    "url": "https://www.temu.com/",
+    "icon": "temu",
+    "title": "Temu"
+  },
+  {
+    "name": "Canva",
+    "url": "https://www.canva.com/",
+    "icon": "canva",
+    "title": "Canva"
+  },
+  {
+    "name": "Etsy",
+    "url": "https://www.etsy.com/",
+    "icon": "etsy",
+    "title": "Etsy"
+  },
+  {
+    "name": "Ipsy",
+    "url": "https://www.ipsy.com/",
+    "icon": "ipsy",
+    "title": "Ipsy"
+  },
+  {
+    "name": "Walmart",
+    "url": "https://www.walmart.com/",
+    "icon": "walmart",
+    "title": "Walmart"
   }
 ]
