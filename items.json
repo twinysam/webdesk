@@ -573,5 +573,41 @@
     "url": "https://www.walmart.com/",
     "icon": "walmart",
     "title": "Walmart"
+  },
+  {
+    "name": "Washington Post",
+    "url": "https://www.washingtonpost.com/",
+    "icon": "washingtonpost",
+    "title": "Washington Post"
+  },
+  {
+    "name": "Associated Press",
+    "url": "https://www.apnews.com/",
+    "icon": "associatedpress",
+    "title": "Associated Press"
+  },
+  {
+    "name": "Reuters",
+    "url": "https://www.reuters.com/",
+    "icon": "reuters",
+    "title": "Reuters"
+  },
+  {
+    "name": "Los Angeles Times",
+    "url": "https://www.latimes.com/",
+    "icon": "latimes",
+    "title": "Los Angeles Times"
+  },
+  {
+    "name": "Microsoft OneDrive",
+    "url": "https://onedrive.live.com/",
+    "icon": "onedrive",
+    "title": "Microsoft OneDrive"
+  },
+  {
+    "name": "Dropbox",
+    "url": "https://www.dropbox.com/",
+    "icon": "dropbox",
+    "title": "Dropbox"
   }
 ]

@@ -462,3 +462,27 @@
 .item a.walmart {
   background-image: url(images/app_walmart.png);
 }
+
+.item a.washingtonpost {
+  background-image: url(images/app_washingtonpost.png);
+}
+
+.item a.apnews {
+  background-image: url(images/app_apnews.png);
+}
+
+.item a.latimes {
+  background-image: url(images/app_latimes.png);
+}
+
+.item a.reuters {
+  background-image: url(images/app_reuters.png);
+}
+
+.item a.onedrive {
+  background-image: url(images/app_onedrive.webp);
+}
+
+.item a.dropbox {
+  background-image: url(images/app_dropbox.webp);
+}
