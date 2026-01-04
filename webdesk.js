@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
       
           if (currentHour >= g.morningStart && currentHour < g.morningEnd) {
             return "morning";
-          } else if (currentHour >= g.afternoonStart && currentHour < g.afternoonEnd) {
+          } else if (currentHour >= g.afternoonStart && currentHour < g.eveningStart) {
             return "afternoon";
           } else if (currentHour >= g.eveningStart) {
             return "evening";
