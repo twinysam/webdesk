@@ -92,7 +92,7 @@
     "label_evening_start": "La noche empieza a las",
     "label_tree_toggle": "Mostrar Árbol de las Estaciones",
     "label_late_greeting": "Saludo de Trasnoche Personalizado",
-    "text_late_greeting_help": "Usa <strong>{name}</strong> para insertar el nombre de usuario.",
+    "text_late_greeting_help": "Usa <strong>{name}</strong> para el usuario. Soporta <a href='https://icons.getbootstrap.com/' target='_blank' class='text-info'>Bootstrap Icons</a> y emojis 🎹.",
     "btn_save_preferences": "Guardar Preferencias",
     "alert_preferences_saved": "Preferencias Guardadas!",
     "alert_backup_exported": "Backup completo exportado exitosamente!",
