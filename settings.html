@@ -408,6 +408,7 @@
               <table class="table table-dark table-striped table-hover">
                 <thead>
                   <tr>
+                    <th style="width: 40px;"></th>
                     <th data-i18n="col_name">Name</th>
                     <th data-i18n="col_url">URL</th>
                     <th class="text-end" data-i18n="col_action">Action</th>
@@ -1179,7 +1180,12 @@
 
         userLinks.forEach((link, index) => {
           const tr = document.createElement("tr");
+          // Store data for reconstruction
+          tr.dataset.name = link.name || "";
+          tr.dataset.url = link.url;
+          
           tr.innerHTML = `
+                <td><i class="bi bi-list text-secondary sort-handle" style="cursor: move;"></i></td>
                 <td>${
                   link.name || '<em class="text-secondary">No Name</em>'
                 }</td>
@@ -1194,7 +1200,33 @@
             `;
           tbody.appendChild(tr);
         });
+
+        // Initialize Sortable
+        // Check if already initialized to avoid duplicates (naive check: does it have the class?) 
+        // Actually, safer to just re-create or relying on Sortable to handle it. 
+        // Given the structure, let's keep it simple.
+        new Sortable(tbody, {
+           handle: '.sort-handle',
+           animation: 150,
+           onEnd: saveLinksOrder
+        });
       }
+
+      window.saveLinksOrder = () => {
+         const tbody = document.getElementById("linksListBody");
+         const newLinks = [];
+         
+         tbody.querySelectorAll("tr").forEach(tr => {
+             newLinks.push({
+                 name: tr.dataset.name,
+                 url: tr.dataset.url
+             });
+         });
+         
+         saveData(LINKS_KEY, newLinks);
+         // Re-render to update indices for delete button
+         loadLinksManager(); 
+      };
 
       window.deleteLink = (index) => {
         const { userLinks = [] } = getData();
