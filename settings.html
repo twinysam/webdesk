@@ -638,6 +638,7 @@
             <div class="mb-4">
               <label for="prefLateGreeting" class="form-label" data-i18n="label_late_greeting">Custom Late Night Greeting</label>
               <input type="text" id="prefLateGreeting" class="form-control bg-dark text-white border-secondary" placeholder="{name}'s Late Late Show">
+              <div class="form-text text-light mt-2" data-i18n="text_late_greeting_help">Use <strong>{name}</strong> to insert the user's name.</div>
             </div>
 
             <!-- Tree Toggle -->
@@ -1238,7 +1239,12 @@
         document.getElementById("prefTreeToggle").checked = preferences.treeEnabled !== false; // Default true
 
         // Custom Greeting
-        document.getElementById("prefLateGreeting").value = preferences.customLateGreeting || "";
+        // Show current value (preference or default from I18n)
+        let currentGreeting = preferences.customLateGreeting;
+        if (!currentGreeting) {
+             currentGreeting = I18nManager.getString("greeting_latelateshow");
+        }
+        document.getElementById("prefLateGreeting").value = currentGreeting;
       }
 
       document.getElementById("btnSavePreferences").addEventListener("click", () => {
@@ -1269,7 +1275,6 @@
         loadLinksManager();
         loadBirthdaysManager();
         loadAnnualEventsManager();
-        loadPreferencesManager();
 
         // Init I18n
         const { profile } = getData();
@@ -1281,6 +1286,7 @@
              await I18nManager.loadLocale(userLang);
         }
         I18nManager.applyToPage();
+        loadPreferencesManager();
 
         // Update Tab Label - No longer needed manually as I18n handles it
         // if (profile.lang === "es") { ... } 

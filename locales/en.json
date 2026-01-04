@@ -92,6 +92,7 @@
     "label_evening_start": "Evening starts at",
     "label_tree_toggle": "Show Tree of Seasons",
     "label_late_greeting": "Custom Late Night Greeting",
+    "text_late_greeting_help": "Use <strong>{name}</strong> to insert the user's name.",
     "btn_save_preferences": "Save Preferences",
     "alert_preferences_saved": "Preferences Saved!",
     "alert_backup_exported": "Full backup exported successfully!",
