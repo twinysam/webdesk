@@ -213,6 +213,18 @@
         <li class="nav-item" role="presentation">
           <button
             class="nav-link"
+            id="preferences-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#preferences"
+            type="button"
+            role="tab"
+          >
+            <i class="bi bi-sliders"></i> <span data-i18n="tab_preferences">Preferences</span>
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
             id="data-tab"
             data-bs-toggle="tab"
             data-bs-target="#data"
@@ -610,6 +622,36 @@
           </div>
         </div>
 
+        <div class="tab-pane fade" id="preferences" role="tabpanel">
+          <div class="card bg-dark border-secondary p-4 text-white">
+            <h4 class="mb-4" data-i18n="header_preferences">Preferences</h4>
+            
+            <!-- Evening Start Time -->
+            <div class="mb-4">
+              <label for="prefEveningStart" class="form-label" data-i18n="label_evening_start">Evening starts at</label>
+              <select id="prefEveningStart" class="form-select bg-dark text-white border-secondary" style="max-width: 200px;">
+                <!-- Options populated by JS -->
+              </select>
+            </div>
+
+            <!-- Custom Greeting -->
+            <div class="mb-4">
+              <label for="prefLateGreeting" class="form-label" data-i18n="label_late_greeting">Custom Late Night Greeting</label>
+              <input type="text" id="prefLateGreeting" class="form-control bg-dark text-white border-secondary" placeholder="{name}'s Late Late Show">
+            </div>
+
+            <!-- Tree Toggle -->
+            <div class="form-check form-switch mb-4">
+              <input class="form-check-input" type="checkbox" id="prefTreeToggle" checked>
+              <label class="form-check-label" for="prefTreeToggle" data-i18n="label_tree_toggle">Show Tree of Seasons</label>
+            </div>
+
+            <button id="btnSavePreferences" class="btn btn-primary">
+              <i class="bi bi-save"></i> <span data-i18n="btn_save_preferences">Save Preferences</span>
+            </button>
+          </div>
+        </div>
+
         <div class="tab-pane fade" id="data" role="tabpanel">
           <div class="text-center p-5">
             <p class="mb-4" data-i18n="text_backup_info">
@@ -657,7 +699,8 @@
       const LINKS_KEY = "userLinks";
       const EVENTS_KEY = "customEvents";
       const BIRTHDAYS_KEY = "userBirthdays"; 
-      const ANNUAL_EVENTS_KEY = "annualEvents"; // New Key
+      const ANNUAL_EVENTS_KEY = "annualEvents"; 
+      const PREFERENCES_KEY = "userPreferences";
 
       // Default Config
       const defaultConfig = {
@@ -665,6 +708,13 @@
           hideNeverClicked: false,
           minClicks: 0,
         },
+      };
+
+      // Default Preferences
+      const defaultPreferences = {
+        eveningStart: null, // null means use locale default
+        treeEnabled: true,
+        customLateGreeting: ""
       };
 
       // Global Catalog Cache
@@ -693,6 +743,8 @@
           JSON.parse(localStorage.getItem(BIRTHDAYS_KEY)) || [];
         const annualEvents =
           JSON.parse(localStorage.getItem(ANNUAL_EVENTS_KEY)) || [];
+        const preferences = 
+          JSON.parse(localStorage.getItem(PREFERENCES_KEY)) || defaultPreferences;
 
         if (!config.filters) config.filters = defaultConfig.filters;
 
@@ -706,6 +758,7 @@
           userLinks,
           userBirthdays,
           annualEvents,
+          preferences
         };
       }
 
@@ -1150,6 +1203,62 @@
         showAlert(I18n.t("alert_link_deleted"), "success");
       };
 
+      // --- TAB PREFERENCES ---
+      function loadPreferencesManager() {
+        const { preferences, profile } = getData();
+        const lang = profile.lang || "en";
+        
+        // Evening Start Dropdown
+        const eveningSelect = document.getElementById("prefEveningStart");
+        eveningSelect.innerHTML = "";
+        
+        // Populate options (12 PM - 11 PM / 12 - 23)
+        // Range 12 to 23
+        for (let i = 12; i <= 23; i++) {
+          const opt = document.createElement("option");
+          opt.value = i;
+          if (lang === "en") {
+             const display = i === 12 ? "12 PM" : (i - 12) + " PM";
+             opt.textContent = display;
+          } else {
+             opt.textContent = i + ":00";
+          }
+          eveningSelect.appendChild(opt);
+        }
+
+        // Set selected value
+        // If null, use default from I18n data
+        let current = preferences.eveningStart;
+        if (current === null) {
+           current = I18nManager.data.greetingRules ? I18nManager.data.greetingRules.eveningStart : 18;
+        }
+        eveningSelect.value = current;
+
+        // Tree Toggle
+        document.getElementById("prefTreeToggle").checked = preferences.treeEnabled !== false; // Default true
+
+        // Custom Greeting
+        document.getElementById("prefLateGreeting").value = preferences.customLateGreeting || "";
+      }
+
+      document.getElementById("btnSavePreferences").addEventListener("click", () => {
+         const { preferences } = getData();
+         
+         const eveningVal = parseInt(document.getElementById("prefEveningStart").value);
+         const treeEnabled = document.getElementById("prefTreeToggle").checked;
+         const lateGreeting = document.getElementById("prefLateGreeting").value.trim();
+
+         preferences.eveningStart = eveningVal;
+         preferences.treeEnabled = treeEnabled;
+         preferences.customLateGreeting = lateGreeting;
+
+         saveData(PREFERENCES_KEY, preferences);
+         showAlert(I18n.t("alert_preferences_saved"), "success");
+         // Since visuals might change, maybe reload? Or just alert.
+         // Let's reload to be safe and consistent with Profile
+         setTimeout(() => location.reload(), 1000); 
+      });
+
       // --- INIT ---
       document.addEventListener("DOMContentLoaded", async () => {
         loadProfile();
@@ -1160,6 +1269,7 @@
         loadLinksManager();
         loadBirthdaysManager();
         loadAnnualEventsManager();
+        loadPreferencesManager();
 
         // Init I18n
         const { profile } = getData();
@@ -1357,6 +1467,7 @@
             userLinks,
             userBirthdays,
             annualEvents,
+            preferences
           } = getData();
           const exportData = {
             stats,
@@ -1366,8 +1477,10 @@
             myApps,
             userLinks,
             userBirthdays,
+            userBirthdays,
             annualEvents,
-            version: 4,
+            preferences,
+            version: 5,
             date: new Date().toISOString(),
           };
           const blob = new Blob([JSON.stringify(exportData, null, 2)], {
@@ -1417,6 +1530,7 @@
                 saveData(BIRTHDAYS_KEY, data.userBirthdays);
               if (data.annualEvents)
                 saveData(ANNUAL_EVENTS_KEY, data.annualEvents);
+              if (data.preferences) saveData(PREFERENCES_KEY, data.preferences);
 
               // Legacy
               if (!data.config && !data.stats) {

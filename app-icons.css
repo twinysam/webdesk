@@ -486,3 +486,8 @@
 .item a.dropbox {
   background-image: url(images/app_dropbox.webp);
 }
+
+.item a.applemaps {
+  background-image: url(images/app_applemaps.webp);
+}
+

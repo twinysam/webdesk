@@ -64,6 +64,47 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   // ==========================================================================
+  // MODULE: PreferencesManager
+  // Internal OS Preferences
+  // ==========================================================================
+  const PreferencesManager = {
+      STORAGE_KEY: "userPreferences",
+
+      getPreferences: () => JSON.parse(localStorage.getItem(PreferencesManager.STORAGE_KEY)) || {},
+
+      apply: () => {
+          const prefs = PreferencesManager.getPreferences();
+          
+          // 1. Evening Start Override
+          if (prefs.eveningStart !== null && prefs.eveningStart !== undefined) {
+              if (!I18nManager.data.greetingRules) I18nManager.data.greetingRules = {};
+              I18nManager.data.greetingRules.eveningStart = prefs.eveningStart;
+          }
+
+          // 2. Tree Toggle
+          const tree = document.querySelector(".tree");
+          if (tree) {
+             if (prefs.treeEnabled === false) {
+                 tree.style.display = "none";
+             } else {
+                 tree.style.display = ""; // Reset
+             }
+          }
+
+          // 3. Custom Late Late Show Greeting
+           if (prefs.customLateGreeting) {
+              if (!I18nManager.data.strings) I18nManager.data.strings = {};
+              // Directly override the string in memory
+              I18nManager.data.strings["greeting_latelateshow"] = prefs.customLateGreeting;
+          }
+      },
+
+      init: () => {
+          PreferencesManager.apply();
+      }
+  };
+
+  // ==========================================================================
   // MODULE: StatsManager
   // Handling click tracking and local storage
   // ==========================================================================
@@ -721,6 +762,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Boot up managers
   I18nManager.init().then(() => {
+    PreferencesManager.init();
     GreetingManager.init();
     EventsManager.init();
     AppManager.init();

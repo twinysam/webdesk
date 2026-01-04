@@ -563,10 +563,10 @@
     "title": "Etsy"
   },
   {
-    "name": "Ipsy",
+    "name": "IPSY",
     "url": "https://www.ipsy.com/",
     "icon": "ipsy",
-    "title": "Ipsy"
+    "title": "IPSY"
   },
   {
     "name": "Walmart",
@@ -609,5 +609,11 @@
     "url": "https://www.dropbox.com/",
     "icon": "dropbox",
     "title": "Dropbox"
+  },
+  {
+    "name": "Apple Maps",
+    "url": "https://maps.apple.com",
+    "icon": "applemaps",
+    "title": "Apple Maps"
   }
 ]
