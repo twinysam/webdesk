@@ -579,6 +579,14 @@
   background-image: url(images/app_nba.png);
 }
 
+.item a.paramount {
+  background-image: url(images/app_paramount.png);
+}
+
+.item a.primevideo {
+  background-image: url(images/app_primevideo.png);
+}
+
 .item a.soundcloud {
   background-image: url(images/app_soundcloud.png);
 }

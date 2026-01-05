@@ -743,6 +743,18 @@
     "title": "NBA"
   },
   {
+    "name": "Paramount+",
+    "url": "https://www.paramountplus.com/",
+    "icon": "paramount",
+    "title": "Paramount+"
+  },
+  {
+    "name": "Prime Video",
+    "url": "https://www.primevideo.com/",
+    "icon": "primevideo",
+    "title": "Prime Video"
+  },
+  {
     "name": "Soundcloud",
     "url": "https://soundcloud.com/",
     "icon": "soundcloud",
