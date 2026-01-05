@@ -537,10 +537,15 @@
 
 .item a.googletranslate {
   background-image: url(images/app_googletranslate.png);
+  background-color: white;
+  background-size: 80%;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .item a.googlekeep {
   background-image: url(images/app_googlekeep.png);
+  background-color: white;
 }
 
 .item a.googlehome {
