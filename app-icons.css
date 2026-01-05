@@ -563,10 +563,6 @@
   background-image: url(images/app_mastodon.webp);
 }
 
-.item a.max {
-  background-image: url(images/app_max.png);
-}
-
 .item a.mubi {
   background-image: url(images/app_mubi.png);
 }
