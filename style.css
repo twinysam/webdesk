@@ -599,6 +599,11 @@ ul.columns {
   text-align: left;
 }
 
+.custom-links-container h2 {
+  column-span: all;
+  -webkit-column-span: all;
+}
+
 /* Column Logic classes applied by JS */
 .links-cols-1 { column-count: 1; }
 .links-cols-2 { column-count: 2; }
