@@ -725,12 +725,6 @@
     "title": "Mastodon"
   },
   {
-    "name": "Max",
-    "url": "https://www.max.com/",
-    "icon": "max",
-    "title": "Max"
-  },
-  {
     "name": "MUBI",
     "url": "https://mubi.com/",
     "icon": "mubi",
@@ -741,6 +735,12 @@
     "url": "https://www.mlb.com/",
     "icon": "mlb",
     "title": "MLB"
+  },
+  {
+    "name": "NBA",
+    "url": "https://www.nba.com/",
+    "icon": "nba",
+    "title": "NBA"
   },
   {
     "name": "Soundcloud",
@@ -774,7 +774,7 @@
   },
   {
     "name": "World Cup 2026",
-    "url": "https://www.fifa.com/fifaplus/en/tournaments/mens/worldcup/2026russia",
+    "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026",
     "icon": "worldcup2026",
     "title": "World Cup 2026"
   }
