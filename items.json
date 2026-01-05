@@ -615,5 +615,167 @@
     "url": "https://maps.apple.com",
     "icon": "applemaps",
     "title": "Apple Maps"
+  },
+  {
+    "name": "AliExpress",
+    "url": "https://www.aliexpress.com/",
+    "icon": "aliexpress",
+    "title": "AliExpress"
+  },
+  {
+    "name": "Bluesky",
+    "url": "https://bsky.app/",
+    "icon": "bluesky",
+    "title": "Bluesky"
+  },
+  {
+    "name": "Box",
+    "url": "https://www.box.com/",
+    "icon": "box",
+    "title": "Box"
+  },
+  {
+    "name": "Crunchyroll",
+    "url": "https://www.crunchyroll.com/",
+    "icon": "crunchyroll",
+    "title": "Crunchyroll"
+  },
+  {
+    "name": "DAZN",
+    "url": "https://www.dazn.com/",
+    "icon": "dazn",
+    "title": "DAZN"
+  },
+  {
+    "name": "Discord",
+    "url": "https://discord.com/channels/@me",
+    "icon": "discord",
+    "title": "Discord"
+  },
+  {
+    "name": "Formula 1",
+    "url": "https://www.formula1.com/",
+    "icon": "f1",
+    "title": "Formula 1"
+  },
+  {
+    "name": "FIFA",
+    "url": "https://www.fifa.com/",
+    "icon": "fifa",
+    "title": "FIFA"
+  },
+  {
+    "name": "Flickr",
+    "url": "https://www.flickr.com/",
+    "icon": "flickr",
+    "title": "Flickr"
+  },
+  {
+    "name": "GoodNotes",
+    "url": "https://www.goodnotes.com/",
+    "icon": "goodnotes",
+    "title": "GoodNotes"
+  },
+  {
+    "name": "Google Meet",
+    "url": "https://meet.google.com/",
+    "icon": "googlemeet",
+    "title": "Google Meet"
+  },
+  {
+    "name": "Google Translate",
+    "url": "https://translate.google.com/",
+    "icon": "googletranslate",
+    "title": "Google Translate"
+  },
+  {
+    "name": "Google Keep",
+    "url": "https://keep.google.com/",
+    "icon": "googlekeep",
+    "title": "Google Keep"
+  },
+  {
+    "name": "Google Home",
+    "url": "https://home.google.com/",
+    "icon": "googlehome",
+    "title": "Google Home"
+  },
+  {
+    "name": "Headspace",
+    "url": "https://www.headspace.com/",
+    "icon": "headspace",
+    "title": "Headspace"
+  },
+  {
+    "name": "IMDb",
+    "url": "https://www.imdb.com/",
+    "icon": "imdb",
+    "title": "IMDb"
+  },
+  {
+    "name": "Kick",
+    "url": "https://kick.com/",
+    "icon": "kick",
+    "title": "Kick"
+  },
+  {
+    "name": "Mastodon",
+    "url": "https://mastodon.social/",
+    "icon": "mastodon",
+    "title": "Mastodon"
+  },
+  {
+    "name": "Max",
+    "url": "https://www.max.com/",
+    "icon": "max",
+    "title": "Max"
+  },
+  {
+    "name": "MUBI",
+    "url": "https://mubi.com/",
+    "icon": "mubi",
+    "title": "MUBI"
+  },
+  {
+    "name": "MLB",
+    "url": "https://www.mlb.com/",
+    "icon": "mlb",
+    "title": "MLB"
+  },
+  {
+    "name": "Soundcloud",
+    "url": "https://soundcloud.com/",
+    "icon": "soundcloud",
+    "title": "Soundcloud"
+  },
+  {
+    "name": "Spotify",
+    "url": "https://www.spotify.com/",
+    "icon": "spotify",
+    "title": "Spotify"
+  },
+  {
+    "name": "Threads",
+    "url": "https://www.threads.net/",
+    "icon": "threads",
+    "title": "Threads"
+  },
+  {
+    "name": "Vix",
+    "url": "https://www.vix.com/",
+    "icon": "vix",
+    "title": "Vix"
+  },
+  {
+    "name": "Wattpad",
+    "url": "https://www.wattpad.com/",
+    "icon": "wattpad",
+    "title": "Wattpad"
+  },
+  {
+    "name": "World Cup 2026",
+    "url": "https://www.fifa.com/fifaplus/en/tournaments/mens/worldcup/2026russia",
+    "icon": "worldcup2026",
+    "title": "World Cup 2026"
   }
 ]
