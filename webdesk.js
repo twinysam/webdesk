@@ -226,7 +226,27 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       const politeElem = document.getElementById("polite");
-      if (politeElem) politeElem.innerHTML = message;
+      if (politeElem) {
+          politeElem.innerHTML = message;
+          GreetingManager.adjustFontSize(politeElem);
+      }
+    },
+
+    adjustFontSize: (element) => {
+      if (!element) return;
+      
+      // Reset to default max size (match CSS 6rem)
+      let size = 6; 
+      element.style.fontSize = size + "rem";
+      element.style.whiteSpace = "nowrap";
+      
+      // Force layout update (though reading scrollWidth does this)
+      
+      // Reduce until it fits
+      while ((element.scrollWidth > element.clientWidth) && size > 1.5) {
+        size -= 0.1;
+        element.style.fontSize = size + "rem";
+      }
     },
 
     updateVisuals: () => {
@@ -259,6 +279,9 @@ document.addEventListener("DOMContentLoaded", function () {
           resizeTimeout = setTimeout(() => {
               const fechaEl = document.getElementById("fecha");
               if(fechaEl && fechaEl.innerHTML) EventsManager.handleOverflow(fechaEl);
+              
+              const politeElem = document.getElementById("polite");
+              if(politeElem) GreetingManager.adjustFontSize(politeElem);
           }, 100);
       });
     },
