@@ -90,6 +90,7 @@
     "alert_events_exported": "Events exported successfully!",
     "alert_past_removed": "Past events removed!",
     "header_preferences": "Preferences",
+    "header_general_pref": "General Preferences",
     "label_evening_start": "Evening starts at",
     "label_tree_toggle": "Show Tree of Seasons",
     "label_late_greeting": "Custom Late Night Greeting",
