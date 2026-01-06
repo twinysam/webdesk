@@ -512,7 +512,7 @@ document.addEventListener("DOMContentLoaded", function () {
         
         const pDesc = document.createElement("p");
         pDesc.innerHTML = t("calcDescription");
-        pDesc.className = "text-muted mb-3";
+       // pDesc.className = "text-muted mb-3";
 
         caja.appendChild(hr);
         caja.appendChild(h2);
