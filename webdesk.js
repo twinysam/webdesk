@@ -661,14 +661,7 @@ document.addEventListener("DOMContentLoaded", function () {
           .then((res) => res.json())
           .catch(() => []),
       ]).then(([appCatalog, tvCatalog]) => {
-        if (!ProfileManager.isSetup()) {
-          if (window.OnboardingManager) {
-            OnboardingManager.start();
-          } else {
-            console.error("OnboardingManager not found");
-          }
-          return;
-        }
+
 
         const userApps = AppManager.getUserApps();
         const catalogMap = new Map(
@@ -783,12 +776,34 @@ document.addEventListener("DOMContentLoaded", function () {
   // Stats Listener attached immediately
   StatsManager.init();
 
-  // Boot up managers
-  I18nManager.init().then(() => {
-    PreferencesManager.init();
-    GreetingManager.init();
-    EventsManager.init();
-    AppManager.init();
-    LinksManager.init();
-  });
+  const startWebDesk = () => {
+      I18nManager.init().then(() => {
+          GreetingManager.updateVisuals(); // Set tree image before revealing
+          PreferencesManager.init();       // Apply prefs (reveals tree)
+          
+          // Finish Greeting Init manually to avoid double-init issues or order dependency
+          GreetingManager.updateMessage();
+          GreetingManager.startAnimationControl();
+          setInterval(GreetingManager.updateMessage, 60000 * 5);
+
+          // Reveal Main Content
+          const caja = document.querySelector(".caja");
+          if(caja) caja.style.display = "";
+
+          EventsManager.init();
+          AppManager.init();
+          LinksManager.init();
+      });
+  };
+
+  if (ProfileManager.isSetup()) {
+      startWebDesk();
+  } else {
+      if (window.OnboardingManager) {
+          OnboardingManager.start();
+      } else {
+          console.error("OnboardingManager not found");
+          startWebDesk(); // Fallback
+      }
+  }
 });
