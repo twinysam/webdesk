@@ -653,7 +653,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const source = document.getElementById("item-template").innerHTML;
       const template = Handlebars.compile(source);
 
-      Promise.all([
+      return Promise.all([
         fetch("items.json")
           .then((res) => res.json())
           .catch(() => []),
@@ -778,10 +778,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const startWebDesk = () => {
       I18nManager.init().then(() => {
-          GreetingManager.updateVisuals(); // Set tree image before revealing
-          PreferencesManager.init();       // Apply prefs (reveals tree)
+          // Initialize other non-gating managers in parallel/early
+          EventsManager.init();
+          LinksManager.init();
+
+          // Wait for Apps to be fetched and rendered
+          return AppManager.init();
+      }).then(() => {
+          // Once apps are ready, initialize visuals
+          GreetingManager.updateVisuals(); // Set tree image (starts load)
+          PreferencesManager.init();       // Apply prefs (might reveal tree container)
           
-          // Finish Greeting Init manually to avoid double-init issues or order dependency
           GreetingManager.updateMessage();
           GreetingManager.startAnimationControl();
           setInterval(GreetingManager.updateMessage, 60000 * 5);
@@ -789,10 +796,6 @@ document.addEventListener("DOMContentLoaded", function () {
           // Reveal Main Content
           const caja = document.querySelector(".caja");
           if(caja) caja.style.display = "";
-
-          EventsManager.init();
-          AppManager.init();
-          LinksManager.init();
       });
   };
 
