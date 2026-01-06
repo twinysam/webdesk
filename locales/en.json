@@ -15,6 +15,7 @@
     "alsoToday": "Also today:",
     "alsoTomorrow": "Also tomorrow:",
     "calcTitle": "<i class=\"bi bi-calculator\"></i> Life Calculator",
+    "calcDescription": "Using your birthdate to calculate dates and number of days.",
     "calcDay": "Day",
     "calcDate": "Date",
     "tvTitle": "Live TV",

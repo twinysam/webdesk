@@ -509,8 +509,14 @@ document.addEventListener("DOMContentLoaded", function () {
         const hr = document.createElement("hr");
         const h2 = document.createElement("h2");
         h2.innerHTML = t("calcTitle");
+        
+        const pDesc = document.createElement("p");
+        pDesc.innerHTML = t("calcDescription");
+        pDesc.className = "text-muted mb-3";
+
         caja.appendChild(hr);
         caja.appendChild(h2);
+        caja.appendChild(pDesc);
         caja.appendChild(calcDiv);
 
         const inputDias = calcDiv.querySelector(".dias-calc-input");
