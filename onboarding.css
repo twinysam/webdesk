@@ -99,46 +99,50 @@ h1 {
     line-height: 1.1;
 }
 
-/* Screen 2 Input */
-.ob-input-large {
+/* Screen 2: Split Inputs */
+.split-input-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.ob-split-input {
     background: transparent;
-    border: none !important; /* Force remove border from style.css */
-    border-bottom: none !important; /* Ensure NO underline for DOB */
+    border: none !important;
+    border-bottom: 2px solid #555 !important; /* Subtle underline for each part */
     color: white;
     font-size: 8rem;
     font-family: 'Exo', sans-serif;
-    font-weight: 200; /* Explicit weight */
-    outline: none;
-    text-align: center; 
-    width: 100%;
-    caret-color: white;
-    position: relative;
-    z-index: 2; /* On top */
-}
-
-.ghost-text {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    
-    /* Sync exact styles with input for matching */
-    font-size: 8rem;
-    font-family: 'Exo', sans-serif;
-    font-weight: 200; 
+    font-weight: 200;
     text-align: center;
-    
-    color: #444; /* Darker gray for placeholder parts */
-    z-index: 1; /* Behind input */
-    pointer-events: none;
-    white-space: pre; /* Layout structure */
+    width: 250px; /* Default for 2 chars */
+    outline: none;
+    padding: 0;
+    line-height: 1;
 }
 
-/* Helper to make typed part transparent in ghost */
-.ghost-hidden {
-    opacity: 0;
+.ob-split-input::placeholder {
+    color: #333;
+    opacity: 1;
 }
+
+.ob-split-input:focus {
+    border-bottom: 2px solid white !important;
+}
+
+/* Specific widths */
+#dob-1, #dob-2 { width: 4ch; } /* ~2 numbers */
+#dob-3 { width: 8ch; } /* 4 numbers */
+
+.split-separator {
+    font-size: 6rem;
+    color: #555;
+    margin: 0 10px;
+    font-weight: 100;
+}
+
+/* Helper to make typed part transparent in ghost - REMOVED GHOST logic */
 
 /* Remove default blue outline/underline overrides */
 input:focus, select:focus, textarea:focus, button:focus {
@@ -264,7 +268,7 @@ input:focus, select:focus, textarea:focus, button:focus {
 }
 
 .lead-text {
-    font-size: 5rem; /* Even Bigger */
+    font-size: 3rem; /* Reduced back */
     margin-bottom: 2rem;
     color: #ccc;
     font-weight: 200;

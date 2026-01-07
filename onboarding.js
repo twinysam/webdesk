@@ -92,29 +92,17 @@ window.OnboardingManager = {
     document.getElementById("link-import").textContent = txt.been_here;
     document.getElementById("btn-import-reveal").textContent = txt.import_btn;
     
-    // Initial Ghost Mask setup
-    const mask = l === "es" ? "DD/MM/AAAA" : "MM/DD/YYYY";
-    // We don't set placeholder anymore, we update ghost
-    OnboardingManager._dobMask = mask;
-    OnboardingManager.updateDobGhost("");
-  },
-
-  updateDobGhost: (val) => {
-      const ghost = document.getElementById("dob-ghost");
-      const mask = OnboardingManager._dobMask; // "MM/DD/YYYY"
-      
-      if (!ghost) return;
-
-      // Construct HTML: <span class="ghost-hidden">VAL</span>REST_OF_MASK
-      // Note: We assume font is monospaced or consistent width. 
-      // If variable width (Exo), perfect overlap is hard unless we mirror exactly.
-      // Strategy: The Ghost contains the FULL string (Val + RemainingMask).
-      // But the 'Val' part is transparent.
-      
-      const len = val.length;
-      const remainingMask = mask.substring(len);
-      
-      ghost.innerHTML = `<span class="ghost-hidden">${val}</span>${remainingMask}`;
+    // Split Input Placeholders based on Lang
+    const idx1 = document.getElementById("dob-1");
+    const idx2 = document.getElementById("dob-2");
+    
+    if (l === "es") {
+        idx1.placeholder = "DD";
+        idx2.placeholder = "MM";
+    } else {
+        idx1.placeholder = "MM";
+        idx2.placeholder = "DD";
+    }
   },
 
   // --- STEP 1: NAME ---
@@ -157,7 +145,7 @@ window.OnboardingManager = {
     document.getElementById("importInput").click();
   },
 
-  // --- STEP 2: DOB ---
+  // --- STEP 2: DOB (Split) ---
   goToStep2: () => {
     // Transition
     document.getElementById("step-name").classList.remove("active");
@@ -165,79 +153,109 @@ window.OnboardingManager = {
     const step2 = document.getElementById("step-dob");
     step2.classList.add("active");
     
-    // Update Name in title
+    // Name replacement
     const l = OnboardingManager.config.lang;
     const txt = OnboardingManager.strings[l];
     document.getElementById("lbl-dob-title").innerHTML = txt.dob_title.replace("{name}", OnboardingManager.config.name);
 
-    const input = document.getElementById("ob-dob-input");
-    input.value = "";
-    OnboardingManager.updateDobGhost("");
-    input.focus();
+    // Focus first input
+    const d1 = document.getElementById("dob-1");
+    const d2 = document.getElementById("dob-2");
+    const d3 = document.getElementById("dob-3");
     
+    d1.value = ""; d2.value = ""; d3.value = "";
+    d1.focus();
+
+    // Hint Logic
     const hint = document.getElementById("hint-dob");
-    
     let hintTimeout = setTimeout(() => {
         hint.classList.remove("hidden");
         hint.classList.add("visible");
     }, 10000);
 
-    // Auto-formatting logic
-    input.addEventListener("input", (e) => {
-        let val = input.value.replace(/\D/g, ''); // keep only nums
-        
-        // Masking MM/DD/YYYY or DD/MM/AAAA
-        if (val.length > 2) val = val.substring(0,2) + '/' + val.substring(2);
-        if (val.length > 5) val = val.substring(0,5) + '/' + val.substring(5);
-        if (val.length > 10) val = val.substring(0,10);
-        
-        input.value = val;
-        
-        // Update Ghost
-        OnboardingManager.updateDobGhost(val);
-
-        if (input.value.length >= 2) {
+    // Setup Listeners for all 3 inputs
+    [d1, d2, d3].forEach((input, idx) => {
+        input.addEventListener("input", (e) => {
+             // Basic nums only
+             input.value = input.value.replace(/\D/g, '');
+             
+             // Auto Advance
+             if (input.value.length >= input.maxLength) {
+                 if (idx === 0) d2.focus();
+                 if (idx === 1) d3.focus();
+             }
+             
+             // Show hint early on interaction
              hint.classList.remove("hidden");
              hint.classList.add("visible");
-        }
-    });
-    
-    // Handle backspace to update ghost correctly
-    input.addEventListener("keyup", (e) => {
-        OnboardingManager.updateDobGhost(input.value);
-    });
+        });
 
-    input.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-             if (OnboardingManager.validateDate(input.value)) {
-                 clearTimeout(hintTimeout);
-                 OnboardingManager.goToStep3();
-             } else {
-                 input.style.color = "#ff6b6b"; 
-                 setTimeout(() => input.style.color = "white", 500);
-             }
-        }
+        input.addEventListener("keydown", (e) => {
+            // Backspace Navigation
+            if (e.key === "Backspace" && input.value.length === 0) {
+                if (idx === 1) d1.focus();
+                if (idx === 2) d2.focus();
+            }
+            
+            // Enter to Submit
+            if (e.key === "Enter") {
+                // Collect full date
+                let v1 = d1.value, v2 = d2.value, v3 = d3.value;
+                // Basic pad
+                if (v1.length === 1) v1 = "0" + v1;
+                if (v2.length === 1) v2 = "0" + v2;
+                
+                const combined = `${v1}/${v2}/${v3}`;
+                
+                if (OnboardingManager.validateDate(combined)) {
+                     clearTimeout(hintTimeout);
+                     OnboardingManager.goToStep3();
+                } else {
+                     d1.style.borderBottomColor = "red";
+                     d2.style.borderBottomColor = "red";
+                     d3.style.borderBottomColor = "red";
+                     setTimeout(() => {
+                         d1.style.borderBottomColor = "#555";
+                         d2.style.borderBottomColor = "#555";
+                         d3.style.borderBottomColor = "#555";
+                     }, 500);
+                }
+            }
+        });
     });
   },
 
   validateDate: (dateStr) => {
-      // Very basic validation, ensure it has 10 chars
-      if (dateStr.length !== 10) return false;
-      // Convert to standard YYYY-MM-DD for saving
       const parts = dateStr.split("/");
+      if (parts.length !== 3) return false;
+      
+      const p1 = parts[0]; 
+      const p2 = parts[1]; 
+      const year = parts[2];
+      
+      if (year.length !== 4) return false;
+      
       const isEs = OnboardingManager.config.lang === "es";
       
-      let day, month, year;
+      let day, month;
       if (isEs) {
-          day = parts[0]; month = parts[1]; year = parts[2];
+          day = p1; month = p2;
       } else {
-          month = parts[0]; day = parts[1]; year = parts[2];
+          month = p1; day = p2;
       }
       
+      // Check logical ranges
+      const m = parseInt(month);
+      const d = parseInt(day);
+      const y = parseInt(year);
+      
+      if (m < 1 || m > 12) return false;
+      if (d < 1 || d > 31) return false;
+      if (y < 1900 || y > new Date().getFullYear()) return false;
+      
       const iso = `${year}-${month}-${day}`;
-      // Basic check
-      const d = new Date(iso);
-      if (isNaN(d.getTime())) return false;
+      const dob = new Date(iso);
+      if (isNaN(dob.getTime())) return false;
       
       OnboardingManager.config.birthday = iso;
       return true;
