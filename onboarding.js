@@ -287,8 +287,12 @@ window.OnboardingManager = {
         hint.classList.add("visible");
     }, 30000);
     
-    // Listen for Enter globally on this step
-    document.addEventListener("keydown", OnboardingManager._appsKeyHandler);
+    // Listen for Enter globally on this step, BUT DELAY IT
+    // to prevent the Enter form Step 2 from triggering this immediately.
+    setTimeout(() => {
+        document.addEventListener("keydown", OnboardingManager._appsKeyHandler);
+        console.log("Onboarding: Step 3 Listeners active");
+    }, 500);
   },
 
   _appsKeyHandler: (e) => {
@@ -317,16 +321,37 @@ window.OnboardingManager = {
       
       console.log("Onboarding: Rendering", OnboardingManager.catalog.length, "apps");
       
+      
       OnboardingManager.catalog.forEach(app => {
           const card = document.createElement("div");
           card.className = "app-card";
           card.onclick = () => OnboardingManager.toggleApp(app, card);
           
           const img = document.createElement("img");
-          // Assuming icons path
-          const iconSrc = app.icon ? `icons/${app.icon}` : "icons/default.png";
-          console.log(`Onboarding: App ${app.name} icon: ${iconSrc}`);
-          img.src = iconSrc;
+          const iconBase = app.icon || "default";
+          
+          // Strategy: Try common formats with 'app_' prefix in 'images/' folder
+          // We set the first guess. If it fails, the onerror handler tries the next.
+          const candidates = [
+              `images/app_${iconBase}.png`,
+              `images/app_${iconBase}.webp`,
+              `images/app_${iconBase}.jpg`,
+              `images/app_${iconBase}.svg`,
+              `images/${iconBase}.png` // Fallback to non-prefixed
+          ];
+          
+          const tryLoad = (sources) => {
+              if (sources.length === 0) {
+                  // Final fallback
+                  img.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z' fill='rgba(0,0,0,0.2)'/%3E%3C/svg%3E";
+                  return;
+              }
+              const next = sources.shift();
+              img.src = next;
+              img.onerror = () => tryLoad(sources);
+          };
+          
+          tryLoad(candidates);
           card.appendChild(img);
           
           container.appendChild(card);

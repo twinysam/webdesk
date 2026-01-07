@@ -46,16 +46,15 @@
     opacity: 1;
     pointer-events: auto;
     transform: translateX(0);
+    z-index: 100; /* Force on top */
 }
 
-.ob-step.next {
-    transform: translateX(100px);
-    opacity: 0;
+/* DEBUG: Remove after fixing */
+#step-apps {
+    border: 2px solid red; 
 }
-
-.ob-step.prev {
-    transform: translateX(-100px);
-    opacity: 0;
+#step-apps h1 {
+    background-color: rgba(255, 0, 0, 0.2);
 }
 
 /* Typography */
@@ -104,7 +103,7 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 20px; /* Tighter gap */
 }
 
 .ob-split-input {
@@ -116,10 +115,11 @@ h1 {
     font-family: 'Exo', sans-serif;
     font-weight: 200;
     text-align: center;
-    width: 250px; /* Default for 2 chars */
     outline: none;
     padding: 0;
     line-height: 1;
+    /* Reset widths */
+    width: auto;
 }
 
 .ob-split-input::placeholder {
@@ -131,14 +131,15 @@ h1 {
     border-bottom: 2px solid white !important;
 }
 
-/* Specific widths */
-#dob-1, #dob-2 { width: 4ch; } /* ~2 numbers */
-#dob-3 { width: 8ch; } /* 4 numbers */
+/* Specific tight widths using ch relative to huge font */
+#dob-1 { width: 2ch; } 
+#dob-2 { width: 2ch; }
+#dob-3 { width: 4ch; }
 
 .split-separator {
     font-size: 6rem;
     color: #555;
-    margin: 0 10px;
+    margin: 0 5px;
     font-weight: 100;
 }
 
@@ -207,10 +208,14 @@ input:focus, select:focus, textarea:focus, button:focus {
 /* Apps Carousel */
 .apps-carousel-wrapper {
     width: 100%;
+    max-width: 100vw;
     overflow-x: auto;
-    padding: 30px 0;
+    padding: 20px 0; /* Reduced padding */
     scrollbar-width: none; 
     min-height: 250px; /* Ensure space is reserved */
+    white-space: nowrap; /* Ensure scrolling */
+    display: block; /* Ensure block context */
+    overflow-y: hidden;
 }
 .apps-carousel-wrapper::-webkit-scrollbar {
     display: none; 
@@ -218,18 +223,18 @@ input:focus, select:focus, textarea:focus, button:focus {
 
 .apps-carousel {
     display: inline-flex; 
+    flex-direction: row; /* Explicit */
     gap: 30px;
-    padding-left: 10px;
-    white-space: nowrap;
+    padding: 0 5vw; /* Start with padding */
     min-width: 100%; /* Ensure it spans */
 }
 
 .app-card {
     width: 180px;
     height: 180px;
-    background-color: white;
+    background-color: white; /* Ensure visible against black */
     border-radius: 35px;
-    display: inline-flex; 
+    display: flex; /* Changed from inline-flex */
     justify-content: center;
     align-items: center;
     cursor: pointer;
