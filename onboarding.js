@@ -1,235 +1,335 @@
 window.OnboardingManager = {
-  // Config state during onboarding
-  tempConfig: {
+  config: {
     name: "",
     birthday: "",
     lang: "en",
-    selectedApps: [], // [{name: "Gmail"}, ...]
+    selectedApps: []
+  },
+  
+  // Data for apps loaded from items.json
+  catalog: [],
+  
+  // Language Map
+  strings: {
+    en: {
+      welcome: "Hi!<br>What's your name?",
+      hint_name: "Let us know what we should call you. Hit ENTER when done.",
+      dob_title: "Hey, {name}<br>What's your birthdate?",
+      hint_dob: "We’ll tell you how many days you’ve been on this planet. Hit ENTER when done.",
+      apps_title: "Which of these websites do you<br>often use?",
+      hint_apps: "You can pick more later. Hit ENTER when done.",
+      ready_1: "Your web desk is ready! Besides having quick access to your most used websites, you'll be able to add your own links, add birthdays and other reminders.",
+      ready_2: "This is meant to be your starting point on the web and it works best <strong>if you pin this tab</strong>.",
+      press_enter: "Press ENTER to see your desk.",
+      been_here: "Been here before?",
+      import_btn: "Import Backup"
+    },
+    es: {
+      welcome: "¡Hola!<br>¿Cómo te llamas?",
+      hint_name: "Dinos cómo deberíamos llamarte. Presiona ENTER al terminar.",
+      dob_title: "Hola, {name}<br>¿Cuándo naciste?",
+      hint_dob: "Te diremos cuántos días has estado en este planeta. Presiona ENTER al terminar.",
+      apps_title: "¿Cuáles de estos sitios usas<br>frecuentemente?",
+      hint_apps: "Podrás elegir más tarde. Presiona ENTER al terminar.",
+      ready_1: "¡Tu escritorio está listo! Además de acceso rápido a tus sitios favoritos, podrás añadir tus enlaces, cumpleaños y recordatorios.",
+      ready_2: "Este será tu punto de partida en la web y funciona mejor <strong>si fijas esta pestaña</strong>.",
+      press_enter: "Presiona ENTER para ver tu escritorio.",
+      been_here: "¿Ya has estado aquí?",
+      import_btn: "Importar Copia"
+    }
   },
 
-  fullCatalog: [],
+  init: async () => {
+    // Check if profile exists
+    if (localStorage.getItem("userProfile")) {
+      return; // Already set up
+    }
 
-  start: () => {
-    const overlay = document.getElementById("onboarding-overlay");
-    overlay.classList.remove("d-none");
-    OnboardingManager.goToStep("welcome");
+    // Detect Language
+    const navLang = navigator.language || navigator.userLanguage;
+    OnboardingManager.config.lang = navLang.startsWith("es") ? "es" : "en";
+    
+    // Apply initial text
+    OnboardingManager.applyLang();
 
-    // Load Catalog (Ignore TV for now per user request)
-    fetch("items.json")
-      .then((res) => res.json())
-      .then((apps) => {
-        OnboardingManager.fullCatalog = apps.sort((a, b) =>
-          a.name.localeCompare(b.name)
-        );
-      })
-      .catch((err) => console.error("Error loading items.json", err));
+    // Show Overlay
+    document.getElementById("onboarding-overlay").classList.remove("d-none");
+    
+    // Setup Listeners
+    OnboardingManager.setupStep1();
+    
+    // Load Apps for later
+    const res = await fetch("items.json");
+    const data = await res.json();
+    OnboardingManager.catalog = data.sort((a,b) => a.name.localeCompare(b.name));
   },
 
-  goToStep: (stepId) => {
-    document
-      .querySelectorAll(".step-container")
-      .forEach((el) => el.classList.remove("active"));
-    document.getElementById(`step-${stepId}`).classList.add("active");
+  applyLang: () => {
+    const l = OnboardingManager.config.lang;
+    const txt = OnboardingManager.strings[l];
+
+    document.getElementById("lbl-welcome").innerHTML = txt.welcome;
+    document.getElementById("hint-name").textContent = txt.hint_name;
+    document.getElementById("lbl-dob-title").innerHTML = txt.dob_title.replace("{name}", ""); // Name comes later
+    document.getElementById("hint-dob").textContent = txt.hint_dob;
+    document.getElementById("lbl-apps-title").innerHTML = txt.apps_title;
+    document.getElementById("hint-apps").textContent = txt.hint_apps;
+    document.getElementById("lbl-ready-1").innerHTML = txt.ready_1;
+    document.getElementById("lbl-ready-2").innerHTML = txt.ready_2;
+    document.getElementById("lbl-press-enter").textContent = txt.press_enter;
+    document.getElementById("link-import").textContent = txt.been_here;
+    
+    // DOB Placeholder
+    const dobInput = document.getElementById("ob-dob-input");
+    dobInput.placeholder = l === "es" ? "DD/MM/AAAA" : "MM/DD/YYYY";
   },
 
-  // --- ACTIONS ---
+  // --- STEP 1: NAME ---
+  setupStep1: () => {
+    const input = document.getElementById("ob-input-name");
+    const hint = document.getElementById("hint-name");
+    
+    input.focus();
+    
+    // Hint timer
+    let hintTimeout = setTimeout(() => {
+        hint.classList.remove("hidden");
+        hint.classList.add("visible");
+    }, 10000);
 
-  // STEP 1: Welcome
-  confirmStart: () => {
-    OnboardingManager.goToStep("profile");
+    input.addEventListener("input", (e) => {
+        if (input.value.length >= 3) {
+            hint.classList.remove("hidden");
+            hint.classList.add("visible");
+        }
+    });
+
+    input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && input.value.trim().length > 0) {
+            clearTimeout(hintTimeout);
+            OnboardingManager.config.name = input.value.trim();
+            OnboardingManager.goToStep2();
+        }
+    });
   },
 
-  confirmImport: () => {
+  showImport: () => {
     document.getElementById("importInput").click();
   },
 
-  handleImport: (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+  // --- STEP 2: DOB ---
+  goToStep2: () => {
+    // Transition
+    document.getElementById("step-name").classList.remove("active");
+    document.getElementById("step-name").classList.add("prev");
+    const step2 = document.getElementById("step-dob");
+    step2.classList.add("active");
+    
+    // Update Name in title
+    const l = OnboardingManager.config.lang;
+    const txt = OnboardingManager.strings[l];
+    document.getElementById("lbl-dob-title").innerHTML = txt.dob_title.replace("{name}", OnboardingManager.config.name);
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const data = JSON.parse(e.target.result);
+    const input = document.getElementById("ob-dob-input");
+    input.value = "";
+    input.focus();
+    
+    const hint = document.getElementById("hint-dob");
+    
+    let hintTimeout = setTimeout(() => {
+        hint.classList.remove("hidden");
+        hint.classList.add("visible");
+    }, 10000);
 
-        if (data.stats)
-          localStorage.setItem("clickStats", JSON.stringify(data.stats));
-        if (data.config)
-          localStorage.setItem("appConfig", JSON.stringify(data.config));
-        if (data.customEvents)
-          localStorage.setItem(
-            "customEvents",
-            JSON.stringify(data.customEvents)
-          );
-        if (data.myApps)
-          localStorage.setItem("myApps", JSON.stringify(data.myApps));
-        if (data.userLinks)
-          localStorage.setItem("userLinks", JSON.stringify(data.userLinks));
-        if (data.userBirthdays)
-          localStorage.setItem(
-            "userBirthdays",
-            JSON.stringify(data.userBirthdays)
-          ); // Added this line
+    // Auto-formatting logic
+    input.addEventListener("input", (e) => {
+        let val = input.value.replace(/\D/g, ''); // keep only nums
+        const isEs = OnboardingManager.config.lang === "es";
+        
+        // Masking MM/DD/YYYY or DD/MM/AAAA
+        if (val.length > 2) val = val.substring(0,2) + '/' + val.substring(2);
+        if (val.length > 5) val = val.substring(0,5) + '/' + val.substring(5);
+        if (val.length > 10) val = val.substring(0,10);
+        
+        input.value = val;
 
-        // Legacy support (older backups didn't have profile, presumably)
-        if (data.profile) {
-          localStorage.setItem("userProfile", JSON.stringify(data.profile));
-        } else if (!localStorage.getItem("userProfile")) {
-          ProfileManager.setProfile("User", "1985-10-17", "en"); // Defaults
+        if (input.value.length >= 2) {
+             hint.classList.remove("hidden");
+             hint.classList.add("visible");
         }
+    });
 
-        Utils.showAlert("Import successful! Reloading...", "success");
-        setTimeout(() => location.reload(), 500);
-      } catch (err) {
-        Utils.showAlert("Error importing: " + err.message, "danger");
+    input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+             if (OnboardingManager.validateDate(input.value)) {
+                 clearTimeout(hintTimeout);
+                 OnboardingManager.goToStep3();
+             } else {
+                 // Blink red or shake could be nice, for now simple alert
+                 // Better: shake animation
+                 input.style.color = "#ff6b6b"; 
+                 setTimeout(() => input.style.color = "white", 500);
+             }
+        }
+    });
+  },
+
+  validateDate: (dateStr) => {
+      // Very basic validation, ensure it has 10 chars
+      if (dateStr.length !== 10) return false;
+      // Convert to standard YYYY-MM-DD for saving
+      const parts = dateStr.split("/");
+      const isEs = OnboardingManager.config.lang === "es";
+      
+      let day, month, year;
+      if (isEs) {
+          day = parts[0]; month = parts[1]; year = parts[2];
+      } else {
+          month = parts[0]; day = parts[1]; year = parts[2];
       }
-    };
-    reader.readAsText(file);
+      
+      const iso = `${year}-${month}-${day}`;
+      // Basic check
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return false;
+      
+      OnboardingManager.config.birthday = iso;
+      return true;
   },
 
-  // STEP 2: Profile
-  saveProfileStep: () => {
-    const name = document.getElementById("ob-name").value.trim();
-    const dob = document.getElementById("ob-dob").value;
-    const lang = document.getElementById("ob-lang").value;
+  // --- STEP 3: APPS ---
+  goToStep3: () => {
+    document.getElementById("step-dob").classList.remove("active");
+    document.getElementById("step-dob").classList.add("prev");
+    const step3 = document.getElementById("step-apps");
+    step3.classList.add("active");
 
-    if (!name || !dob) {
-      Utils.showAlert("Please fill in all fields.", "warning");
-      return;
-    }
-
-    OnboardingManager.tempConfig.name = name;
-    OnboardingManager.tempConfig.birthday = dob;
-    OnboardingManager.tempConfig.lang = lang;
-
-    // Initialize App Selector
-    OnboardingManager.renderAppSelector();
-    OnboardingManager.goToStep("apps");
+    OnboardingManager.renderApps();
+    
+    // Hint logic
+    const hint = document.getElementById("hint-apps");
+    OnboardingManager._appHintTimeout = setTimeout(() => {
+        hint.classList.remove("hidden");
+        hint.classList.add("visible");
+    }, 30000);
+    
+    // Listen for Enter globally on this step
+    document.addEventListener("keydown", OnboardingManager._appsKeyHandler);
   },
 
-  // STEP 3: Apps
-  renderAppSelector: () => {
-    OnboardingManager.renderCatalog();
-    OnboardingManager.renderMyApps();
+  _appsKeyHandler: (e) => {
+      if (e.key === "Enter") {
+          document.removeEventListener("keydown", OnboardingManager._appsKeyHandler);
+          clearTimeout(OnboardingManager._appHintTimeout);
+          OnboardingManager.goToStep4();
+      }
   },
 
-  renderCatalog: (filter = "") => {
-    const container = document.getElementById("ob-catalog-list");
-    container.innerHTML = "";
-
-    // Filter
-    const filtered = OnboardingManager.fullCatalog.filter(
-      (app) =>
-        app.name.toLowerCase().includes(filter.toLowerCase()) &&
-        !OnboardingManager.tempConfig.selectedApps.some(
-          (s) => s.name === app.name
-        )
-    );
-
-    filtered.forEach((app) => {
-      const div = document.createElement("div");
-      div.className = "catalog-item";
-      div.innerHTML = `
-            <div class="app-icon-mini" style="background-image: url('${
-              app.icon ? "icons/" + app.icon : ""
-            }')"></div>
-            <span>${app.name}</span>
-            <button class="btn-action" onclick="OnboardingManager.addApp('${
-              app.name
-            }')"><i class="bi bi-plus-lg"></i></button>
-        `;
-      container.appendChild(div);
-    });
-  },
-
-  renderMyApps: () => {
-    const container = document.getElementById("ob-myapps-list");
-    container.innerHTML = "";
-
-    OnboardingManager.tempConfig.selectedApps.forEach((appObj, index) => {
-      const fullApp = OnboardingManager.fullCatalog.find(
-        (a) => a.name === appObj.name
-      ) || { name: appObj.name };
-
-      const div = document.createElement("div");
-      div.className = "my-app-item";
-      div.dataset.name = appObj.name; // For Sortable
-      div.innerHTML = `
-             <div class="d-flex align-items-center gap-2">
-                 <i class="bi bi-list sort-handle text-secondary me-2"></i>
-                 <div class="app-icon-mini" style="background-image: url('${
-                   fullApp.icon ? "icons/" + fullApp.icon : ""
-                 }')"></div>
-                 <span>${appObj.name}</span>
-             </div>
-            <button class="btn-action" onclick="OnboardingManager.removeApp(${index})"><i class="bi bi-dash-lg"></i></button>
-        `;
-      container.appendChild(div);
-    });
-
-    // Destroy old sortable if exists (not critical as we clear innerHTML but good practice)
-    // Re-init Sortable (Sortable is loaded in index.html)
-    if (window.Sortable) {
-      new Sortable(container, {
-        handle: ".sort-handle",
-        animation: 150,
-        ghostClass: "ghost-class",
-        onEnd: (evt) => {
-          // Update state based on DOM order
-          const newOrder = [];
-          container.querySelectorAll(".my-app-item").forEach((el) => {
-            newOrder.push({ name: el.dataset.name });
-          });
-          OnboardingManager.tempConfig.selectedApps = newOrder;
-        },
+  renderApps: () => {
+      const container = document.getElementById("ob-apps-list");
+      container.innerHTML = "";
+      
+      OnboardingManager.catalog.forEach(app => {
+          const card = document.createElement("div");
+          card.className = "app-card";
+          card.onclick = () => OnboardingManager.toggleApp(app, card);
+          
+          const img = document.createElement("img");
+          // Assuming icons path
+          img.src = app.icon ? `icons/${app.icon}` : "icons/default.png";
+          card.appendChild(img);
+          
+          container.appendChild(card);
       });
-    }
   },
 
-  addApp: (appName) => {
-    OnboardingManager.tempConfig.selectedApps.push({ name: appName });
-    const searchVal = document.getElementById("ob-search").value;
-    OnboardingManager.renderCatalog(searchVal);
-    OnboardingManager.renderMyApps();
+  toggleApp: (app, card) => {
+      const idx = OnboardingManager.config.selectedApps.findIndex(a => a.name === app.name);
+      if (idx > -1) {
+          OnboardingManager.config.selectedApps.splice(idx, 1);
+          card.classList.remove("selected");
+      } else {
+          OnboardingManager.config.selectedApps.push({name: app.name});
+          card.classList.add("selected");
+      }
+
+      if (OnboardingManager.config.selectedApps.length >= 5) {
+          const hint = document.getElementById("hint-apps");
+          hint.classList.remove("hidden");
+          hint.classList.add("visible");
+      }
   },
 
-  removeApp: (index) => {
-    OnboardingManager.tempConfig.selectedApps.splice(index, 1);
-    const searchVal = document.getElementById("ob-search").value;
-    OnboardingManager.renderCatalog(searchVal);
-    OnboardingManager.renderMyApps();
+  // --- STEP 4: READY ---
+  goToStep4: () => {
+      document.getElementById("step-apps").classList.remove("active");
+      document.getElementById("step-apps").classList.add("prev");
+      const step4 = document.getElementById("step-ready");
+      step4.classList.add("active");
+      
+      document.addEventListener("keydown", OnboardingManager._finishKeyHandler);
   },
 
-  filterCatalog: (val) => {
-    OnboardingManager.renderCatalog(val);
+  _finishKeyHandler: (e) => {
+      if (e.key === "Enter") {
+          document.removeEventListener("keydown", OnboardingManager._finishKeyHandler);
+          OnboardingManager.finish();
+      }
   },
 
   finish: () => {
-    // Save Everything
-    const { name, birthday, lang, selectedApps } = OnboardingManager.tempConfig;
-
-    // 1. Save Config (Order & Default Filters)
-    // We map only names for the order array in config (legacy support + syncing)
-    const config = {
-      order: selectedApps.map((a) => a.name),
-      hidden: [],
-      filters: { hideNeverClicked: false, minClicks: 0 },
-    };
-
-    try {
+      const { name, birthday, lang, selectedApps } = OnboardingManager.config;
+      
+      // Save Config
+      const config = {
+          order: selectedApps.map(a => a.name),
+          hidden: [],
+          filters: { hideNeverClicked: false, minClicks: 0 }
+      };
+      
       localStorage.setItem("myApps", JSON.stringify(selectedApps));
       localStorage.setItem("appConfig", JSON.stringify(config));
-
-      // 2. Save Profile (Triggers Reload internally? NO, ProfileManager.setProfile calls location.reload())
-      // But we want to ensure everything is saved BEFORE reloading.
-      // ProfileManager.setProfile logic:
-      // localStorage.setItem(ProfileManager.STORAGE_KEY, JSON.stringify(profile));
-      // I18nManager.setLang(lang);
-      // location.reload();
-
+      
+      // Save Profile
       ProfileManager.setProfile(name, birthday, lang);
-    } catch (e) {
-      Utils.showAlert("Error saving setup: " + e.message, "danger");
-    }
   },
+
+  handleImport: (event) => {
+      // Reuse existing logic from previous version, just adapted
+       const file = event.target.files[0];
+        if (!file) return;
+    
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const data = JSON.parse(e.target.result);
+    
+            if (data.stats) localStorage.setItem("clickStats", JSON.stringify(data.stats));
+            if (data.config) localStorage.setItem("appConfig", JSON.stringify(data.config));
+            if (data.customEvents) localStorage.setItem("customEvents", JSON.stringify(data.customEvents));
+            if (data.myApps) localStorage.setItem("myApps", JSON.stringify(data.myApps));
+            if (data.userLinks) localStorage.setItem("userLinks", JSON.stringify(data.userLinks));
+            if (data.userBirthdays) localStorage.setItem("userBirthdays", JSON.stringify(data.userBirthdays));
+    
+            if (data.profile) {
+              localStorage.setItem("userProfile", JSON.stringify(data.profile));
+            } else {
+              ProfileManager.setProfile("User", "1985-10-17", "en"); 
+            }
+            
+            location.reload();
+          } catch (err) {
+            alert("Error importing: " + err.message);
+          }
+        };
+        reader.readAsText(file);
+  }
 };
+
+// Auto-init logic moved to index.html or main loop
+document.addEventListener("DOMContentLoaded", () => {
+   // Only start if not importing or something? 
+   // Actually, webdesk.js loads stats and things.
+   // We want this to run if profile is missing.
+   OnboardingManager.init();
+});

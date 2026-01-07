@@ -24,6 +24,7 @@
     <link rel="stylesheet" type="text/css" href="style.css" />
     <link rel="stylesheet" type="text/css" href="app-icons.css" />
     <link rel="stylesheet" type="text/css" href="tv-icons.css" />
+    <link rel="stylesheet" type="text/css" href="onboarding.css" />
   </head>
   <body>
     <div class="settings-icon">
@@ -47,61 +48,61 @@
 
     <!-- ONBOARDING OVERLAY -->
     <div id="onboarding-overlay" class="d-none">
-       <div class="onboarding-card">
-          <!-- STEP 1: WELCOME -->
-          <div id="step-welcome" class="step-container active">
-              <h2>First time here?</h2>
-              <!--<p class="mb-5 lead">First time here?</p>-->
-              <div class="d-flex justify-content-center gap-3">
-                  <button class="btn btn-primary btn-lg px-5" onclick="OnboardingManager.confirmStart()">Yes, Start Fresh</button>
-                  <button class="btn btn-outline-light btn-lg px-5" onclick="OnboardingManager.confirmImport()">No, Import Backup</button>
-              </div>
-              <input type="file" id="importInput" accept=".json" style="display:none" onchange="OnboardingManager.handleImport(event)">
-          </div>
+       <!-- CONTAINER -->
+       <div id="onboarding-container">
+           
+           <!-- STEP 1: NAME -->
+           <div id="step-name" class="ob-step active">
+               <h1 id="lbl-welcome">Hi!<br>What's your name?</h1>
+               <div class="input-line-wrapper">
+                   <input type="text" id="ob-input-name" class="ob-input" autocomplete="off" spellcheck="false" maxlength="20">
+                   <span class="blinking-cursor">|</span>
+               </div>
+               <div id="hint-name" class="ob-hint fade-in hidden">Let us know what we should call you. Hit ENTER when done.</div>
+               
+               <div class="bottom-action">
+                   <a href="#" id="link-import" onclick="OnboardingManager.showImport()">Been here before?</a>
+                   <input type="file" id="importInput" accept=".json" style="display:none" onchange="OnboardingManager.handleImport(event)">
+               </div>
+           </div>
 
-          <!-- STEP 2: PROFILE -->
-          <div id="step-profile" class="step-container">
-              <h2>Let's get to know you</h2>
-              <div class="mb-3 text-start">
-                  <label class="form-label">Language / Idioma</label>
-                  <select id="ob-lang" class="form-select bg-dark text-white border-secondary">
-                      <option value="en">English</option>
-                      <option value="es">Español</option>
-                  </select>
-              </div>
-              <div class="mb-3 text-start">
-                  <label class="form-label">Name</label>
-                  <input type="text" id="ob-name" class="form-control bg-dark text-white border-secondary" placeholder="Your Name">
-              </div>
-              <div class="mb-4 text-start">
-                  <label class="form-label">Birthday</label>
-                  <input type="date" id="ob-dob" class="form-control bg-dark text-white border-secondary">
-              </div>
-              <button class="btn btn-primary px-5" onclick="OnboardingManager.saveProfileStep()">Next <i class="bi bi-arrow-right"></i></button>
-          </div>
+           <!-- STEP 2: BIRTHDATE -->
+           <div id="step-dob" class="ob-step">
+                <h1 id="lbl-dob-title">Hey, <span id="lbl-name-target"></span><br>What's your birthdate?</h1>
+                
+                <div class="dob-wrapper">
+                    <input type="text" id="ob-dob-input" class="ob-input-large" placeholder="MM/DD/YYYY" autocomplete="off">
+                </div>
+                
+                <div id="hint-dob" class="ob-hint fade-in hidden">We’ll tell you how many days you’ve been on this planet. Hit ENTER when done.</div>
+           </div>
 
-          <!-- STEP 3: APPS -->
-          <div id="step-apps" class="step-container">
-              <h2>Select your Apps</h2>
-              <p class="text-muted mb-3">Pick the apps you want on your dashboard.</p>
-              
-              <div class="app-selection-container">
-                  <div class="catalog-section">
-                      <input type="text" id="ob-search" class="form-control bg-dark text-white border-secondary mb-2" placeholder="Search available apps..." oninput="OnboardingManager.filterCatalog(this.value)">
-                      <div id="ob-catalog-list" class="app-grid-scroll">
-                          <!-- Catalog Items -->
-                      </div>
-                  </div>
-                  <div class="my-apps-section">
-                      <h5 class="border-bottom pb-2">My Desk</h5>
-                      <div id="ob-myapps-list" class="my-apps-scroll">
-                          <!-- Selected Items -->
-                      </div>
-                  </div>
-              </div>
-              
-              <button class="btn btn-success btn-lg mt-4 px-5" onclick="OnboardingManager.finish()">Finish Setup <i class="bi bi-check-lg"></i></button>
-          </div>
+           <!-- STEP 3: APPS -->
+           <div id="step-apps" class="ob-step">
+               <h1 id="lbl-apps-title">Which of these websites do you<br>often use?</h1>
+               
+               <!-- Horizontal Scroll Container -->
+               <div class="apps-carousel-wrapper">
+                   <div id="ob-apps-list" class="apps-carousel">
+                       <!-- Generated JS -->
+                   </div>
+               </div>
+
+               <div id="hint-apps" class="ob-hint fade-in hidden">You can pick more later. Hit ENTER when done.</div>
+           </div>
+
+           <!-- STEP 4: READY -->
+           <div id="step-ready" class="ob-step">
+               <div class="ready-content">
+                   <p id="lbl-ready-1" class="lead-text">Your web desk is ready! Besides having quick access to your most used websites, you'll be able to add your own links, add birthdays and other reminders.</p>
+                   <p id="lbl-ready-2" class="lead-text">This is meant to be your starting point on the web and it works best <strong>if you pin this tab</strong>.</p>
+               </div>
+               
+               <div class="press-enter-container">
+                   <span id="lbl-press-enter" class="blink-videogame">Press ENTER to see your desk.</span>
+               </div>
+           </div>
+
        </div>
     </div>
     

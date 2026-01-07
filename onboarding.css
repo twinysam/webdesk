@@ -1,0 +1,242 @@
+/* Onboarding Full Screen Styles */
+
+#onboarding-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+    z-index: 9999;
+    color: white;
+    font-family: 'Exo', sans-serif; /* Matches designs */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#onboarding-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    padding: 10vw;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.ob-step {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 10vw;
+}
+
+.ob-step.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+}
+
+.ob-step.next {
+    transform: translateX(100px);
+    opacity: 0;
+}
+
+.ob-step.prev {
+    transform: translateX(-100px);
+    opacity: 0;
+}
+
+/* Typography */
+h1 {
+    font-size: 5rem;
+    font-weight: 200;
+    margin-bottom: 2rem;
+    line-height: 1.2;
+}
+
+/* Inputs */
+.input-line-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    max-width: 800px;
+}
+
+.ob-input {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid white;
+    color: white;
+    font-size: 6rem;
+    font-family: 'Exo', sans-serif;
+    font-weight: 200;
+    outline: none;
+    padding: 10px 0;
+    width: 100%;
+}
+
+.ob-input-large {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 8rem; /* Big for DOB */
+    font-family: 'Exo', sans-serif;
+    outline: none;
+    text-align: center;
+    width: 100%;
+}
+
+.blinking-cursor {
+    font-size: 6rem;
+    font-weight: 100;
+    color: white;
+    animation: blink-caret 1s step-end infinite;
+    margin-left: 5px;
+}
+
+@keyframes blink-caret {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* Hints */
+.ob-hint {
+    font-size: 1.2rem;
+    color: #aaa;
+    margin-top: 2rem;
+    font-family: 'Nunito', sans-serif;
+    border-top: 1px solid #444;
+    padding-top: 1rem;
+    display: inline-block;
+}
+
+.fade-in {
+    animation: fadeIn 1s ease-in forwards;
+}
+
+.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.visible {
+    visibility: visible;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Bottom Actions */
+.bottom-action {
+    position: absolute;
+    bottom: 5vh;
+    left: 10vw;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.5rem;
+}
+
+.bottom-action a {
+    color: #888;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.bottom-action a:hover {
+    color: white;
+}
+
+/* Apps Carousel */
+.apps-carousel-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    padding: 20px 0;
+    scrollbar-width: none; /* Firefox */
+}
+.apps-carousel-wrapper::-webkit-scrollbar {
+    display: none; 
+}
+
+.apps-carousel {
+    display: flex;
+    gap: 20px;
+    padding-left: 5px;
+}
+
+.app-card {
+    width: 150px;
+    height: 150px;
+    background-color: white;
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+}
+
+.app-card:hover {
+    transform: scale(1.05);
+}
+
+.app-card img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+}
+
+.app-card.selected::after {
+    content: "\F26A"; /* Bootstrap check-circle-fill */
+    font-family: "bootstrap-icons";
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    color: #198754; /* Green */
+    font-size: 2rem;
+}
+
+/* Ready Step */
+.ready-content {
+    max-width: 900px;
+    margin-bottom: 4rem;
+}
+
+.lead-text {
+    font-size: 2rem;
+    font-family: 'Nunito', sans-serif;
+    margin-bottom: 2rem;
+    color: #ccc;
+}
+
+.press-enter-container {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.blink-videogame {
+    font-size: 2rem;
+    font-family: 'Exo', sans-serif;
+    text-transform: uppercase;
+    animation: blink-game 1.5s infinite ease-in-out;
+}
+
+@keyframes blink-game {
+    0% { opacity: 0.2; }
+    50% { opacity: 1; }
+    100% { opacity: 0.2; }
+}
