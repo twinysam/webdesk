@@ -7,440 +7,327 @@
     "title": "Gmail"
   },
   {
-    "name": "YouTube",
-    "url": "https://www.youtube.com/",
-    "icon": "youtube",
+    "name": "Google Drive",
+    "url": "https://drive.google.com/",
+    "icon": "google-drive",
     "order": 2,
-    "title": "YouTube"
-  },
-  {
-    "name": "YouTube Music",
-    "url": "https://music.youtube.com/",
-    "icon": "yt-music",
-    "order": 3,
-    "title": "YouTube Music"
-  },
-  {
-    "name": "Google Contacts",
-    "url": "https://contacts.google.com/",
-    "icon": "google-contacts",
-    "order": 4,
-    "title": "Google Contacts"
+    "title": "Google Drive"
   },
   {
     "name": "Google Maps",
     "url": "https://www.google.com/maps/",
     "icon": "google-maps",
-    "order": 5,
+    "order": 3,
     "title": "Google Maps"
   },
   {
     "name": "Google Calendar",
     "url": "https://calendar.google.com/",
     "icon": "calendar",
-    "order": 6,
+    "order": 4,
     "title": "Google Calendar"
   },
   {
     "name": "Google Photos",
     "url": "https://photos.google.com/",
     "icon": "google-photos",
-    "order": 7,
+    "order": 5,
     "title": "Google Photos"
   },
   {
-    "name": "Google Drive",
-    "url": "https://drive.google.com/",
-    "icon": "google-drive",
+    "name": "Google Contacts",
+    "url": "https://contacts.google.com/",
+    "icon": "google-contacts",
+    "order": 6,
+    "title": "Google Contacts"
+  },
+  {
+    "name": "Google News",
+    "url": "https://news.google.com/",
+    "icon": "google-news",
+    "order": 7,
+    "title": "Google News"
+  },
+  {
+    "name": "Google Translate",
+    "url": "https://translate.google.com/",
+    "icon": "googletranslate",
     "order": 8,
-    "title": "Google Drive"
+    "title": "Google Translate"
   },
   {
-    "name": "Mercado Libre",
-    "url": "https://www.mercadolibre.com.ar/",
-    "icon": "meli",
+    "name": "Google Keep",
+    "url": "https://keep.google.com/",
+    "icon": "googlekeep",
     "order": 9,
-    "title": "Mercado Libre"
+    "title": "Google Keep"
   },
   {
-    "name": "Mercado Pago",
-    "url": "https://www.mercadopago.com.ar/home",
-    "icon": "mercado-pago",
+    "name": "Google Home",
+    "url": "https://home.google.com/",
+    "icon": "googlehome",
     "order": 10,
-    "title": "Mercado Pago"
+    "title": "Google Home"
   },
   {
-    "name": "EZTV",
-    "url": "https://eztvx.to/home",
-    "icon": "eztv",
+    "name": "Google Meet",
+    "url": "https://meet.google.com/",
+    "icon": "googlemeet",
     "order": 11,
-    "title": "EZTV"
+    "title": "Google Meet"
   },
   {
-    "name": "YTS",
-    "url": "https://yts.lt/",
-    "icon": "yts",
+    "name": "YouTube",
+    "url": "https://www.youtube.com/",
+    "icon": "youtube",
     "order": 12,
-    "title": "YTS"
-  },
-  {
-    "name": "The Pirate Bay",
-    "url": "https://thepiratebay10.info/",
-    "icon": "piratebay",
-    "order": 13,
-    "title": "The Pirate Bay"
-  },
-  {
-    "name": "Letterboxd",
-    "url": "https://www.letterboxd.com/",
-    "icon": "letterboxd",
-    "order": 14,
-    "title": "Letterboxd"
-  },
-  {
-    "name": "Copilot",
-    "url": "https://copilot.microsoft.com/",
-    "icon": "copilot",
-    "order": 15,
-    "title": "Microsoft Copilot"
-  },
-  {
-    "name": "Google Gemini",
-    "url": "https://gemini.google.com/",
-    "icon": "gemini",
-    "order": 16,
-    "title": "Google Gemini"
-  },
-  {
-    "name": "DeepSeek",
-    "url": "https://chat.deepseek.com",
-    "icon": "deepseek",
-    "order": 17,
-    "title": "DeepSeek"
-  },
-  {
-    "name": "ChatGPT",
-    "url": "https://chatgpt.com/",
-    "icon": "chatgpt",
-    "order": 18,
-    "title": "ChatGPT"
-  },
-  {
-    "name": "Meta AI",
-    "url": "https://www.meta.ai/",
-    "icon": "metaai",
-    "order": 19,
-    "title": "Meta AI"
-  },
-  {
-    "name": "Grok",
-    "url": "https://grok.com/",
-    "icon": "grok",
-    "order": 20,
-    "title": "Grok"
-  },
-  {
-    "name": "Disney+",
-    "url": "https://www.disneyplus.com",
-    "icon": "disneyplus",
-    "order": 21,
-    "title": "Disney+"
-  },
-  {
-    "name": "HBO Max",
-    "url": "https://www.hbomax.com",
-    "icon": "hbo-max",
-    "order": 22,
-    "title": "HBO Max"
-  },
-  {
-    "name": "Telecentro",
-    "url": "https://telecentro.com.ar/sucursal-virtual",
-    "icon": "telecentro",
-    "order": 22,
-    "title": "Telecentro"
-  },
-  {
-    "name": "Lichess",
-    "url": "https://www.lichess.org/",
-    "icon": "lichess",
-    "order": 23,
-    "title": "Lichess"
-  },
-  {
-    "name": "Instagram",
-    "url": "https://www.instagram.com",
-    "icon": "instagram",
-    "order": 24,
-    "title": "Instagram"
-  },
-  {
-    "name": "Instapaper",
-    "url": "https://www.instapaper.com/u",
-    "icon": "instapaper",
-    "order": 25,
-    "title": "Instapaper"
-  },
-  {
-    "name": "Substack",
-    "url": "https://substack.com/inbox",
-    "icon": "substack",
-    "order": 26,
-    "title": "Substack"
-  },
-  {
-    "name": "Twitch",
-    "url": "https://www.twitch.tv/",
-    "icon": "twitch",
-    "order": 27,
-    "title": "Twitch"
-  },
-  {
-    "name": "Wikipedia",
-    "url": "https://en.wikipedia.org/wiki/Main_Page",
-    "icon": "wikipedia",
-    "order": 28,
-    "title": "Wikipedia"
-  },
-  {
-    "name": "Cinemark Hoyts",
-    "url": "https://www.cinemarkhoyts.com.ar/",
-    "icon": "cinemark",
-    "order": 29,
-    "title": "Cinemark Hoyts"
-  },
-  {
-    "name": "Sube",
-    "url": "https://tarjetasube.sube.gob.ar/SubeWeb/Webforms/Account/Views/login.aspx",
-    "icon": "sube",
-    "order": 30,
-    "title": "Sube"
-  },
-  {
-    "name": "Santander",
-    "url": "https://www2.personas.santander.com.ar/obp-webapp/angular/#!/login",
-    "icon": "santander",
-    "order": 31,
-    "title": "Santander"
-  },
-  {
-    "name": "Paypal",
-    "url": "https://www.paypal.com/myaccount/summary?intl=0",
-    "icon": "paypal",
-    "order": 32,
-    "title": "Paypal"
-  },
-  {
-    "name": "BitcoinWisdom",
-    "url": "https://bitcoinwisdom.io/markets/bitfinex/btcusd",
-    "icon": "btc-wisdom",
-    "order": 33,
-    "title": "BitcoinWisdom"
-  },
-  {
-    "name": "MangaDex",
-    "url": "https://mangadex.org",
-    "icon": "mangadex",
-    "order": 34,
-    "title": "MangaDex"
-  },
-  {
-    "name": "Tuenti",
-    "url": "https://app.tuenti.com.ar/",
-    "icon": "tuenti",
-    "order": 35,
-    "title": "Tuenti"
-  },
-  {
-    "name": "Github",
-    "url": "https://github.com/",
-    "icon": "github",
-    "order": 36,
-    "title": "Github"
-  },
-  {
-    "name": "Hacker News",
-    "url": "https://news.ycombinator.com/",
-    "icon": "hackernews",
-    "order": 37,
-    "title": "Hacker News"
-  },
-  {
-    "name": "Sesse Chess",
-    "url": "http://analysis.sesse.net/",
-    "icon": "sesse",
-    "order": 38,
-    "title": "Sesse Chess"
-  },
-  {
-    "name": "Mixnmojo",
-    "url": "https://mixnmojo.com",
-    "icon": "mixnmojo",
-    "order": 39,
-    "title": "Mixnmojo"
-  },
-  {
-    "name": "Radio Garden",
-    "url": "https://radio.garden/",
-    "icon": "radiogarden",
-    "order": 40,
-    "title": "Radio Garden"
+    "title": "YouTube"
   },
   {
     "name": "Facebook",
     "url": "https://www.facebook.com/",
     "icon": "facebook",
+    "order": 13,
     "title": "Facebook"
   },
   {
-    "name": "The New Yorker",
-    "url": "https://www.newyorker.com/",
-    "icon": "newyorker",
-    "title": "The New Yorker"
+    "name": "Instagram",
+    "url": "https://www.instagram.com",
+    "icon": "instagram",
+    "order": 14,
+    "title": "Instagram"
   },
   {
-    "name": "Amazon",
-    "url": "https://www.amazon.com",
-    "icon": "amazon",
-    "title": "Amazon"
-  },
-  {
-    "name": "Duolingo",
-    "url": "https://www.duolingo.com/learn",
-    "icon": "duolingo",
-    "title": "Duolingo"
-  },
-  {
-    "name": "Simplenote",
-    "url": "https://app.simplenote.com/",
-    "icon": "simplenote",
-    "title": "Simplenote"
-  },
-  {
-    "name": "Outlook Live",
-    "url": "https://outlook.live.com/mail/inbox",
-    "icon": "outlook",
-    "title": "Outlook"
-  },
-  {
-    "name": "Microsoft To Do",
-    "url": "https://to-do.live.com/tasks/",
-    "icon": "todo",
-    "title": "Microsoft To Do"
-  },
-  {
-    "name": "Reddit",
-    "url": "https://www.reddit.com/",
-    "icon": "reddit",
-    "title": "Reddit"
-  },
-  {
-    "name": "Twitter",
-    "url": "https://www.twitter.com/",
-    "icon": "twitter",
-    "title": "Twitter"
+    "name": "ChatGPT",
+    "url": "https://chatgpt.com/",
+    "icon": "chatgpt",
+    "order": 15,
+    "title": "ChatGPT"
   },
   {
     "name": "X",
     "url": "https://x.com/",
     "icon": "x",
+    "order": 16,
     "title": "X"
   },
   {
-    "name": "Playdate Pulp",
-    "url": "https://play.date/pulp/",
-    "icon": "pulp",
-    "title": "Playdate Pulp"
-  },
-  {
-    "name": "Chrome Remote Desktop",
-    "url": "https://remotedesktop.google.com/access/",
-    "icon": "remote",
-    "title": "Chrome Remote Desktop"
+    "name": "Reddit",
+    "url": "https://www.reddit.com/",
+    "icon": "reddit",
+    "order": 17,
+    "title": "Reddit"
   },
   {
     "name": "WhatsApp Web",
     "url": "https://web.whatsapp.com/",
     "icon": "whatsapp",
+    "order": 18,
     "title": "WhatsApp Web"
+  },
+  {
+    "name": "Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Main_Page",
+    "icon": "wikipedia",
+    "order": 19,
+    "title": "Wikipedia"
+  },
+  {
+    "name": "Bing",
+    "url": "https://www.bing.com/",
+    "icon": "bing",
+    "order": 20,
+    "title": "Bing"
+  },
+  {
+    "name": "TikTok",
+    "url": "https://www.tiktok.com/",
+    "icon": "tiktok",
+    "order": 21,
+    "title": "TikTok"
+  },
+  {
+    "name": "Amazon",
+    "url": "https://www.amazon.com",
+    "icon": "amazon",
+    "order": 22,
+    "title": "Amazon"
+  },
+  {
+    "name": "Yahoo",
+    "url": "https://www.yahoo.com/",
+    "icon": "yahoo",
+    "order": 23,
+    "title": "Yahoo"
+  },
+  {
+    "name": "LinkedIn",
+    "url": "https://www.linkedin.com/",
+    "icon": "linkedin",
+    "order": 24,
+    "title": "LinkedIn"
+  },
+  {
+    "name": "Netflix",
+    "url": "https://www.netflix.com/",
+    "icon": "netflix",
+    "order": 25,
+    "title": "Netflix"
+  },
+  {
+    "name": "Outlook Live",
+    "url": "https://outlook.live.com/mail/inbox",
+    "icon": "outlook",
+    "order": 26,
+    "title": "Outlook"
+  },
+  {
+    "name": "Temu",
+    "url": "https://www.temu.com/",
+    "icon": "temu",
+    "order": 27,
+    "title": "Temu"
+  },
+  {
+    "name": "Google Gemini",
+    "url": "https://gemini.google.com/",
+    "icon": "gemini",
+    "order": 28,
+    "title": "Google Gemini"
+  },
+  {
+    "name": "Twitch",
+    "url": "https://www.twitch.tv/",
+    "icon": "twitch",
+    "order": 29,
+    "title": "Twitch"
   },
   {
     "name": "Telegram",
     "url": "https://web.telegram.org/z",
     "icon": "telegram",
+    "order": 30,
     "title": "Telegram"
   },
   {
     "name": "DuckDuckGo",
     "url": "https://duckduckgo.com/",
     "icon": "duckduckgo",
+    "order": 31,
     "title": "DuckDuckGo"
   },
   {
-    "name": "Todoist",
-    "url": "https://todoist.com/app/",
-    "icon": "todoist",
-    "title": "Todoist"
+    "name": "The New York Times",
+    "url": "https://nytimes.com",
+    "icon": "nytimes",
+    "order": 32,
+    "title": "The New York Times"
   },
   {
-    "name": "Any.do",
-    "url": "https://desktop.any.do/",
-    "icon": "anydo",
-    "title": "Any.do"
+    "name": "eBay",
+    "url": "https://www.ebay.com/",
+    "icon": "ebay",
+    "order": 33,
+    "title": "eBay"
   },
   {
-    "name": "Memrise",
-    "url": "https://app.memrise.com/dashboard",
-    "icon": "memrise",
-    "title": "Memrise"
+    "name": "Walmart",
+    "url": "https://www.walmart.com/",
+    "icon": "walmart",
+    "order": 34,
+    "title": "Walmart"
+  },
+
+  {
+    "name": "YouTube Music",
+    "url": "https://music.youtube.com/",
+    "icon": "yt-music",
+    "order": 35,
+    "title": "YouTube Music"
   },
   {
-    "name": "Visual Studio Code",
-    "url": "https://vscode.dev/",
-    "icon": "vscode",
-    "title": "Visual Studio Code"
+    "name": "Spotify",
+    "url": "https://www.spotify.com/",
+    "icon": "spotify",
+    "order": 36,
+    "title": "Spotify"
   },
   {
-    "name": "Phoenix Code Editor",
-    "url": "https://phcode.dev/",
-    "icon": "phcode",
-    "title": "Phoenix Code Editor"
+    "name": "Soundcloud",
+    "url": "https://soundcloud.com/",
+    "icon": "soundcloud",
+    "order": 37,
+    "title": "Soundcloud"
   },
   {
-    "name": "Página 12",
-    "url": "https://www.pagina12.com.ar",
-    "icon": "pagina12",
-    "title": "Página 12"
+    "name": "Radio Garden",
+    "url": "https://radio.garden/",
+    "icon": "radiogarden",
+    "order": 38,
+    "title": "Radio Garden"
   },
   {
-    "name": "La Izquierda Diario",
-    "url": "https://www.laizquierdadiario.com/",
-    "icon": "izquierda",
-    "title": "La Izquierda Diario"
+    "name": "Un Mundo Maravilloso",
+    "url": "https://open.spotify.com/show/0zGFAX8zeYbDjEX4sC7bbk",
+    "icon": "mundomaravilloso",
+    "order": 39,
+    "title": "Un Mundo Maravilloso"
+  },
+
+  {
+    "name": "Prime Video",
+    "url": "https://www.primevideo.com/",
+    "icon": "primevideo",
+    "order": 40,
+    "title": "Prime Video"
   },
   {
-    "name": "La Nación",
-    "url": "https://www.lanacion.com.ar/",
-    "icon": "lanacion",
-    "title": "La Nación"
+    "name": "Disney+",
+    "url": "https://www.disneyplus.com",
+    "icon": "disneyplus",
+    "title": "Disney+"
   },
   {
-    "name": "Wordle",
-    "url": "https://www.nytimes.com/games/wordle/index.html",
-    "icon": "wordle",
-    "title": "Wordle"
+    "name": "HBO Max",
+    "url": "https://www.hbomax.com",
+    "icon": "hbo-max",
+    "title": "HBO Max"
   },
   {
-    "name": "Google News",
-    "url": "https://news.google.com/",
-    "icon": "google-news",
-    "title": "Google News"
+    "name": "Paramount+",
+    "url": "https://www.paramountplus.com/",
+    "icon": "paramount",
+    "title": "Paramount+"
   },
   {
-    "name": "Calm",
-    "url": "https://app.www.calm.com/homepage",
-    "icon": "calm",
-    "title": "Calm"
+    "name": "Max",
+    "url": "https://www.max.com/",
+    "icon": "max",
+    "title": "Max"
+  },
+  {
+    "name": "Crunchyroll",
+    "url": "https://www.crunchyroll.com/",
+    "icon": "crunchyroll",
+    "title": "Crunchyroll"
+  },
+  {
+    "name": "MUBI",
+    "url": "https://mubi.com/",
+    "icon": "mubi",
+    "title": "MUBI"
+  },
+  {
+    "name": "Letterboxd",
+    "url": "https://www.letterboxd.com/",
+    "icon": "letterboxd",
+    "title": "Letterboxd"
+  },
+  {
+    "name": "IMDb",
+    "url": "https://www.imdb.com/",
+    "icon": "imdb",
+    "title": "IMDb"
   },
   {
     "name": "Apple Trailers",
@@ -449,28 +336,40 @@
     "title": "Apple Trailers"
   },
   {
-    "name": "Trello",
-    "url": "https://www.trello.com",
-    "icon": "trello",
-    "title": "Trello"
+    "name": "EZTV",
+    "url": "https://eztvx.to/home",
+    "icon": "eztv",
+    "title": "EZTV"
   },
   {
-    "name": "Kindle",
-    "url": "https://read.amazon.com/kindle-library",
-    "icon": "kindle",
-    "title": "Kindle"
+    "name": "YTS",
+    "url": "https://yts.lt/",
+    "icon": "yts",
+    "title": "YTS"
   },
   {
-    "name": "Udemy",
-    "url": "https://www.udemy.com/",
-    "icon": "udemy",
-    "title": "Udemy"
+    "name": "The Pirate Bay",
+    "url": "https://thepiratebay10.info/",
+    "icon": "piratebay",
+    "title": "The Pirate Bay"
   },
   {
-    "name": "Remember The Milk",
-    "url": "https://www.rememberthemilk.com/app/",
-    "icon": "remember",
-    "title": "Remember The Milk"
+    "name": "Vix",
+    "url": "https://www.vix.com/",
+    "icon": "vix",
+    "title": "Vix"
+  },
+  {
+    "name": "DAZN",
+    "url": "https://www.dazn.com/",
+    "icon": "dazn",
+    "title": "DAZN"
+  },
+  {
+    "name": "Telecentro",
+    "url": "https://telecentro.com.ar/sucursal-virtual",
+    "icon": "telecentro",
+    "title": "Telecentro"
   },
   {
     "name": "Telecentro Gateway",
@@ -478,107 +377,73 @@
     "icon": "telecentro-play",
     "title": "Telecentro Gateway"
   },
+
   {
-    "name": "New York Times",
-    "url": "https://nytimes.com",
-    "icon": "nytimes",
-    "title": "New York Times"
+    "name": "NBA",
+    "url": "https://www.nba.com/",
+    "icon": "nba",
+    "title": "NBA"
+  },
+  {
+    "name": "MLB",
+    "url": "https://www.mlb.com/",
+    "icon": "mlb",
+    "title": "MLB"
+  },
+  {
+    "name": "Formula 1",
+    "url": "https://www.formula1.com/",
+    "icon": "f1",
+    "title": "Formula 1"
+  },
+  {
+    "name": "FIFA",
+    "url": "https://www.fifa.com/",
+    "icon": "fifa",
+    "title": "FIFA"
+  },
+  {
+    "name": "FIFA World Cup 2026",
+    "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026",
+    "icon": "worldcup2026",
+    "title": "FIFA World Cup 2026"
+  },
+  {
+    "name": "Lichess",
+    "url": "https://www.lichess.org/",
+    "icon": "lichess",
+    "title": "Lichess"
+  },
+  {
+    "name": "Sesse Chess",
+    "url": "http://analysis.sesse.net/",
+    "icon": "sesse",
+    "title": "Sesse Chess"
+  },
+  {
+    "name": "Kick",
+    "url": "https://kick.com/",
+    "icon": "kick",
+    "title": "Kick"
+  },
+  {
+    "name": "Cinemark Hoyts",
+    "url": "https://www.cinemarkhoyts.com.ar/",
+    "icon": "cinemark",
+    "title": "Cinemark Hoyts"
+  },
+
+  {
+    "name": "Washington Post",
+    "url": "https://www.washingtonpost.com/",
+    "icon": "washingtonpost",
+    "title": "Washington Post"
   },
   {
     "name": "The Guardian",
     "url": "https://www.guardian.com",
     "icon": "guardian",
     "title": "The Guardian"
-  },
-  {
-    "name": "PREEV",
-    "url": "http://preev.com/",
-    "icon": "preev",
-    "title": "PREEV"
-  },
-  {
-    "name": "iCloud",
-    "url": "https://www.icloud.com",
-    "icon": "icloud",
-    "title": "iCloud"
-  },
-  {
-    "name": "Facebook Messenger",
-    "url": "https://www.messenger.com",
-    "icon": "messenger",
-    "title": "Facebook Messenger"
-  },
-  {
-    "name": "Un Mundo Maravilloso",
-    "url": "https://open.spotify.com/show/0zGFAX8zeYbDjEX4sC7bbk",
-    "icon": "mundomaravilloso",
-    "title": "Un Mundo Maravilloso"
-  },
-  {
-    "name": "Bing",
-    "url": "https://www.bing.com/",
-    "icon": "bing",
-    "title": "Bing"
-  },
-  {
-    "name": "TikTok",
-    "url": "https://www.tiktok.com/",
-    "icon": "tiktok",
-    "title": "TikTok"
-  },
-  {
-    "name": "Yahoo",
-    "url": "https://www.yahoo.com/",
-    "icon": "yahoo",
-    "title": "Yahoo"
-  },
-  {
-    "name": "LinkedIn",
-    "url": "https://www.linkedin.com/",
-    "icon": "linkedin",
-    "title": "LinkedIn"
-  },
-  {
-    "name": "eBay",
-    "url": "https://www.ebay.com/",
-    "icon": "ebay",
-    "title": "eBay"
-  },
-  {
-    "name": "Temu",
-    "url": "https://www.temu.com/",
-    "icon": "temu",
-    "title": "Temu"
-  },
-  {
-    "name": "Canva",
-    "url": "https://www.canva.com/",
-    "icon": "canva",
-    "title": "Canva"
-  },
-  {
-    "name": "Etsy",
-    "url": "https://www.etsy.com/",
-    "icon": "etsy",
-    "title": "Etsy"
-  },
-  {
-    "name": "IPSY",
-    "url": "https://www.ipsy.com/",
-    "icon": "ipsy",
-    "title": "IPSY"
-  },
-  {
-    "name": "Walmart",
-    "url": "https://www.walmart.com/",
-    "icon": "walmart",
-    "title": "Walmart"
-  },
-  {
-    "name": "Washington Post",
-    "url": "https://www.washingtonpost.com/",
-    "icon": "washingtonpost",
-    "title": "Washington Post"
   },
   {
     "name": "Associated Press",
@@ -599,6 +464,269 @@
     "title": "Los Angeles Times"
   },
   {
+    "name": "La Nación",
+    "url": "https://www.lanacion.com.ar/",
+    "icon": "lanacion",
+    "title": "La Nación"
+  },
+  {
+    "name": "Página 12",
+    "url": "https://www.pagina12.com.ar",
+    "icon": "pagina12",
+    "title": "Página 12"
+  },
+  {
+    "name": "La Izquierda Diario",
+    "url": "https://www.laizquierdadiario.com/",
+    "icon": "izquierda",
+    "title": "La Izquierda Diario"
+  },
+  {
+    "name": "The New Yorker",
+    "url": "https://www.newyorker.com/",
+    "icon": "newyorker",
+    "title": "The New Yorker"
+  },
+  {
+    "name": "Hacker News",
+    "url": "https://news.ycombinator.com/",
+    "icon": "hackernews",
+    "title": "Hacker News"
+  },
+  {
+    "name": "Substack",
+    "url": "https://substack.com/inbox",
+    "icon": "substack",
+    "title": "Substack"
+  },
+  {
+    "name": "Instapaper",
+    "url": "https://www.instapaper.com/u",
+    "icon": "instapaper",
+    "title": "Instapaper"
+  },
+
+  {
+    "name": "Facebook Messenger",
+    "url": "https://www.messenger.com",
+    "icon": "messenger",
+    "title": "Facebook Messenger"
+  },
+  {
+    "name": "Discord",
+    "url": "https://discord.com/channels/@me",
+    "icon": "discord",
+    "title": "Discord"
+  },
+  {
+    "name": "Bluesky",
+    "url": "https://bsky.app/",
+    "icon": "bluesky",
+    "title": "Bluesky"
+  },
+  {
+    "name": "Mastodon",
+    "url": "https://mastodon.social/",
+    "icon": "mastodon",
+    "title": "Mastodon"
+  },
+  {
+    "name": "Threads",
+    "url": "https://www.threads.net/",
+    "icon": "threads",
+    "title": "Threads"
+  },
+  {
+    "name": "Tuenti",
+    "url": "https://app.tuenti.com.ar/",
+    "icon": "tuenti",
+    "title": "Tuenti"
+  },
+
+  {
+    "name": "Microsoft To Do",
+    "url": "https://to-do.live.com/tasks/",
+    "icon": "todo",
+    "title": "Microsoft To Do"
+  },
+  {
+    "name": "Todoist",
+    "url": "https://todoist.com/app/",
+    "icon": "todoist",
+    "title": "Todoist"
+  },
+  {
+    "name": "Any.do",
+    "url": "https://desktop.any.do/",
+    "icon": "anydo",
+    "title": "Any.do"
+  },
+  {
+    "name": "Remember The Milk",
+    "url": "https://www.rememberthemilk.com/app/",
+    "icon": "remember",
+    "title": "Remember The Milk"
+  },
+  {
+    "name": "Trello",
+    "url": "https://www.trello.com",
+    "icon": "trello",
+    "title": "Trello"
+  },
+  {
+    "name": "Simplenote",
+    "url": "https://app.simplenote.com/",
+    "icon": "simplenote",
+    "title": "Simplenote"
+  },
+  {
+    "name": "GoodNotes",
+    "url": "https://web.goodnotes.com/",
+    "icon": "goodnotes",
+    "title": "GoodNotes"
+  },
+
+  {
+    "name": "Copilot",
+    "url": "https://copilot.microsoft.com/",
+    "icon": "copilot",
+    "title": "Microsoft Copilot"
+  },
+  {
+    "name": "DeepSeek",
+    "url": "https://chat.deepseek.com",
+    "icon": "deepseek",
+    "title": "DeepSeek"
+  },
+  {
+    "name": "Grok",
+    "url": "https://grok.com/",
+    "icon": "grok",
+    "title": "Grok"
+  },
+  {
+    "name": "Meta AI",
+    "url": "https://www.meta.ai/",
+    "icon": "metaai",
+    "title": "Meta AI"
+  },
+
+  {
+    "name": "Github",
+    "url": "https://github.com/",
+    "icon": "github",
+    "title": "Github"
+  },
+  {
+    "name": "Visual Studio Code",
+    "url": "https://vscode.dev/",
+    "icon": "vscode",
+    "title": "Visual Studio Code"
+  },
+  {
+    "name": "Phoenix Code Editor",
+    "url": "https://phcode.dev/",
+    "icon": "phcode",
+    "title": "Phoenix Code Editor"
+  },
+
+  {
+    "name": "Udemy",
+    "url": "https://www.udemy.com/",
+    "icon": "udemy",
+    "title": "Udemy"
+  },
+  {
+    "name": "Duolingo",
+    "url": "https://www.duolingo.com/learn",
+    "icon": "duolingo",
+    "title": "Duolingo"
+  },
+  {
+    "name": "Memrise",
+    "url": "https://app.memrise.com/dashboard",
+    "icon": "memrise",
+    "title": "Memrise"
+  },
+  {
+    "name": "Wordle",
+    "url": "https://www.nytimes.com/games/wordle/index.html",
+    "icon": "wordle",
+    "title": "Wordle"
+  },
+
+  {
+    "name": "Canva",
+    "url": "https://www.canva.com/",
+    "icon": "canva",
+    "title": "Canva"
+  },
+  {
+    "name": "AliExpress",
+    "url": "https://www.aliexpress.com/",
+    "icon": "aliexpress",
+    "title": "AliExpress"
+  },
+  {
+    "name": "Etsy",
+    "url": "https://www.etsy.com/",
+    "icon": "etsy",
+    "title": "Etsy"
+  },
+  {
+    "name": "IPSY",
+    "url": "https://www.ipsy.com/",
+    "icon": "ipsy",
+    "title": "IPSY"
+  },
+  {
+    "name": "Mercado Libre",
+    "url": "https://www.mercadolibre.com.ar/",
+    "icon": "meli",
+    "order": 9,
+    "title": "Mercado Libre"
+  },
+  {
+    "name": "Mercado Pago",
+    "url": "https://www.mercadopago.com.ar/home",
+    "icon": "mercado-pago",
+    "order": 10,
+    "title": "Mercado Pago"
+  },
+  {
+    "name": "Paypal",
+    "url": "https://www.paypal.com/myaccount/summary?intl=0",
+    "icon": "paypal",
+    "title": "Paypal"
+  },
+  {
+    "name": "Santander",
+    "url": "https://www2.personas.santander.com.ar/obp-webapp/angular/#!/login",
+    "icon": "santander",
+    "title": "Santander"
+  },
+  {
+    "name": "Sube",
+    "url": "https://tarjetasube.sube.gob.ar/SubeWeb/Webforms/Account/Views/login.aspx",
+    "icon": "sube",
+    "order": 30,
+    "title": "Sube"
+  },
+  {
+    "name": "BitcoinWisdom",
+    "url": "https://bitcoinwisdom.io/markets/bitfinex/btcusd",
+    "icon": "btc-wisdom",
+    "order": 33,
+    "title": "BitcoinWisdom"
+  },
+  {
+    "name": "PREEV",
+    "url": "http://preev.com/",
+    "icon": "preev",
+    "title": "PREEV"
+  },
+
+  {
     "name": "Microsoft OneDrive",
     "url": "https://onedrive.live.com/",
     "icon": "onedrive",
@@ -611,172 +739,35 @@
     "title": "Dropbox"
   },
   {
-    "name": "Apple Maps",
-    "url": "https://maps.apple.com",
-    "icon": "applemaps",
-    "title": "Apple Maps"
-  },
-  {
-    "name": "AliExpress",
-    "url": "https://www.aliexpress.com/",
-    "icon": "aliexpress",
-    "title": "AliExpress"
-  },
-  {
-    "name": "Bluesky",
-    "url": "https://bsky.app/",
-    "icon": "bluesky",
-    "title": "Bluesky"
-  },
-  {
     "name": "Box",
     "url": "https://www.box.com/",
     "icon": "box",
     "title": "Box"
   },
   {
-    "name": "Crunchyroll",
-    "url": "https://www.crunchyroll.com/",
-    "icon": "crunchyroll",
-    "title": "Crunchyroll"
+    "name": "iCloud",
+    "url": "https://www.icloud.com",
+    "icon": "icloud",
+    "title": "iCloud"
   },
   {
-    "name": "DAZN",
-    "url": "https://www.dazn.com/",
-    "icon": "dazn",
-    "title": "DAZN"
+    "name": "Apple Maps",
+    "url": "https://maps.apple.com",
+    "icon": "applemaps",
+    "title": "Apple Maps"
   },
   {
-    "name": "Discord",
-    "url": "https://discord.com/channels/@me",
-    "icon": "discord",
-    "title": "Discord"
+    "name": "Chrome Remote Desktop",
+    "url": "https://remotedesktop.google.com/access/",
+    "icon": "remote",
+    "title": "Chrome Remote Desktop"
   },
+
   {
-    "name": "Formula 1",
-    "url": "https://www.formula1.com/",
-    "icon": "f1",
-    "title": "Formula 1"
-  },
-  {
-    "name": "FIFA",
-    "url": "https://www.fifa.com/",
-    "icon": "fifa",
-    "title": "FIFA"
-  },
-  {
-    "name": "Flickr",
-    "url": "https://www.flickr.com/",
-    "icon": "flickr",
-    "title": "Flickr"
-  },
-  {
-    "name": "GoodNotes",
-    "url": "https://www.goodnotes.com/",
-    "icon": "goodnotes",
-    "title": "GoodNotes"
-  },
-  {
-    "name": "Google Meet",
-    "url": "https://meet.google.com/",
-    "icon": "googlemeet",
-    "title": "Google Meet"
-  },
-  {
-    "name": "Google Translate",
-    "url": "https://translate.google.com/",
-    "icon": "googletranslate",
-    "title": "Google Translate"
-  },
-  {
-    "name": "Google Keep",
-    "url": "https://keep.google.com/",
-    "icon": "googlekeep",
-    "title": "Google Keep"
-  },
-  {
-    "name": "Google Home",
-    "url": "https://home.google.com/",
-    "icon": "googlehome",
-    "title": "Google Home"
-  },
-  {
-    "name": "Headspace",
-    "url": "https://www.headspace.com/",
-    "icon": "headspace",
-    "title": "Headspace"
-  },
-  {
-    "name": "IMDb",
-    "url": "https://www.imdb.com/",
-    "icon": "imdb",
-    "title": "IMDb"
-  },
-  {
-    "name": "Kick",
-    "url": "https://kick.com/",
-    "icon": "kick",
-    "title": "Kick"
-  },
-  {
-    "name": "Mastodon",
-    "url": "https://mastodon.social/",
-    "icon": "mastodon",
-    "title": "Mastodon"
-  },
-  {
-    "name": "MUBI",
-    "url": "https://mubi.com/",
-    "icon": "mubi",
-    "title": "MUBI"
-  },
-  {
-    "name": "MLB",
-    "url": "https://www.mlb.com/",
-    "icon": "mlb",
-    "title": "MLB"
-  },
-  {
-    "name": "NBA",
-    "url": "https://www.nba.com/",
-    "icon": "nba",
-    "title": "NBA"
-  },
-  {
-    "name": "Paramount+",
-    "url": "https://www.paramountplus.com/",
-    "icon": "paramount",
-    "title": "Paramount+"
-  },
-  {
-    "name": "Prime Video",
-    "url": "https://www.primevideo.com/",
-    "icon": "primevideo",
-    "title": "Prime Video"
-  },
-  {
-    "name": "Soundcloud",
-    "url": "https://soundcloud.com/",
-    "icon": "soundcloud",
-    "title": "Soundcloud"
-  },
-  {
-    "name": "Spotify",
-    "url": "https://www.spotify.com/",
-    "icon": "spotify",
-    "title": "Spotify"
-  },
-  {
-    "name": "Threads",
-    "url": "https://www.threads.net/",
-    "icon": "threads",
-    "title": "Threads"
-  },
-  {
-    "name": "Vix",
-    "url": "https://www.vix.com/",
-    "icon": "vix",
-    "title": "Vix"
+    "name": "Kindle",
+    "url": "https://read.amazon.com/kindle-library",
+    "icon": "kindle",
+    "title": "Kindle"
   },
   {
     "name": "Wattpad",
@@ -785,9 +776,47 @@
     "title": "Wattpad"
   },
   {
-    "name": "FIFA World Cup 2026",
-    "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026",
-    "icon": "worldcup2026",
-    "title": "FIFA World Cup 2026"
+    "name": "MangaDex",
+    "url": "https://mangadex.org",
+    "icon": "mangadex",
+    "order": 34,
+    "title": "MangaDex"
+  },
+  {
+    "name": "Flickr",
+    "url": "https://www.flickr.com/",
+    "icon": "flickr",
+    "title": "Flickr"
+  },
+  {
+    "name": "Calm",
+    "url": "https://app.www.calm.com/homepage",
+    "icon": "calm",
+    "title": "Calm"
+  },
+  {
+    "name": "Headspace",
+    "url": "https://www.headspace.com/",
+    "icon": "headspace",
+    "title": "Headspace"
+  },
+  {
+    "name": "Mixnmojo",
+    "url": "https://mixnmojo.com",
+    "icon": "mixnmojo",
+    "order": 39,
+    "title": "Mixnmojo"
+  },
+  {
+    "name": "Playdate Pulp",
+    "url": "https://play.date/pulp/",
+    "icon": "pulp",
+    "title": "Playdate Pulp"
+  },
+  {
+    "name": "Twitter",
+    "url": "https://www.twitter.com/",
+    "icon": "twitter",
+    "title": "Twitter"
   }
 ]
