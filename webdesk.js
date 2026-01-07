@@ -238,7 +238,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const text = element.innerText;
       if (!text.trim()) return;
 
-      console.log("[GreetingDebug] Running adjustFontSize for:", text);
       const computedStyle = window.getComputedStyle(element);
       const fontFamily = computedStyle.fontFamily;
       // Use parent width because element might be shrunk by previous resize or wrap
@@ -248,10 +247,7 @@ document.addEventListener("DOMContentLoaded", function () {
           // Fallback if hidden: Match .caja CSS (max-width: 95vw, width: 1346px)
           const viewportWidth = window.innerWidth;
           maxWidth = Math.min(viewportWidth * 0.95, 1346);
-          console.log("[GreetingDebug] MaxWidth was 0, using fallback:", maxWidth);
-      } else {
-          console.log("[GreetingDebug] Max Width:", maxWidth);
-      }
+      } 
 
       // Canvas Init
       const canvas = GreetingManager.canvas || (GreetingManager.canvas = document.createElement("canvas"));
@@ -263,9 +259,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const metrics = context.measureText(text);
       const textWidthAtRef = metrics.width;
       
-      console.log("[GreetingDebug] Text Width at 100px:", textWidthAtRef);
-      console.log("[GreetingDebug] Font Used:", context.font);
-      
       if (textWidthAtRef <= 0) return; 
       
       const scaleFactor = (maxWidth * 0.98) / textWidthAtRef;
@@ -273,8 +266,6 @@ document.addEventListener("DOMContentLoaded", function () {
       
       const rootSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
       let targetRem = idealPx / rootSize;
-      
-      console.log("[GreetingDebug] Calculated Target REM:", targetRem);
       
       const MAX_REM = 6; 
       const MIN_REM = 1.5; 
@@ -286,8 +277,6 @@ document.addEventListener("DOMContentLoaded", function () {
           targetRem = MIN_REM;
           wrapped = true;
       }
-      
-      console.log("[GreetingDebug] Applied REM:", targetRem, "Wrapped:", wrapped);
       
       element.style.fontSize = targetRem + "rem";
       
