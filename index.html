@@ -56,12 +56,12 @@
                <h1 id="lbl-welcome">Hi!<br>What's your name?</h1>
                <div class="input-line-wrapper">
                    <input type="text" id="ob-input-name" class="ob-input" autocomplete="off" spellcheck="false" maxlength="20">
-                   <span class="blinking-cursor">|</span>
                </div>
                <div id="hint-name" class="ob-hint fade-in hidden">Let us know what we should call you. Hit ENTER when done.</div>
                
                <div class="bottom-action">
-                   <a href="#" id="link-import" onclick="OnboardingManager.showImport()">Been here before?</a>
+                   <a href="#" id="link-import" onclick="OnboardingManager.showImportButton(event)">Been here before?</a>
+                   <button id="btn-import-reveal" class="btn btn-outline-light btn-sm ms-3 d-none" onclick="OnboardingManager.triggerImport()">Import Backup</button>
                    <input type="file" id="importInput" accept=".json" style="display:none" onchange="OnboardingManager.handleImport(event)">
                </div>
            </div>
@@ -70,7 +70,8 @@
            <div id="step-dob" class="ob-step">
                 <h1 id="lbl-dob-title">Hey, <span id="lbl-name-target"></span><br>What's your birthdate?</h1>
                 
-                <div class="dob-wrapper">
+                <div class="dob-wrapper position-relative">
+                    <!-- We use a background mask trick or just standard centered input -->
                     <input type="text" id="ob-dob-input" class="ob-input-large" placeholder="MM/DD/YYYY" autocomplete="off">
                 </div>
                 
@@ -94,12 +95,12 @@
            <!-- STEP 4: READY -->
            <div id="step-ready" class="ob-step">
                <div class="ready-content">
-                   <p id="lbl-ready-1" class="lead-text">Your web desk is ready! Besides having quick access to your most used websites, you'll be able to add your own links, add birthdays and other reminders.</p>
-                   <p id="lbl-ready-2" class="lead-text">This is meant to be your starting point on the web and it works best <strong>if you pin this tab</strong>.</p>
+                   <p id="lbl-ready-1" class="lead-text font-exo">Your web desk is ready! Besides having quick access to your most used websites, you'll be able to add your own links, add birthdays and other reminders.</p>
+                   <p id="lbl-ready-2" class="lead-text font-exo">This is meant to be your starting point on the web and it works best <strong>if you pin this tab</strong>.</p>
                </div>
                
                <div class="press-enter-container">
-                   <span id="lbl-press-enter" class="blink-videogame">Press ENTER to see your desk.</span>
+                   <span id="lbl-press-enter" class="blink-videogame font-nunito">Press ENTER to see your desk.</span>
                </div>
            </div>
 

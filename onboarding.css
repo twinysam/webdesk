@@ -9,7 +9,7 @@
     background-color: #000;
     z-index: 9999;
     color: white;
-    font-family: 'Exo', sans-serif; /* Matches designs */
+    font-family: 'Exo', sans-serif;
     overflow: hidden;
     display: flex;
     justify-content: center;
@@ -66,12 +66,21 @@ h1 {
     line-height: 1.2;
 }
 
+.font-exo {
+    font-family: 'Exo', sans-serif !important;
+}
+
+.font-nunito {
+    font-family: 'Nunito', sans-serif !important;
+}
+
 /* Inputs */
-.input-line-wrapper {
+.input-line-wrapper, .dob-wrapper {
     position: relative;
     display: inline-flex;
     align-items: center;
-    max-width: 800px;
+    max-width: 1000px;
+    width: 100%;
 }
 
 .ob-input {
@@ -79,36 +88,37 @@ h1 {
     border: none;
     border-bottom: 2px solid white;
     color: white;
-    font-size: 6rem;
+    font-size: 8rem; /* Bigger as requested */
     font-family: 'Exo', sans-serif;
     font-weight: 200;
     outline: none;
     padding: 10px 0;
     width: 100%;
+    line-height: 1.1;
 }
 
+/* Screen 2 Input */
 .ob-input-large {
     background: transparent;
     border: none;
     color: white;
-    font-size: 8rem; /* Big for DOB */
+    font-size: 8rem;
     font-family: 'Exo', sans-serif;
     outline: none;
-    text-align: center;
+    text-align: center; /* Center aligned */
     width: 100%;
+    caret-color: white;
 }
 
-.blinking-cursor {
-    font-size: 6rem;
-    font-weight: 100;
-    color: white;
-    animation: blink-caret 1s step-end infinite;
-    margin-left: 5px;
+.ob-input-large::placeholder {
+    color: #333; /* Darker placeholder to act as background/mask hint */
+    opacity: 1;
 }
 
-@keyframes blink-caret {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
+/* Remove default blue outline/underline overrides */
+input:focus, select:focus, textarea:focus, button:focus {
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 /* Hints */
@@ -120,6 +130,7 @@ h1 {
     border-top: 1px solid #444;
     padding-top: 1rem;
     display: inline-block;
+    max-width: 600px;
 }
 
 .fade-in {
@@ -147,47 +158,52 @@ h1 {
     left: 10vw;
     font-family: 'Nunito', sans-serif;
     font-size: 1.5rem;
+    display: flex;
+    align-items: center;
 }
 
 .bottom-action a {
     color: #888;
     text-decoration: none;
     transition: color 0.3s;
+    border-bottom: none !important; /* Override style.css */
 }
 
 .bottom-action a:hover {
     color: white;
+    text-decoration: none;
 }
 
 /* Apps Carousel */
 .apps-carousel-wrapper {
     width: 100%;
     overflow-x: auto;
-    padding: 20px 0;
-    scrollbar-width: none; /* Firefox */
+    padding: 30px 0;
+    scrollbar-width: none; 
 }
 .apps-carousel-wrapper::-webkit-scrollbar {
     display: none; 
 }
 
 .apps-carousel {
-    display: flex;
-    gap: 20px;
-    padding-left: 5px;
+    display: inline-flex; /* Ensure it stays in one line */
+    gap: 30px;
+    padding-left: 10px;
+    white-space: nowrap;
 }
 
 .app-card {
-    width: 150px;
-    height: 150px;
+    width: 180px;
+    height: 180px;
     background-color: white;
-    border-radius: 25px;
-    display: flex;
+    border-radius: 35px;
+    display: inline-flex; /* Changed to inline-flex to work in horizontal scroll */
     justify-content: center;
     align-items: center;
     cursor: pointer;
     position: relative;
     transition: transform 0.2s;
-    flex-shrink: 0;
+    flex-shrink: 0; /* Prevent shrinking */
 }
 
 .app-card:hover {
@@ -195,8 +211,8 @@ h1 {
 }
 
 .app-card img {
-    width: 80px;
-    height: 80px;
+    width: 100px; /* Bigger icons */
+    height: 100px;
     object-fit: contain;
 }
 
@@ -204,39 +220,41 @@ h1 {
     content: "\F26A"; /* Bootstrap check-circle-fill */
     font-family: "bootstrap-icons";
     position: absolute;
-    bottom: 10px;
-    right: 10px;
-    color: #198754; /* Green */
-    font-size: 2rem;
+    bottom: 15px;
+    right: 15px;
+    color: #198754; 
+    font-size: 2.5rem;
+    background: white; /* contrast bg */
+    border-radius: 50%;
+    line-height: 1;
 }
 
 /* Ready Step */
 .ready-content {
-    max-width: 900px;
+    max-width: 1200px;
     margin-bottom: 4rem;
 }
 
 .lead-text {
     font-size: 2rem;
-    font-family: 'Nunito', sans-serif;
     margin-bottom: 2rem;
     color: #ccc;
+    font-weight: 300;
 }
 
 .press-enter-container {
-    margin-top: 2rem;
+    margin-top: 4rem;
     text-align: center;
 }
 
 .blink-videogame {
-    font-size: 2rem;
-    font-family: 'Exo', sans-serif;
-    text-transform: uppercase;
+    font-size: 2.5rem;
+    font-weight: 400; /* Regular Nunito */
     animation: blink-game 1.5s infinite ease-in-out;
 }
 
 @keyframes blink-game {
-    0% { opacity: 0.2; }
+    0% { opacity: 0.1; }
     50% { opacity: 1; }
-    100% { opacity: 0.2; }
+    100% { opacity: 0.1; }
 }

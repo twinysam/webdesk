@@ -59,9 +59,18 @@ window.OnboardingManager = {
     OnboardingManager.setupStep1();
     
     // Load Apps for later
-    const res = await fetch("items.json");
-    const data = await res.json();
-    OnboardingManager.catalog = data.sort((a,b) => a.name.localeCompare(b.name));
+    fetch("items.json")
+       .then(res => {
+           if (!res.ok) throw new Error("HTTP " + res.status);
+           return res.json();
+       })
+       .then(data => {
+           console.log("Loaded catalog:", data.length);
+           OnboardingManager.catalog = data.sort((a,b) => a.name.localeCompare(b.name));
+           // Pre-render now just in case
+           OnboardingManager.renderApps();
+       })
+       .catch(err => console.error("Error loading items.json:", err));
   },
 
   applyLang: () => {
@@ -78,8 +87,10 @@ window.OnboardingManager = {
     document.getElementById("lbl-ready-2").innerHTML = txt.ready_2;
     document.getElementById("lbl-press-enter").textContent = txt.press_enter;
     document.getElementById("link-import").textContent = txt.been_here;
+    document.getElementById("btn-import-reveal").textContent = txt.import_btn;
     
-    // DOB Placeholder
+    // DOB Placeholder matching text
+    // We update placeholder to match the format
     const dobInput = document.getElementById("ob-dob-input");
     dobInput.placeholder = l === "es" ? "DD/MM/AAAA" : "MM/DD/YYYY";
   },
@@ -113,7 +124,14 @@ window.OnboardingManager = {
     });
   },
 
-  showImport: () => {
+  showImportButton: (e) => {
+    e.preventDefault();
+    document.getElementById("link-import").classList.add("d-none");
+    const btn = document.getElementById("btn-import-reveal");
+    btn.classList.remove("d-none");
+  },
+
+  triggerImport: () => {
     document.getElementById("importInput").click();
   },
 
@@ -144,7 +162,6 @@ window.OnboardingManager = {
     // Auto-formatting logic
     input.addEventListener("input", (e) => {
         let val = input.value.replace(/\D/g, ''); // keep only nums
-        const isEs = OnboardingManager.config.lang === "es";
         
         // Masking MM/DD/YYYY or DD/MM/AAAA
         if (val.length > 2) val = val.substring(0,2) + '/' + val.substring(2);
@@ -165,8 +182,6 @@ window.OnboardingManager = {
                  clearTimeout(hintTimeout);
                  OnboardingManager.goToStep3();
              } else {
-                 // Blink red or shake could be nice, for now simple alert
-                 // Better: shake animation
                  input.style.color = "#ff6b6b"; 
                  setTimeout(() => input.style.color = "white", 500);
              }
@@ -203,8 +218,11 @@ window.OnboardingManager = {
     document.getElementById("step-dob").classList.add("prev");
     const step3 = document.getElementById("step-apps");
     step3.classList.add("active");
-
-    OnboardingManager.renderApps();
+    
+    // Check if rendered
+    if (document.getElementById("ob-apps-list").children.length === 0) {
+        OnboardingManager.renderApps();
+    }
     
     // Hint logic
     const hint = document.getElementById("hint-apps");
@@ -228,6 +246,11 @@ window.OnboardingManager = {
   renderApps: () => {
       const container = document.getElementById("ob-apps-list");
       container.innerHTML = "";
+      
+      if (OnboardingManager.catalog.length === 0) {
+          container.innerHTML = "<div>Loading apps...</div>";
+          return;
+      }
       
       OnboardingManager.catalog.forEach(app => {
           const card = document.createElement("div");
