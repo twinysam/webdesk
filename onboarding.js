@@ -163,12 +163,14 @@ window.OnboardingManager = {
     // Hint timer
     let hintTimeout = setTimeout(() => {
         hint.classList.remove("hidden");
+        hint.classList.add("fade-in");
         hint.classList.add("visible");
     }, 10000);
 
     input.addEventListener("input", (e) => {
         if (input.value.length >= 3) {
             hint.classList.remove("hidden");
+            hint.classList.add("fade-in");
             hint.classList.add("visible");
         }
     });
@@ -218,6 +220,7 @@ window.OnboardingManager = {
     const hint = document.getElementById("hint-dob");
     let hintTimeout = setTimeout(() => {
         hint.classList.remove("hidden");
+        hint.classList.add("fade-in");
         hint.classList.add("visible");
     }, 10000);
 
@@ -235,6 +238,7 @@ window.OnboardingManager = {
              
              // Show hint early on interaction
              hint.classList.remove("hidden");
+             hint.classList.add("fade-in");
              hint.classList.add("visible");
         });
 
@@ -332,6 +336,7 @@ window.OnboardingManager = {
     const hint = document.getElementById("hint-apps");
     OnboardingManager._appHintTimeout = setTimeout(() => {
         hint.classList.remove("hidden");
+        hint.classList.add("fade-in");
         hint.classList.add("visible");
     }, 30000);
     
