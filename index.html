@@ -70,9 +70,10 @@
            <div id="step-dob" class="ob-step">
                 <h1 id="lbl-dob-title">Hey, <span id="lbl-name-target"></span><br>What's your birthdate?</h1>
                 
-                <div class="dob-wrapper position-relative">
-                    <!-- We use a background mask trick or just standard centered input -->
-                    <input type="text" id="ob-dob-input" class="ob-input-large" placeholder="MM/DD/YYYY" autocomplete="off">
+                <div class="dob-wrapper position-relative text-center">
+                    <!-- Ghost overlay for strict alignment -->
+                    <div id="dob-ghost" class="ob-input-large ghost-text"></div>
+                    <input type="text" id="ob-dob-input" class="ob-input-large" autocomplete="off" spellcheck="false">
                 </div>
                 
                 <div id="hint-dob" class="ob-hint fade-in hidden">We’ll tell you how many days you’ve been on this planet. Hit ENTER when done.</div>

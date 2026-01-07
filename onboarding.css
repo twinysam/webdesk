@@ -75,20 +75,22 @@ h1 {
 }
 
 /* Inputs */
+/* Inputs */
 .input-line-wrapper, .dob-wrapper {
     position: relative;
     display: inline-flex;
     align-items: center;
     max-width: 1000px;
     width: 100%;
+    justify-content: center; /* Center content for DOB */
 }
 
 .ob-input {
     background: transparent;
-    border: none;
-    border-bottom: 2px solid white;
+    border: none !important; /* Override style.css */
+    border-bottom: 2px solid white !important; /* Use specific border for line input */
     color: white;
-    font-size: 8rem; /* Bigger as requested */
+    font-size: 8rem; 
     font-family: 'Exo', sans-serif;
     font-weight: 200;
     outline: none;
@@ -100,25 +102,41 @@ h1 {
 /* Screen 2 Input */
 .ob-input-large {
     background: transparent;
-    border: none;
+    border: none !important; /* Force remove border from style.css */
+    border-bottom: none !important; /* Ensure NO underline for DOB */
     color: white;
     font-size: 8rem;
     font-family: 'Exo', sans-serif;
     outline: none;
-    text-align: center; /* Center aligned */
+    text-align: center; 
     width: 100%;
     caret-color: white;
+    position: relative;
+    z-index: 2; /* On top */
 }
 
-.ob-input-large::placeholder {
-    color: #333; /* Darker placeholder to act as background/mask hint */
-    opacity: 1;
+.ghost-text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: #333; /* Dark gray for placeholder parts */
+    z-index: 1; /* Behind input */
+    pointer-events: none;
+    white-space: pre; /* Layout structure */
+}
+
+/* Helper to make typed part transparent in ghost */
+.ghost-hidden {
+    opacity: 0;
 }
 
 /* Remove default blue outline/underline overrides */
 input:focus, select:focus, textarea:focus, button:focus {
     outline: none !important;
     box-shadow: none !important;
+    border-color: transparent !important;
 }
 
 /* Hints */
@@ -186,7 +204,7 @@ input:focus, select:focus, textarea:focus, button:focus {
 }
 
 .apps-carousel {
-    display: inline-flex; /* Ensure it stays in one line */
+    display: inline-flex; 
     gap: 30px;
     padding-left: 10px;
     white-space: nowrap;
@@ -197,13 +215,13 @@ input:focus, select:focus, textarea:focus, button:focus {
     height: 180px;
     background-color: white;
     border-radius: 35px;
-    display: inline-flex; /* Changed to inline-flex to work in horizontal scroll */
+    display: inline-flex; 
     justify-content: center;
     align-items: center;
     cursor: pointer;
     position: relative;
     transition: transform 0.2s;
-    flex-shrink: 0; /* Prevent shrinking */
+    flex-shrink: 0; 
 }
 
 .app-card:hover {
@@ -211,7 +229,7 @@ input:focus, select:focus, textarea:focus, button:focus {
 }
 
 .app-card img {
-    width: 100px; /* Bigger icons */
+    width: 100px;
     height: 100px;
     object-fit: contain;
 }
@@ -224,7 +242,7 @@ input:focus, select:focus, textarea:focus, button:focus {
     right: 15px;
     color: #198754; 
     font-size: 2.5rem;
-    background: white; /* contrast bg */
+    background: white; 
     border-radius: 50%;
     line-height: 1;
 }
@@ -236,14 +254,15 @@ input:focus, select:focus, textarea:focus, button:focus {
 }
 
 .lead-text {
-    font-size: 2rem;
+    font-size: 3.5rem; /* Bigger as requested */
     margin-bottom: 2rem;
     color: #ccc;
-    font-weight: 300;
+    font-weight: 200;
+    line-height: 1.3;
 }
 
 .press-enter-container {
-    margin-top: 4rem;
+    margin-top: 5rem;
     text-align: center;
 }
 

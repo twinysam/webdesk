@@ -59,15 +59,18 @@ window.OnboardingManager = {
     OnboardingManager.setupStep1();
     
     // Load Apps for later
+    console.log("Onboarding: Starting catalog fetch...");
     fetch("items.json")
        .then(res => {
+           console.log("Onboarding: fetch status", res.status);
            if (!res.ok) throw new Error("HTTP " + res.status);
            return res.json();
        })
        .then(data => {
-           console.log("Loaded catalog:", data.length);
+           console.log("Onboarding: Loaded catalog, items:", data.length);
            OnboardingManager.catalog = data.sort((a,b) => a.name.localeCompare(b.name));
            // Pre-render now just in case
+           console.log("Onboarding: Triggering pre-render of apps.");
            OnboardingManager.renderApps();
        })
        .catch(err => console.error("Error loading items.json:", err));
@@ -89,10 +92,29 @@ window.OnboardingManager = {
     document.getElementById("link-import").textContent = txt.been_here;
     document.getElementById("btn-import-reveal").textContent = txt.import_btn;
     
-    // DOB Placeholder matching text
-    // We update placeholder to match the format
-    const dobInput = document.getElementById("ob-dob-input");
-    dobInput.placeholder = l === "es" ? "DD/MM/AAAA" : "MM/DD/YYYY";
+    // Initial Ghost Mask setup
+    const mask = l === "es" ? "DD/MM/AAAA" : "MM/DD/YYYY";
+    // We don't set placeholder anymore, we update ghost
+    OnboardingManager._dobMask = mask;
+    OnboardingManager.updateDobGhost("");
+  },
+
+  updateDobGhost: (val) => {
+      const ghost = document.getElementById("dob-ghost");
+      const mask = OnboardingManager._dobMask; // "MM/DD/YYYY"
+      
+      if (!ghost) return;
+
+      // Construct HTML: <span class="ghost-hidden">VAL</span>REST_OF_MASK
+      // Note: We assume font is monospaced or consistent width. 
+      // If variable width (Exo), perfect overlap is hard unless we mirror exactly.
+      // Strategy: The Ghost contains the FULL string (Val + RemainingMask).
+      // But the 'Val' part is transparent.
+      
+      const len = val.length;
+      const remainingMask = mask.substring(len);
+      
+      ghost.innerHTML = `<span class="ghost-hidden">${val}</span>${remainingMask}`;
   },
 
   // --- STEP 1: NAME ---
@@ -150,6 +172,7 @@ window.OnboardingManager = {
 
     const input = document.getElementById("ob-dob-input");
     input.value = "";
+    OnboardingManager.updateDobGhost("");
     input.focus();
     
     const hint = document.getElementById("hint-dob");
@@ -169,11 +192,19 @@ window.OnboardingManager = {
         if (val.length > 10) val = val.substring(0,10);
         
         input.value = val;
+        
+        // Update Ghost
+        OnboardingManager.updateDobGhost(val);
 
         if (input.value.length >= 2) {
              hint.classList.remove("hidden");
              hint.classList.add("visible");
         }
+    });
+    
+    // Handle backspace to update ghost correctly
+    input.addEventListener("keyup", (e) => {
+        OnboardingManager.updateDobGhost(input.value);
     });
 
     input.addEventListener("keydown", (e) => {
@@ -219,8 +250,15 @@ window.OnboardingManager = {
     const step3 = document.getElementById("step-apps");
     step3.classList.add("active");
     
+    console.log("Onboarding: Entered Step 3");
+    
     // Check if rendered
-    if (document.getElementById("ob-apps-list").children.length === 0) {
+    const list = document.getElementById("ob-apps-list");
+    console.log("Onboarding: Apps List Element:", list);
+    console.log("Onboarding: Apps List Children Count:", list ? list.children.length : "N/A");
+    
+    if (list && list.children.length === 0) {
+        console.log("Onboarding: Apps list empty, calling renderApps()");
         OnboardingManager.renderApps();
     }
     
@@ -244,13 +282,22 @@ window.OnboardingManager = {
   },
 
   renderApps: () => {
+      console.log("Onboarding: renderApps called");
       const container = document.getElementById("ob-apps-list");
+      if (!container) {
+          console.error("Onboarding: #ob-apps-list layout missing");
+          return;
+      }
+      
       container.innerHTML = "";
       
       if (OnboardingManager.catalog.length === 0) {
+          console.warn("Onboarding: renderApps called but catalog is empty");
           container.innerHTML = "<div>Loading apps...</div>";
           return;
       }
+      
+      console.log("Onboarding: Rendering", OnboardingManager.catalog.length, "apps");
       
       OnboardingManager.catalog.forEach(app => {
           const card = document.createElement("div");
@@ -259,11 +306,14 @@ window.OnboardingManager = {
           
           const img = document.createElement("img");
           // Assuming icons path
-          img.src = app.icon ? `icons/${app.icon}` : "icons/default.png";
+          const iconSrc = app.icon ? `icons/${app.icon}` : "icons/default.png";
+          console.log(`Onboarding: App ${app.name} icon: ${iconSrc}`);
+          img.src = iconSrc;
           card.appendChild(img);
           
           container.appendChild(card);
       });
+      console.log("Onboarding: Rendering complete");
   },
 
   toggleApp: (app, card) => {
