@@ -236,43 +236,51 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!element) return;
       
       const text = element.innerText;
+      if (!text.trim()) return;
+
       const computedStyle = window.getComputedStyle(element);
       const fontFamily = computedStyle.fontFamily;
-      const maxWidth = element.clientWidth;
-      
-      // Prevent FOUC
-      element.style.visibility = "hidden";
+      // Use parent width because element might be shrunk by previous resize or wrap
+      const maxWidth = element.parentElement ? element.parentElement.clientWidth : window.innerWidth;
       
       // Canvas Init
       const canvas = GreetingManager.canvas || (GreetingManager.canvas = document.createElement("canvas"));
       const context = canvas.getContext("2d");
       
-      let size = 6; // Start max
-      let fits = false;
+      // Measure at a reference size (e.g., 100px) to determine aspect ratio
+      const refPx = 100;
+      context.font = `${refPx}px ${fontFamily}`;
+      const metrics = context.measureText(text);
+      const textWidthAtRef = metrics.width;
       
-      while (size >= 1.5) {
-          context.font = `${size}rem ${fontFamily}`;
-          // Convert rem to px roughly for measurement context or rely on browser handling if it accepts rem in canvas font (it usually expects px).
-          // To be safe and accurate, let's get the px value.
-          // 1rem = 16px (usually). Let's use computed font size to be sure or just computed px.
-          // Better approach: set the element font size then measure? No, that causes layout thrashing which is what we want to avoid.
-          // We can calculate px size: size * parseFloat(getComputedStyle(document.documentElement).fontSize);
-          const rootSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
-          const pxSize = size * rootSize;
-          context.font = `${pxSize}px ${fontFamily}`;
-          
-          const metrics = context.measureText(text);
-          if (metrics.width <= maxWidth) {
-              fits = true;
-              break;
-          }
-          size -= 0.1;
+      if (textWidthAtRef <= 0) return; // Scale would be infinite
+      
+      // Calculate ideal size
+      // maxWidth / currentWidth = targetSize / refSize
+      // targetSize = refSize * (maxWidth / currentWidth)
+      const scaleFactor = maxWidth / textWidthAtRef;
+      const idealPx = refPx * scaleFactor;
+      
+      // Convert to rem (assuming 16px root, but nice to measure)
+      const rootSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+      let targetRem = idealPx / rootSize;
+      
+      // Clamp
+      const MAX_REM = 6; // From CSS
+      const MIN_REM = 1.5; 
+      
+      if (targetRem > MAX_REM) targetRem = MAX_REM;
+      
+      let wrapped = false;
+      if (targetRem < MIN_REM) {
+          targetRem = MIN_REM;
+          wrapped = true;
       }
       
-      element.style.fontSize = size + "rem";
+      // Apply
+      element.style.fontSize = targetRem + "rem";
       
-      if (!fits) {
-          // Fallback if it still doesn't fit at min size
+      if (wrapped) {
           element.style.whiteSpace = "normal";
           element.style.wordBreak = "break-word";
       } else {
@@ -280,7 +288,8 @@ document.addEventListener("DOMContentLoaded", function () {
           element.style.wordBreak = "normal";
       }
       
-      element.style.visibility = "visible";
+      // Ensure visibility is reset if we hid it previously (though we removed that logic to avoid flickering issues if any)
+      if (element.style.visibility === "hidden") element.style.visibility = "visible";
     },
 
     updateVisuals: () => {
