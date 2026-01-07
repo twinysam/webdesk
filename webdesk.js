@@ -235,25 +235,49 @@ document.addEventListener("DOMContentLoaded", function () {
     adjustFontSize: (element) => {
       if (!element) return;
       
+      const text = element.innerText;
+      const computedStyle = window.getComputedStyle(element);
+      const fontFamily = computedStyle.fontFamily;
+      const maxWidth = element.clientWidth;
+      
       // Prevent FOUC
       element.style.visibility = "hidden";
       
-      // Reset to default max size (match CSS 6rem)
-      let size = 6; 
-      element.style.fontSize = size + "rem";
-      element.style.whiteSpace = "nowrap";
-      element.style.wordBreak = "normal"; // Reset likely default
+      // Canvas Init
+      const canvas = GreetingManager.canvas || (GreetingManager.canvas = document.createElement("canvas"));
+      const context = canvas.getContext("2d");
       
-      // Reduce until it fits OR hits min size
-      while ((element.scrollWidth > element.clientWidth) && size > 1.5) {
-        size -= 0.1;
-        element.style.fontSize = size + "rem";
+      let size = 6; // Start max
+      let fits = false;
+      
+      while (size >= 1.5) {
+          context.font = `${size}rem ${fontFamily}`;
+          // Convert rem to px roughly for measurement context or rely on browser handling if it accepts rem in canvas font (it usually expects px).
+          // To be safe and accurate, let's get the px value.
+          // 1rem = 16px (usually). Let's use computed font size to be sure or just computed px.
+          // Better approach: set the element font size then measure? No, that causes layout thrashing which is what we want to avoid.
+          // We can calculate px size: size * parseFloat(getComputedStyle(document.documentElement).fontSize);
+          const rootSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+          const pxSize = size * rootSize;
+          context.font = `${pxSize}px ${fontFamily}`;
+          
+          const metrics = context.measureText(text);
+          if (metrics.width <= maxWidth) {
+              fits = true;
+              break;
+          }
+          size -= 0.1;
       }
       
-      // If still overflowing at min size, enable wrap
-      if (element.scrollWidth > element.clientWidth) {
+      element.style.fontSize = size + "rem";
+      
+      if (!fits) {
+          // Fallback if it still doesn't fit at min size
           element.style.whiteSpace = "normal";
           element.style.wordBreak = "break-word";
+      } else {
+          element.style.whiteSpace = "nowrap";
+          element.style.wordBreak = "normal";
       }
       
       element.style.visibility = "visible";
