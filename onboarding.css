@@ -1,107 +1,119 @@
-/* Onboarding Full Screen Styles */
-
+/* GLOBAL RESET FOR ONBOARDING OVERLAY ONLY */
 #onboarding-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: #000;
+    background-color: black;
     z-index: 9999;
-    color: white;
+    
     font-family: 'Exo', sans-serif;
-    overflow: hidden;
-    display: flex;
+    color: white;
+    
+    display: flex; /* Centering Container */
     justify-content: center;
     align-items: center;
+}
+
+#onboarding-overlay.d-none {
+    display: none !important;
 }
 
 #onboarding-container {
     width: 100%;
     height: 100%;
     position: relative;
-    padding: 10vw;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    overflow: hidden;
 }
 
-.ob-step {
+/* Steps - Scoped */
+#onboarding-overlay .ob-step {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 0 10vw;
+    align-items: center;
+    
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(50px);
+    transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.ob-step.active {
+#onboarding-overlay .ob-step.active {
     opacity: 1;
     pointer-events: auto;
     transform: translateX(0);
-    z-index: 100; /* Force on top */
+    z-index: 100;
 }
 
-/* Typography */
-h1 {
+/* Typography - Scoped */
+#onboarding-overlay h1 {
     font-size: 5rem;
     font-weight: 200;
     margin-bottom: 2rem;
     line-height: 1.2;
-}
-
-.font-exo {
+    border-bottom: none !important; /* Override style.css */
     font-family: 'Exo', sans-serif !important;
 }
 
-.font-nunito {
+#onboarding-overlay .font-exo {
+    font-family: 'Exo', sans-serif !important;
+}
+
+#onboarding-overlay .font-nunito {
     font-family: 'Nunito', sans-serif !important;
 }
 
-/* Inputs */
-/* Inputs */
-.input-line-wrapper, .dob-wrapper {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    max-width: 1000px;
-    width: 100%;
-    justify-content: center; /* Center content for DOB */
-}
-
-.ob-input {
+/* Inputs - Scoped */
+#onboarding-overlay .ob-input {
     background: transparent;
-    border: none !important; /* Override style.css */
-    border-bottom: 2px solid white !important; /* Use specific border for line input */
+    border: none;
+    border-bottom: 2px solid #555;
     color: white;
-    font-size: 8rem; 
+    font-size: 3rem;
     font-family: 'Exo', sans-serif;
     font-weight: 200;
+    text-align: center;
+    width: 80%;
+    max-width: 600px;
     outline: none;
-    padding: 10px 0;
-    width: 100%;
-    line-height: 1.1;
+    padding-bottom: 10px;
 }
 
-/* Screen 2: Split Inputs */
-.split-input-container {
+#onboarding-overlay .ob-input:focus {
+    border-bottom: 2px solid white;
+}
+
+#onboarding-overlay input::selection {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+#onboarding-overlay .input-line-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+/* Screen 2: Split Inputs - Scoped */
+#onboarding-overlay .split-input-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 20px; /* Tighter gap */
+    gap: 20px;
 }
 
-.ob-split-input {
+#onboarding-overlay .ob-split-input {
     background: transparent;
     border: none !important;
-    border-bottom: 2px solid #555 !important; /* Subtle underline for each part */
+    border-bottom: 2px solid #555 !important; 
     color: white;
     font-size: 8rem;
     font-family: 'Exo', sans-serif;
@@ -110,42 +122,42 @@ h1 {
     outline: none;
     padding: 0;
     line-height: 1;
-    /* Reset widths */
     width: auto;
 }
 
-.ob-split-input::placeholder {
+#onboarding-overlay .ob-split-input::placeholder {
     color: #333;
     opacity: 1;
 }
 
-.ob-split-input:focus {
+#onboarding-overlay .ob-split-input:focus {
     border-bottom: 2px solid white !important;
 }
 
 /* Specific tight widths using ch relative to huge font */
-#dob-1 { width: 2ch; } 
-#dob-2 { width: 2ch; }
-#dob-3 { width: 4ch; }
+#onboarding-overlay #dob-1 { width: 2ch; } 
+#onboarding-overlay #dob-2 { width: 2ch; }
+#onboarding-overlay #dob-3 { width: 4ch; }
 
-.split-separator {
+#onboarding-overlay .split-separator {
     font-size: 6rem;
     color: #555;
     margin: 0 5px;
     font-weight: 100;
 }
 
-/* Helper to make typed part transparent in ghost - REMOVED GHOST logic */
-
-/* Remove default blue outline/underline overrides */
-input:focus, select:focus, textarea:focus, button:focus {
+/* Remove default blue outline/underline overrides ONLY inside overlay */
+#onboarding-overlay input:focus, 
+#onboarding-overlay select:focus, 
+#onboarding-overlay textarea:focus, 
+#onboarding-overlay button:focus {
     outline: none !important;
     box-shadow: none !important;
     border-color: transparent !important;
 }
 
-/* Hints */
-.ob-hint {
+/* Hints - Scoped */
+#onboarding-overlay .ob-hint {
     font-size: 1.2rem;
     color: #aaa;
     margin-top: 2rem;
@@ -156,16 +168,16 @@ input:focus, select:focus, textarea:focus, button:focus {
     max-width: 600px;
 }
 
-.fade-in {
+#onboarding-overlay .fade-in {
     animation: fadeIn 1s ease-in forwards;
 }
 
-.hidden {
+#onboarding-overlay .hidden {
     opacity: 0;
     visibility: hidden;
 }
 
-.visible {
+#onboarding-overlay .visible {
     visibility: visible;
 }
 
@@ -174,8 +186,8 @@ input:focus, select:focus, textarea:focus, button:focus {
     to { opacity: 1; }
 }
 
-/* Bottom Actions */
-.bottom-action {
+/* Bottom Actions - Scoped */
+#onboarding-overlay .bottom-action {
     position: absolute;
     bottom: 5vh;
     left: 10vw;
@@ -185,55 +197,61 @@ input:focus, select:focus, textarea:focus, button:focus {
     align-items: center;
 }
 
-.bottom-action a {
+#onboarding-overlay .bottom-action a {
     color: #888;
     text-decoration: none;
     transition: color 0.3s;
-    border-bottom: none !important; /* Override style.css */
+    border-bottom: none !important; 
 }
 
-.bottom-action a:hover {
+#onboarding-overlay .bottom-action a:hover {
     color: white;
     text-decoration: none;
 }
 
-/* Apps Carousel */
-.apps-carousel-wrapper {
+/* Apps Carousel - Scoped */
+#onboarding-overlay .apps-carousel-wrapper {
     width: 100%;
     max-width: 100vw;
     overflow-x: auto;
     padding: 40px 0;
+    /* Hide scrollbar for ticker look */
     scrollbar-width: none; 
+    
     min-height: 200px; 
     white-space: nowrap; 
     display: block; 
     overflow-y: hidden;
+    
     /* Mask to fade edges */
     -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
     mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
 }
-.apps-carousel-wrapper::-webkit-scrollbar {
-    display: none; 
+
+/* Hide webkit scrollbar */
+#onboarding-overlay .apps-carousel-wrapper::-webkit-scrollbar {
+    display: none;
 }
 
-.apps-carousel {
+
+#onboarding-overlay .apps-carousel {
     display: inline-flex; 
     flex-direction: row; 
-    gap: 40px; /* Spacing between icons */
-    padding: 0 50vw; /* Center the first item initially */
+    gap: 40px; 
+    padding: 0 50vw; 
     min-width: 100%; 
     align-items: center;
 }
 
-/* Mimic .item a from style.css but for onboarding */
-.ob-app-item {
+/* App Items - Scoped */
+#onboarding-overlay .ob-app-item {
     display: inline-block;
     width: 120px;
     height: 120px;
     position: relative;
     cursor: pointer;
     transition: transform 0.2s, filter 0.2s;
-    border-radius: 24px; /* Soft round like main app */
+    border-radius: 24px; 
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -241,19 +259,18 @@ input:focus, select:focus, textarea:focus, button:focus {
     box-shadow: 0 10px 20px rgba(0,0,0,0.3);
 }
 
-.ob-app-item:hover {
+#onboarding-overlay .ob-app-item:hover {
     transform: scale(1.15);
     z-index: 10;
 }
 
-/* Selection State */
-.ob-app-item.selected {
-    box-shadow: 0 0 0 5px #198754, 0 15px 30px rgba(0,0,0,0.5); /* Green ring */
+#onboarding-overlay .ob-app-item.selected {
+    box-shadow: 0 0 0 5px #198754, 0 15px 30px rgba(0,0,0,0.5); 
     transform: scale(1.1);
 }
 
-.ob-app-item.selected::after {
-    content: "\F26A"; /* Bootstrap check-circle-fill */
+#onboarding-overlay .ob-app-item.selected::after {
+    content: "\F26A"; 
     font-family: "bootstrap-icons";
     position: absolute;
     top: -10px;
@@ -266,33 +283,20 @@ input:focus, select:focus, textarea:focus, button:focus {
     border: 2px solid white;
 }
 
-/* Ready Step */
-.ready-content {
+/* Ready Step - Scoped */
+#onboarding-overlay .ready-content {
     max-width: 1200px;
     margin-bottom: 4rem;
 }
 
-.lead-text {
-    font-size: 3rem; /* Reduced back */
+#onboarding-overlay .lead-text {
+    font-size: 3rem; 
     margin-bottom: 2rem;
     color: #ccc;
     font-weight: 200;
     line-height: 1.2;
 }
 
-.press-enter-container {
-    margin-top: 5rem;
-    text-align: center;
-}
-
-.blink-videogame {
-    font-size: 2.5rem;
-    font-weight: 400; /* Regular Nunito */
-    animation: blink-game 1.5s infinite ease-in-out;
-}
-
-@keyframes blink-game {
-    0% { opacity: 0.1; }
     50% { opacity: 1; }
     100% { opacity: 0.1; }
 }
