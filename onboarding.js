@@ -322,51 +322,52 @@ window.OnboardingManager = {
       console.log("Onboarding: Rendering", OnboardingManager.catalog.length, "apps");
       
       
+      // Load CSS based icons
       OnboardingManager.catalog.forEach(app => {
-          const card = document.createElement("div");
-          card.className = "app-card";
-          card.onclick = () => OnboardingManager.toggleApp(app, card);
+          // We render a div that MIMICS the 'a' tag structure from style.css
+          // .item a.icon-name
           
-          const img = document.createElement("img");
-          const iconBase = app.icon || "default";
+          const iconEl = document.createElement("div");
+          // Add 'ob-app-item' for sizing, 'item' to match specific selectors if needed (though scoped)
+          // Actually app-icons.css targets '.item a.class'. 
+          // So we need: <div class="item"><a class="ob-app-item ICON_CLASS"></a></div> or similar.
+          // Let's simplified: The CSS selectors are `.item a.icon`.
+          // We can't easily rely on `.item a` styles because they have absolute pos etc in style.css.
+          // BUT, we can use the background-image rules from app-icons.css if we match the selector strength.
+          // OR, since app-icons.css is loaded, we can just use the class on a div if we cheat the selector?
+          // No, selectors are specific `.item a.icon`.
+          // So we MUST wrap it in .item to pick up the image.
           
-          // Strategy: Try common formats with 'app_' prefix in 'images/' folder
-          // We set the first guess. If it fails, the onerror handler tries the next.
-          const candidates = [
-              `images/app_${iconBase}.png`,
-              `images/app_${iconBase}.webp`,
-              `images/app_${iconBase}.jpg`,
-              `images/app_${iconBase}.svg`,
-              `images/${iconBase}.png` // Fallback to non-prefixed
-          ];
+          // Container to trick the CSS selector
+          const wrapper = document.createElement("div");
+          wrapper.className = "item"; // This might pick up unwanted styles from style.css, reset them in onboarding.css if needed
+          wrapper.style.display = "inline-block";
+          wrapper.style.width = "auto";
+          wrapper.style.height = "auto";
+          wrapper.style.margin = "0";
+          wrapper.style.float = "none";
           
-          const tryLoad = (sources) => {
-              if (sources.length === 0) {
-                  // Final fallback
-                  img.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z' fill='rgba(0,0,0,0.2)'/%3E%3C/svg%3E";
-                  return;
-              }
-              const next = sources.shift();
-              img.src = next;
-              img.onerror = () => tryLoad(sources);
+          const link = document.createElement("a");
+          link.className = `ob-app-item ${app.icon}`; // 'ob-app-item' sets size, 'app.icon' sets bg image from app-icons.css
+          link.onclick = (e) => {
+              e.preventDefault();
+              OnboardingManager.toggleApp(app, link);
           };
           
-          tryLoad(candidates);
-          card.appendChild(img);
-          
-          container.appendChild(card);
+          wrapper.appendChild(link);
+          container.appendChild(wrapper);
       });
       console.log("Onboarding: Rendering complete");
   },
 
-  toggleApp: (app, card) => {
+  toggleApp: (app, element) => {
       const idx = OnboardingManager.config.selectedApps.findIndex(a => a.name === app.name);
       if (idx > -1) {
           OnboardingManager.config.selectedApps.splice(idx, 1);
-          card.classList.remove("selected");
+          element.classList.remove("selected");
       } else {
           OnboardingManager.config.selectedApps.push({name: app.name});
-          card.classList.add("selected");
+          element.classList.add("selected");
       }
 
       if (OnboardingManager.config.selectedApps.length >= 5) {
