@@ -247,11 +247,17 @@ document.addEventListener("DOMContentLoaded", function () {
       const canvas = GreetingManager.canvas || (GreetingManager.canvas = document.createElement("canvas"));
       const context = canvas.getContext("2d");
       
+      console.log("[GreetingDebug] Text:", text);
+      console.log("[GreetingDebug] Max Width:", maxWidth);
+      console.log("[GreetingDebug] Font Family:", fontFamily);
+
       // Measure at a reference size (e.g., 100px) to determine aspect ratio
       const refPx = 100;
       context.font = `${refPx}px ${fontFamily}`;
       const metrics = context.measureText(text);
       const textWidthAtRef = metrics.width;
+      
+      console.log("[GreetingDebug] Text Width at 100px:", textWidthAtRef);
       
       if (textWidthAtRef <= 0) return; // Scale would be infinite
       
@@ -261,9 +267,15 @@ document.addEventListener("DOMContentLoaded", function () {
       const scaleFactor = maxWidth / textWidthAtRef;
       const idealPx = refPx * scaleFactor;
       
+      console.log("[GreetingDebug] Scale Factor:", scaleFactor);
+      console.log("[GreetingDebug] Ideal PX:", idealPx);
+
       // Convert to rem (assuming 16px root, but nice to measure)
       const rootSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
       let targetRem = idealPx / rootSize;
+      
+      console.log("[GreetingDebug] Root Size:", rootSize);
+      console.log("[GreetingDebug] Target REM (Raw):", targetRem);
       
       // Clamp
       const MAX_REM = 6; // From CSS
@@ -276,6 +288,9 @@ document.addEventListener("DOMContentLoaded", function () {
           targetRem = MIN_REM;
           wrapped = true;
       }
+      
+      console.log("[GreetingDebug] Final REM:", targetRem);
+      console.log("[GreetingDebug] Wrapped:", wrapped);
       
       // Apply
       element.style.fontSize = targetRem + "rem";
