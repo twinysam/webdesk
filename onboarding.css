@@ -262,12 +262,17 @@
 }
 
 .ob-overlay .ob-app-item:hover {
-    /* No scaling on hover to prevent layout shift */
-    /* transform: scale(1.15); */
+    /* Enforce dimensions to override style.css .item a:hover */
+    width: 120px !important;
+    height: 120px !important;
+    margin: 0 !important;
+    
     transform: none;
     z-index: 10;
-    /* Optional: maybe a brightness boost or border? */
+    
     filter: brightness(1.2);
+    /* Ensure no border radius change if style.css does that */
+    border-radius: 24px;
 }
 
 .ob-overlay .ob-app-item.selected {

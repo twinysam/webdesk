@@ -456,7 +456,8 @@ window.OnboardingManager = {
           const tooltipTriggerList = [].slice.call(container.querySelectorAll('[data-bs-toggle="tooltip"]'));
           tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl, {
-                trigger: 'hover' // Explicitly set trigger to avoid click issues
+                trigger: 'hover',
+                container: '#onboarding-overlay' // APPEND TO OVERLAY so z-index works (since overlay is 9999)
             });
           });
       }
