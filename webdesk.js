@@ -238,12 +238,17 @@ document.addEventListener("DOMContentLoaded", function () {
       const text = element.innerText;
       if (!text.trim()) return;
 
+      console.log("[GreetingDebug] Running adjustFontSize for:", text);
       const computedStyle = window.getComputedStyle(element);
       const fontFamily = computedStyle.fontFamily;
       // Use parent width because element might be shrunk by previous resize or wrap
       const maxWidth = element.parentElement ? element.parentElement.clientWidth : window.innerWidth;
+      console.log("[GreetingDebug] Max Width:", maxWidth);
       
-      if (maxWidth <= 0) return; // Wait for layout
+      if (maxWidth <= 0) {
+          console.log("[GreetingDebug] Aborting: Max Width is 0");
+          return; 
+      }
 
       // Canvas Init
       const canvas = GreetingManager.canvas || (GreetingManager.canvas = document.createElement("canvas"));
@@ -255,21 +260,20 @@ document.addEventListener("DOMContentLoaded", function () {
       const metrics = context.measureText(text);
       const textWidthAtRef = metrics.width;
       
-      if (textWidthAtRef <= 0) return; // Scale would be infinite
+      console.log("[GreetingDebug] Text Width at 100px:", textWidthAtRef);
+      console.log("[GreetingDebug] Font Used:", context.font);
       
-      // Calculate ideal size
-      // maxWidth / currentWidth = targetSize / refSize
-      // targetSize = refSize * (maxWidth / currentWidth)
-      // Add 2% safety buffer to prevent edge-case overflows
+      if (textWidthAtRef <= 0) return; 
+      
       const scaleFactor = (maxWidth * 0.98) / textWidthAtRef;
       const idealPx = refPx * scaleFactor;
       
-      // Convert to rem (assuming 16px root, but nice to measure)
       const rootSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
       let targetRem = idealPx / rootSize;
       
-      // Clamp
-      const MAX_REM = 6; // From CSS
+      console.log("[GreetingDebug] Calculated Target REM:", targetRem);
+      
+      const MAX_REM = 6; 
       const MIN_REM = 1.5; 
       
       if (targetRem > MAX_REM) targetRem = MAX_REM;
@@ -280,7 +284,8 @@ document.addEventListener("DOMContentLoaded", function () {
           wrapped = true;
       }
       
-      // Apply
+      console.log("[GreetingDebug] Applied REM:", targetRem, "Wrapped:", wrapped);
+      
       element.style.fontSize = targetRem + "rem";
       
       if (wrapped) {
