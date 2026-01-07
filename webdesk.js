@@ -242,12 +242,15 @@ document.addEventListener("DOMContentLoaded", function () {
       const computedStyle = window.getComputedStyle(element);
       const fontFamily = computedStyle.fontFamily;
       // Use parent width because element might be shrunk by previous resize or wrap
-      const maxWidth = element.parentElement ? element.parentElement.clientWidth : window.innerWidth;
-      console.log("[GreetingDebug] Max Width:", maxWidth);
+      let maxWidth = element.parentElement ? element.parentElement.clientWidth : 0;
       
       if (maxWidth <= 0) {
-          console.log("[GreetingDebug] Aborting: Max Width is 0");
-          return; 
+          // Fallback if hidden: Match .caja CSS (max-width: 95vw, width: 1346px)
+          const viewportWidth = window.innerWidth;
+          maxWidth = Math.min(viewportWidth * 0.95, 1346);
+          console.log("[GreetingDebug] MaxWidth was 0, using fallback:", maxWidth);
+      } else {
+          console.log("[GreetingDebug] Max Width:", maxWidth);
       }
 
       // Canvas Init
