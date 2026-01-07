@@ -235,18 +235,28 @@ document.addEventListener("DOMContentLoaded", function () {
     adjustFontSize: (element) => {
       if (!element) return;
       
+      // Prevent FOUC
+      element.style.visibility = "hidden";
+      
       // Reset to default max size (match CSS 6rem)
       let size = 6; 
       element.style.fontSize = size + "rem";
       element.style.whiteSpace = "nowrap";
+      element.style.wordBreak = "normal"; // Reset likely default
       
-      // Force layout update (though reading scrollWidth does this)
-      
-      // Reduce until it fits
+      // Reduce until it fits OR hits min size
       while ((element.scrollWidth > element.clientWidth) && size > 1.5) {
         size -= 0.1;
         element.style.fontSize = size + "rem";
       }
+      
+      // If still overflowing at min size, enable wrap
+      if (element.scrollWidth > element.clientWidth) {
+          element.style.whiteSpace = "normal";
+          element.style.wordBreak = "break-word";
+      }
+      
+      element.style.visibility = "visible";
     },
 
     updateVisuals: () => {

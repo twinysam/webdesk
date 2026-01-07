@@ -4,7 +4,7 @@
     "greeting_afternoon": "<i class=\"bi bi-brightness-high-fill\"></i> Buenas tardes",
     "greeting_evening": "<i class=\"bi bi-moon-fill\"></i> Buenas noches",
 
-    "greeting_latelateshow": "<i class=\"bi bi-moon-stars-fill\"></i> El extraño mundo onírico de {name}",
+    "greeting_latelateshow": "<i class=\"bi bi-moon-stars-fill\"></i> El teatro nocturno de {name}",
     "greeting_generic": "Hola",
     "birthday": "¡Feliz Cumpleaños!",
     "day": "Día",

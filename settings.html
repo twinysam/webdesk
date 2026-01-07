@@ -113,13 +113,21 @@
           transform: translateY(0);
         }
       }
+      .home-btn {
+        color: white;
+        font-size: 2rem;
+        transition: color 0.2s;
+      }
+      .home-btn:hover {
+        color: #83d3fa;
+      }
     </style>
   </head>
   <body>
 
     <div class="caja settings-container">
       <div class="d-flex align-items-center mb-3">
-          <a href="#" onclick="goHome(event)" class="text-white text-decoration-none me-auto" style="font-size: 2rem;">
+          <a href="#" onclick="goHome(event)" class="home-btn text-decoration-none me-auto">
               <i class="bi bi-arrow-left-circle-fill"></i>
           </a>
       </div>
