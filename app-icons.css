@@ -611,3 +611,11 @@
 .item a.worldcup2026 {
   background-image: url(images/app_worldcup2026.png);
 }
+
+.item a.associatedpress {
+  background-image: url(images/app_associatedpress.png);
+}
+
+.item a.linkedin {
+  background-image: url(images/app_linkedin.webp);
+}
