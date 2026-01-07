@@ -307,7 +307,8 @@ window.OnboardingManager = {
         });
 
         // 2. Auto Scroll Logic
-        let scrollSpeed = 1; // Pixels per frame
+        let scrollSpeed = 0.5; // Pixels per frame (Slower)
+        let scrollAccumulator = 0; // To handle sub-pixel speeds
         let isHovered = false;
         let animationId;
 
@@ -316,10 +317,16 @@ window.OnboardingManager = {
              // We use scrollWidth / 2 assuming exact cloning
              if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth / 2) {
                  scrollContainer.scrollLeft = 0;
+                 scrollAccumulator = 0;
              }
 
              if (!isHovered) {
-                 scrollContainer.scrollLeft += scrollSpeed;
+                 scrollAccumulator += scrollSpeed;
+                 if (scrollAccumulator >= 1) {
+                     const wholePixels = Math.floor(scrollAccumulator);
+                     scrollContainer.scrollLeft += wholePixels;
+                     scrollAccumulator -= wholePixels;
+                 }
              }
              
              animationId = requestAnimationFrame(autoScroll);
@@ -336,6 +343,8 @@ window.OnboardingManager = {
         scrollContainer.addEventListener("wheel", (evt) => {
             evt.preventDefault();
             scrollContainer.scrollLeft += evt.deltaY;
+            // Force reset accumulator so auto-scroll doesn't jerk after manual
+            scrollAccumulator = 0;
         }, { passive: false });
     }
   },

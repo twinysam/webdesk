@@ -243,8 +243,10 @@
     align-items: center;
 }
 
-/* App Items - Scoped */
-#onboarding-overlay .ob-app-item {
+/* App Items - Scoped 
+   Using class .ob-overlay instead of #onboarding-overlay to lower specificity 
+   so that .item a.classname from app-icons.css (0-2-1) can override (0-2-0) */
+.ob-overlay .ob-app-item {
     display: inline-block;
     width: 120px;
     height: 120px;
@@ -259,17 +261,17 @@
     box-shadow: 0 10px 20px rgba(0,0,0,0.3);
 }
 
-#onboarding-overlay .ob-app-item:hover {
+.ob-overlay .ob-app-item:hover {
     transform: scale(1.15);
     z-index: 10;
 }
 
-#onboarding-overlay .ob-app-item.selected {
+.ob-overlay .ob-app-item.selected {
     box-shadow: 0 0 0 5px #198754, 0 15px 30px rgba(0,0,0,0.5); 
     transform: scale(1.1);
 }
 
-#onboarding-overlay .ob-app-item.selected::after {
+.ob-overlay .ob-app-item.selected::after {
     content: "\F26A"; 
     font-family: "bootstrap-icons";
     position: absolute;
