@@ -406,12 +406,11 @@ window.OnboardingManager = {
   },
 
   renderApps: () => {
-      console.log("Onboarding: renderApps called");
       const container = document.getElementById("ob-apps-list");
       if (!container) {
           console.error("Onboarding: #ob-apps-list layout missing");
           return;
-      if (!container) return;
+      }
       
       container.innerHTML = "";
       
