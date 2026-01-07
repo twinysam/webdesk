@@ -384,7 +384,8 @@ window.OnboardingManager = {
         animationId = requestAnimationFrame(autoScroll);
 
         // 3. Pause on Hover
-        scrollContainer.addEventListener("mouseenter", () => { isHovered = true; });
+        // CHANGE: Use mousemove to detect *active* movement, ignoring if cursor was already there initially.
+        scrollContainer.addEventListener("mousemove", () => { isHovered = true; });
         scrollContainer.addEventListener("mouseleave", () => { isHovered = false; });
         
         // 4. Mouse Wheel Override (works even while paused)
@@ -482,25 +483,15 @@ window.OnboardingManager = {
           OnboardingManager.config.selectedApps.push({name: app.name});
       }
 
-      // Update UI (All instances, original + clones)
-      // We can find them by the class we added: `ob-app-item ${app.icon}`
-      // WARNING: app.icon might be shared? No, usually distinctive. 
-      // Better: add a data attribute during render.
-      
-      // Since I didn't add data-name before, let's just toggle 'element' for now, 
-      // but ideally we sync them. 
-      // Let's rely on the click for now. The user is unlikely to scroll a full loop and expect the clone to be highlighted.
-      // Actually, they might.
-      
-      // Let's do a quick query selector for safety if we can.
-      // But wait, the app.icon might not be unique if defaults are used?
-      // Let's just toggle the clicked element. It's a "Polish" task, and sync-clones is complex without unique IDs.
-      // Actually, let's try to be smart.
-      if (isSelected) {
-           element.classList.remove("selected");
-      } else {
-           element.classList.add("selected");
-      }
+      // Update UI (Sync duplicates)
+      const allInstances = document.querySelectorAll(`.ob-app-item[data-app-name="${app.name}"]`);
+      allInstances.forEach(el => {
+          if (isSelected) {
+              el.classList.remove("selected");
+          } else {
+              el.classList.add("selected");
+          }
+      });
 
       if (OnboardingManager.config.selectedApps.length >= 5) {
           const hint = document.getElementById("hint-apps");

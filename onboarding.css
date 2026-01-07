@@ -77,12 +77,12 @@
     border: none;
     border-bottom: 2px solid #555;
     color: white;
-    font-size: 3rem;
+    font-size: 8rem;
     font-family: 'Exo', sans-serif;
     font-weight: 200;
     text-align: center;
     width: 80%;
-    max-width: 600px;
+    max-width: 710px;
     outline: none;
     padding-bottom: 10px;
 }
@@ -122,7 +122,7 @@
     outline: none;
     padding: 0;
     line-height: 1;
-    width: auto;
+    min-width: 205px;
 }
 
 #onboarding-overlay .ob-split-input::placeholder {
@@ -159,17 +159,17 @@
 /* Hints - Scoped */
 #onboarding-overlay .ob-hint {
     font-size: 1.2rem;
-    color: #aaa;
+    color: #fff;
     margin-top: 2rem;
     font-family: 'Nunito', sans-serif;
-    border-top: 1px solid #444;
     padding-top: 1rem;
     display: inline-block;
     max-width: 600px;
 }
 
 #onboarding-overlay .fade-in {
-    animation: fadeIn 1s ease-in forwards;
+    /* Slower fade in as requested (2s) */
+    animation: fadeIn 2s ease-in forwards;
 }
 
 #onboarding-overlay .hidden {
@@ -308,6 +308,16 @@
     line-height: 1.2;
 }
 
+/* Animations */
+.blink-videogame {
+    /* Smooth fade in/out as requested */
+    animation: blink-smooth 2s infinite ease-in-out;
+    font-size: 2rem;
+    color: #198754;
+}
+
+@keyframes blink-smooth {
+    0% { opacity: 0; }
     50% { opacity: 1; }
-    100% { opacity: 0.1; }
+    100% { opacity: 0; }
 }
