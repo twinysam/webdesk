@@ -68,12 +68,60 @@ window.OnboardingManager = {
        })
        .then(data => {
            console.log("Onboarding: Loaded catalog, items:", data.length);
-           OnboardingManager.catalog = data.sort((a,b) => a.name.localeCompare(b.name));
+           // Use raw order from JSON (user preference)
+           OnboardingManager.catalog = data;
            // Pre-render now just in case
            console.log("Onboarding: Triggering pre-render of apps.");
            OnboardingManager.renderApps();
        })
        .catch(err => console.error("Error loading items.json:", err));
+  },
+
+  // ... (inside renderApps loop) ...
+  
+  renderApps: () => {
+      const container = document.getElementById("ob-apps-list");
+      if (!container) return;
+      
+      container.innerHTML = "";
+      
+      console.log("Onboarding: Rendering", OnboardingManager.catalog.length, "apps");
+      
+      // Load CSS based icons
+      OnboardingManager.catalog.forEach(app => {
+          // Wrapper
+          const wrapper = document.createElement("div");
+          wrapper.className = "item"; 
+          wrapper.style.display = "inline-block";
+          wrapper.style.width = "auto";
+          wrapper.style.height = "auto";
+          wrapper.style.margin = "0";
+          wrapper.style.float = "none";
+          
+          const link = document.createElement("a");
+          link.className = `ob-app-item ${app.icon}`;
+          
+          // Tooltip attributes
+          link.setAttribute("data-bs-toggle", "tooltip");
+          link.setAttribute("data-bs-placement", "top"); // Top works better for bottom ticker
+          link.setAttribute("title", app.name); // Use name or title
+          
+          link.onclick = (e) => {
+              e.preventDefault();
+              OnboardingManager.toggleApp(app, link);
+          };
+          
+          wrapper.appendChild(link);
+          container.appendChild(wrapper);
+      });
+      
+      // Initialize Tooltips for these new elements
+      const tooltipTriggerList = [].slice.call(container.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+
+      console.log("Onboarding: Rendering complete");
   },
 
   applyLang: () => {
@@ -363,15 +411,9 @@ window.OnboardingManager = {
       if (!container) {
           console.error("Onboarding: #ob-apps-list layout missing");
           return;
-      }
+      if (!container) return;
       
       container.innerHTML = "";
-      
-      if (OnboardingManager.catalog.length === 0) {
-          console.warn("Onboarding: renderApps called but catalog is empty");
-          container.innerHTML = "<div>Loading apps...</div>";
-          return;
-      }
       
       console.log("Onboarding: Rendering", OnboardingManager.catalog.length, "apps");
       
@@ -382,15 +424,6 @@ window.OnboardingManager = {
           // .item a.icon-name
           
           const iconEl = document.createElement("div");
-          // Add 'ob-app-item' for sizing, 'item' to match specific selectors if needed (though scoped)
-          // Actually app-icons.css targets '.item a.class'. 
-          // So we need: <div class="item"><a class="ob-app-item ICON_CLASS"></a></div> or similar.
-          // Let's simplified: The CSS selectors are `.item a.icon`.
-          // We can't easily rely on `.item a` styles because they have absolute pos etc in style.css.
-          // BUT, we can use the background-image rules from app-icons.css if we match the selector strength.
-          // OR, since app-icons.css is loaded, we can just use the class on a div if we cheat the selector?
-          // No, selectors are specific `.item a.icon`.
-          // So we MUST wrap it in .item to pick up the image.
           
           // Container to trick the CSS selector
           const wrapper = document.createElement("div");
@@ -403,6 +436,12 @@ window.OnboardingManager = {
           
           const link = document.createElement("a");
           link.className = `ob-app-item ${app.icon}`; // 'ob-app-item' sets size, 'app.icon' sets bg image from app-icons.css
+          
+          // Tooltip attributes
+          link.setAttribute("data-bs-toggle", "tooltip");
+          link.setAttribute("data-bs-placement", "top");
+          link.setAttribute("title", app.title || app.name); 
+
           link.onclick = (e) => {
               e.preventDefault();
               OnboardingManager.toggleApp(app, link);
@@ -411,6 +450,18 @@ window.OnboardingManager = {
           wrapper.appendChild(link);
           container.appendChild(wrapper);
       });
+      
+      // Initialize Tooltips
+      // Check if bootstrap exists
+      if (typeof bootstrap !== 'undefined') {
+          const tooltipTriggerList = [].slice.call(container.querySelectorAll('[data-bs-toggle="tooltip"]'));
+          tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl, {
+                trigger: 'hover' // Explicitly set trigger to avoid click issues
+            });
+          });
+      }
+
       console.log("Onboarding: Rendering complete");
   },
 

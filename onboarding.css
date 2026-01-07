@@ -262,8 +262,12 @@
 }
 
 .ob-overlay .ob-app-item:hover {
-    transform: scale(1.15);
+    /* No scaling on hover to prevent layout shift */
+    /* transform: scale(1.15); */
+    transform: none;
     z-index: 10;
+    /* Optional: maybe a brightness boost or border? */
+    filter: brightness(1.2);
 }
 
 .ob-overlay .ob-app-item.selected {
