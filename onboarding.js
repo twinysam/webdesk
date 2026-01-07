@@ -445,7 +445,10 @@ window.OnboardingManager = {
           // Tooltip attributes
           link.setAttribute("data-bs-toggle", "tooltip");
           link.setAttribute("data-bs-placement", "top");
-          link.setAttribute("title", app.title || app.name); 
+          link.setAttribute("title", app.title || app.name);
+          
+          // Data attribute for syncing clones
+          link.setAttribute("data-app-name", app.name); 
 
           link.onclick = (e) => {
               e.preventDefault();
@@ -500,7 +503,9 @@ window.OnboardingManager = {
 
       if (OnboardingManager.config.selectedApps.length >= 5) {
           const hint = document.getElementById("hint-apps");
+          clearTimeout(OnboardingManager._appHintTimeout);
           hint.classList.remove("hidden");
+          hint.classList.add("fade-in");
           hint.classList.add("visible");
       }
   },
