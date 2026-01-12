@@ -188,7 +188,7 @@
 }
 
 #onboarding-overlay .ob-split-input::placeholder {
-  color: #333;
+  color: rgba(255, 255, 255, 0.5);
   opacity: 1;
 }
 
@@ -209,7 +209,7 @@
 
 #onboarding-overlay .split-separator {
   font-size: 6rem;
-  color: #555;
+  color: rgba(255, 255, 255, 0.8);
   margin: 0 5px;
   font-weight: 100;
 }
@@ -270,7 +270,7 @@
 }
 
 #onboarding-overlay .bottom-action a {
-  color: #888;
+  color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
   transition: color 0.3s;
   border-bottom: none !important;
@@ -321,7 +321,10 @@
   display: inline-flex;
   flex-direction: row;
   gap: 40px;
-  padding: 0 50vw;
+  /* Push start to exactly the right edge (100vw) */
+  padding-left: 100vw;
+  /* Add buffer at end for loop smoothness if needed, or 0 */
+  padding-right: 0; 
   min-width: 100%;
   align-items: center;
 }

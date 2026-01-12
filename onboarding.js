@@ -368,9 +368,12 @@ window.OnboardingManager = {
       });
 
       // 2. Auto Scroll Logic
-      let scrollSpeed = 0.5; // Pixels per frame (Slower)
+      let scrollSpeed = 0.55; // Pixels per frame (10% faster than 0.5)
       let scrollAccumulator = 0; // To handle sub-pixel speeds
       let isHovered = false;
+      let isDragging = false;
+      let startX;
+      let scrollLeft;
       let animationId;
 
       const autoScroll = () => {
@@ -381,7 +384,7 @@ window.OnboardingManager = {
           scrollAccumulator = 0;
         }
 
-        if (!isHovered) {
+        if (!isHovered && !isDragging) {
           scrollAccumulator += scrollSpeed;
           if (scrollAccumulator >= 1) {
             const wholePixels = Math.floor(scrollAccumulator);
@@ -397,25 +400,53 @@ window.OnboardingManager = {
       animationId = requestAnimationFrame(autoScroll);
 
       // 3. Pause on Hover
-      // CHANGE: Use mousemove to detect *active* movement, ignoring if cursor was already there initially.
       scrollContainer.addEventListener("mousemove", () => {
         isHovered = true;
       });
       scrollContainer.addEventListener("mouseleave", () => {
         isHovered = false;
+        isDragging = false; 
       });
 
-      // 4. Mouse Wheel Override (works even while paused)
+      // 4. Mouse Wheel Override
       scrollContainer.addEventListener(
         "wheel",
         (evt) => {
           evt.preventDefault();
           scrollContainer.scrollLeft += evt.deltaY;
-          // Force reset accumulator so auto-scroll doesn't jerk after manual
           scrollAccumulator = 0;
         },
         { passive: false }
       );
+
+      // 5. Drag to Scroll
+      scrollContainer.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        isHovered = true; // Auto-pause while dragging
+        scrollContainer.style.cursor = 'grabbing';
+        startX = e.pageX - scrollContainer.offsetLeft;
+        scrollLeft = scrollContainer.scrollLeft;
+      });
+
+      scrollContainer.addEventListener('mouseup', () => {
+        isDragging = false;
+        scrollContainer.style.cursor = 'grab';
+      });
+
+      scrollContainer.addEventListener('mousemove', (e) => {
+        if (!isDragging) {
+             isHovered = true; // Still hover even if not dragging
+             return;
+        } 
+        e.preventDefault();
+        const x = e.pageX - scrollContainer.offsetLeft;
+        const walk = (x - startX) * 2; // Scroll-fast factor
+        scrollContainer.scrollLeft = scrollLeft - walk;
+        scrollAccumulator = 0; // Reset smooth scroll
+      });
+      
+      // Set initial cursor
+      scrollContainer.style.cursor = 'grab';
     }
   },
 
