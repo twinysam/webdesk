@@ -98,7 +98,18 @@
     "btn_save_preferences": "Save Preferences",
     "alert_preferences_saved": "Preferences Saved!",
     "alert_backup_exported": "Full backup exported successfully!",
-    "alert_data_restored": "Restored data successfully!"
+    "alert_data_restored": "Restored data successfully!",
+    "onboarding_welcome": "Hi!<br>What's your name?",
+    "onboarding_hint_name": "Let us know what we should call you. Hit ENTER when done.",
+    "onboarding_dob_title": "Hey, {name}<br>What's your birthdate?",
+    "onboarding_hint_dob": "We’ll tell you how many days you’ve been on this planet. Hit ENTER when done.",
+    "onboarding_apps_title": "Which of these websites do you<br>often use?",
+    "onboarding_hint_apps": "You can pick more later. Hit ENTER when done.",
+    "onboarding_ready_1": "Your web desk is ready! Besides having quick access to your most used websites, you'll be able to add your own links, add birthdays and other reminders.",
+    "onboarding_ready_2": "This is meant to be your starting point on the web and it works best <strong>if you pin this tab</strong>.",
+    "onboarding_press_enter": "Press ENTER to see your desk.",
+    "onboarding_been_here": "Been here before?",
+    "onboarding_import_btn": "Import Backup"
   },
   "greetingRules": {
     "morningStart": 5,

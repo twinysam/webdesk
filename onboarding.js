@@ -9,41 +9,8 @@ window.OnboardingManager = {
   // Data for apps loaded from items.json
   catalog: [],
 
-  // Language Map
-  strings: {
-    en: {
-      welcome: "Hi!<br>What's your name?",
-      hint_name: "Let us know what we should call you. Hit ENTER when done.",
-      dob_title: "Hey, {name}<br>What's your birthdate?",
-      hint_dob:
-        "We’ll tell you how many days you’ve been on this planet. Hit ENTER when done.",
-      apps_title: "Which of these websites do you<br>often use?",
-      hint_apps: "You can pick more later. Hit ENTER when done.",
-      ready_1:
-        "Your web desk is ready! Besides having quick access to your most used websites, you'll be able to add your own links, <strong>add birthdays</strong> and other reminders.",
-      ready_2:
-        "This is meant to be your starting point on the web and <strong>it works best if you pin this tab</strong>.",
-      press_enter: "Press ENTER to see your desk.",
-      been_here: "Been here before?",
-      import_btn: "Import Backup",
-    },
-    es: {
-      welcome: "¡Hola!<br>¿Cómo te llamas?",
-      hint_name: "Dinos cómo deberíamos llamarte. Presiona ENTER al terminar.",
-      dob_title: "Hola, {name}<br>¿Cuándo naciste?",
-      hint_dob:
-        "Te diremos cuántos días has estado en este planeta. Presiona ENTER al terminar.",
-      apps_title: "¿Cuáles de estos sitios usas<br>frecuentemente?",
-      hint_apps: "Podrás elegir más tarde. Presiona ENTER al terminar.",
-      ready_1:
-        "¡Tu escritorio está listo! Además de acceso rápido a tus sitios favoritos, podrás añadir tus enlaces, cumpleaños y recordatorios.",
-      ready_2:
-        "Este será tu punto de partida en la web y funciona mejor <strong>si fijas esta pestaña</strong>.",
-      press_enter: "Presiona ENTER para ver tu escritorio.",
-      been_here: "¿Ya has estado aquí?",
-      import_btn: "Importar Copia",
-    },
-  },
+  // Loaded strings
+  strings: {},
 
   init: async () => {
     // Check if profile exists
@@ -53,34 +20,47 @@ window.OnboardingManager = {
 
     // Detect Language
     const navLang = navigator.language || navigator.userLanguage;
-    OnboardingManager.config.lang = navLang.startsWith("es") ? "es" : "en";
+    const langCode = navLang.startsWith("es") ? "es" : "en";
+    OnboardingManager.config.lang = langCode;
 
-    // Apply initial text
-    OnboardingManager.applyLang();
-
-    // Show Overlay
+    // Show Overlay Immediately (with empty text, or wait? Better show it to cover content)
     document.getElementById("onboarding-overlay").classList.remove("d-none");
 
+    // Fetch Strings
+    try {
+        const response = await fetch(`locales/${langCode}.json`);
+        if (!response.ok) throw new Error("Strings not found");
+        const json = await response.json();
+        OnboardingManager.strings = json.strings; // Store flat strings
+        
+        // Apply text now that we have it
+        OnboardingManager.applyLang();
+    } catch (e) {
+        console.error("Onboarding: Failed to load strings", e);
+        // Fallback? Or just let it be empty/English default if we had one. 
+        // For now, assume fetch works.
+    }
+    
     // Setup Listeners
     OnboardingManager.setupStep1();
-
+    
     // Load Apps for later
     console.log("Onboarding: Starting catalog fetch...");
     fetch("items.json")
-      .then((res) => {
-        console.log("Onboarding: fetch status", res.status);
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        return res.json();
-      })
-      .then((data) => {
-        console.log("Onboarding: Loaded catalog, items:", data.length);
-        // Use raw order from JSON (user preference)
-        OnboardingManager.catalog = data;
-        // Pre-render now just in case
-        console.log("Onboarding: Triggering pre-render of apps.");
-        OnboardingManager.renderApps();
-      })
-      .catch((err) => console.error("Error loading items.json:", err));
+       .then(res => {
+           console.log("Onboarding: fetch status", res.status);
+           if (!res.ok) throw new Error("HTTP " + res.status);
+           return res.json();
+       })
+       .then(data => {
+           console.log("Onboarding: Loaded catalog, items:", data.length);
+           // Use raw order from JSON (user preference)
+           OnboardingManager.catalog = data;
+           // Pre-render now just in case
+           console.log("Onboarding: Triggering pre-render of apps.");
+           OnboardingManager.renderApps();
+       })
+       .catch(err => console.error("Error loading items.json:", err));
   },
 
   // ... (inside renderApps loop) ...
@@ -137,23 +117,27 @@ window.OnboardingManager = {
   },
 
   applyLang: () => {
-    const l = OnboardingManager.config.lang;
-    const txt = OnboardingManager.strings[l];
+    // Strings are now loaded directly into OnboardingManager.strings variable from fetch
+    const txt = OnboardingManager.strings;
+    if (!txt) return; // Not ready
 
-    document.getElementById("lbl-welcome").innerHTML = txt.welcome;
-    document.getElementById("hint-name").textContent = txt.hint_name;
-    document.getElementById("lbl-dob-title").innerHTML = txt.dob_title.replace(
-      "{name}",
-      ""
-    ); // Name comes later
-    document.getElementById("hint-dob").textContent = txt.hint_dob;
-    document.getElementById("lbl-apps-title").innerHTML = txt.apps_title;
-    document.getElementById("hint-apps").textContent = txt.hint_apps;
-    document.getElementById("lbl-ready-1").innerHTML = txt.ready_1;
-    document.getElementById("lbl-ready-2").innerHTML = txt.ready_2;
-    document.getElementById("lbl-press-enter").textContent = txt.press_enter;
-    document.getElementById("link-import").textContent = txt.been_here;
-    document.getElementById("btn-import-reveal").textContent = txt.import_btn;
+    // Helper to safely get string
+    const get = (k) => txt[`onboarding_${k}`] || "";
+
+    document.getElementById("lbl-welcome").innerHTML = get("welcome");
+    document.getElementById("hint-name").textContent = get("hint_name");
+    
+    const dobTitle = get("dob_title") || "";
+    document.getElementById("lbl-dob-title").innerHTML = dobTitle.replace("{name}", ""); // Name comes later
+    
+    document.getElementById("hint-dob").textContent = get("hint_dob");
+    document.getElementById("lbl-apps-title").innerHTML = get("apps_title");
+    document.getElementById("hint-apps").textContent = get("hint_apps");
+    document.getElementById("lbl-ready-1").innerHTML = get("ready_1");
+    document.getElementById("lbl-ready-2").innerHTML = get("ready_2");
+    document.getElementById("lbl-press-enter").textContent = get("press_enter");
+    document.getElementById("link-import").textContent = get("been_here");
+    document.getElementById("btn-import-reveal").textContent = get("import_btn");
 
     // Split Input Placeholders based on Lang
     const idx1 = document.getElementById("dob-1");
@@ -219,12 +203,9 @@ window.OnboardingManager = {
     step2.classList.add("active");
 
     // Name replacement
-    const l = OnboardingManager.config.lang;
-    const txt = OnboardingManager.strings[l];
-    document.getElementById("lbl-dob-title").innerHTML = txt.dob_title.replace(
-      "{name}",
-      OnboardingManager.config.name
-    );
+    const txt = OnboardingManager.strings;
+    const title = txt["onboarding_dob_title"] || "";
+    document.getElementById("lbl-dob-title").innerHTML = title.replace("{name}", OnboardingManager.config.name);
 
     // Focus first input
     const d1 = document.getElementById("dob-1");

@@ -2,18 +2,80 @@
 #onboarding-overlay {
   position: fixed;
   top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: black;
-  z-index: 9999;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    /* Default Dark Mode Background */
+    background-color: #131313;
+    z-index: 9999;
+    
+    font-family: 'Exo', sans-serif;
+    color: white;
+    
+    display: flex; /* Centering Container */
+    justify-content: center;
+    align-items: center;
+}
 
-  font-family: "Exo", sans-serif;
-  color: white;
+/* Light Mode Override */
+@media (prefers-color-scheme: light) {
+    #onboarding-overlay {
+        background-color: #016293;
+    }
+}
 
-  display: flex; /* Centering Container */
-  justify-content: center;
-  align-items: center;
+/* Mobile / Responsive Styles */
+@media (max-width: 768px) {
+    #onboarding-overlay h1 {
+        font-size: 3rem !important; /* Scale down from 5rem */
+    }
+    
+    #onboarding-overlay .ob-input, 
+    #onboarding-overlay .ob-split-input {
+        font-size: 4rem !important; /* Scale down from 8rem */
+        width: 90% !important;
+    }
+    
+    #onboarding-overlay .ob-hint {
+        font-size: 1rem !important;
+        padding: 0 20px;
+    }
+    
+    #onboarding-overlay .apps-carousel-wrapper {
+        min-height: 150px !important;
+    }
+    
+    .ob-overlay .ob-app-item,
+    .ob-overlay .ob-app-item:hover {
+        width: 80px !important;
+        height: 80px !important;
+        border-radius: 16px !important;
+        margin: 0 !important;
+    }
+    
+    #onboarding-overlay .lead-text {
+        font-size: 1.5rem !important;
+    }
+    
+    #onboarding-overlay .blink-videogame {
+        font-size: 1.5rem !important;
+    }
+    
+    #onboarding-overlay .split-input-container {
+        gap: 5px !important;
+    }
+    
+    #onboarding-overlay .split-separator {
+        font-size: 3rem !important;
+    }
+
+    #onboarding-overlay .bottom-action {
+        width: 100%;
+        left: 0;
+        justify-content: center;
+        bottom: 20px;
+        font-size: 1rem;
+    }
 }
 
 #onboarding-overlay.d-none {
