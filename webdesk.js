@@ -541,7 +541,7 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
         <div class="input-group mb-3">
           <span class="input-group-text">${t("calcDate")}</span>
-          <input type="date" class="form-control dias-calc-date" min="${calcMinDate}" max="${moment().format(
+          <input type="date" class="form-control dias-calc-date" min="${calcMinDate}" max="${dayjs().format(
         "YYYY-MM-DD"
       )}">
           <span class="ms-3 dias-calc-dia"></span>
@@ -571,7 +571,7 @@ document.addEventListener("DOMContentLoaded", function () {
         inputDias.addEventListener("input", () => {
           const days = parseInt(inputDias.value, 10);
           if (!isNaN(days) && days >= 0) {
-            resultDias.textContent = DateUtils.START_DATE.clone()
+            resultDias.textContent = DateUtils.START_DATE
               .add(days, "days")
               .format("DD/MM/YYYY");
           } else {
@@ -581,7 +581,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         inputFecha.addEventListener("change", () => {
           if (inputFecha.value) {
-            const days = moment(inputFecha.value, "YYYY-MM-DD").diff(
+            const days = dayjs(inputFecha.value, "YYYY-MM-DD").diff(
               DateUtils.START_DATE,
               "days"
             );
@@ -596,7 +596,7 @@ document.addEventListener("DOMContentLoaded", function () {
           if (val)
             inputFecha.setAttribute(
               "data-date",
-              moment(val).format("DD/MM/YYYY")
+              dayjs(val).format("DD/MM/YYYY")
             );
           else inputFecha.removeAttribute("data-date");
         });
