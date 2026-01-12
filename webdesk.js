@@ -185,7 +185,7 @@ document.addEventListener("DOMContentLoaded", function () {
       let timeKey = I18nManager.getGreetingTime(now);
       if (time < 5) timeKey = "latelateshow"; // Late Late Show override
 
-      const greetingText = t(`greeting_${timeKey}`, { name: name }); // Pass name for Late Late Show
+      const greetingText = t(`greeting_${timeKey}`, { name: name });
       
       // If the localized string already contains the name (checked by presence of {name} placeholder in source), 
       // t() handles it if we passed params. If it's a standard greeting without placeholder, we append name.
@@ -201,7 +201,8 @@ document.addEventListener("DOMContentLoaded", function () {
       // User Birthday Check
       const userBirthday = ProfileManager.getBirthday();
       if (userBirthday) {
-        const bday = moment(userBirthday);
+        // dayjs(input) parses YYYY-MM-DD correctly
+        const bday = dayjs(userBirthday);
         if (bday.date() === now.date() && bday.month() === now.month()) {
           message = `<i class="bi bi-balloon-fill"></i> ${t("birthday")}`;
         }
