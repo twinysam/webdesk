@@ -301,6 +301,26 @@ window.OnboardingManager = {
 
   // --- STEP 3: APPS ---
   goToStep3: () => {
+    // 1. Capture and Save DOB
+    const d1 = document.getElementById("dob-1").value;
+    const d2 = document.getElementById("dob-2").value;
+    const d3 = document.getElementById("dob-3").value;
+
+    let day, month;
+    if (OnboardingManager.config.lang === "es") {
+        day = d1;
+        month = d2;
+    } else {
+        month = d1;
+        day = d2;
+    }
+    const year = d3;
+    
+    // Save standard ISO format
+    OnboardingManager.config.birthday = `${year}-${month}-${day}`;
+
+    // 2. Pagination & Transition
+    document.getElementById("ob-pagination").innerText = "3/4";
     document.getElementById("step-dob").classList.remove("active");
     document.getElementById("step-dob").classList.add("prev");
     const step3 = document.getElementById("step-apps");
