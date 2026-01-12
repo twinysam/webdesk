@@ -194,9 +194,9 @@ window.OnboardingManager = {
     document.getElementById("importInput").click();
   },
 
-  // --- STEP 2: DOB (Split) ---
+  // --- STEP 2: DOB ---
   goToStep2: () => {
-    // Transition
+    document.getElementById("ob-pagination").innerText = "2/4";
     document.getElementById("step-name").classList.remove("active");
     document.getElementById("step-name").classList.add("prev");
     const step2 = document.getElementById("step-dob");
@@ -209,75 +209,39 @@ window.OnboardingManager = {
 
     // Focus first input
     const d1 = document.getElementById("dob-1");
-    const d2 = document.getElementById("dob-2");
-    const d3 = document.getElementById("dob-3");
-
-    d1.value = "";
-    d2.value = "";
-    d3.value = "";
-    d1.focus();
-
+    if (d1) setTimeout(() => d1.focus(), 600);
+    
     // Hint Logic
     const hint = document.getElementById("hint-dob");
     let hintTimeout = setTimeout(() => {
-      hint.classList.remove("hidden");
-      hint.classList.add("fade-in");
-      hint.classList.add("visible");
-    }, 10000);
-
-    // Setup Listeners for all 3 inputs
-    [d1, d2, d3].forEach((input, idx) => {
-      input.addEventListener("input", (e) => {
-        // Basic nums only
-        input.value = input.value.replace(/\D/g, "");
-
-        // Auto Advance
-        if (input.value.length >= input.maxLength) {
-          if (idx === 0) d2.focus();
-          if (idx === 1) d3.focus();
-        }
-
-        // Show hint early on interaction
         hint.classList.remove("hidden");
         hint.classList.add("fade-in");
         hint.classList.add("visible");
-      });
+    }, 10000);
 
-      input.addEventListener("keydown", (e) => {
-        // Backspace Navigation
-        if (e.key === "Backspace" && input.value.length === 0) {
-          if (idx === 1) d1.focus();
-          if (idx === 2) d2.focus();
-        }
+    const inputs = [
+        document.getElementById("dob-1"),
+        document.getElementById("dob-2"),
+        document.getElementById("dob-3")
+    ];
 
-        // Enter to Submit
-        if (e.key === "Enter") {
-          // Collect full date
-          let v1 = d1.value,
-            v2 = d2.value,
-            v3 = d3.value;
-          // Basic pad
-          if (v1.length === 1) v1 = "0" + v1;
-          if (v2.length === 1) v2 = "0" + v2;
-
-          const combined = `${v1}/${v2}/${v3}`;
-
-          if (OnboardingManager.validateDate(combined)) {
-            clearTimeout(hintTimeout);
-            OnboardingManager.goToStep3();
-          } else {
-            d1.style.borderBottomColor = "red";
-            d2.style.borderBottomColor = "red";
-            d3.style.borderBottomColor = "red";
-            setTimeout(() => {
-              d1.style.borderBottomColor = "#555";
-              d2.style.borderBottomColor = "#555";
-              d3.style.borderBottomColor = "#555";
-            }, 500);
-          }
-        }
-      });
+    inputs.forEach(input => {
+        input.addEventListener("input", () => {
+             clearTimeout(hintTimeout);
+             // Show hint early on interaction
+             hint.classList.remove("hidden");
+             hint.classList.add("fade-in");
+             hint.classList.add("visible");
+        });
     });
+
+    document.getElementById("dob-3").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+             OnboardingManager.goToStep3();
+        }
+    });
+
+    // Auto-focus logic already verified in previous turn
   },
 
   validateDate: (dateStr) => {
@@ -571,12 +535,13 @@ window.OnboardingManager = {
 
   // --- STEP 4: READY ---
   goToStep4: () => {
-    document.getElementById("step-apps").classList.remove("active");
-    document.getElementById("step-apps").classList.add("prev");
-    const step4 = document.getElementById("step-ready");
-    step4.classList.add("active");
-
-    document.addEventListener("keydown", OnboardingManager._finishKeyHandler);
+      document.getElementById("ob-pagination").innerText = "4/4";
+      document.getElementById("step-apps").classList.remove("active");
+      document.getElementById("step-apps").classList.add("prev");
+      const step4 = document.getElementById("step-ready");
+      step4.classList.add("active");
+      
+      document.addEventListener("keydown", OnboardingManager._finishKeyHandler);
   },
 
   _finishKeyHandler: (e) => {

@@ -17,6 +17,16 @@
     align-items: center;
 }
 
+#onboarding-overlay .ob-pagination {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+    font-size: 1.5rem;
+    font-family: 'Exo', sans-serif;
+    color: rgba(255, 255, 255, 0.5);
+    z-index: 200;
+}
+
 /* Light Mode Override - Higher Specificity (1-1-0) wins over (1-0-0) */
 @media (prefers-color-scheme: light) {
     #onboarding-overlay.ob-overlay {
