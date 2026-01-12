@@ -1,24 +1,24 @@
 // ==========================================================================
 // MODULE: DateUtils
 // Centralized date/time helpers and constants
-// Dependencies: Moment.js
+// Dependencies: Day.js
 // ==========================================================================
 (function(scope) {
     scope.DateUtils = {
-      START_DATE: moment(), // Will be updated by ProfileManager/Init if available
+      START_DATE: dayjs(), // Will be updated by ProfileManager/Init if available
   
-      getToday: () => moment(),
-      getTomorrow: () => moment().add(1, "days"),
+      getToday: () => dayjs(),
+      getTomorrow: () => dayjs().add(1, "days"),
   
-      getTodayStr: () => moment().format("DD/MM"),
-      getTodayFull: () => moment().format("DD/MM/YYYY"),
+      getTodayStr: () => dayjs().format("DD/MM"),
+      getTodayFull: () => dayjs().format("DD/MM/YYYY"),
   
-      getTomorrowStr: () => moment().add(1, "days").format("DD/MM"),
-      getTomorrowFull: () => moment().add(1, "days").format("DD/MM/YYYY"),
+      getTomorrowStr: () => dayjs().add(1, "days").format("DD/MM"),
+      getTomorrowFull: () => dayjs().add(1, "days").format("DD/MM/YYYY"),
   
-      getDaysSinceStart: (date = moment()) =>
+      getDaysSinceStart: (date = dayjs()) =>
         date.diff(scope.DateUtils.START_DATE, "days"),
-  
+
       getHemisphere: () => {
           try {
               // 1. Check LocalStorage Setting
@@ -53,7 +53,7 @@
           }
       },
 
-      getSeason: (date = moment()) => {
+      getSeason: (date = dayjs()) => {
         const month = date.month(); // 0-indexed
         const day = date.date();
         let result = { season: "", isFirstDay: false };
@@ -119,17 +119,29 @@
       getChineseNewYearDate: (year) => {
         const corrections = { 2033: "2033-01-31", 2034: "2034-02-19" };
         if (corrections[year])
-          return moment(corrections[year], "YYYY-MM-DD").toDate();
+          return dayjs(corrections[year], "YYYY-MM-DD").toDate();
   
-        const WINTER_SOLSTICE = moment.utc({
-          year: year - 1,
-          month: 11,
-          day: 21,
-        });
+        // DayJS object creation from object requires objectSupport plugin? NO.
+        // It's better to use string construction for safety in DayJS base, 
+        // OR rely on dayjs.utc() which usually accepts object IF the plugin supports it?
+        // Actually, Moment's object constructor {year: ...} is specific.
+        // DayJS .set() is chainable.
+        // Safer: dayjs.utc().year(year-1).month(11).date(21)
+        
+        const WINTER_SOLSTICE = dayjs.utc()
+            .year(year - 1)
+            .month(11)
+            .date(21)
+            .startOf('day'); // Ensure time is 00:00
+
         const SYNODIC_MONTH = 29.530588853;
-        const baseNewMoon = moment.utc("2024-01-11");
+        const baseNewMoon = dayjs.utc("2024-01-11");
+        
+        // precise diff?
         const monthsBetween =
-          WINTER_SOLSTICE.diff(baseNewMoon, "days") / SYNODIC_MONTH;
+          WINTER_SOLSTICE.diff(baseNewMoon, "days", true) / SYNODIC_MONTH; 
+          // Note: "days", true returns float in DayJS? Yes.
+          
         const lastNewMoon = baseNewMoon
           .clone()
           .add(Math.floor(monthsBetween) * SYNODIC_MONTH, "days");
@@ -139,7 +151,7 @@
         if (secondNewMoon.date() < 21 && secondNewMoon.month() === 0) {
           secondNewMoon = secondNewMoon.clone().add(SYNODIC_MONTH, "days");
         }
-        return moment(secondNewMoon).local().toDate();
+        return dayjs(secondNewMoon).local().toDate();
       },
   
       getChineseZodiac: (year) => {

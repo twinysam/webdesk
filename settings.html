@@ -684,11 +684,18 @@
       </div>
     </div>
 
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js"
-      integrity="sha512-LGXaggshOkD/at6PFNcp2V2unf9LzFq6LE+sChH7ceMTDP0g2kn6Vxwgg7wkPP7AAtX+lmPqPdxB47A0Nz0cMQ=="
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/dayOfYear.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/customParseFormat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/utc.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/localizedFormat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/locale/es.js"></script>
+    <script>
+      dayjs.extend(window.dayjs_plugin_dayOfYear);
+      dayjs.extend(window.dayjs_plugin_customParseFormat);
+      dayjs.extend(window.dayjs_plugin_utc);
+      dayjs.extend(window.dayjs_plugin_localizedFormat);
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
     <script src="js/date-utils.js"></script>
@@ -782,7 +789,7 @@
          
          if (last) {
              const { profile } = getData();
-             const strTime = moment(last).locale(profile.lang || 'en').format("LL LTS"); // Format: January 12 2026 5:30 PM
+             const strTime = dayjs(last).locale(profile.lang || 'en').format("LL LTS"); // Format: January 12 2026 5:30 PM
              el.innerHTML = I18n.t("text_last_backup") + " <strong>" + strTime + "</strong>";
          } else {
              el.innerHTML = I18n.t("text_backup_never");
