@@ -668,6 +668,7 @@
               accept=".json"
               style="display: none"
             />
+            <p id="lastBackupText" class="mt-3 text-muted fst-italic"></p>
           </div>
         </div>
       </div>
@@ -762,6 +763,20 @@
 
       function saveData(key, data) {
         localStorage.setItem(key, JSON.stringify(data));
+      }
+
+      function updateLastBackupText() {
+         const last = localStorage.getItem("lastBackupTime");
+         const el = document.getElementById("lastBackupText");
+         if (!el) return;
+         
+         if (last) {
+             const { profile } = getData();
+             const strTime = moment(last).locale(profile.lang || 'en').format("LL LTS"); // Format: January 12 2026 5:30 PM
+             el.innerHTML = I18n.t("text_last_backup") + " <strong>" + strTime + "</strong>";
+         } else {
+             el.innerHTML = I18n.t("text_backup_never");
+         }
       }
 
       function showAlert(message, type = "success") {
@@ -1318,6 +1333,7 @@
         }
         I18nManager.applyToPage();
         loadPreferencesManager();
+        updateLastBackupText();
 
         // Update Tab Label - No longer needed manually as I18n handles it
         // if (profile.lang === "es") { ... } 
@@ -1521,6 +1537,11 @@
           a.click();
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
+          
+          // Save Timestamp
+          localStorage.setItem("lastBackupTime", new Date().toISOString());
+          updateLastBackupText();
+          
           showAlert(I18n.t("alert_backup_exported"), "success");
         });
 

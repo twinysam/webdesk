@@ -109,7 +109,9 @@
     "onboarding_ready_2": "This is meant to be your starting point on the web and it works best <strong>if you pin this tab</strong>.",
     "onboarding_press_enter": "Press ENTER to see your desk.",
     "onboarding_been_here": "Been here before?",
-    "onboarding_import_btn": "Import Backup"
+    "onboarding_import_btn": "Import Backup",
+    "text_last_backup": "Last backup:",
+    "text_backup_never": "No backup recorded yet."
   },
   "greetingRules": {
     "morningStart": 5,

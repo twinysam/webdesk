@@ -109,7 +109,9 @@
     "onboarding_ready_2": "Este será tu punto de partida en la web y funciona mejor <strong>si fijas esta pestaña</strong>.",
     "onboarding_press_enter": "Presiona ENTER para ver tu escritorio.",
     "onboarding_been_here": "¿Ya has estado aquí?",
-    "onboarding_import_btn": "Importar Copia"
+    "onboarding_import_btn": "Importar Copia",
+    "text_last_backup": "Último backup:",
+    "text_backup_never": "No hay backup registrado."
   },
   "greetingRules": {
     "morningStart": 6,
