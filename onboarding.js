@@ -225,13 +225,30 @@ window.OnboardingManager = {
         document.getElementById("dob-3")
     ];
 
-    inputs.forEach(input => {
+    inputs.forEach((input, idx) => {
         input.addEventListener("input", () => {
+             // 1. Numbers only
+             input.value = input.value.replace(/\D/g, "");
+
+             // 2. Hint Logic
              clearTimeout(hintTimeout);
-             // Show hint early on interaction
              hint.classList.remove("hidden");
              hint.classList.add("fade-in");
              hint.classList.add("visible");
+
+             // 3. Auto Advance
+             if (input.value.length >= input.maxLength) {
+                  if (idx === 0) inputs[1].focus(); // dob-1 -> dob-2
+                  if (idx === 1) inputs[2].focus(); // dob-2 -> dob-3
+             }
+        });
+
+        // 4. Backspace Navigation
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Backspace" && input.value.length === 0) {
+                 if (idx === 1) inputs[0].focus();
+                 if (idx === 2) inputs[1].focus();
+            }
         });
     });
 
