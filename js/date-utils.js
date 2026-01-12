@@ -19,35 +19,74 @@
       getDaysSinceStart: (date = moment()) =>
         date.diff(scope.DateUtils.START_DATE, "days"),
   
+      getHemisphere: () => {
+          try {
+              const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+              if (!timeZone) return "southern"; // Default
+
+              // Simple heuristic for Southern Hemisphere
+              const isSouthern =
+                  timeZone.includes("Australia") ||
+                  timeZone.includes("Antarctica") ||
+                  timeZone.includes("Argentina") ||
+                  timeZone.includes("Brazil") ||
+                  timeZone.includes("Chile") ||
+                  timeZone.includes("Uruguay") ||
+                  timeZone.includes("Paraguay") ||
+                  timeZone.includes("New_Zealand") ||
+                  timeZone.includes("America/Santiago") ||
+                  timeZone.includes("America/Sao_Paulo") ||
+                  timeZone.includes("America/Montevideo") ||
+                  timeZone.startsWith("Africa/Johannesburg");
+                
+              return isSouthern ? "southern" : "northern";
+          } catch (e) {
+              return "southern";
+          }
+      },
+
       getSeason: (date = moment()) => {
         const month = date.month(); // 0-indexed
         const day = date.date();
-  
+        let result = { season: "", isFirstDay: false };
+
+        // Default Logic (Southern Hemisphere)
         // Spring: Sept 21 - Nov 20 | Summer: Dec 21 - Feb 20 | Fall: Mar 21 - May 20 | Winter: Jun 21 - Sept 20
-        // NOTE: This seems to be Southern Hemisphere logic (Sept 21 = Spring)
         if (
           (month === 8 && day >= 21) ||
           (month > 8 && month < 11) ||
           (month === 11 && day < 21)
         ) {
-          return { season: "spring", isFirstDay: month === 8 && day === 21 };
-        }
-        if (
+          result = { season: "spring", isFirstDay: month === 8 && day === 21 };
+        } else if (
           (month === 11 && day >= 21) ||
           month > 11 ||
           month < 2 ||
           (month === 2 && day < 21)
         ) {
-          return { season: "summer", isFirstDay: month === 11 && day === 21 };
-        }
-        if (
+          result = { season: "summer", isFirstDay: month === 11 && day === 21 };
+        } else if (
           (month === 2 && day >= 21) ||
           (month > 2 && month < 5) ||
           (month === 5 && day < 21)
         ) {
-          return { season: "fall", isFirstDay: month === 2 && day === 21 };
+          result = { season: "fall", isFirstDay: month === 2 && day === 21 };
+        } else {
+          result = { season: "winter", isFirstDay: month === 5 && day === 21 };
         }
-        return { season: "winter", isFirstDay: month === 5 && day === 21 };
+
+        // Invert for Northern Hemisphere
+        if (scope.DateUtils.getHemisphere() === "northern") {
+            const inversion = {
+                "spring": "fall",
+                "summer": "winter",
+                "fall": "spring",
+                "winter": "summer"
+            };
+            result.season = inversion[result.season];
+        }
+
+        return result;
       },
   
       isTodayEaster: (date) => {
