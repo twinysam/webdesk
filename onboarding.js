@@ -368,7 +368,7 @@ window.OnboardingManager = {
       });
 
       // 2. Auto Scroll Logic
-      let scrollSpeed = 0.55; // Pixels per frame (10% faster than 0.5)
+      let scrollSpeed = 0.65; // Pixels per frame
       let scrollAccumulator = 0; // To handle sub-pixel speeds
       let isHovered = false;
       let isDragging = false;
