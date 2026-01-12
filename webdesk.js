@@ -650,10 +650,20 @@ document.addEventListener("DOMContentLoaded", function () {
   const AppManager = {
     getUserApps: () => JSON.parse(localStorage.getItem("myApps")) || [],
 
-    renderGrid: (userAppsItems, template) => {
+    renderGrid: (userAppsItems) => {
       if (!userAppsItems || userAppsItems.length === 0) return;
 
-      const html = template(userAppsItems);
+      const html = userAppsItems.map(item => `
+        <div class="item">
+          <a href="${item.url}"
+             target="_blank"
+             class="${item.icon}"
+             data-bs-toggle="tooltip"
+             data-bs-placement="bottom"
+             title="${item.title}">${item.name}</a>
+        </div>
+      `).join('');
+
       const tempDiv = document.createElement("div");
       tempDiv.innerHTML = html;
 
@@ -678,7 +688,7 @@ document.addEventListener("DOMContentLoaded", function () {
       container.appendChild(fragment);
     },
 
-    renderTv: (items, template) => {
+    renderTv: (items) => {
       const t = I18nManager.getString;
 
       if (!items || items.length === 0) return;
@@ -689,7 +699,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const div = document.createElement("div");
       div.className = "links tv";
-      div.innerHTML = template(items);
+      
+      div.innerHTML = items.map(item => `
+        <div class="item">
+          <a href="${item.url}"
+             target="_blank"
+             class="${item.icon}"
+             data-bs-toggle="tooltip"
+             data-bs-placement="bottom"
+             title="${item.title}">${item.name}</a>
+        </div>
+      `).join('');
 
       const caja = document.querySelector(".caja");
       caja.appendChild(hr);
@@ -699,8 +719,7 @@ document.addEventListener("DOMContentLoaded", function () {
     },
 
     init: () => {
-      const source = document.getElementById("item-template").innerHTML;
-      const template = Handlebars.compile(source);
+      // (Handlebars removed)
 
       return Promise.all([
         fetch("items.json")
@@ -756,10 +775,10 @@ document.addEventListener("DOMContentLoaded", function () {
           return true;
         });
 
-        AppManager.renderGrid(finalApps, template);
+        AppManager.renderGrid(finalApps);
 
         if (hydratedTv.length > 0) {
-          AppManager.renderTv(hydratedTv, template);
+          AppManager.renderTv(hydratedTv);
         }
 
         Array.from(
