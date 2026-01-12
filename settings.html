@@ -1011,7 +1011,7 @@
           const row = document.createElement("tr");
           let dateStr = "-";
           if (item.lastClick) {
-            dateStr = moment(item.lastClick)
+            dateStr = dayjs(item.lastClick)
               .locale("es")
               .format("DD/MM/YYYY HH:mm");
           }
@@ -1046,14 +1046,14 @@
 
         // Sort by date (Chronological)
         const sorted = [...customEvents].sort((a, b) => {
-          const dateA = moment(a.date, "DD/MM/YYYY");
-          const dateB = moment(b.date, "DD/MM/YYYY");
+          const dateA = dayjs(a.date, "DD/MM/YYYY");
+          const dateB = dayjs(b.date, "DD/MM/YYYY");
           return dateA - dateB;
         });
 
         sorted.forEach((evt, index) => {
           const tr = document.createElement("tr");
-          const displayDate = moment(evt.date, "DD/MM/YYYY").format(
+          const displayDate = dayjs(evt.date, "DD/MM/YYYY").format(
             "DD/MM/YYYY"
           );
           tr.innerHTML = `
@@ -1075,8 +1075,8 @@
       window.deleteEvent = (index) => {
         const { customEvents } = getData();
         const sorted = [...customEvents].sort((a, b) => {
-          const dateA = moment(a.date, "DD/MM/YYYY");
-          const dateB = moment(b.date, "DD/MM/YYYY");
+          const dateA = dayjs(a.date, "DD/MM/YYYY");
+          const dateB = dayjs(b.date, "DD/MM/YYYY");
           return dateA - dateB;
         });
 
@@ -1103,10 +1103,10 @@
         tbody.innerHTML = "";
 
         // Sort by date (Day/Month)
-        // Since format is DD/MM, we can use moment to parse as current year to sort
-        const sorted = [...userBirthdays].sort((a, b) => {
-          const mA = moment(a.birthday, "DD/MM");
-          const mB = moment(b.birthday, "DD/MM");
+        // Since format is DD/MM, we can use dayjs to parse - dayOfYear plugin required
+         const sorted = [...userBirthdays].sort((a, b) => {
+          const mA = dayjs(a.birthday, "DD/MM");
+          const mB = dayjs(b.birthday, "DD/MM");
           return mA.dayOfYear() - mB.dayOfYear();
         });
 
@@ -1126,8 +1126,8 @@
       window.deleteBirthday = (index) => {
         const { userBirthdays } = getData();
         const sorted = [...userBirthdays].sort((a, b) => {
-          const mA = moment(a.birthday, "DD/MM");
-          const mB = moment(b.birthday, "DD/MM");
+          const mA = dayjs(a.birthday, "DD/MM");
+          const mB = dayjs(b.birthday, "DD/MM");
           return mA.dayOfYear() - mB.dayOfYear();
         });
 
@@ -1152,8 +1152,8 @@
         tbody.innerHTML = "";
 
         const sorted = [...annualEvents].sort((a, b) => {
-          const mA = moment(a.date, "DD/MM");
-          const mB = moment(b.date, "DD/MM");
+          const mA = dayjs(a.date, "DD/MM");
+          const mB = dayjs(b.date, "DD/MM");
           return mA.dayOfYear() - mB.dayOfYear();
         });
 
@@ -1178,8 +1178,8 @@
       window.deleteAnnualEvent = (index) => {
         const { annualEvents } = getData();
         const sorted = [...annualEvents].sort((a, b) => {
-          const mA = moment(a.date, "DD/MM");
-          const mB = moment(b.date, "DD/MM");
+          const mA = dayjs(a.date, "DD/MM");
+          const mB = dayjs(b.date, "DD/MM");
           return mA.dayOfYear() - mB.dayOfYear();
         });
 
@@ -1361,7 +1361,7 @@
 
         // Restrict date picker to today+
         const dateInput = document.getElementById("eventDate");
-        if (dateInput) dateInput.min = moment().format("YYYY-MM-DD");
+        if (dateInput) dateInput.min = dayjs().format("YYYY-MM-DD");
 
         // Event Listeners (Safely inside DOMLoaded)
 
@@ -1447,7 +1447,7 @@
           eventForm.addEventListener("submit", (e) => {
             e.preventDefault();
             const name = document.getElementById("eventName").value;
-            const date = moment(
+            const date = dayjs(
               document.getElementById("eventDate").value
             ).format("DD/MM/YYYY");
             const url = document.getElementById("eventUrl").value;
@@ -1506,9 +1506,9 @@
               return;
 
             const { customEvents } = getData();
-            const today = moment().startOf("day");
+            const today = dayjs().startOf("day");
             const filteredEvents = customEvents.filter((evt) => {
-              const eventDate = moment(evt.date, "DD/MM/YYYY").startOf("day");
+              const eventDate = dayjs(evt.date, "DD/MM/YYYY").startOf("day");
               return eventDate.isSameOrAfter(today);
             });
 

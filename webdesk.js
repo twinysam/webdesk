@@ -127,7 +127,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         entry.count++;
-        entry.lastClick = moment().format();
+        entry.lastClick = dayjs().format();
         entry.category = category;
 
         stats[appName] = entry;
@@ -295,7 +295,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     updateVisuals: () => {
       // Xmas Class
-      if (moment().month() === 11) document.body.classList.add("xmas");
+      if (dayjs().month() === 11) document.body.classList.add("xmas");
 
       // Tree Image
       const treeImage = document.querySelector(".tree img");
@@ -607,7 +607,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // Ensure START_DATE is correct before checking events
       const userBirthday = ProfileManager.getBirthday();
       if (userBirthday)
-        DateUtils.START_DATE = moment(userBirthday, "YYYY-MM-DD");
+        DateUtils.START_DATE = dayjs(userBirthday);
 
       EventsManager.checkDailyEvents();
     },
