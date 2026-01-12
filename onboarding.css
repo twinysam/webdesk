@@ -17,9 +17,9 @@
     align-items: center;
 }
 
-/* Light Mode Override */
+/* Light Mode Override - Higher Specificity (1-1-0) wins over (1-0-0) */
 @media (prefers-color-scheme: light) {
-    #onboarding-overlay {
+    #onboarding-overlay.ob-overlay {
         background-color: #016293;
     }
 }
