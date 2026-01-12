@@ -604,6 +604,18 @@ window.OnboardingManager = {
     localStorage.setItem("myApps", JSON.stringify(selectedApps));
     localStorage.setItem("appConfig", JSON.stringify(config));
 
+    // Save Config
+    const profile = {
+      name: OnboardingManager.config.name,
+      birthday: OnboardingManager.config.birthday, // YYYY-MM-DD
+      lang: OnboardingManager.config.lang,
+      // Infer and store hemisphere preference permanently
+      hemisphere: typeof DateUtils !== 'undefined' ? DateUtils.getHemisphere() : 'southern'
+    };
+
+    localStorage.setItem("userProfile", JSON.stringify(profile));
+    localStorage.setItem("userLang", OnboardingManager.config.lang);
+
     // Save Profile
     ProfileManager.setProfile(name, birthday, lang);
   },

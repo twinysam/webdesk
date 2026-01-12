@@ -249,6 +249,16 @@
               </select>
             </div>
             <div class="mb-3">
+              <label class="form-label" data-i18n="label_hemisphere">Hemisphere</label>
+              <select
+                id="setting-hemisphere"
+                class="form-select bg-dark text-white border-secondary"
+              >
+                <option value="southern" data-i18n="option_southern">Southern (South America, Australia, Africa)</option>
+                <option value="northern" data-i18n="option_northern">Northern (North America, Europe, Asia)</option>
+              </select>
+            </div>
+            <div class="mb-3">
               <label class="form-label" data-i18n="label_name">Name</label>
               <input
                 type="text"
@@ -804,6 +814,8 @@
         document.getElementById("setting-name").value = profile.name || "";
         document.getElementById("setting-dob").value = profile.birthday || "";
         document.getElementById("setting-lang").value = profile.lang || "en";
+        // Default to southern if not set (legacy profiles)
+        document.getElementById("setting-hemisphere").value = profile.hemisphere || "southern";
       }
 
       document
@@ -812,6 +824,7 @@
           const name = document.getElementById("setting-name").value;
           const birthday = document.getElementById("setting-dob").value;
           const lang = document.getElementById("setting-lang").value;
+          const hemisphere = document.getElementById("setting-hemisphere").value;
 
           if (!name || !birthday)
             return showAlert(I18n.t("alert_fill_fields"), "danger");
@@ -822,6 +835,7 @@
           profile.name = name;
           profile.birthday = birthday;
           profile.lang = lang;
+          profile.hemisphere = hemisphere;
 
           saveData(PROFILE_KEY, profile);
           localStorage.setItem("userLang", lang);

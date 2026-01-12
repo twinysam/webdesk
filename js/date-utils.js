@@ -21,6 +21,14 @@
   
       getHemisphere: () => {
           try {
+              // 1. Check LocalStorage Setting
+              const profileStr = localStorage.getItem("userProfile");
+              if (profileStr) {
+                  const profile = JSON.parse(profileStr);
+                  if (profile.hemisphere) return profile.hemisphere;
+              }
+
+              // 2. Infer from Timezone (Onboarding / First Run)
               const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
               if (!timeZone) return "southern"; // Default
 
