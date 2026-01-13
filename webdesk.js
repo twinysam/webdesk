@@ -843,7 +843,7 @@ document.addEventListener("DOMContentLoaded", function () {
           document.querySelectorAll('[data-bs-toggle="tooltip"]')
         ).forEach((el) => new bootstrap.Tooltip(el));
 
-        EventsManager.initCalculator();
+        // EventsManager.initCalculator(); // Handled separately in startWebDesk based on prefs
       });
     },
   };
@@ -914,6 +914,12 @@ document.addEventListener("DOMContentLoaded", function () {
           // Once apps are ready, initialize visuals
           GreetingManager.updateVisuals(); // Set tree image (starts load)
           PreferencesManager.init();       // Apply prefs (might reveal tree container)
+
+          // Life Calculator (Optional)
+          const prefs = PreferencesManager.getPreferences();
+          if (prefs.enableCalculator === true) {
+              EventsManager.initCalculator();
+          }
           
           GreetingManager.updateMessage();
           GreetingManager.startAnimationControl();

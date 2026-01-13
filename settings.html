@@ -653,6 +653,12 @@
               <label class="form-check-label" for="checkAutoDeleteEvents" data-i18n="label_auto_delete">Auto-delete expired events</label>
             </div>
 
+            <!-- Life Calculator Toggle -->
+            <div class="form-check form-switch mb-4">
+              <input class="form-check-input" type="checkbox" id="checkEnableCalculator">
+              <label class="form-check-label" for="checkEnableCalculator" data-i18n="label_enable_calculator">Enable Life Calculator (Days Counter)</label>
+            </div>
+
             <button id="btnSavePreferences" class="btn btn-primary">
               <i class="bi bi-save"></i> <span data-i18n="btn_save_preferences">Save Preferences</span>
             </button>
@@ -730,7 +736,9 @@
         eveningStart: null, // null means use locale default
         treeEnabled: true,
         customLateGreeting: "",
-        autoDeleteEvents: true
+        customLateGreeting: "",
+        autoDeleteEvents: true,
+        enableCalculator: false, // Default DISABLED
       };
 
       // Global Catalog Cache
@@ -1298,6 +1306,9 @@
         }
         eveningSelect.value = current;
 
+        // Calculator Toggle
+        document.getElementById("checkEnableCalculator").checked = preferences.enableCalculator === true;
+
         // Tree Toggle
         document.getElementById("prefTreeToggle").checked = preferences.treeEnabled !== false; // Default true
 
@@ -1318,13 +1329,15 @@
          config.filters.minClicks = parseInt(document.getElementById("inputMinClicks").value) || 0;
          saveData(CONFIG_KEY, config);
          
-         const eveningVal = parseInt(document.getElementById("prefEveningStart").value);
-         const treeEnabled = document.getElementById("prefTreeToggle").checked;
-         const lateGreeting = document.getElementById("prefLateGreeting").value.trim();
+          const eveningVal = parseInt(document.getElementById("prefEveningStart").value);
+          const treeEnabled = document.getElementById("prefTreeToggle").checked;
+          const calculatorEnabled = document.getElementById("checkEnableCalculator").checked;
+          const lateGreeting = document.getElementById("prefLateGreeting").value.trim();
 
-         preferences.eveningStart = eveningVal;
-         preferences.treeEnabled = treeEnabled;
-         preferences.customLateGreeting = lateGreeting;
+          preferences.eveningStart = eveningVal;
+          preferences.treeEnabled = treeEnabled;
+          preferences.enableCalculator = calculatorEnabled;
+          preferences.customLateGreeting = lateGreeting;
 
          saveData(PREFERENCES_KEY, preferences);
          showAlert(I18n.t("alert_preferences_saved"), "success");
