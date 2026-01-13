@@ -117,7 +117,9 @@
     "onboarding_been_here": "¿Ya has estado aquí?",
     "onboarding_import_btn": "Importar Copia",
     "text_last_backup": "Último backup:",
-    "text_backup_never": "No hay backup registrado."
+    "text_backup_never": "No hay backup registrado.",
+    "custom_tooltip": "Prueba la CONFIGURACIÓN para agregar/quitar apps, cumpleaños y mucho más.",
+    "onboarding_happy_days": "¡Feliz día número {days}!"
   },
   "greetingRules": {
     "morningStart": 6,

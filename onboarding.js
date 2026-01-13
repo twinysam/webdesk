@@ -326,6 +326,26 @@ window.OnboardingManager = {
     const step3 = document.getElementById("step-apps");
     step3.classList.add("active");
 
+    // 3. Days Calculation for "Happy Xth day!"
+    try {
+        if (typeof dayjs !== 'undefined') {
+            const birth = dayjs(OnboardingManager.config.birthday); // YYYY-MM-DD
+            if (birth.isValid()) {
+                const now = dayjs();
+                const days = now.diff(birth, 'day');
+                
+                // Construct string
+                const txt = OnboardingManager.strings;
+                const template = txt["onboarding_happy_days"] || "Happy {days}th day!";
+                
+                // Simple replacement
+                document.getElementById("lbl-happy-days").innerText = template.replace("{days}", days);
+            }
+        }
+    } catch (e) {
+        console.error("Onboarding: Error calculating days", e);
+    }
+
     console.log("Onboarding: Entered Step 3");
 
     // Check if rendered

@@ -117,7 +117,9 @@
     "onboarding_been_here": "Been here before?",
     "onboarding_import_btn": "Import Backup",
     "text_last_backup": "Last backup:",
-    "text_backup_never": "No backup recorded yet."
+    "text_backup_never": "No backup recorded yet.",
+    "custom_tooltip": "Try the SETTINGS to add/remove/re-arrange apps, add birthdays and much more.",
+    "onboarding_happy_days": "Happy {days}th day!"
   },
   "greetingRules": {
     "morningStart": 5,

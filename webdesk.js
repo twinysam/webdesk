@@ -910,9 +910,10 @@ document.addEventListener("DOMContentLoaded", function () {
           // Create Tooltip
           const tooltip = document.createElement("div");
           tooltip.className = "settings-tooltip";
+          const text = I18nManager.getString("custom_tooltip");
           tooltip.innerHTML = `
               <div class="tooltip-text">
-                  Try the SETTINGS to add/remove/re-arrange apps, add birthdays and much more.
+                  ${text}
               </div>
               <button class="tooltip-close" aria-label="Close">×</button>
           `;
