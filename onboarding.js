@@ -336,10 +336,16 @@ window.OnboardingManager = {
                 
                 // Construct string
                 const txt = OnboardingManager.strings;
-                const template = txt["onboarding_happy_days"] || "Happy {days}th day!";
+                const happyTemplate = txt["onboarding_happy_days"] || "Happy {days}th day!";
+                const happyMsg = happyTemplate.replace("{days}", days);
                 
-                // Simple replacement
-                document.getElementById("lbl-happy-days").innerText = template.replace("{days}", days);
+                // Combine with existing Title
+                // We re-fetch the title just in case language changed or we need base
+                const baseTitle = txt["onboarding_apps_title"] || "Which of these websites do you<br>often use?";
+                
+                const combinedHtml = `<span style="display:block; font-size: 2rem; color: #83d3fa; margin-bottom: 0.5rem; font-family:'Exo', sans-serif;">${happyMsg}</span>${baseTitle}`;
+                
+                document.getElementById("lbl-apps-title").innerHTML = combinedHtml;
             }
         }
     } catch (e) {

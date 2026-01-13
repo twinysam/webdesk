@@ -118,18 +118,7 @@
   transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* Specific Alignment for Step 1 to line up with bottom action */
-#onboarding-overlay #step-name {
-  align-items: flex-start;
-  padding-left: 10vw;
-}
-#onboarding-overlay #step-name .input-line-wrapper {
-  justify-content: flex-start;
-}
-#onboarding-overlay #step-name .ob-input {
-  text-align: left;
-  width: 100%;
-}
+
 
 #onboarding-overlay .ob-step.active {
   opacity: 1;
@@ -285,7 +274,9 @@
 #onboarding-overlay .bottom-action {
   position: absolute;
   bottom: 5vh;
-  left: 10vw;
+  left: 0; 
+  width: 100%;
+  justify-content: center;
   font-family: "Nunito", sans-serif;
   font-size: 1.5rem;
   display: flex;
