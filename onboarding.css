@@ -331,8 +331,8 @@
   display: inline-flex;
   flex-direction: row;
   gap: 40px;
-  /* Push start to exactly the right edge (100vw) */
-  padding-left: 100vw;
+  /* Push start to 1/4 of the screen on the right (75vw) */
+  padding-left: 75vw;
   /* Add buffer at end for loop smoothness if needed, or 0 */
   padding-right: 0; 
   min-width: 100%;
