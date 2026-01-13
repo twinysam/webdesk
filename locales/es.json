@@ -119,7 +119,9 @@
     "text_last_backup": "Último backup:",
     "text_backup_never": "No hay backup registrado.",
     "custom_tooltip": "Prueba la CONFIGURACIÓN para agregar/quitar apps, cumpleaños y mucho más.",
-    "onboarding_happy_days": "¡Feliz día número {days}!"
+    "onboarding_happy_days": "¡Feliz día número {days}!",
+    "mobile_block_message": "WebDesk es un espacio de trabajo pensado para vivir como una pestaña fijada en tu computadora.<br><br>En teléfonos/tablets chicas, la mayoría de las funciones no se traducen bien y la experiencia no reflejaría cómo está pensado para usarse.<br><br>Por favor, abrí esta página en tu laptop o escritorio para tener la experiencia completa.",
+    "mobile_cta_share": "Enviar este link a mi computadora"
   },
   "greetingRules": {
     "morningStart": 6,

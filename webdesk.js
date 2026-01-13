@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+  if (window.isMobileBlocked) return;
   // ==========================================================================
   // MODULE: DateUtils
   // Centralized date/time helpers and constants

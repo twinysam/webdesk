@@ -119,7 +119,9 @@
     "text_last_backup": "Last backup:",
     "text_backup_never": "No backup recorded yet.",
     "custom_tooltip": "Try the SETTINGS to add/remove/re-arrange apps, add birthdays and much more.",
-    "onboarding_happy_days": "Happy {days}th day!"
+    "onboarding_happy_days": "Happy {days}th day!",
+    "mobile_block_message": "WebDesk is a workspace meant to live as a pinned tab on your computer.<br><br>On phones/small tablets, most features don’t translate well, and the experience wouldn’t reflect how it’s meant to be used.<br><br>Please, open this page on your laptop or desktop to get the full experience.",
+    "mobile_cta_share": "Send this link to my computer"
   },
   "greetingRules": {
     "morningStart": 5,
