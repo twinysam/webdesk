@@ -896,6 +896,56 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   // ==========================================================================
+  // MODULE: TooltipManager
+  // First-time UX Enhancements
+  // ==========================================================================
+  const TooltipManager = {
+      init: () => {
+          // Check if already seen or not setup
+          if (localStorage.getItem("settingsTooltipSeen")) return;
+          
+          const icon = document.querySelector(".settings-icon");
+          if (!icon) return;
+
+          // Create Tooltip
+          const tooltip = document.createElement("div");
+          tooltip.className = "settings-tooltip";
+          tooltip.innerHTML = `
+              <div class="tooltip-text">
+                  Try the SETTINGS to add/remove/re-arrange apps, add birthdays and much more.
+              </div>
+              <button class="tooltip-close" aria-label="Close">×</button>
+          `;
+
+          // Append
+          icon.appendChild(tooltip);
+
+          // Events
+          const close = () => {
+              tooltip.remove();
+              localStorage.setItem("settingsTooltipSeen", "true");
+          };
+
+          const closeBtn = tooltip.querySelector(".tooltip-close");
+          if (closeBtn) {
+              closeBtn.addEventListener("click", (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  close();
+              });
+          }
+
+          // Also close if they actually click the link
+          const link = icon.querySelector("a");
+          if(link) {
+              link.addEventListener("click", () => {
+                  localStorage.setItem("settingsTooltipSeen", "true");
+              });
+          }
+      }
+  };
+
+  // ==========================================================================
   // INITIALIZATION
   // ==========================================================================
 
@@ -924,6 +974,8 @@ document.addEventListener("DOMContentLoaded", function () {
           GreetingManager.updateMessage();
           GreetingManager.startAnimationControl();
           setInterval(GreetingManager.updateMessage, 60000 * 5);
+
+          TooltipManager.init();
 
           // Reveal Main Content
           const caja = document.querySelector(".caja");
