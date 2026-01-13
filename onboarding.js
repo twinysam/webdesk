@@ -695,5 +695,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Only start if not importing or something?
   // Actually, webdesk.js loads stats and things.
   // We want this to run if profile is missing.
+  if (window.isMobileBlocked) return;
   OnboardingManager.init();
 });

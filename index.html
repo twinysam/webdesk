@@ -118,6 +118,7 @@
     <script>
         // Safe Init Debugger
         document.addEventListener("DOMContentLoaded", () => {
+            if (window.isMobileBlocked) return;
             try {
                 if (typeof OnboardingManager === 'undefined') {
                     console.error("CRITICAL: OnboardingManager is missing!");
