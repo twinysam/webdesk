@@ -8,6 +8,7 @@
     "greeting_generic": "Hello",
     "birthday": "Happy Birthday!",
     "day": "Day",
+    "day_intro": "Today is your day number",
     "today": "Today",
     "tomorrow": "Tomorrow",
     "turns": "turn",

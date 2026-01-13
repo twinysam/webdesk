@@ -370,9 +370,17 @@ document.addEventListener("DOMContentLoaded", function () {
           const t = (key) => I18nManager.getString(key);
           const tSafe = (key) => I18nManager.data.strings[key] || key; // Direct access helper
 
-          let baseMsg = `${todayFull} - ${t(
-            "day"
-          )} ${DateUtils.getDaysSinceStart()}`;
+
+          // --- INTRO MESSAGE LOGIC ---
+          const hasIntroDate = localStorage.getItem('introDateShown');
+          let dayLabel = t("day");
+          
+          if (!hasIntroDate && ProfileManager.isSetup()) {
+              dayLabel = t("day_intro");
+              localStorage.setItem('introDateShown', 'true');
+          }
+
+          let baseMsg = `${todayFull} - ${dayLabel} ${DateUtils.getDaysSinceStart()}`;
 
           const matches = {
             cumplesToday: [],
