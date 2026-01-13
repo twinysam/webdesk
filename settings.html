@@ -559,14 +559,7 @@
                 <button type="submit" class="btn btn-success flex-grow-1">
                   <i class="bi bi-plus-lg"></i>
                 </button>
-                <button
-                  type="button"
-                  id="btnExportEvents"
-                  class="btn btn-outline-info"
-                  title="Export events.json"
-                >
-                  <i class="bi bi-filetype-json"></i>
-                </button>
+                <!-- Export button removed -->
                 <button
                   type="button"
                   id="btnCleanEvents"
@@ -654,6 +647,12 @@
               <label class="form-check-label" for="prefTreeToggle" data-i18n="label_tree_toggle">Show Tree of Seasons</label>
             </div>
 
+            <!-- Auto Delete Toggle -->
+            <div class="form-check form-switch mb-4">
+              <input class="form-check-input" type="checkbox" id="checkAutoDeleteEvents" checked>
+              <label class="form-check-label" for="checkAutoDeleteEvents" data-i18n="label_auto_delete">Auto-delete expired events</label>
+            </div>
+
             <button id="btnSavePreferences" class="btn btn-primary">
               <i class="bi bi-save"></i> <span data-i18n="btn_save_preferences">Save Preferences</span>
             </button>
@@ -730,7 +729,8 @@
       const defaultPreferences = {
         eveningStart: null, // null means use locale default
         treeEnabled: true,
-        customLateGreeting: ""
+        customLateGreeting: "",
+        autoDeleteEvents: true
       };
 
       // Global Catalog Cache

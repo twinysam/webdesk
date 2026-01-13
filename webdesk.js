@@ -617,7 +617,42 @@ document.addEventListener("DOMContentLoaded", function () {
       if (userBirthday)
         DateUtils.START_DATE = dayjs(userBirthday);
 
+      // Auto-Delete Logic
+      const prefs = PreferencesManager.getPreferences();
+      if (prefs.autoDeleteEvents !== false) {
+          EventsManager.cleanExpiredEvents();
+      }
+
       EventsManager.checkDailyEvents();
+    },
+
+    cleanExpiredEvents: () => {
+       try {
+           const customEvents = JSON.parse(localStorage.getItem("customEvents")) || [];
+           if (customEvents.length === 0) return;
+
+           // Clean events older than yesterday (allow today and tomorrow and yesterday? No, User said: "older than 24 hours (strictly speaking, older than "yesterday")")
+           // If today is 12th. 
+           // 12th - OK
+           // 11th - OK (Yesterday - Grace Period?) "built-in grace period of 24 hours"
+           // 10th - DELETE
+           
+           const yesterday = dayjs().subtract(1, 'day');
+           
+           // We keep event if date >= yesterday (in YYYY-MM-DD string comp works if format is ISO)
+           const filtered = customEvents.filter(e => {
+               const eDate = dayjs(e.date); // e.date is YYYY-MM-DD
+               // isAfter or Same yesterday
+               return eDate.isSame(yesterday, 'day') || eDate.isAfter(yesterday, 'day');
+           });
+
+           if (filtered.length !== customEvents.length) {
+               localStorage.setItem("customEvents", JSON.stringify(filtered));
+               console.log(`Auto cleaned ${customEvents.length - filtered.length} events.`);
+           }
+       } catch (err) {
+           console.error("Error cleaning events", err);
+       }
     },
 
     handleOverflow: (element) => {
