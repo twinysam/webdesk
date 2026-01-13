@@ -372,10 +372,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
           // --- INTRO MESSAGE LOGIC ---
+          // --- INTRO MESSAGE LOGIC ---
           const hasIntroDate = localStorage.getItem('introDateShown');
           let dayLabel = t("day");
+          let showIntro = !hasIntroDate;
+
+          // Check if user is "old" (has stats > 24h ago) to skip intro
+          if (showIntro) {
+              const stats = StatsManager.getStats();
+              const hasOldActivity = Object.values(stats).some(s => 
+                  s.lastClick && dayjs(s.lastClick).isBefore(dayjs().subtract(24, 'hour'))
+              );
+              if (hasOldActivity) {
+                  showIntro = false;
+                  localStorage.setItem('introDateShown', 'true'); // Silently mark as shown
+              }
+          }
           
-          if (!hasIntroDate && ProfileManager.isSetup()) {
+          if (showIntro && ProfileManager.isSetup()) {
               dayLabel = t("day_intro");
               localStorage.setItem('introDateShown', 'true');
           }
