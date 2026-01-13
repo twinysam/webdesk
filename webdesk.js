@@ -653,12 +653,12 @@ document.addEventListener("DOMContentLoaded", function () {
            
            const yesterday = dayjs().subtract(1, 'day');
            
-           // We keep event if date >= yesterday (in YYYY-MM-DD string comp works if format is ISO)
-           const filtered = customEvents.filter(e => {
-               const eDate = dayjs(e.date); // e.date is YYYY-MM-DD
-               // isAfter or Same yesterday
-               return eDate.isSame(yesterday, 'day') || eDate.isAfter(yesterday, 'day');
-           });
+            // We keep event if date >= yesterday (in YYYY-MM-DD string comp works if format is ISO)
+            const filtered = customEvents.filter(e => {
+                const eDate = dayjs(e.date, "DD/MM/YYYY"); // e.date is DD/MM/YYYY
+                // isAfter or Same yesterday
+                return eDate.isSame(yesterday, 'day') || eDate.isAfter(yesterday, 'day');
+            });
 
            if (filtered.length !== customEvents.length) {
                localStorage.setItem("customEvents", JSON.stringify(filtered));
