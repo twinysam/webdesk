@@ -370,29 +370,6 @@ ul.columns {
   }
 }
 
-/* Event Expansion */
-.expandable-text {
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  padding-right: 35px !important;
-  position: relative;
-  display: block;
-}
-
-.expandable-arrow {
-  position: absolute;
-  right: 0;
-  top: 0;
-  cursor: pointer;
-  color: #83d3fa;
-  font-weight: bold;
-  z-index: 10;
-  background-color: transparent !important;
-}
-.expandable-arrow:hover {
-  color: #c4eafd;
-}
 
 @media only screen and (max-width: 685px) {
   h1 {

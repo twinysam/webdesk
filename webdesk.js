@@ -230,69 +230,9 @@ document.addEventListener("DOMContentLoaded", function () {
       const politeElem = document.getElementById("polite");
       if (politeElem) {
           politeElem.innerHTML = message;
-          GreetingManager.adjustFontSize(politeElem);
       }
     },
 
-    adjustFontSize: (element) => {
-      if (!element) return;
-      
-      const text = element.innerText;
-      if (!text.trim()) return;
-
-      const computedStyle = window.getComputedStyle(element);
-      const fontFamily = computedStyle.fontFamily;
-      // Use parent width because element might be shrunk by previous resize or wrap
-      let maxWidth = element.parentElement ? element.parentElement.clientWidth : 0;
-      
-      if (maxWidth <= 0) {
-          // Fallback if hidden: Match .caja CSS (max-width: 95vw, width: 1346px)
-          const viewportWidth = window.innerWidth;
-          maxWidth = Math.min(viewportWidth * 0.95, 1346);
-      } 
-
-      // Canvas Init
-      const canvas = GreetingManager.canvas || (GreetingManager.canvas = document.createElement("canvas"));
-      const context = canvas.getContext("2d");
-      
-      // Measure at a reference size (e.g., 100px) to determine aspect ratio
-      const refPx = 100;
-      context.font = `${refPx}px ${fontFamily}`;
-      const metrics = context.measureText(text);
-      const textWidthAtRef = metrics.width;
-      
-      if (textWidthAtRef <= 0) return; 
-      
-      const scaleFactor = (maxWidth * 0.98) / textWidthAtRef;
-      const idealPx = refPx * scaleFactor;
-      
-      const rootSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-      let targetRem = idealPx / rootSize;
-      
-      const MAX_REM = 6; 
-      const MIN_REM = 1.5; 
-      
-      if (targetRem > MAX_REM) targetRem = MAX_REM;
-      
-      let wrapped = false;
-      if (targetRem < MIN_REM) {
-          targetRem = MIN_REM;
-          wrapped = true;
-      }
-      
-      element.style.fontSize = targetRem + "rem";
-      
-      if (wrapped) {
-          element.style.whiteSpace = "normal";
-          element.style.wordBreak = "break-word";
-      } else {
-          element.style.whiteSpace = "nowrap";
-          element.style.wordBreak = "normal";
-      }
-      
-      // Ensure visibility is reset if we hid it previously (though we removed that logic to avoid flickering issues if any)
-      if (element.style.visibility === "hidden") element.style.visibility = "visible";
-    },
 
     updateVisuals: () => {
       // Xmas Class
@@ -322,11 +262,7 @@ document.addEventListener("DOMContentLoaded", function () {
       window.addEventListener("resize", () => {
           clearTimeout(resizeTimeout);
           resizeTimeout = setTimeout(() => {
-              const fechaEl = document.getElementById("fecha");
-              if(fechaEl && fechaEl.innerHTML) EventsManager.handleOverflow(fechaEl);
-              
-              const politeElem = document.getElementById("polite");
-              if(politeElem) GreetingManager.adjustFontSize(politeElem);
+              // Resize logic removed as per user request
           }, 100);
       });
     },
@@ -473,8 +409,6 @@ document.addEventListener("DOMContentLoaded", function () {
           const fechaEl = document.getElementById("fecha");
           if (fechaEl) {
              fechaEl.innerHTML = baseMsg.trim();
-             // Check overflow after rendering
-             setTimeout(() => EventsManager.handleOverflow(fechaEl), 0);
           }
         })
         .catch((err) => console.error("Error loading events:", err));
@@ -670,36 +604,6 @@ document.addEventListener("DOMContentLoaded", function () {
        }
     },
 
-    handleOverflow: (element) => {
-      // 1. Reset (in case of re-run)
-      element.classList.remove("expandable-text");
-      const oldArrow = element.querySelector(".expandable-arrow");
-      if (oldArrow) oldArrow.remove();
-
-      // 2. Check Overflow
-      // Temporarily force nowrap to check if it WOULD overflow
-      const prevWS = element.style.whiteSpace;
-      element.style.whiteSpace = "nowrap";
-      const isOverflowing = element.scrollWidth > element.clientWidth;
-      element.style.whiteSpace = prevWS;
-
-      if (isOverflowing) {
-        element.classList.add("expandable-text");
-
-        const arrow = document.createElement("span");
-        arrow.className = "expandable-arrow";
-        arrow.innerHTML = "▼";
-        arrow.title = "Show full text";
-        
-        arrow.onclick = (e) => {
-          e.stopPropagation();
-          element.classList.remove("expandable-text");
-          arrow.remove();
-        };
-
-        element.appendChild(arrow);
-      }
-    },
   };
 
   // ==========================================================================
