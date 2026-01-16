@@ -289,6 +289,29 @@ document.addEventListener("DOMContentLoaded", function () {
       return arr.join(sep) + lastSep + last;
     },
 
+    getSpecialDayClass: (n) => {
+        if (n < 2000) return null; // Start checking from Day 2000 per user request
+        
+        // Priority 1: Orange for 1000s
+        if (n % 1000 === 0) return "special-day-orange";
+        
+        // Priority 2: Green for others
+        if (n % 100 === 0) return "special-day-green";
+        
+        const s = n.toString();
+        
+        // Repdigit (e.g. 2222, 33333)
+        if (/^(\d)\1+$/.test(s)) return "special-day-green";
+        
+        // Palindrome (e.g. 1221, 12321)
+        if (s === s.split('').reverse().join('')) return "special-day-green";
+        
+        // Consecutive (e.g. 1234, 23456)
+        if ("0123456789".includes(s)) return "special-day-green";
+        
+        return null;
+    },
+
     checkDailyEvents: () => {
       Promise.all([
         fetch("cumples.json")
@@ -308,7 +331,6 @@ document.addEventListener("DOMContentLoaded", function () {
           const tSafe = (key) => I18nManager.data.strings[key] || key; // Direct access helper
 
 
-          // --- INTRO MESSAGE LOGIC ---
           // --- INTRO MESSAGE LOGIC ---
           const hasIntroDate = localStorage.getItem('introDateShown');
           let dayLabel = t("day");
@@ -331,7 +353,14 @@ document.addEventListener("DOMContentLoaded", function () {
               localStorage.setItem('introDateShown', 'true');
           }
 
-          let baseMsg = `${todayFull} - ${dayLabel} ${DateUtils.getDaysSinceStart()}`;
+
+          // Calculate day count and check for special highlighting
+          const daysInfo = DateUtils.getDaysSinceStart();
+          const dayCount = typeof daysInfo === 'number' ? daysInfo : daysInfo; // It is number
+          const specialClass = EventsManager.getSpecialDayClass(dayCount);
+          const dayCountHtml = specialClass ? `<span class="${specialClass}">${dayCount}</span>` : dayCount;
+
+          let baseMsg = `${todayFull} - ${dayLabel} ${dayCountHtml}`;
 
           const matches = {
             cumplesToday: [],
