@@ -672,10 +672,11 @@ ul.columns {
 
 /* SPECIAL DAYS ANIMATION */
 /* Base styles for the special day span */
-#fecha .special-day-green,
-#fecha .special-day-orange {
+#fecha span.special-day-green,
+#fecha span.special-day-orange {
   position: relative;
   display: inline-block;
+  background-color: transparent;
   z-index: 1; /* Keep text on top */
   color: white; /* Ensure text is readable */
   text-shadow: 0 0 2px rgba(0,0,0,0.5); /* Slight shadow for readability */
@@ -742,23 +743,4 @@ ul.columns {
     opacity: 0.5;
     transform: translate(-50%, -50%) scale(0.95);
   }
-}
-
-/* Optional: Tiny "Sparkle" effect using ::after (very subtle) */
-#fecha .special-day-green::after,
-#fecha .special-day-orange::after {
-   content: "";
-   position: absolute;
-   top: 0; left: 0; bottom: 0; right: 0;
-   background: transparent;
-   z-index: -1;
-   border-radius: 50%;
-   box-shadow: inset 0 0 5px rgba(255,255,255,0.3);
-   opacity: 0;
-   animation: subtleSparkle 3s infinite ease-in-out;
-}
-
-@keyframes subtleSparkle {
-  0%, 100% { opacity: 0; }
-  50% { opacity: 0.4; }
 }
