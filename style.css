@@ -671,57 +671,94 @@ ul.columns {
 }
 
 /* SPECIAL DAYS ANIMATION */
-@keyframes greenDayGlow {
-  0% {
-    background-color: rgba(40, 167, 69, 0.2);
-    box-shadow: 0 0 5px rgba(40, 167, 69, 0.4);
-    transform: scale(1);
-  }
-  50% {
-    background-color: rgba(40, 167, 69, 0.5);
-    box-shadow: 0 0 15px rgba(40, 167, 69, 0.8);
-    transform: scale(1.1);
-  }
-  100% {
-    background-color: rgba(40, 167, 69, 0.2);
-    box-shadow: 0 0 5px rgba(40, 167, 69, 0.4);
-    transform: scale(1);
-  }
-}
-
-@keyframes orangeDayGlow {
-  0% {
-    background-color: rgba(253, 126, 20, 0.3);
-    box-shadow: 0 0 5px rgba(253, 126, 20, 0.5);
-    transform: scale(1);
-  }
-  50% {
-    background-color: rgba(253, 126, 20, 0.7);
-    box-shadow: 0 0 25px rgba(253, 126, 20, 0.9);
-    transform: scale(1.15);
-  }
-  100% {
-    background-color: rgba(253, 126, 20, 0.3);
-    box-shadow: 0 0 5px rgba(253, 126, 20, 0.5);
-    transform: scale(1);
-  }
-}
-
-#fecha .special-day-green {
-  display: inline-block;
-  padding: 0 5px;
-  border-radius: 4px;
-  background-color: #28a745; /* Fallback */
-  animation: greenDayGlow 2s infinite ease-in-out;
-  color: white;
-}
-
+/* Base styles for the special day span */
+#fecha .special-day-green,
 #fecha .special-day-orange {
+  position: relative;
   display: inline-block;
-  padding: 0 5px;
-  border-radius: 4px;
-  background-color: #fd7e14; /* Fallback */
-  animation: orangeDayGlow 2s infinite ease-in-out;
-  color: white;
-  font-weight: bold;
+  z-index: 1; /* Keep text on top */
+  color: white; /* Ensure text is readable */
+  text-shadow: 0 0 2px rgba(0,0,0,0.5); /* Slight shadow for readability */
+  /* No padding change or scale on the element itself to prevent jitter */
+}
+
+/* Common Magical Glow Logic via Pseudo-element */
+#fecha .special-day-green::before,
+#fecha .special-day-orange::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120%;  /* Slightly wider than text */
+  height: 120%; /* Slightly taller */
+  border-radius: 50%; /* Oval shape */
+  z-index: -1;
+  filter: blur(8px); /* Soften the edges significantly */
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Green Specifics */
+#fecha .special-day-green::before {
+  background: radial-gradient(circle, rgba(72, 255, 0, 0.6) 0%, rgba(40, 167, 69, 0) 70%);
+  box-shadow: 0 0 10px rgba(72, 255, 0, 0.4);
+  animation: magicPulseGreen 4s infinite ease-in-out;
+}
+
+/* Orange Specifics */
+#fecha .special-day-orange::before {
+  background: radial-gradient(circle, rgba(255, 165, 0, 0.8) 0%, rgba(253, 126, 20, 0) 70%);
+  box-shadow: 0 0 15px rgba(255, 140, 0, 0.5);
+  animation: magicPulseOrange 4s infinite ease-in-out;
+}
+
+/* Animations - Affecting only the Glow (Pseudo-element) */
+@keyframes magicPulseGreen {
+  0% {
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(1.1); /* Subtle breathing */
+  }
+  100% {
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+}
+
+@keyframes magicPulseOrange {
+  0% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+  100% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+}
+
+/* Optional: Tiny "Sparkle" effect using ::after (very subtle) */
+#fecha .special-day-green::after,
+#fecha .special-day-orange::after {
+   content: "";
+   position: absolute;
+   top: 0; left: 0; bottom: 0; right: 0;
+   background: transparent;
+   z-index: -1;
+   border-radius: 50%;
+   box-shadow: inset 0 0 5px rgba(255,255,255,0.3);
+   opacity: 0;
+   animation: subtleSparkle 3s infinite ease-in-out;
+}
+
+@keyframes subtleSparkle {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 0.4; }
 }
