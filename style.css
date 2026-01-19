@@ -38,7 +38,7 @@ body.xmas {
 #reminder {
   display: inline-block;
   font-family: "Inconsolata", monospace;
-  font-size: 1.5em;
+  font-size: 1.4em;
   line-height: 40px;
   margin-top: 7px;
   max-width: 100%;
@@ -60,7 +60,7 @@ body.xmas {
 
 h1 {
   font-family: "Exo", sans-serif;
-  font-size: 6rem;
+  font-size: 5rem;
   font-weight: 200;
   margin-bottom: 0px;
   border-bottom: 12px solid #589bd4;
@@ -70,8 +70,8 @@ h1 {
 
 h2 {
   font-family: "Exo", sans-serif;
-  font-size: 4rem;
-  font-weight: 200;
+  font-size: 3rem;
+  font-weight: 600;
 }
 
 a,
