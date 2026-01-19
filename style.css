@@ -41,6 +41,7 @@ body.xmas {
   font-size: 1.4em;
   line-height: 40px;
   margin-top: 7px;
+  margin-bottom: 10px;
   max-width: 100%;
 }
 
@@ -56,6 +57,7 @@ body.xmas {
 #fecha a span,
 #fecha a:visited span {
   color: white;
+  text-decoration-color: white;
 }
 
 h1 {
