@@ -54,13 +54,14 @@ body.xmas {
   background-color: #93007c;
 }
 
-#fecha a,
-#fecha a:visited {
-  text-decoration-color: white;
+#fecha a span,
+#fecha a:visited span {
+  color: white;
 }
 
-#fecha a span {
-  color: white;
+#fecha a:has(span),
+#fecha a:visited:has(span) {
+  text-decoration-color: white;
 }
 
 h1 {
