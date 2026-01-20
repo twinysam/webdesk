@@ -71,7 +71,7 @@ h1 {
   font-size: 5rem;
   font-weight: 200;
   margin-bottom: 0px;
-  border-bottom: 12px solid color-mix(in srgb, var(--bg-color) 40%, white);
+  border-bottom: 12px solid color-mix(in srgb, var(--bg-color) 10%, white);
   transition-property: color, border-bottom-color;
   transition-duration: 5s;
   text-wrap: balance;
