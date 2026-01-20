@@ -234,11 +234,11 @@ ul.columns {
     background-image: url(images/bg_snow_dark.jpg);
   }
 
-  h1 {
+  /*h1 {
     border-bottom: 12px solid #3e5984;
     transition-property: color, border-bottom-color;
     transition-duration: 5s;
-  }
+  }*/
 
   .form-control.dias-calc-input,
   .form-control.dias-calc-date {
