@@ -595,6 +595,9 @@
             <button id="btnPersistentStorage" class="btn btn-outline-info mb-4">
                <i class="bi bi-hdd-network"></i> <span data-i18n="btn_persistent_storage">Request persistent storage</span>
             </button>
+            <p id="textPersistentStorageActive" class="text-success mb-4" style="display: none;" data-i18n="text_storage_active">
+              Persistent storage is active.
+            </p>
 
             <!-- VISIBILITY RULES SECTION -->
             <h5 class="text-white border-bottom pb-2 mb-3" data-i18n="header_visibility">Visibility Rules</h5>
@@ -1355,12 +1358,28 @@
 
       // Storage Persistence
       const btnPersistent = document.getElementById("btnPersistentStorage");
+      const textPersistent = document.getElementById("textPersistentStorageActive");
+
+      async function checkStorage() {
+        if (navigator.storage && navigator.storage.persisted) {
+          const isPersisted = await navigator.storage.persisted();
+          if (isPersisted) {
+             if(btnPersistent) btnPersistent.style.display = 'none';
+             if(textPersistent) textPersistent.style.display = 'block';
+          } else {
+             if(btnPersistent) btnPersistent.style.display = 'inline-block';
+             if(textPersistent) textPersistent.style.display = 'none';
+          }
+        }
+      }
+
       if (btnPersistent) {
         btnPersistent.addEventListener("click", async () => {
           if (navigator.storage && navigator.storage.persist) {
             const isPersisted = await navigator.storage.persist();
             if (isPersisted) {
               showAlert(I18n.t("alert_storage_persisted"), "success");
+              checkStorage(); // Re-check to update UI
             } else {
               showAlert(I18n.t("alert_storage_failed"), "warning");
             }
@@ -1392,6 +1411,7 @@
         I18nManager.applyToPage();
         loadPreferencesManager();
         updateLastBackupText();
+        checkStorage(); // Check persistence
 
         // Update Tab Label - No longer needed manually as I18n handles it
         // if (profile.lang === "es") { ... } 

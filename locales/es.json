@@ -95,6 +95,7 @@
     "alert_past_removed": "Eventos pasados eliminados!",
     "header_storage": "Almacenamiento",
     "text_storage_explanation": "Para total privacidad y practicidad, WebDesk utiliza el almacenamiento local de tu navegador. Por defecto es muy confiable y junto con nuestra función de backups tus datos pueden estar seguros.<br><br>PERO, si quieres decirle a tu navegador que nunca elimine tus datos guardados puedes...",
+    "text_storage_active": "<i class='bi bi-check-circle-fill text-success'></i> El almacenamiento persistente ya está activo. Tus datos están extra seguros.",
     "btn_persistent_storage": "Solicitar almacenamiento persistente",
     "header_preferences": "Preferencias",
     "header_general_pref": "Preferencias Generales",

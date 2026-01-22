@@ -95,6 +95,7 @@
     "alert_past_removed": "Past events removed!",
     "header_storage": "Storage",
     "text_storage_explanation": "For total privacy and practicality WebDesk makes use of your browser's local storage. By default this is very reliable and coupled with our backups feature your data can be kept safely.<br><br>BUT, should you want to tell your browser to never delete your stored data you can...",
+    "text_storage_active": "<i class='bi bi-check-circle-fill text-success'></i> Persistent storage is already being used. Your data is extra safe.",
     "btn_persistent_storage": "Request persistent storage",
     "header_preferences": "Preferences",
     "header_general_pref": "General Preferences",
