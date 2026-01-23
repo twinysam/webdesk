@@ -19,25 +19,17 @@
       getDaysSinceStart: (date = dayjs()) =>
         date.diff(scope.DateUtils.START_DATE, "days"),
 
-      getHemisphere: () => {
+      detectHemisphere: () => {
           try {
-              // 1. Check LocalStorage Setting
-              const profileStr = localStorage.getItem("userProfile");
-              if (profileStr) {
-                  const profile = JSON.parse(profileStr);
-                  if (profile.hemisphere) return profile.hemisphere;
-              }
-
-              // 2. Infer from Timezone (Onboarding / First Run)
               const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-              if (!timeZone) return "southern"; // Default
+              if (!timeZone) return "southern"; // Default safety
 
-              // Simple heuristic for Southern Hemisphere
+              // Heuristic for Southern Hemisphere
               const isSouthern =
                   timeZone.includes("Australia") ||
                   timeZone.includes("Antarctica") ||
                   timeZone.includes("Argentina") ||
-                  timeZone.includes("Buenos_Aires") || // Chrome often returns "America/Buenos_Aires"
+                  timeZone.includes("Buenos_Aires") ||
                   timeZone.includes("Brazil") ||
                   timeZone.includes("Sao_Paulo") ||
                   timeZone.includes("Chile") ||
@@ -45,14 +37,31 @@
                   timeZone.includes("Uruguay") ||
                   timeZone.includes("Montevideo") ||
                   timeZone.includes("Paraguay") ||
+                  timeZone.includes("Asuncion") ||
                   timeZone.includes("New_Zealand") ||
+                  timeZone.includes("Auckland") ||
+                  timeZone.includes("Wellington") ||
                   timeZone.includes("America/Lima") ||
-                  timeZone.includes("Africa/Johannesburg");
+                  timeZone.includes("America/La_Paz") ||
+                  timeZone.includes("Africa/Johannesburg") ||
+                  timeZone.includes("Africa/Cape_Town");
                 
               return isSouthern ? "southern" : "northern";
           } catch (e) {
               return "southern";
           }
+      },
+
+      getHemisphere: () => {
+          // 1. Check LocalStorage Setting (Primary Source of Truth)
+          const profileStr = localStorage.getItem("userProfile");
+          if (profileStr) {
+              const profile = JSON.parse(profileStr);
+              if (profile.hemisphere) return profile.hemisphere;
+          }
+          
+          // 2. Fallback to detection (should ideally be saved after this)
+          return scope.DateUtils.detectHemisphere();
       },
 
       getSeason: (date = dayjs()) => {

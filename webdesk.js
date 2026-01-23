@@ -919,6 +919,13 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   if (ProfileManager.isSetup()) {
+      // Legacy Migration: Detect Once and Save if missing
+      const profile = ProfileManager.getProfile();
+      if (!profile.hemisphere) {
+          profile.hemisphere = DateUtils.detectHemisphere();
+          localStorage.setItem(ProfileManager.STORAGE_KEY, JSON.stringify(profile));
+          console.log("Migrated Legacy User: Hemisphere set to", profile.hemisphere);
+      }
       startWebDesk();
   } else {
       if (window.OnboardingManager) {

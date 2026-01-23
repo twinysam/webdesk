@@ -636,7 +636,7 @@ window.OnboardingManager = {
       birthday: OnboardingManager.config.birthday, // YYYY-MM-DD
       lang: OnboardingManager.config.lang,
       // Infer and store hemisphere preference permanently
-      hemisphere: typeof DateUtils !== 'undefined' ? DateUtils.getHemisphere() : 'southern'
+      hemisphere: typeof DateUtils !== 'undefined' ? DateUtils.detectHemisphere() : 'southern'
     };
 
     localStorage.setItem("userProfile", JSON.stringify(profile));
