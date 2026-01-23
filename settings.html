@@ -839,8 +839,8 @@
         document.getElementById("setting-name").value = profile.name || "";
         document.getElementById("setting-dob").value = profile.birthday || "";
         document.getElementById("setting-lang").value = profile.lang || "en";
-        // Default to southern if not set (legacy profiles)
-        document.getElementById("setting-hemisphere").value = profile.hemisphere || "southern";
+        // Default to detected hemisphere if not set (legacy profiles)
+        document.getElementById("setting-hemisphere").value = profile.hemisphere || DateUtils.getHemisphere();
       }
 
       document

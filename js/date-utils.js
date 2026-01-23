@@ -37,15 +37,17 @@
                   timeZone.includes("Australia") ||
                   timeZone.includes("Antarctica") ||
                   timeZone.includes("Argentina") ||
+                  timeZone.includes("Buenos_Aires") || // Chrome often returns "America/Buenos_Aires"
                   timeZone.includes("Brazil") ||
+                  timeZone.includes("Sao_Paulo") ||
                   timeZone.includes("Chile") ||
+                  timeZone.includes("Santiago") ||
                   timeZone.includes("Uruguay") ||
+                  timeZone.includes("Montevideo") ||
                   timeZone.includes("Paraguay") ||
                   timeZone.includes("New_Zealand") ||
-                  timeZone.includes("America/Santiago") ||
-                  timeZone.includes("America/Sao_Paulo") ||
-                  timeZone.includes("America/Montevideo") ||
-                  timeZone.startsWith("Africa/Johannesburg");
+                  timeZone.includes("America/Lima") ||
+                  timeZone.includes("Africa/Johannesburg");
                 
               return isSouthern ? "southern" : "northern";
           } catch (e) {
