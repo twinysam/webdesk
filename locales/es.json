@@ -114,7 +114,7 @@
     "alert_storage_unsupported": "API de almacenamiento persistente no soportada.",
     "onboarding_welcome": "¡Hola!<br>¿Cómo te llamas?",
     "onboarding_hint_name": "Dinos cómo deberíamos llamarte. Presiona ENTER al terminar.",
-    "onboarding_dob_title": "Hola, {name}<br>¿Cuándo naciste?",
+    "onboarding_dob_title": "Hola {name}<br>¿Cuándo naciste?",
     "onboarding_hint_dob": "Te diremos cuántos días has estado en este planeta. Presiona ENTER al terminar.",
     "onboarding_apps_title": "¿Cuáles de estos sitios usas<br>frecuentemente?",
     "onboarding_hint_apps": "Podrás elegir más tarde. Presiona ENTER al terminar.",

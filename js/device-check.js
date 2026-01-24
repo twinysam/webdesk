@@ -25,18 +25,14 @@
     const isLikelyTouchOnly = window.matchMedia("(pointer: coarse)").matches && 
                               !window.matchMedia("(hover: hover)").matches;
     
-    // Width check (generic fallback)
-    const isTooNarrow = window.innerWidth < 900;
-
-    console.log(`DeviceCheck: TouchOnly? ${isLikelyTouchOnly}, Narrow? ${isTooNarrow}`);
+    console.log(`DeviceCheck: TouchOnly? ${isLikelyTouchOnly}`);
 
     // Stage 3: Final decision logic
     // We block if:
-    // (It looks like a phone/mobile UA AND it behaves like one) OR
-    // (Behaves like one AND is too narrow)
-    // This allows desktop touch screens (e.g. Surface) to pass if they don't look like phones or are wide enough.
-    // But keeps phones out.
-    const isUnsupportedMobile = (isKnownPhoneUA && isLikelyTouchOnly) || (isLikelyTouchOnly && isTooNarrow);
+    // 1. It identifies clearly as a phone (UA).
+    // 2. It behaves like a touch-first device (Coarse pointer + No hover), regardless of screen size.
+    // This effectively blocks tablets and phones, reinforcing the "Physical Keyboard Required" policy.
+    const isUnsupportedMobile = isKnownPhoneUA || isLikelyTouchOnly;
 
     if (isUnsupportedMobile) {
         console.warn("DeviceCheck: BLOCKING DEVICE.");
