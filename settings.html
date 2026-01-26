@@ -1362,6 +1362,43 @@
              currentGreeting = I18nManager.getString("greeting_latelateshow");
         }
         document.getElementById("prefLateGreeting").value = currentGreeting;
+
+        // Appearance
+        document.getElementById("checkFullWidth").checked = preferences.fullWidth || false;
+        document.getElementById("selectTheme").value = preferences.theme || "system";
+        
+        applyThemeSettings(preferences.theme || "system"); // Ensure theme is visually applied on load
+      }
+
+      // Theme Application Logic (Mirrors webdesk.js but simplified for Settings context if needed)
+      // Actually, since settings.html uses style.css, the same body classes apply.
+      let _settingsThemeListener = null;
+
+      function applyThemeSettings(theme) {
+          const body = document.body;
+          
+          if (_settingsThemeListener) {
+              window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', _settingsThemeListener);
+              _settingsThemeListener = null;
+          }
+
+          if (theme === "system") {
+              const applySystem = (e) => {
+                  if (e.matches) body.classList.add("dark-mode");
+                  else body.classList.remove("dark-mode");
+              };
+              
+              const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+              applySystem(mediaQuery); 
+              
+              _settingsThemeListener = applySystem;
+              mediaQuery.addEventListener('change', applySystem);
+
+          } else if (theme === "dark") {
+              body.classList.add("dark-mode");
+          } else {
+              body.classList.remove("dark-mode");
+          }
       }
 
       document.getElementById("btnSavePreferences").addEventListener("click", () => {
@@ -1577,7 +1614,15 @@
                const { preferences } = getData();
                preferences.fullWidth = enableFullWidth.checked;
                saveData(PREFERENCES_KEY, preferences);
-               PreferencesManager.apply();
+               // PreferencesManager is NOT present here (webdesk.js not loaded), acts on live DOM via class
+               // But settings.html is inside a .caja... wait. 
+               // In settings.html: <div class="caja settings-container">
+               // So toggling fullWidth class on .caja works immediately.
+               const caja = document.querySelector(".caja");
+               if (caja) {
+                   if (enableFullWidth.checked) caja.classList.add("fullwidth");
+                   else caja.classList.remove("fullwidth");
+               }
            });
         }
 
@@ -1587,7 +1632,7 @@
                const { preferences } = getData();
                preferences.theme = selectTheme.value;
                saveData(PREFERENCES_KEY, preferences);
-               PreferencesManager.apply();
+               applyThemeSettings(preferences.theme);
             });
         }
 
