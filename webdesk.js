@@ -95,6 +95,9 @@ document.addEventListener("DOMContentLoaded", function () {
           // 3. Custom Late Late Show Greeting
            if (prefs.customLateGreeting) {
               if (!I18nManager.data.strings) I18nManager.data.strings = {};
+              I18nManager.data.strings["greeting_latelateshow"] = prefs.customLateGreeting;
+           }
+
           // 4. Full Width
           const caja = document.querySelector(".caja");
           if (caja) {
