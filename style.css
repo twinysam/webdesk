@@ -16,6 +16,10 @@ body {
   animation-play-state: running;
 }
 
+body.paused {
+  animation-play-state: paused;
+}
+
 body.xmas {
   background-image: url(images/bg_snow_light.jpg);
   animation-name: bg-downward-move;
@@ -32,6 +36,9 @@ body.xmas {
 @media (min-width: 1601px) {
   .caja {
     max-width: 1600px;
+  }
+  .caja .fullwidth {
+    max-width: 100%;
   }
 }
 

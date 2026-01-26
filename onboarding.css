@@ -346,6 +346,14 @@
 /* App Items - Scoped 
    Using class .ob-overlay instead of #onboarding-overlay to lower specificity 
    so that .item a.classname from app-icons.css (0-2-1) can override (0-2-0) */
+.ob-item-wrapper {
+  display: inline-block;
+  width: auto;
+  height: auto;
+  margin: 0;
+  float: none;
+}
+
 .ob-overlay .ob-app-item {
   display: inline-block;
   width: 120px;
@@ -430,4 +438,12 @@
   100% {
     opacity: 0;
   }
+}
+
+.happy-days-msg {
+  display: block;
+  font-size: 2rem;
+  color: #83d3fa;
+  margin-bottom: 0.5rem;
+  font-family: 'Exo', sans-serif;
 }

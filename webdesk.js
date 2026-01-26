@@ -86,9 +86,9 @@ document.addEventListener("DOMContentLoaded", function () {
           const tree = document.querySelector(".tree");
           if (tree) {
              if (prefs.treeEnabled === false) {
-                 tree.style.display = "none";
+                 tree.classList.add("d-none");
              } else {
-                 tree.style.display = ""; // Reset
+                 tree.classList.remove("d-none"); // Reset
              }
           }
 
@@ -253,8 +253,10 @@ document.addEventListener("DOMContentLoaded", function () {
     },
 
     startAnimationControl: () => {
-      const setAnim = (state) =>
-        (document.body.style.animationPlayState = state);
+      const setAnim = (state) => {
+        if (state === "paused") document.body.classList.add("paused");
+        else document.body.classList.remove("paused");
+      };
       window.addEventListener("blur", () => setAnim("paused"));
       window.addEventListener("focus", () => setAnim("running"));
       

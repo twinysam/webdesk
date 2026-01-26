@@ -31,8 +31,8 @@
       <a href="settings.html"><i class="bi bi-gear-fill"></i></a>
     </div>
 
-    <div class="caja" style="display: none;">
-      <div id="alertContainer" class="mb-3 fixed-top d-flex justify-content-center" style="top: 20px; pointer-events: none;"></div>
+    <div class="caja">
+      <div id="alertContainer" class="mb-3 fixed-top d-flex justify-content-center"></div>
       <h1 id="polite"></h1>
       <div class="first-line">
         <div id="fecha"></div>
@@ -42,7 +42,7 @@
       <!-- Dynamic Links Container -->
       <div id="custom-links-container" class="custom-links-container"></div>
     </div>
-    <div class="tree" style="display: none;">
+    <div class="tree d-none">
       <img id="season-tree" />
     </div>
 
@@ -63,7 +63,7 @@
                <div class="bottom-action">
                    <a href="#" id="link-import" onclick="OnboardingManager.showImportButton(event)">Been here before?</a>
                    <button id="btn-import-reveal" class="btn btn-outline-light btn-sm ms-3 d-none" onclick="OnboardingManager.triggerImport()">Import Backup</button>
-                   <input type="file" id="importInput" accept=".json" style="display:none" onchange="OnboardingManager.handleImport(event)">
+                   <input type="file" id="importInput" accept=".json" class="d-none" onchange="OnboardingManager.handleImport(event)">
                </div>
            </div>
 

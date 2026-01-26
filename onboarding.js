@@ -65,56 +65,7 @@ window.OnboardingManager = {
 
   // ... (inside renderApps loop) ...
 
-  renderApps: () => {
-    const container = document.getElementById("ob-apps-list");
-    if (!container) return;
 
-    container.innerHTML = "";
-
-    console.log(
-      "Onboarding: Rendering",
-      OnboardingManager.catalog.length,
-      "apps"
-    );
-
-    // Load CSS based icons
-    OnboardingManager.catalog.forEach((app) => {
-      // Wrapper
-      const wrapper = document.createElement("div");
-      wrapper.className = "item";
-      wrapper.style.display = "inline-block";
-      wrapper.style.width = "auto";
-      wrapper.style.height = "auto";
-      wrapper.style.margin = "0";
-      wrapper.style.float = "none";
-
-      const link = document.createElement("a");
-      link.className = `ob-app-item ${app.icon}`;
-
-      // Tooltip attributes
-      link.setAttribute("data-bs-toggle", "tooltip");
-      link.setAttribute("data-bs-placement", "top"); // Top works better for bottom ticker
-      link.setAttribute("title", app.name); // Use name or title
-
-      link.onclick = (e) => {
-        e.preventDefault();
-        OnboardingManager.toggleApp(app, link);
-      };
-
-      wrapper.appendChild(link);
-      container.appendChild(wrapper);
-    });
-
-    // Initialize Tooltips for these new elements
-    const tooltipTriggerList = [].slice.call(
-      container.querySelectorAll('[data-bs-toggle="tooltip"]')
-    );
-    tooltipTriggerList.map(function (tooltipTriggerEl) {
-      return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-
-    console.log("Onboarding: Rendering complete");
-  },
 
   applyLang: () => {
     // Strings are now loaded directly into OnboardingManager.strings variable from fetch
@@ -343,7 +294,7 @@ window.OnboardingManager = {
                 // We re-fetch the title just in case language changed or we need base
                 const baseTitle = txt["onboarding_apps_title"] || "Which of these websites do you<br>often use?";
                 
-                const combinedHtml = `<span style="display:block; font-size: 2rem; color: #83d3fa; margin-bottom: 0.5rem; font-family:'Exo', sans-serif;">${happyMsg}</span>${baseTitle}`;
+                const combinedHtml = `<span class="happy-days-msg">${happyMsg}</span>${baseTitle}`;
                 
                 document.getElementById("lbl-apps-title").innerHTML = combinedHtml;
             }
@@ -512,12 +463,7 @@ window.OnboardingManager = {
 
       // Container to trick the CSS selector
       const wrapper = document.createElement("div");
-      wrapper.className = "item"; // This might pick up unwanted styles from style.css, reset them in onboarding.css if needed
-      wrapper.style.display = "inline-block";
-      wrapper.style.width = "auto";
-      wrapper.style.height = "auto";
-      wrapper.style.margin = "0";
-      wrapper.style.float = "none";
+      wrapper.className = "item ob-item-wrapper";
 
       const link = document.createElement("a");
       link.className = `ob-app-item ${app.icon}`; // 'ob-app-item' sets size, 'app.icon' sets bg image from app-icons.css
