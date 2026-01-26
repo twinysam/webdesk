@@ -112,29 +112,15 @@ document.addEventListener("DOMContentLoaded", function () {
           const theme = prefs.theme || "system";
           const body = document.body;
           
-          // Remove listener if exists
-          if (PreferencesManager._themeListener) {
-              window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', PreferencesManager._themeListener);
-              PreferencesManager._themeListener = null;
-          }
+          // Reset
+          body.classList.remove("light-mode", "dark-mode");
 
-          if (theme === "system") {
-              const applySystem = (e) => {
-                  if (e.matches) body.classList.add("dark-mode");
-                  else body.classList.remove("dark-mode");
-              };
-              
-              const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-              applySystem(mediaQuery); // Apply immediately
-              
-              PreferencesManager._themeListener = applySystem;
-              mediaQuery.addEventListener('change', applySystem);
-
+          if (theme === "light") {
+              body.classList.add("light-mode");
           } else if (theme === "dark") {
               body.classList.add("dark-mode");
-          } else {
-              body.classList.remove("dark-mode");
           }
+          // If system, no class added -> CSS media query takes over automatically.
       },
 
       init: () => {

@@ -1376,28 +1376,12 @@
 
       function applyThemeSettings(theme) {
           const body = document.body;
-          
-          if (_settingsThemeListener) {
-              window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', _settingsThemeListener);
-              _settingsThemeListener = null;
-          }
+          body.classList.remove("light-mode", "dark-mode");
 
-          if (theme === "system") {
-              const applySystem = (e) => {
-                  if (e.matches) body.classList.add("dark-mode");
-                  else body.classList.remove("dark-mode");
-              };
-              
-              const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-              applySystem(mediaQuery); 
-              
-              _settingsThemeListener = applySystem;
-              mediaQuery.addEventListener('change', applySystem);
-
+          if (theme === "light") {
+              body.classList.add("light-mode");
           } else if (theme === "dark") {
               body.classList.add("dark-mode");
-          } else {
-              body.classList.remove("dark-mode");
           }
       }
 
