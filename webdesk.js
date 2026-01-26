@@ -95,8 +95,42 @@ document.addEventListener("DOMContentLoaded", function () {
           // 3. Custom Late Late Show Greeting
            if (prefs.customLateGreeting) {
               if (!I18nManager.data.strings) I18nManager.data.strings = {};
-              // Directly override the string in memory
-              I18nManager.data.strings["greeting_latelateshow"] = prefs.customLateGreeting;
+          // 4. Full Width
+          const caja = document.querySelector(".caja");
+          if (caja) {
+             if (prefs.fullWidth) {
+                 caja.classList.add("fullwidth");
+             } else {
+                 caja.classList.remove("fullwidth");
+             }
+          }
+
+          // 5. Theme
+          const theme = prefs.theme || "system";
+          const body = document.body;
+          
+          // Remove listener if exists
+          if (PreferencesManager._themeListener) {
+              window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', PreferencesManager._themeListener);
+              PreferencesManager._themeListener = null;
+          }
+
+          if (theme === "system") {
+              const applySystem = (e) => {
+                  if (e.matches) body.classList.add("dark-mode");
+                  else body.classList.remove("dark-mode");
+              };
+              
+              const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+              applySystem(mediaQuery); // Apply immediately
+              
+              PreferencesManager._themeListener = applySystem;
+              mediaQuery.addEventListener('change', applySystem);
+
+          } else if (theme === "dark") {
+              body.classList.add("dark-mode");
+          } else {
+              body.classList.remove("dark-mode");
           }
       },
 

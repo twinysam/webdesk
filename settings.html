@@ -187,6 +187,18 @@
         <li class="nav-item" role="presentation">
           <button
             class="nav-link"
+            id="events-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#events"
+            type="button"
+            role="tab"
+          >
+            <i class="bi bi-calendar-event"></i> <span id="label-events-tab" data-i18n="tab_schedule">Schedule</span>
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
             id="birthdays-tab"
             data-bs-toggle="tab"
             data-bs-target="#birthdays"
@@ -199,13 +211,13 @@
         <li class="nav-item" role="presentation">
           <button
             class="nav-link"
-            id="events-tab"
+            id="appearance-tab"
             data-bs-toggle="tab"
-            data-bs-target="#events"
+            data-bs-target="#appearance"
             type="button"
             role="tab"
           >
-            <i class="bi bi-calendar-event"></i> <span id="label-events-tab" data-i18n="tab_schedule">Schedule</span>
+            <i class="bi bi-palette-fill"></i> <span data-i18n="tab_appearance">Appearance</span>
           </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -583,6 +595,27 @@
               <tbody id="eventsListBody"></tbody>
             </table>
           </div>
+        </div>
+
+        <div class="tab-pane fade" id="appearance" role="tabpanel">
+            <div class="card bg-dark border-secondary p-4 text-white">
+                <h4 class="mb-4" data-i18n="header_appearance">Appearance</h4>
+                
+                <div class="form-check form-switch mb-4">
+                  <input class="form-check-input" type="checkbox" id="checkFullWidth">
+                  <label class="form-check-label" for="checkFullWidth" data-i18n="label_fullwidth">Enable full width</label>
+                </div>
+
+                <div class="mb-4">
+                  <label for="selectTheme" class="form-label" data-i18n="label_theme">Theme</label>
+                  <select id="selectTheme" class="form-select bg-dark text-white border-secondary" style="max-width: 200px;">
+                    <option value="system" data-i18n="value_system">System</option>
+                    <option value="light" data-i18n="value_light">Light</option>
+                    <option value="dark" data-i18n="value_dark">Dark</option>
+                  </select>
+                  <div class="form-text text-light mt-2" data-i18n="text_theme_info">Choose your preferred theme.</div>
+                </div>
+            </div>
         </div>
 
         <div class="tab-pane fade" id="preferences" role="tabpanel">
@@ -1535,6 +1568,27 @@
             linkForm.reset();
             showAlert(I18n.t("alert_link_added"), "success");
           });
+        }
+
+        // Listeners for Appearance (Auto-Save)
+        const enableFullWidth = document.getElementById("checkFullWidth");
+        if (enableFullWidth) {
+           enableFullWidth.addEventListener("change", () => {
+               const { preferences } = getData();
+               preferences.fullWidth = enableFullWidth.checked;
+               saveData(PREFERENCES_KEY, preferences);
+               PreferencesManager.apply();
+           });
+        }
+
+        const selectTheme = document.getElementById("selectTheme");
+        if (selectTheme) {
+            selectTheme.addEventListener("change", () => {
+               const { preferences } = getData();
+               preferences.theme = selectTheme.value;
+               saveData(PREFERENCES_KEY, preferences);
+               PreferencesManager.apply();
+            });
         }
 
         const btnExportEvents = document.getElementById("btnExportEvents");
