@@ -1,4 +1,4 @@
-![Screenshot](https://i.imgur.com/SbuwxJW.png)
+![Screenshot](https://github.com/twinysam/webdesk/blob/master/images/screenshot_01.png)
 
 **WebDesk** is a browser-based dashboard designed to serve as a permanent pinned tab for easy access to your stuff. It functions as a private foyer for the internet, organizing frequently used web applications, reminding you of birthdays and other events.
 
