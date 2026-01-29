@@ -2443,7 +2443,6 @@
             if (darkModeSection)
               darkModeSection.style.display = isDark ? "block" : "none";
           };
-          updateColorInputsForTheme();
 
           // Listen for changes to system prefers-color-scheme when theme is set to "system"
           if (window.matchMedia) {
@@ -2533,6 +2532,7 @@
           }
 
           applyLiveBackground();
+          updateColorInputsForTheme();
         }
 
         const btnExportEvents = document.getElementById("btnExportEvents");
