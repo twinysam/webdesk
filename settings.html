@@ -880,12 +880,12 @@
                   type="range"
                   class="form-range flex-grow-1 me-2"
                   id="rangePatternOpacity"
-                  min="0.05"
-                  max="1"
-                  step="0.05"
-                  value="0.2"
+                  min="0"
+                  max="100"
+                  step="1"
+                  value="20"
                 />
-                <span id="labelPatternOpacityVal">0.2</span>
+                <span id="labelPatternOpacityVal">20%</span>
               </div>
             </div>
             <div class="mb-3">
@@ -2080,13 +2080,15 @@
           };
           updatePatternVisibility();
 
+          const opacityPercent = Math.round(
+            (preferences.patternOpacity ?? 0.2) * 100,
+          );
           document.getElementById("rangePatternOpacity").value =
-            preferences.patternOpacity || 0.2;
+            opacityPercent;
           const opacityValLabel = document.getElementById(
             "labelPatternOpacityVal",
           );
-          if (opacityValLabel)
-            opacityValLabel.textContent = preferences.patternOpacity || 0.2;
+          if (opacityValLabel) opacityValLabel.textContent = opacityPercent + "%";
 
           document.getElementById("rangeBgScrollSpeed").value =
             preferences.bgScrollSpeed ?? 20;
@@ -2099,119 +2101,120 @@
               currentSpeed === 0 ? "0 (Disabled)" : currentSpeed;
           }
 
-          // Preview Logic (Directly on Body)
-          const updatePreview = () => {
-            // Determine logic similar to webdesk.js apply() but with current form values
-            // We want to verify what the user sees IS what they will get.
-
-            // 1. Determine "visual" mode for preview.
-            const selectedTheme = document.getElementById("selectTheme").value;
+          // Live preview + instant autosave: read form, apply to body, persist preferences and cache
+          function applyLiveBackground() {
+            const theme = document.getElementById("selectTheme").value;
             let isDark = false;
-            if (selectedTheme === "dark") isDark = true;
-            else if (selectedTheme === "light") isDark = false;
+            if (theme === "dark") isDark = true;
+            else if (theme === "light") isDark = false;
             else {
               isDark =
                 window.matchMedia &&
                 window.matchMedia("(prefers-color-scheme: dark)").matches;
             }
 
-            // 2. Fetch all values
-            const bgColorLight =
-              document.getElementById("inputBgColorLight").value;
-            const bgColorDark =
-              document.getElementById("inputBgColorDark").value;
-            const pColorLight = document.getElementById(
-              "inputPatternColorLight",
-            ).value;
-            const pColorDark = document.getElementById(
-              "inputPatternColorDark",
-            ).value;
+            // Explicit theme → which color inputs to read
+            const activeBgColorId = isDark
+              ? "inputBgColorDark"
+              : "inputBgColorLight";
+            const activePatternColorId = isDark
+              ? "inputPatternColorDark"
+              : "inputPatternColorLight";
+            const bgColor = document.getElementById(activeBgColorId).value;
+            const patternColor =
+              document.getElementById(activePatternColorId).value;
+
             const patternName = patternSelect.value;
-            const opacity = parseFloat(
+            const opacityRaw = parseInt(
               document.getElementById("rangePatternOpacity").value,
+              10,
             );
+            const opacityDecimal = opacityRaw / 100;
+
+            if (opacityValLabel)
+              opacityValLabel.textContent = opacityRaw + "%";
+
             const speed = parseInt(
               document.getElementById("rangeBgScrollSpeed").value,
+              10,
             );
 
-            // 3. Apply themed variables for instant switch test
-            document.body.style.setProperty("--bg-color-light", bgColorLight);
-            document.body.style.setProperty("--bg-color-dark", bgColorDark);
+            document.body.style.setProperty(
+              "--bg-color-light",
+              document.getElementById("inputBgColorLight").value,
+            );
+            document.body.style.setProperty(
+              "--bg-color-dark",
+              document.getElementById("inputBgColorDark").value,
+            );
 
+            let uri = "";
             if (
+              patternName &&
               patternName !== "none" &&
               typeof generatePatternUri !== "undefined"
             ) {
-              const uriLight = generatePatternUri(
+              uri = generatePatternUri(
                 patternName,
-                pColorLight,
-                opacity,
+                patternColor || (isDark ? "#313131" : "#014669"),
+                opacityDecimal,
               );
-              const uriDark = generatePatternUri(
-                patternName,
-                pColorDark,
-                opacity,
+              document.body.style.setProperty(
+                "--bg-image-light",
+                `url("${generatePatternUri(
+                  patternName,
+                  document.getElementById("inputPatternColorLight").value,
+                  opacityDecimal,
+                ) || ""}")`,
               );
-
-              if (uriLight)
-                document.body.style.setProperty(
-                  "--bg-image-light",
-                  `url("${uriLight}")`,
-                );
-              if (uriDark)
-                document.body.style.setProperty(
-                  "--bg-image-dark",
-                  `url("${uriDark}")`,
-                );
-
-              // Handle Speed in Preview
-              const patternObj = bgPatterns.find((p) => p.name === patternName);
-              if (patternObj && patternObj.size) {
-                document.body.style.setProperty(
-                  "--bg-size",
-                  patternObj.size + "px",
-                );
-                if (speed > 0) {
-                  document.body.classList.remove("paused");
-                  const duration = patternObj.size / speed;
-                  document.body.style.setProperty(
-                    "--bg-animate-duration",
-                    duration + "s",
-                  );
-                } else {
-                  document.body.classList.add("paused");
-                }
-              }
+              document.body.style.setProperty(
+                "--bg-image-dark",
+                `url("${generatePatternUri(
+                  patternName,
+                  document.getElementById("inputPatternColorDark").value,
+                  opacityDecimal,
+                ) || ""}")`,
+              );
             } else {
               document.body.style.setProperty("--bg-image-light", "none");
               document.body.style.setProperty("--bg-image-dark", "none");
             }
 
-            // Also update body classes to match selected theme for immediate text color feedback
-            document.body.classList.remove("light-mode", "dark-mode");
-            if (!isDark) {
-              // Light
-              document.body.classList.add("light-mode");
-            } else {
-              document.body.classList.add("dark-mode");
+            document.body.style.backgroundImage = uri
+              ? `url("${uri}")`
+              : "none";
+            document.body.style.backgroundColor = bgColor;
+
+            const patternObj =
+              typeof bgPatterns !== "undefined" &&
+              bgPatterns.find((p) => p.name === patternName);
+            if (patternObj && patternObj.size) {
+              document.body.style.setProperty(
+                "--bg-size",
+                patternObj.size + "px",
+              );
+              if (speed > 0) {
+                document.body.classList.remove("paused");
+                document.body.style.setProperty(
+                  "--bg-animate-duration",
+                  patternObj.size / speed + "s",
+                );
+              } else {
+                document.body.classList.add("paused");
+              }
             }
-          };
 
-          // Helper function to save appearance settings to localStorage
-          const saveAppearanceSettings = () => {
+            document.body.classList.remove("light-mode", "dark-mode");
+            if (isDark) document.body.classList.add("dark-mode");
+            else document.body.classList.add("light-mode");
+
             const { preferences } = getData();
-
-            preferences.theme = document.getElementById("selectTheme").value;
+            preferences.theme = theme;
             preferences.fullWidth =
               document.getElementById("checkFullWidth").checked;
-            preferences.bgPattern =
-              document.getElementById("selectBgPattern").value;
-            preferences.patternOpacity = parseFloat(
-              document.getElementById("rangePatternOpacity").value,
-            );
-            preferences.bgScrollSpeed = parseInt(
-              document.getElementById("rangeBgScrollSpeed").value,
-            );
+            preferences.bgPattern = patternName;
+            preferences.patternOpacity = opacityDecimal;
+            preferences.bgScrollSpeed = speed;
             preferences.bgColorLight =
               document.getElementById("inputBgColorLight").value;
             preferences.bgColorDark =
@@ -2222,85 +2225,38 @@
             preferences.patternColorDark = document.getElementById(
               "inputPatternColorDark",
             ).value;
-
-            // Cleanup old keys
             delete preferences.bgColor;
             delete preferences.patternColor;
-
             saveData(PREFERENCES_KEY, preferences);
-
-            // Cache the pattern for instant load
-            let isDark = document.body.classList.contains("dark-mode");
-            if (preferences.theme === "light") isDark = false;
-            if (preferences.theme === "dark") isDark = true;
-
-            const bgColor = isDark
-              ? preferences.bgColorDark
-              : preferences.bgColorLight;
-            const pColor = isDark
-              ? preferences.patternColorDark
-              : preferences.patternColorLight;
-            const pName = preferences.bgPattern;
-            const pOpacity = preferences.patternOpacity;
-
-            let uri = "";
-            if (
-              pName &&
-              pName !== "none" &&
-              typeof generatePatternUri !== "undefined"
-            ) {
-              uri = generatePatternUri(
-                pName,
-                pColor || (isDark ? "#313131" : "#014669"),
-                pOpacity || 0.2,
-              );
-            }
-
-            // Cache for instant load on page reload
             localStorage.setItem("cachedBgPattern", uri || "");
             localStorage.setItem("cachedBgColor", bgColor || "");
-          };
-
-          // Listeners for UI interaction to trigger Live Preview
-          // Pattern Select: Update preview + save immediately
-          patternSelect.addEventListener("change", () => {
-            updatePatternVisibility();
-            updatePreview();
-            saveAppearanceSettings();
-          });
-
-          // Pattern Opacity: Two-stage logic
-          const rangeOpp = document.getElementById("rangePatternOpacity");
-          if (rangeOpp) {
-            // On input (dragging): Update preview only (performance)
-            rangeOpp.addEventListener("input", (e) => {
-              if (opacityValLabel) opacityValLabel.textContent = e.target.value;
-              updatePreview();
-            });
-            // On change (released): Save to localStorage
-            rangeOpp.addEventListener("change", () => {
-              saveAppearanceSettings();
-            });
           }
 
-          // Scroll Speed: Two-stage logic
+          // Helper: thin wrapper so Save button can call one place; applyLiveBackground does visual + persist
+          const saveAppearanceSettings = () => applyLiveBackground();
+
+          // Listeners: applyLiveBackground does live preview + autosave
+          patternSelect.addEventListener("change", () => {
+            updatePatternVisibility();
+            applyLiveBackground();
+          });
+
+          const rangeOpp = document.getElementById("rangePatternOpacity");
+          if (rangeOpp) {
+            rangeOpp.addEventListener("input", () => applyLiveBackground());
+          }
+
           const rangeSpeed = document.getElementById("rangeBgScrollSpeed");
           if (rangeSpeed) {
-            // On input (dragging): Update preview only (performance)
             rangeSpeed.addEventListener("input", (e) => {
-              const val = parseInt(e.target.value);
+              const val = parseInt(e.target.value, 10);
               if (scrollSpeedValLabel)
                 scrollSpeedValLabel.textContent =
                   val === 0 ? "0 (Disabled)" : val;
-              updatePreview();
-            });
-            // On change (released): Save to localStorage
-            rangeSpeed.addEventListener("change", () => {
-              saveAppearanceSettings();
+              applyLiveBackground();
             });
           }
 
-          // Color Inputs: Update preview on input, save on change
           [
             "inputBgColorLight",
             "inputBgColorDark",
@@ -2308,46 +2264,31 @@
             "inputPatternColorDark",
           ].forEach((id) => {
             const el = document.getElementById(id);
-            if (el) {
-              el.addEventListener("input", updatePreview);
-              el.addEventListener("change", saveAppearanceSettings);
-            }
+            if (el) el.addEventListener("input", applyLiveBackground);
           });
 
-          // Theme Select: Update preview + save immediately
           const themeSelect = document.getElementById("selectTheme");
           if (themeSelect) {
-            themeSelect.addEventListener("change", () => {
-              updatePreview();
-              saveAppearanceSettings();
-            });
+            themeSelect.addEventListener("change", () => applyLiveBackground());
           }
 
-          // Full Width Toggle: Update preview + save immediately
           const fullWidthCheck = document.getElementById("checkFullWidth");
           if (fullWidthCheck) {
-            fullWidthCheck.addEventListener("change", () => {
-              updatePreview();
+            fullWidthCheck.addEventListener("change", () =>
+              applyLiveBackground(),
+            );
+          }
+
+          const btnSaveAppearance =
+            document.getElementById("btnSaveAppearance");
+          if (btnSaveAppearance) {
+            btnSaveAppearance.addEventListener("click", () => {
               saveAppearanceSettings();
+              showAlert("Settings saved successfully!", "success");
             });
           }
 
-          // Initial Preview
-          updatePreview();
-        }
-
-        // The "Save" button provides manual confirmation and feedback
-        const btnSaveAppearance = document.getElementById("btnSaveAppearance");
-        if (btnSaveAppearance) {
-          btnSaveAppearance.addEventListener("click", () => {
-            // Settings are already saved via live listeners
-            // This button serves as confirmation/manual save trigger
-            saveAppearanceSettings();
-            showAlert(
-              I18n.t("alert_preferences_saved") || "Preferences saved!",
-              "success",
-            );
-          });
+          applyLiveBackground();
         }
 
         const btnExportEvents = document.getElementById("btnExportEvents");
