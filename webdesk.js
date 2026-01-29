@@ -150,14 +150,14 @@ document.addEventListener("DOMContentLoaded", function () {
           
           // 6. Background Appearance
           const bgColor = isDark ? (prefs.bgColorDark || "#131313") : (prefs.bgColorLight || "#016293");
-          const pColor = isDark ? (prefs.patternColorDark || "#ffffff") : (prefs.patternColorLight || "#ffffff");
+          const pColor = isDark ? (prefs.patternColorDark || "#313131") : (prefs.patternColorLight || "#014669");
           
           // Apply BG Color
           body.style.setProperty('--bg-color', bgColor);
 
           // Apply BG Pattern
           if (prefs.bgPattern && prefs.bgPattern !== 'none') {
-             const pOpacity = prefs.patternOpacity || 0.1;
+             const pOpacity = prefs.patternOpacity || 0.2;
              const patternUri = PreferencesManager.getPatternDataUri(prefs.bgPattern, pColor, pOpacity);
              if (patternUri) {
                  body.style.setProperty('--bg-image', `url("${patternUri}")`);

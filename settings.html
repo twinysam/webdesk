@@ -833,10 +833,12 @@
         // Appearance
         fullWidth: false,
         theme: "system", // system, light, dark
-        bgColor: "#016293",
-        bgPattern: "none",
-        patternColor: "#ffffff",
-        patternOpacity: 0.1
+        bgPattern: "Endless Clouds",
+        bgColorLight: "#016293",
+        bgColorDark: "#131313",
+        patternColorLight: "#014669",
+        patternColorDark: "#313131",
+        patternOpacity: 0.2
       };
 
       // Global Catalog Cache
@@ -1663,8 +1665,8 @@
             // Bg Color & Pattern Colors
             document.getElementById("inputBgColorLight").value = preferences.bgColorLight || "#016293";
             document.getElementById("inputBgColorDark").value = preferences.bgColorDark || "#131313";
-            document.getElementById("inputPatternColorLight").value = preferences.patternColorLight || "#ffffff";
-            document.getElementById("inputPatternColorDark").value = preferences.patternColorDark || "#ffffff";
+            document.getElementById("inputPatternColorLight").value = preferences.patternColorLight || "#014669";
+            document.getElementById("inputPatternColorDark").value = preferences.patternColorDark || "#313131";
 
             // Patterns
             const patternSelect = document.getElementById("selectBgPattern");
@@ -1681,7 +1683,7 @@
                 });
             }
 
-            const currentPattern = preferences.bgPattern || "none";
+            const currentPattern = preferences.bgPattern || "Endless Clouds";
             patternSelect.value = currentPattern;
 
             // Pattern Settings visibility
@@ -1695,9 +1697,9 @@
             };
             updatePatternVisibility();
 
-            document.getElementById("rangePatternOpacity").value = preferences.patternOpacity || 0.1;
+            document.getElementById("rangePatternOpacity").value = preferences.patternOpacity || 0.2;
             const opacityValLabel = document.getElementById("labelPatternOpacityVal");
-            if(opacityValLabel) opacityValLabel.textContent = preferences.patternOpacity || 0.1;
+            if(opacityValLabel) opacityValLabel.textContent = preferences.patternOpacity || 0.2;
 
             // Listeners for UI interaction
             patternSelect.addEventListener("change", updatePatternVisibility);
