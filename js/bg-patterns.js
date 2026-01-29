@@ -440,32 +440,29 @@ const bgPatterns = [{
  * Accessible by both index.html and settings.html.
  */
 function generatePatternUri(patternName, color, opacity) {
-    // Safety check in case the array isn't loaded
     if (typeof bgPatterns === 'undefined') return null;
     
-    // Find the requested pattern object
     const pattern = bgPatterns.find(p => p.name === patternName);
     if (!pattern) return null;
 
-    let newImage = pattern.image;
-    if (!newImage) return null;
+    let svg = pattern.image;
+    if (!svg) return null;
 
-    // 1. Replace Fill Color
-    // We look for the hardcoded fill="#000" and replace it with our dynamic color
-    // This allows the user's color picker to take effect instantly.
-    newImage = newImage.replace(/fill=["']#[a-fA-F0-9]{3,6}["']/g, `fill='${color}'`);
+    // 1. Clean up existing opacities to prevent conflicts
+    // Removes fill-opacity="..." and opacity="..." anywhere in the SVG
+    svg = svg.replace(/\s(fill-opacity|opacity)=["'][\d.]+["']/g, "");
+
+    // 2. Robust Color Replacement
+    // Replace any fill="#HEX" or fill='#HEX' with the user's color
+    svg = svg.replace(/fill=["']#[a-fA-F0-9]{3,6}["']/g, `fill='${color}'`);
     
-    // 2. Handle Opacity
-    // We inject or replace the fill-opacity attribute to control "subtlety"
-    if (newImage.includes("fill-opacity")) {
-         newImage = newImage.replace(/fill-opacity=["'][\d.]+["']/g, `fill-opacity='${opacity}'`);
-    } else {
-         newImage = newImage.replace('/>', ` fill-opacity='${opacity}' />`);
-    }
+    // 3. Consistently Inject User Opacity
+    // We inject fill-opacity into all path elements to ensure it overrides everything
+    svg = svg.replace(/<path/g, `<path fill-opacity='${opacity}'`);
 
-    // 3. Encode for Data URI
-    // This cleans the string so it can be used safely in a CSS "url()"
-    const encoded = newImage
+    // 4. Data URI Encoding
+    // Standard cleanup for CSS url() usage
+    const encoded = svg
         .replace(/"/g, "'")
         .replace(/</g, "%3C")
         .replace(/>/g, "%3E")

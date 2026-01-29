@@ -673,8 +673,8 @@
                 <div class="mb-3">
                      <label for="rangePatternOpacity" class="form-label" data-i18n="label_pattern_opacity">Pattern Opacity</label>
                      <div class="d-flex align-items-center">
-                         <input type="range" class="form-range flex-grow-1 me-2" id="rangePatternOpacity" min="0.05" max="1" step="0.05" value="0.4">
-                         <span id="labelPatternOpacityVal">0.4</span>
+                         <input type="range" class="form-range flex-grow-1 me-2" id="rangePatternOpacity" min="0.05" max="1" step="0.05" value="0.2">
+                         <span id="labelPatternOpacityVal">0.2</span>
                      </div>
                 </div>
                 <div class="mb-3">
@@ -1731,6 +1731,7 @@
             };
             updatePatternVisibility();
 
+            document.getElementById("rangePatternOpacity").value = preferences.patternOpacity || 0.2;
             const opacityValLabel = document.getElementById("labelPatternOpacityVal");
             if(opacityValLabel) opacityValLabel.textContent = preferences.patternOpacity || 0.2;
 
