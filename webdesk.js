@@ -124,6 +124,11 @@ document.addEventListener("DOMContentLoaded", function () {
             return `data:image/svg+xml,${encoded}`;
       },
 
+      cachePattern: (patternUri, bgColor) => {
+          localStorage.setItem("cachedBgPattern", patternUri || "");
+          localStorage.setItem("cachedBgColor", bgColor || "");
+      },
+
       apply: () => {
           const prefs = PreferencesManager.getPreferences();
 

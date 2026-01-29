@@ -25,6 +25,25 @@
     <link rel="stylesheet" type="text/css" href="app-icons.css" />
     <link rel="stylesheet" type="text/css" href="tv-icons.css" />
     <link rel="stylesheet" type="text/css" href="onboarding.css" />
+    <script>
+      (function() {
+        const cachedBg = localStorage.getItem("cachedBgPattern");
+        const cachedColor = localStorage.getItem("cachedBgColor");
+        if (cachedColor) document.documentElement.style.setProperty('--bg-color', cachedColor);
+        if (cachedBg) document.documentElement.style.setProperty('--bg-image', `url("${cachedBg}")`);
+        
+        // Also handling direct body injection if variables don't work immediately on root
+        // But :root {} variables are best.
+        // We also need to apply the correct light/dark class if persisted?
+        // Let's stick to variables for now.
+        if (cachedColor) {
+           document.write(`<style>body { background-color: ${cachedColor} !important; --bg-color: ${cachedColor}; }</style>`);
+        }
+        if (cachedBg) {
+           document.write(`<style>body { background-image: url("${cachedBg}") !important; --bg-image: url("${cachedBg}"); }</style>`);
+        }
+      })();
+    </script>
   </head>
   <body>
     <div class="settings-icon">
@@ -162,7 +181,6 @@
     </script>
     <script src="js/date-utils.js"></script>
     <script src="js/i18n.js"></script>
-    <script src="js/bg-patterns.js"></script>
     <script src="js/device-check.js"></script>
     <script src="webdesk.js"></script>
   </body>
