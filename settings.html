@@ -2427,26 +2427,32 @@
                 window.matchMedia("(prefers-color-scheme: dark)").matches;
             }
 
-            // Find the section headers and row containers
-            const lightModeSection = document.querySelector(
-              "h6:has(+ .row:has(#inputBgColorLight))",
-            );
-            const darkModeSection = document.querySelector(
-              "h6:has(+ .row:has(#inputBgColorDark))",
-            );
+            // Find Light Mode section: h6 with text "Light Mode" and its following row
+            const allH6s = document.querySelectorAll("h6");
+            let lightModeH6 = null;
+            let darkModeH6 = null;
 
-            const lightModeRow = lightModeSection?.nextElementSibling;
-            const darkModeRow = darkModeSection?.nextElementSibling;
+            allH6s.forEach((h6) => {
+              if (h6.textContent.includes("Light Mode") && !lightModeH6) {
+                lightModeH6 = h6;
+              }
+              if (h6.textContent.includes("Dark Mode") && !darkModeH6) {
+                darkModeH6 = h6;
+              }
+            });
+
+            const lightModeRow = lightModeH6?.nextElementSibling;
+            const darkModeRow = darkModeH6?.nextElementSibling;
 
             // Show/hide light mode section
-            if (lightModeSection)
-              lightModeSection.style.display = isDark ? "none" : "block";
+            if (lightModeH6)
+              lightModeH6.style.display = isDark ? "none" : "block";
             if (lightModeRow)
               lightModeRow.style.display = isDark ? "none" : "block";
 
             // Show/hide dark mode section
-            if (darkModeSection)
-              darkModeSection.style.display = isDark ? "block" : "none";
+            if (darkModeH6)
+              darkModeH6.style.display = isDark ? "block" : "none";
             if (darkModeRow)
               darkModeRow.style.display = isDark ? "block" : "none";
           };
