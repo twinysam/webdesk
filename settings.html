@@ -620,6 +620,14 @@
             <div class="card bg-dark border-secondary p-4 text-white mt-4">
                 <h5 class="mb-4 text-white border-bottom pb-2">Background</h5>
                 
+                <!-- Preview Box -->
+                <div class="mb-4">
+                   <label class="form-label text-light">Preview</label>
+                   <div id="appearancePreview" class="border border-secondary rounded p-3 text-center d-flex align-items-center justify-content-center" style="height: 120px; transition: background 0.3s;">
+                       <span class="bg-dark text-white px-2 py-1 rounded small opacity-75">Live Preview</span>
+                   </div>
+                </div>
+
                 <!-- Pattern Selector (Global) -->
                 <div class="mb-3">
                   <label for="selectBgPattern" class="form-label" data-i18n="label_bg_pattern">Background Pattern</label>
@@ -1713,15 +1721,86 @@
             const opacityValLabel = document.getElementById("labelPatternOpacityVal");
             if(opacityValLabel) opacityValLabel.textContent = preferences.patternOpacity || 0.2;
 
+            // Preview Logic
+            const previewBox = document.getElementById("appearancePreview");
+
+            const updatePreview = () => {
+                if(!previewBox) return;
+
+                // Determine effective mode for preview (we can just show the one currently visible or both, but let's stick to the edited fields)
+                // Actually, let's determine based on the "Theme" selection if possible, or just default to showing the Light/Dark based on a toggle?
+                // For simplicity, let's update the preview based on the *currently edited* inputs.
+                // Or better: Let's show the mode that matches the users current preference, or system.
+                
+                // Let's use the inputs to drive the preview. 
+                // Since we have separate inputs, we can't easily show both at once in one box.
+                // Let's assume we show the mode that corresponds to the current page theme for now, OR we can add a toggle.
+                // But the user is editing both.
+                
+                // Let's just default to showing the 'Light' preview if Light Mode header is closer, but that's hard.
+                // Let's make the preview box split? No, too complex.
+                // Let's just use the current theme of the settings page to decide which preview to show.
+                // Settings page is always dark mode styled? No, it follows theme.
+                
+                let mode = "dark"; // Default for settings page which is dark-themed
+                if (document.body.classList.contains("light-mode")) mode = "light";
+                
+                // Override if user manually selects a theme in the dropdown
+                const selectedTheme = document.getElementById("selectTheme").value;
+                if(selectedTheme === 'light') mode = 'light';
+                else if(selectedTheme === 'dark') mode = 'dark';
+                else {
+                    // System - checking actual state
+                    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) mode = 'light';
+                }
+
+                const bgColor = mode === 'light' ? document.getElementById("inputBgColorLight").value : document.getElementById("inputBgColorDark").value;
+                const pColor = mode === 'light' ? document.getElementById("inputPatternColorLight").value : document.getElementById("inputPatternColorDark").value;
+                
+                const patternName = patternSelect.value;
+                const opacity = parseFloat(document.getElementById("rangePatternOpacity").value);
+
+                previewBox.style.backgroundColor = bgColor;
+                
+                if (patternName !== 'none' && typeof PreferencesManager !== 'undefined') {
+                    // Reuse helper from PreferencesManager or inline it if not accessible (it is accessible via webdesk.js loaded?)
+                    // settings.html imports webdesk.js, so ReferenceManager is available.
+                    const uri = PreferencesManager.getPatternDataUri(patternName, pColor, opacity);
+                    if(uri) {
+                        previewBox.style.backgroundImage = `url("${uri}")`;
+                    } else {
+                        previewBox.style.backgroundImage = "none";
+                    }
+                } else {
+                    previewBox.style.backgroundImage = "none";
+                }
+            };
+
+            // Initial Update
+            setTimeout(updatePreview, 100);
+
             // Listeners for UI interaction
-            patternSelect.addEventListener("change", updatePatternVisibility);
+            patternSelect.addEventListener("change", () => {
+                updatePatternVisibility();
+                updatePreview();
+            });
 
             const rangeOpp = document.getElementById("rangePatternOpacity");
             if(rangeOpp) {
                 rangeOpp.addEventListener("input", (e) => {
                     if(opacityValLabel) opacityValLabel.textContent = e.target.value;
+                    updatePreview();
                 });
             }
+            
+            // Color Inputs
+            ['inputBgColorLight', 'inputBgColorDark', 'inputPatternColorLight', 'inputPatternColorDark'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.addEventListener("input", updatePreview);
+            });
+            
+            // Theme Select
+            document.getElementById("selectTheme").addEventListener("change", updatePreview);
         }
 
         const btnSaveAppearance = document.getElementById("btnSaveAppearance");
