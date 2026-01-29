@@ -2222,6 +2222,21 @@
               currentSpeed === 0 ? "0 (Disabled)" : currentSpeed;
           }
 
+          // Load and initialize Color Theme Presets
+          const selectedPreset = preferences.selectedPreset || "winter";
+          const autoSeasonEnabled = preferences.autoSeason || false;
+          const presetSelectEl = document.getElementById("presetThemeSelect");
+          const autoSeasonToggle = document.getElementById("autoSeasonToggle");
+
+          if (presetSelectEl) {
+            presetSelectEl.value =
+              selectedPreset !== "custom" ? selectedPreset : "custom";
+            presetSelectEl.disabled = autoSeasonEnabled; // Disable if auto-season is on
+          }
+          if (autoSeasonToggle) {
+            autoSeasonToggle.checked = autoSeasonEnabled;
+          }
+
           // Live preview + instant autosave: read form, apply to body, persist preferences and cache
           function applyLiveBackground() {
             const theme = document.getElementById("selectTheme").value;
@@ -2393,7 +2408,75 @@
 
           const themeSelect = document.getElementById("selectTheme");
           if (themeSelect) {
-            themeSelect.addEventListener("change", () => applyLiveBackground());
+            themeSelect.addEventListener("change", () => {
+              // Update color inputs to show active mode colors
+              updateColorInputsForTheme();
+              applyLiveBackground();
+            });
+          }
+
+          // Helper: update visible color inputs based on current theme (light vs dark)
+          const updateColorInputsForTheme = () => {
+            const theme = document.getElementById("selectTheme").value;
+            let isDark = false;
+            if (theme === "dark") isDark = true;
+            else if (theme === "light") isDark = false;
+            else {
+              isDark =
+                window.matchMedia &&
+                window.matchMedia("(prefers-color-scheme: dark)").matches;
+            }
+
+            const bgColorInput = document.getElementById("inputBgColorLight");
+            const patternColorInput = document.getElementById(
+              "inputPatternColorLight",
+            );
+            const bgColorDarkInput =
+              document.getElementById("inputBgColorDark");
+            const patternColorDarkInput = document.getElementById(
+              "inputPatternColorDark",
+            );
+
+            // Show dark inputs, hide light inputs (or vice versa) for visual clarity
+            if (bgColorInput)
+              bgColorInput.parentElement.style.display = isDark
+                ? "none"
+                : "block";
+            if (patternColorInput)
+              patternColorInput.parentElement.style.display = isDark
+                ? "none"
+                : "block";
+            if (bgColorDarkInput)
+              bgColorDarkInput.parentElement.style.display = isDark
+                ? "block"
+                : "none";
+            if (patternColorDarkInput)
+              patternColorDarkInput.parentElement.style.display = isDark
+                ? "block"
+                : "none";
+          };
+          updateColorInputsForTheme();
+
+          // Listen for changes to system prefers-color-scheme when theme is set to "system"
+          if (window.matchMedia) {
+            const darkModeQuery = window.matchMedia(
+              "(prefers-color-scheme: dark)",
+            );
+            const handleDarkModeChange = () => {
+              const theme = document.getElementById("selectTheme").value;
+              if (theme === "system") {
+                updateColorInputsForTheme();
+                applyLiveBackground();
+              }
+            };
+            // Modern API: addEventListener
+            if (darkModeQuery.addEventListener) {
+              darkModeQuery.addEventListener("change", handleDarkModeChange);
+            }
+            // Fallback for older browsers: addListener
+            else if (darkModeQuery.addListener) {
+              darkModeQuery.addListener(handleDarkModeChange);
+            }
           }
 
           const presetThemeSelect =
