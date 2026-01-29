@@ -620,32 +620,41 @@
             <div class="card bg-dark border-secondary p-4 text-white mt-4">
                 <h5 class="mb-4 text-white border-bottom pb-2">Background</h5>
                 
-                <div class="mb-4">
-                  <label for="inputBgColor" class="form-label" data-i18n="label_bg_color">Background Color</label>
-                  <input type="color" class="form-control form-control-color bg-dark border-secondary" id="inputBgColor" value="#016293" title="Choose your color">
-                </div>
-
-                <div class="mb-4">
-                  <label for="selectBgPattern" class="form-label" data-i18n="label_bg_pattern">Background Pattern</label>
-                  <select id="selectBgPattern" class="form-select bg-dark text-white border-secondary" style="max-width: 300px;">
-                    <option value="none" data-i18n="value_none">None</option>
-                    <!-- Options populated by JS -->
-                  </select>
-                </div>
-
-                <div id="patternSettings" class="row mb-3" style="display:none;">
+                <!-- LIGHT MODE SETTINGS -->
+                <h6 class="text-white mt-3 border-bottom pb-1">Light Mode</h6>
+                <div class="row mb-3">
                     <div class="col-md-6 mb-3">
-                         <label for="inputPatternColor" class="form-label" data-i18n="label_pattern_color">Pattern Color</label>
-                         <input type="color" class="form-control form-control-color bg-dark border-secondary" id="inputPatternColor" value="#ffffff">
+                      <label for="inputBgColorLight" class="form-label" data-i18n="label_bg_color_light">Background Color (Light)</label>
+                      <input type="color" class="form-control form-control-color bg-dark border-secondary" id="inputBgColorLight" value="#016293">
                     </div>
-                    <div class="col-md-6 mb-3">
-                         <label for="rangePatternOpacity" class="form-label" data-i18n="label_pattern_opacity">Pattern Opacity</label>
-                         <div class="d-flex align-items-center">
-                             <input type="range" class="form-range flex-grow-1 me-2" id="rangePatternOpacity" min="0.05" max="1" step="0.05" value="0.4">
-                             <span id="labelPatternOpacityVal">0.4</span>
-                                 </div>
+                    
+                    <div id="patternSettingsLight" class="col-md-6 mb-3">
+                         <label for="inputPatternColorLight" class="form-label" data-i18n="label_pattern_color_light">Pattern Color (Light)</label>
+                         <input type="color" class="form-control form-control-color bg-dark border-secondary" id="inputPatternColorLight" value="#ffffff">
+                    </div>
                 </div>
-                
+
+                <!-- DARK MODE SETTINGS -->
+                <h6 class="text-white mt-3 border-bottom pb-1">Dark Mode</h6>
+                <div class="row mb-3">
+                    <div class="col-md-6 mb-3">
+                      <label for="inputBgColorDark" class="form-label" data-i18n="label_bg_color_dark">Background Color (Dark)</label>
+                      <input type="color" class="form-control form-control-color bg-dark border-secondary" id="inputBgColorDark" value="#131313">
+                    </div>
+
+                    <div id="patternSettingsDark" class="col-md-6 mb-3">
+                         <label for="inputPatternColorDark" class="form-label" data-i18n="label_pattern_color_dark">Pattern Color (Dark)</label>
+                         <input type="color" class="form-control form-control-color bg-dark border-secondary" id="inputPatternColorDark" value="#ffffff">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                     <label for="rangePatternOpacity" class="form-label" data-i18n="label_pattern_opacity">Pattern Opacity</label>
+                     <div class="d-flex align-items-center">
+                         <input type="range" class="form-range flex-grow-1 me-2" id="rangePatternOpacity" min="0.05" max="1" step="0.05" value="0.4">
+                         <span id="labelPatternOpacityVal">0.4</span>
+                     </div>
+                </div>
                 <button id="btnSaveAppearance" class="btn btn-primary">
                   <i class="bi bi-save"></i> <span data-i18n="btn_save_preferences">Save Preferences</span>
                 </button>
@@ -1651,8 +1660,11 @@
             // Full width
             document.getElementById("checkFullWidth").checked = preferences.fullWidth === true;
 
-            // Bg Color
-            document.getElementById("inputBgColor").value = preferences.bgColor || "#016293";
+            // Bg Color & Pattern Colors
+            document.getElementById("inputBgColorLight").value = preferences.bgColorLight || "#016293";
+            document.getElementById("inputBgColorDark").value = preferences.bgColorDark || "#131313";
+            document.getElementById("inputPatternColorLight").value = preferences.patternColorLight || "#ffffff";
+            document.getElementById("inputPatternColorDark").value = preferences.patternColorDark || "#ffffff";
 
             // Patterns
             const patternSelect = document.getElementById("selectBgPattern");
@@ -1673,21 +1685,22 @@
             patternSelect.value = currentPattern;
 
             // Pattern Settings visibility
-            const patternSettings = document.getElementById("patternSettings");
-            if(patternSettings) {
-                patternSettings.style.display = currentPattern === "none" ? "none" : "flex";
-            }
+            const patternSettingsLight = document.getElementById("patternSettingsLight");
+            const patternSettingsDark = document.getElementById("patternSettingsDark");
+            
+            const updatePatternVisibility = () => {
+                 const isNone = patternSelect.value === "none";
+                 if(patternSettingsLight) patternSettingsLight.style.visibility = isNone ? "hidden" : "visible";
+                 if(patternSettingsDark) patternSettingsDark.style.visibility = isNone ? "hidden" : "visible";
+            };
+            updatePatternVisibility();
 
-            // Pattern Color & Opacity
-            document.getElementById("inputPatternColor").value = preferences.patternColor || "#ffffff";
             document.getElementById("rangePatternOpacity").value = preferences.patternOpacity || 0.1;
             const opacityValLabel = document.getElementById("labelPatternOpacityVal");
             if(opacityValLabel) opacityValLabel.textContent = preferences.patternOpacity || 0.1;
 
             // Listeners for UI interaction
-            patternSelect.addEventListener("change", () => {
-                if(patternSettings) patternSettings.style.display = patternSelect.value === "none" ? "none" : "flex";
-            });
+            patternSelect.addEventListener("change", updatePatternVisibility);
 
             const rangeOpp = document.getElementById("rangePatternOpacity");
             if(rangeOpp) {
@@ -1704,10 +1717,18 @@
                 
                 preferences.theme = document.getElementById("selectTheme").value;
                 preferences.fullWidth = document.getElementById("checkFullWidth").checked;
-                preferences.bgColor = document.getElementById("inputBgColor").value;
+                
                 preferences.bgPattern = document.getElementById("selectBgPattern").value;
-                preferences.patternColor = document.getElementById("inputPatternColor").value;
                 preferences.patternOpacity = parseFloat(document.getElementById("rangePatternOpacity").value);
+
+                preferences.bgColorLight = document.getElementById("inputBgColorLight").value;
+                preferences.bgColorDark = document.getElementById("inputBgColorDark").value;
+                preferences.patternColorLight = document.getElementById("inputPatternColorLight").value;
+                preferences.patternColorDark = document.getElementById("inputPatternColorDark").value;
+                
+                // Cleanup old keys if they exist
+                delete preferences.bgColor;
+                delete preferences.patternColor;
 
                 saveData(PREFERENCES_KEY, preferences);
                 showAlert(I18n.t("alert_preferences_saved"), "success");

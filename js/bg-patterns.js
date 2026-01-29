@@ -346,19 +346,7 @@ const bgPatterns = [{
             name: 'Wallpaper',
             image: '<svg width="84" height="16" viewBox="0 0 84 16" xmlns="http://www.w3.org/2000/svg"><path d="M78 7V4h-2v3h-3v2h3v3h2V9h3V7h-3zM30 7V4h-2v3h-3v2h3v3h2V9h3V7h-3zM10 0h2v16h-2V0zm6 0h4v16h-4V0zM2 0h4v16H2V0zm50 0h2v16h-2V0zM38 0h2v16h-2V0zm28 0h2v16h-2V0zm-8 0h6v16h-6V0zM42 0h6v16h-6V0z" fill="#000" fill-rule="evenodd"/></svg>',
             download: './svg/wallpaper.zip'
-        }],
-        selectedPattern: null
-    },
-    computed: {
-        modalStyle: function modalStyle() {
-            return {
-                backgroundColor: this.modal.bgColor,
-                backgroundImage: this.bgPattern(this.selectedPattern, this.modal.fgColor, this.modal.opacity)
-            };
-        },
-        css: function css(pattern) {
-            return ('background-color: ' + this.modal.bgColor + ';\nbackground-image: ' + this.bgPattern(this.selectedPattern, this.modal.fgColor, this.modal.opacity) + ';').trim();
-        }
+}];        }
     },
     methods: {
         reset: function reset() {

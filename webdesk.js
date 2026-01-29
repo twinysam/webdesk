@@ -130,31 +130,33 @@ document.addEventListener("DOMContentLoaded", function () {
              }
           }
 
-          // 5. Theme
+          // 5. Theme & Mode Calculation
           const theme = prefs.theme || "system";
           const body = document.body;
           
-          // Reset
           body.classList.remove("light-mode", "dark-mode");
 
+          let isDark = false;
           if (theme === "light") {
               body.classList.add("light-mode");
+              isDark = false;
           } else if (theme === "dark") {
               body.classList.add("dark-mode");
+              isDark = true;
+          } else {
+              // System
+              isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
           }
-          // If system, no class added -> CSS media query takes over automatically.
           
           // 6. Background Appearance
-          // BG Color
-          if (prefs.bgColor) {
-              body.style.setProperty('--bg-color', prefs.bgColor); 
-          } else {
-              body.style.removeProperty('--bg-color');
-          }
+          const bgColor = isDark ? (prefs.bgColorDark || "#131313") : (prefs.bgColorLight || "#016293");
+          const pColor = isDark ? (prefs.patternColorDark || "#ffffff") : (prefs.patternColorLight || "#ffffff");
+          
+          // Apply BG Color
+          body.style.setProperty('--bg-color', bgColor);
 
-          // BG Pattern
+          // Apply BG Pattern
           if (prefs.bgPattern && prefs.bgPattern !== 'none') {
-             const pColor = prefs.patternColor || '#ffffff';
              const pOpacity = prefs.patternOpacity || 0.1;
              const patternUri = PreferencesManager.getPatternDataUri(prefs.bgPattern, pColor, pOpacity);
              if (patternUri) {
@@ -169,6 +171,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
       init: () => {
           PreferencesManager.apply();
+          
+          // Listen for system theme changes if set to system
+          window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+              const prefs = PreferencesManager.getPreferences();
+              if (!prefs.theme || prefs.theme === 'system') {
+                  PreferencesManager.apply();
+              }
+          });
       }
   };
 
