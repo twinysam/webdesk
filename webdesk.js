@@ -72,9 +72,31 @@ document.addEventListener("DOMContentLoaded", function () {
       STORAGE_KEY: "userPreferences",
 
       getPreferences: () => JSON.parse(localStorage.getItem(PreferencesManager.STORAGE_KEY)) || {},
+      
+      // Helper for SVG Patterns
+      getPatternDataUri: (patternName, color, opacity) => {
+            if (typeof bgPatterns === 'undefined') return null;
+            const pattern = bgPatterns.find(p => p.name === patternName);
+            if (!pattern) return null;
+
+            let newImage = pattern.image;
+            if (!newImage) return null;
+
+            // Replace Opacity
+            // Pattern format: fill-opacity='0.4'
+            newImage = newImage.replace(/fill-opacity='[\d.]+'/g, `fill-opacity='${opacity}'`);
+            
+            // Replace Color
+            // Pattern format: fill='%23...'
+            const colorEncoded = encodeURIComponent(color);
+            newImage = newImage.replace(/fill='%23[a-fA-F0-9]{3,6}'/g, `fill='${colorEncoded}'`);
+            
+            return newImage;
+      },
 
       apply: () => {
           const prefs = PreferencesManager.getPreferences();
+
           
           // 1. Evening Start Override
           if (prefs.eveningStart !== null && prefs.eveningStart !== undefined) {
@@ -121,6 +143,28 @@ document.addEventListener("DOMContentLoaded", function () {
               body.classList.add("dark-mode");
           }
           // If system, no class added -> CSS media query takes over automatically.
+          
+          // 6. Background Appearance
+          // BG Color
+          if (prefs.bgColor) {
+              body.style.setProperty('--bg-color', prefs.bgColor); 
+          } else {
+              body.style.removeProperty('--bg-color');
+          }
+
+          // BG Pattern
+          if (prefs.bgPattern && prefs.bgPattern !== 'none') {
+             const pColor = prefs.patternColor || '#ffffff';
+             const pOpacity = prefs.patternOpacity || 0.1;
+             const patternUri = PreferencesManager.getPatternDataUri(prefs.bgPattern, pColor, pOpacity);
+             if (patternUri) {
+                 body.style.setProperty('--bg-image', `url("${patternUri}")`);
+             }
+          } else if (prefs.bgPattern === 'none') {
+             body.style.setProperty('--bg-image', 'none');
+          } else {
+             body.style.removeProperty('--bg-image');
+          }
       },
 
       init: () => {
