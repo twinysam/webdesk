@@ -2413,7 +2413,6 @@
           const themeSelect = document.getElementById("selectTheme");
           if (themeSelect) {
             themeSelect.addEventListener("change", () => {
-              console.log("Theme changed to:", themeSelect.value);
               // Update color inputs to show active mode colors
               updateColorInputsForTheme();
               applyLiveBackground();
@@ -2422,44 +2421,8 @@
 
           // Helper: update visible color inputs based on current theme (light vs dark)
           const updateColorInputsForTheme = () => {
-            const theme = document.getElementById("selectTheme").value;
-            let isDark = false;
-            if (theme === "dark") isDark = true;
-            else if (theme === "light") isDark = false;
-            else {
-              isDark =
-                window.matchMedia &&
-                window.matchMedia("(prefers-color-scheme: dark)").matches;
-            }
-
-            const lightModeSection =
-              document.getElementById("lightModeSection");
-            const darkModeSection = document.getElementById("darkModeSection");
-
-            console.log("updateColorInputsForTheme called:", {
-              theme,
-              isDark,
-              lightModeSectionFound: !!lightModeSection,
-              darkModeSectionFound: !!darkModeSection,
-            });
-
-            // Show/hide light mode section
-            if (lightModeSection) {
-              lightModeSection.style.display = isDark ? "none" : "block";
-              console.log(
-                "Set lightModeSection display to:",
-                lightModeSection.style.display,
-              );
-            }
-
-            // Show/hide dark mode section
-            if (darkModeSection) {
-              darkModeSection.style.display = isDark ? "block" : "none";
-              console.log(
-                "Set darkModeSection display to:",
-                darkModeSection.style.display,
-              );
-            }
+            // Both light and dark mode sections are always visible
+            // This allows users to customize colors for both modes simultaneously
           };
 
           // Listen for changes to system prefers-color-scheme when theme is set to "system"
