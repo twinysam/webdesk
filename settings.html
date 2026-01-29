@@ -143,6 +143,17 @@
       .home-btn:hover {
         color: #83d3fa;
       }
+
+      /* Coloris: visible text in color inputs and correct swatch after programmatic value */
+      #inputBgColorLight,
+      #inputBgColorDark,
+      #inputPatternColorLight,
+      #inputPatternColorDark {
+        color: #fff !important;
+      }
+      .clr-field input {
+        color: #fff !important;
+      }
     </style>
   </head>
   <body>
@@ -2043,7 +2054,7 @@
           document.getElementById("checkFullWidth").checked =
             preferences.fullWidth === true;
 
-          // Bg Color & Pattern Colors
+          // Bg Color & Pattern Colors (dispatch input so Coloris swatch updates)
           document.getElementById("inputBgColorLight").value =
             preferences.bgColorLight || "#016293";
           document.getElementById("inputBgColorDark").value =
@@ -2052,6 +2063,15 @@
             preferences.patternColorLight || "#014669";
           document.getElementById("inputPatternColorDark").value =
             preferences.patternColorDark || "#313131";
+          [
+            "inputBgColorLight",
+            "inputBgColorDark",
+            "inputPatternColorLight",
+            "inputPatternColorDark",
+          ].forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) el.dispatchEvent(new Event("input", { bubbles: true }));
+          });
 
           // Patterns
           const patternSelect = document.getElementById("selectBgPattern");
