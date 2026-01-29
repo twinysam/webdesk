@@ -82,16 +82,46 @@ document.addEventListener("DOMContentLoaded", function () {
             let newImage = pattern.image;
             if (!newImage) return null;
 
-            // Replace Opacity
-            // Pattern format: fill-opacity='0.4'
-            newImage = newImage.replace(/fill-opacity='[\d.]+'/g, `fill-opacity='${opacity}'`);
+            // 1. Replace Fill Color
+            // Original has fill="#000" or fill='#000'
+            // We want to replace it with the new color.
+            // Since we are building a string first, we can just replace the hex.
+            // But we need to be careful if it's already encoded or not.
+            // Based on bg-patterns.js viewing, it is raw <svg ... fill="#000" ...>
             
-            // Replace Color
-            // Pattern format: fill='%23...'
-            const colorEncoded = encodeURIComponent(color);
-            newImage = newImage.replace(/fill='%23[a-fA-F0-9]{3,6}'/g, `fill='${colorEncoded}'`);
+            // Regex to find fill="#..." or fill='#...'
+            newImage = newImage.replace(/fill=["']#[a-fA-F0-9]{3,6}["']/g, `fill='${color}'`);
             
-            return newImage;
+            // 2. Handle Opacity
+            // Check if fill-opacity exists, if so replace it. If not, add it?
+            // Most patterns in heropatterns have it. If not, we can inject it into <path ...>
+            // Ideally we assume it's there or we append it to style.
+            // Let's try replacing if exists, effectively.
+            if (newImage.includes("fill-opacity")) {
+                 newImage = newImage.replace(/fill-opacity=["'][\d.]+["']/g, `fill-opacity='${opacity}'`);
+            } else {
+                 // Inject before closing of path if possible, or just replace /> with fill-opacity...
+                 // A bit risky. Let's try to find 'd="' and append after.
+                 // safe enough for these specific SVGs.
+                 newImage = newImage.replace('/>', ` fill-opacity='${opacity}' />`);
+            }
+
+            // 3. Encode for Data URI
+            // We need to encode special chars. 
+            // Specifically # must be %23.
+            // double quotes should be single quotes or encoded.
+            // The safest way is proper URI component encoding, but often too aggressive for SVG data URIs (huge strings).
+            // We can just encode specific chars: # -> %23, < -> %3C, > -> %3E, " -> '
+            
+            const encoded = newImage
+                .replace(/"/g, "'")
+                .replace(/</g, "%3C")
+                .replace(/>/g, "%3E")
+                .replace(/&/g, "%26")
+                .replace(/#/g, "%23")
+                .replace(/\s+/g, " "); // Trim extra whitespace
+
+            return `data:image/svg+xml,${encoded}`;
       },
 
       apply: () => {

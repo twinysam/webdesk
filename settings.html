@@ -620,14 +620,6 @@
             <div class="card bg-dark border-secondary p-4 text-white mt-4">
                 <h5 class="mb-4 text-white border-bottom pb-2">Background</h5>
                 
-                <!-- Preview Box -->
-                <div class="mb-4">
-                   <label class="form-label text-light">Preview</label>
-                   <div id="appearancePreview" class="border border-secondary rounded p-3 text-center d-flex align-items-center justify-content-center" style="height: 120px; transition: background 0.3s;">
-                       <span class="bg-dark text-white px-2 py-1 rounded small opacity-75">Live Preview</span>
-                   </div>
-                </div>
-
                 <!-- Pattern Selector (Global) -->
                 <div class="mb-3">
                   <label for="selectBgPattern" class="form-label" data-i18n="label_bg_pattern">Background Pattern</label>
@@ -1721,65 +1713,53 @@
             const opacityValLabel = document.getElementById("labelPatternOpacityVal");
             if(opacityValLabel) opacityValLabel.textContent = preferences.patternOpacity || 0.2;
 
-            // Preview Logic
-            const previewBox = document.getElementById("appearancePreview");
-
+            // Preview Logic (Directly on Body)
             const updatePreview = () => {
-                if(!previewBox) return;
-
-                // Determine effective mode for preview (we can just show the one currently visible or both, but let's stick to the edited fields)
-                // Actually, let's determine based on the "Theme" selection if possible, or just default to showing the Light/Dark based on a toggle?
-                // For simplicity, let's update the preview based on the *currently edited* inputs.
-                // Or better: Let's show the mode that matches the users current preference, or system.
+                // Determine logic similar to webdesk.js apply() but with current form values
+                // We want to verify what the user sees IS what they will get.
                 
-                // Let's use the inputs to drive the preview. 
-                // Since we have separate inputs, we can't easily show both at once in one box.
-                // Let's assume we show the mode that corresponds to the current page theme for now, OR we can add a toggle.
-                // But the user is editing both.
-                
-                // Let's just default to showing the 'Light' preview if Light Mode header is closer, but that's hard.
-                // Let's make the preview box split? No, too complex.
-                // Let's just use the current theme of the settings page to decide which preview to show.
-                // Settings page is always dark mode styled? No, it follows theme.
-                
-                let mode = "dark"; // Default for settings page which is dark-themed
-                if (document.body.classList.contains("light-mode")) mode = "light";
-                
-                // Override if user manually selects a theme in the dropdown
+                // 1. Determine "visual" mode for preview.
+                // If the user selected "Light" or "Dark" explicitly in Settings, show that.
+                // If "System", check system.
                 const selectedTheme = document.getElementById("selectTheme").value;
-                if(selectedTheme === 'light') mode = 'light';
-                else if(selectedTheme === 'dark') mode = 'dark';
+                let isDark = false;
+                if (selectedTheme === 'dark') isDark = true;
+                else if (selectedTheme === 'light') isDark = false;
                 else {
-                    // System - checking actual state
-                    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) mode = 'light';
+                    isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
                 }
-
-                const bgColor = mode === 'light' ? document.getElementById("inputBgColorLight").value : document.getElementById("inputBgColorDark").value;
-                const pColor = mode === 'light' ? document.getElementById("inputPatternColorLight").value : document.getElementById("inputPatternColorDark").value;
                 
+                // 2. Fetch appropriate colors
+                const bgColor = isDark ? document.getElementById("inputBgColorDark").value : document.getElementById("inputBgColorLight").value;
+                const pColor = isDark ? document.getElementById("inputPatternColorDark").value : document.getElementById("inputPatternColorLight").value;
                 const patternName = patternSelect.value;
                 const opacity = parseFloat(document.getElementById("rangePatternOpacity").value);
-
-                previewBox.style.backgroundColor = bgColor;
+                
+                // 3. Apply to Body
+                document.body.style.backgroundColor = bgColor;
+                document.body.style.setProperty('--bg-color', bgColor); // Consistency
                 
                 if (patternName !== 'none' && typeof PreferencesManager !== 'undefined') {
-                    // Reuse helper from PreferencesManager or inline it if not accessible (it is accessible via webdesk.js loaded?)
-                    // settings.html imports webdesk.js, so ReferenceManager is available.
                     const uri = PreferencesManager.getPatternDataUri(patternName, pColor, opacity);
                     if(uri) {
-                        previewBox.style.backgroundImage = `url("${uri}")`;
+                        document.body.style.backgroundImage = `url("${uri}")`;
                     } else {
-                        previewBox.style.backgroundImage = "none";
+                        document.body.style.backgroundImage = "none";
                     }
                 } else {
-                    previewBox.style.backgroundImage = "none";
+                    document.body.style.backgroundImage = "none";
+                }
+                
+                // Also update body classes to match selected theme for immediate text color feedback
+                document.body.classList.remove("light-mode", "dark-mode");
+                if (!isDark) { // Light
+                     document.body.classList.add("light-mode");
+                } else {
+                     document.body.classList.add("dark-mode");
                 }
             };
 
-            // Initial Update
-            setTimeout(updatePreview, 100);
-
-            // Listeners for UI interaction
+            // Listeners for UI interaction to trigger Live Preview
             patternSelect.addEventListener("change", () => {
                 updatePatternVisibility();
                 updatePreview();
