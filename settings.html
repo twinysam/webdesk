@@ -620,6 +620,14 @@
             <div class="card bg-dark border-secondary p-4 text-white mt-4">
                 <h5 class="mb-4 text-white border-bottom pb-2">Background</h5>
                 
+                <!-- Pattern Selector (Global) -->
+                <div class="mb-3">
+                  <label for="selectBgPattern" class="form-label" data-i18n="label_bg_pattern">Background Pattern</label>
+                  <select id="selectBgPattern" class="form-select bg-dark text-white border-secondary">
+                    <option value="none" data-i18n="value_none">None</option>
+                  </select>
+                </div>
+
                 <!-- LIGHT MODE SETTINGS -->
                 <h6 class="text-white mt-3 border-bottom pb-1">Light Mode</h6>
                 <div class="row mb-3">
@@ -1509,7 +1517,11 @@
         loadLinksManager();
         loadBirthdaysManager();
         loadAnnualEventsManager();
-        loadAppearanceManager();
+        try {
+            loadAppearanceManager();
+        } catch (e) {
+            console.error("Appearance Manager failed:", e);
+        }
 
         // Init I18n
         const { profile } = getData();
