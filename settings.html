@@ -816,6 +816,26 @@
               >
             </div>
 
+            <!-- Color Theme Presets (Light Mode only) -->
+            <div class="mb-3">
+              <label
+                for="presetThemeSelect"
+                class="form-label text-white"
+                >Color Theme Presets</label
+              >
+              <select
+                id="presetThemeSelect"
+                class="form-select bg-dark text-white border-secondary"
+                style="max-width: 280px"
+              >
+                <option value="custom">Custom / Select Theme...</option>
+                <option value="winter">❄️ Winter (Blue)</option>
+                <option value="spring">🌿 Spring (Green)</option>
+                <option value="summer">☀️ Summer (Berry)</option>
+                <option value="autumn">🍂 Autumn (Orange)</option>
+              </select>
+            </div>
+
             <!-- LIGHT MODE SETTINGS -->
             <h6 class="text-white mt-3 border-bottom pb-1">Light Mode</h6>
             <div class="row mb-3">
@@ -2046,6 +2066,13 @@
         function loadAppearanceManager() {
           const { preferences } = getData();
 
+          const THEME_PRESETS = {
+            winter: { bg: "#016293", pattern: "#014669" },
+            spring: { bg: "#2d6a4f", pattern: "#1b4332" },
+            summer: { bg: "#be123c", pattern: "#881337" },
+            autumn: { bg: "#ca6702", pattern: "#9d0208" },
+          };
+
           // Theme
           const currentTheme = preferences.theme || "system";
           document.getElementById("selectTheme").value = currentTheme;
@@ -2302,6 +2329,30 @@
           const themeSelect = document.getElementById("selectTheme");
           if (themeSelect) {
             themeSelect.addEventListener("change", () => applyLiveBackground());
+          }
+
+          const presetThemeSelect =
+            document.getElementById("presetThemeSelect");
+          if (presetThemeSelect) {
+            presetThemeSelect.addEventListener("change", () => {
+              const value = presetThemeSelect.value;
+              if (value === "custom") return;
+              const preset = THEME_PRESETS[value];
+              if (!preset) return;
+              const bgLight = document.getElementById("inputBgColorLight");
+              const patternLight = document.getElementById(
+                "inputPatternColorLight",
+              );
+              if (bgLight && patternLight) {
+                bgLight.value = preset.bg;
+                patternLight.value = preset.pattern;
+                bgLight.dispatchEvent(new Event("input", { bubbles: true }));
+                patternLight.dispatchEvent(
+                  new Event("input", { bubbles: true }),
+                );
+                applyLiveBackground();
+              }
+            });
           }
 
           const fullWidthCheck = document.getElementById("checkFullWidth");
