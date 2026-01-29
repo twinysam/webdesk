@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta name="robots" content="noindex" />
@@ -23,14 +23,18 @@
     <link rel="stylesheet" type="text/css" href="style.css" />
     <script src="js/bg-patterns.js"></script>
     <script>
-      (function() {
+      (function () {
         const cachedBg = localStorage.getItem("cachedBgPattern");
         const cachedColor = localStorage.getItem("cachedBgColor");
         if (cachedColor) {
-           document.write(`<style>body { background-color: ${cachedColor} !important; --bg-color: ${cachedColor}; }</style>`);
+          document.write(
+            `<style>body { background-color: ${cachedColor}; --bg-color: ${cachedColor}; }</style>`,
+          );
         }
         if (cachedBg) {
-           document.write(`<style>body { background-image: url("${cachedBg}") !important; --bg-image: url("${cachedBg}"); }</style>`);
+          document.write(
+            `<style>body { background-image: url("${cachedBg}"); --bg-image: url("${cachedBg}"); }</style>`,
+          );
         }
       })();
     </script>
@@ -137,15 +141,21 @@
     </style>
   </head>
   <body>
-
     <div class="caja settings-container">
       <div class="d-flex align-items-center mb-3">
-          <a href="#" onclick="goHome(event)" class="home-btn text-decoration-none me-auto">
-              <i class="bi bi-arrow-left-circle-fill"></i>
-          </a>
+        <a
+          href="#"
+          onclick="goHome(event)"
+          class="home-btn text-decoration-none me-auto"
+        >
+          <i class="bi bi-arrow-left-circle-fill"></i>
+        </a>
       </div>
       <div id="alertContainer" class="mb-3"></div>
-      <h1><i class="bi bi-gear-fill"></i> <span data-i18n="settings_title">Settings & Stats</span></h1>
+      <h1>
+        <i class="bi bi-gear-fill"></i>
+        <span data-i18n="settings_title">Settings & Stats</span>
+      </h1>
 
       <ul class="nav nav-tabs nav-fill" id="settingsTabs" role="tablist">
         <li class="nav-item" role="presentation">
@@ -157,7 +167,8 @@
             type="button"
             role="tab"
           >
-            <i class="bi bi-person-fill"></i> <span data-i18n="tab_profile">Profile</span>
+            <i class="bi bi-person-fill"></i>
+            <span data-i18n="tab_profile">Profile</span>
           </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -169,7 +180,8 @@
             type="button"
             role="tab"
           >
-            <i class="bi bi-bar-chart-fill"></i> <span data-i18n="tab_stats">Statistics</span>
+            <i class="bi bi-bar-chart-fill"></i>
+            <span data-i18n="tab_stats">Statistics</span>
           </button>
         </li>
 
@@ -182,7 +194,8 @@
             type="button"
             role="tab"
           >
-            <i class="bi bi-grid-3x3-gap-fill"></i> <span data-i18n="tab_apps">Apps</span>
+            <i class="bi bi-grid-3x3-gap-fill"></i>
+            <span data-i18n="tab_apps">Apps</span>
           </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -194,7 +207,8 @@
             type="button"
             role="tab"
           >
-            <i class="bi bi-link-45deg"></i> <span data-i18n="tab_links">Links</span>
+            <i class="bi bi-link-45deg"></i>
+            <span data-i18n="tab_links">Links</span>
           </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -206,7 +220,8 @@
             type="button"
             role="tab"
           >
-            <i class="bi bi-calendar-event"></i> <span id="label-events-tab" data-i18n="tab_schedule">Schedule</span>
+            <i class="bi bi-calendar-event"></i>
+            <span id="label-events-tab" data-i18n="tab_schedule">Schedule</span>
           </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -218,7 +233,8 @@
             type="button"
             role="tab"
           >
-            <i class="bi bi-balloon-fill"></i> <span data-i18n="tab_birthdays">Birthdays</span>
+            <i class="bi bi-balloon-fill"></i>
+            <span data-i18n="tab_birthdays">Birthdays</span>
           </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -230,7 +246,8 @@
             type="button"
             role="tab"
           >
-            <i class="bi bi-palette-fill"></i> <span data-i18n="tab_appearance">Appearance</span>
+            <i class="bi bi-palette-fill"></i>
+            <span data-i18n="tab_appearance">Appearance</span>
           </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -242,7 +259,8 @@
             type="button"
             role="tab"
           >
-            <i class="bi bi-sliders"></i> <span data-i18n="tab_preferences">Preferences</span>
+            <i class="bi bi-sliders"></i>
+            <span data-i18n="tab_preferences">Preferences</span>
           </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -254,7 +272,8 @@
             type="button"
             role="tab"
           >
-            <i class="bi bi-hdd-fill"></i> <span data-i18n="tab_backup">Backup</span>
+            <i class="bi bi-hdd-fill"></i>
+            <span data-i18n="tab_backup">Backup</span>
           </button>
         </li>
       </ul>
@@ -264,7 +283,9 @@
           <div class="card bg-dark border-secondary p-4 text-white">
             <h4 class="mb-4" data-i18n="profile_header">User Profile</h4>
             <div class="mb-3">
-              <label class="form-label" data-i18n="label_lang">Language / Idioma</label>
+              <label class="form-label" data-i18n="label_lang"
+                >Language / Idioma</label
+              >
               <select
                 id="setting-lang"
                 class="form-select bg-dark text-white border-secondary"
@@ -274,13 +295,19 @@
               </select>
             </div>
             <div class="mb-3">
-              <label class="form-label" data-i18n="label_hemisphere">Hemisphere</label>
+              <label class="form-label" data-i18n="label_hemisphere"
+                >Hemisphere</label
+              >
               <select
                 id="setting-hemisphere"
                 class="form-select bg-dark text-white border-secondary"
               >
-                <option value="southern" data-i18n="option_southern">Southern (South America, Australia, Africa)</option>
-                <option value="northern" data-i18n="option_northern">Northern (North America, Europe, Asia)</option>
+                <option value="southern" data-i18n="option_southern">
+                  Southern (South America, Australia, Africa)
+                </option>
+                <option value="northern" data-i18n="option_northern">
+                  Northern (North America, Europe, Asia)
+                </option>
               </select>
             </div>
             <div class="mb-3">
@@ -292,7 +319,9 @@
               />
             </div>
             <div class="mb-3">
-              <label class="form-label" data-i18n="label_birthday">Birthday</label>
+              <label class="form-label" data-i18n="label_birthday"
+                >Birthday</label
+              >
               <input
                 type="date"
                 id="setting-dob"
@@ -300,34 +329,45 @@
               />
             </div>
             <button id="btnSaveProfile" class="btn btn-primary">
-              <i class="bi bi-save"></i> <span data-i18n="btn_save_profile">Save Profile</span>
+              <i class="bi bi-save"></i>
+              <span data-i18n="btn_save_profile">Save Profile</span>
             </button>
           </div>
         </div>
 
         <div class="tab-pane fade show active" id="stats" role="tabpanel">
-          <h3 class="mt-2"><i class="bi bi-grid-fill"></i> <span data-i18n="header_apps">Apps</span></h3>
+          <h3 class="mt-2">
+            <i class="bi bi-grid-fill"></i>
+            <span data-i18n="header_apps">Apps</span>
+          </h3>
           <table class="table table-dark table-striped table-hover">
             <thead>
               <tr>
                 <th scope="col">#</th>
                 <th scope="col" data-i18n="col_app_name">App Name</th>
                 <th scope="col" data-i18n="col_last_clicked">Last Clicked</th>
-                <th scope="col" class="text-end" data-i18n="col_clicks">Clicks</th>
+                <th scope="col" class="text-end" data-i18n="col_clicks">
+                  Clicks
+                </th>
               </tr>
             </thead>
             <tbody id="appsBody"></tbody>
           </table>
 
           <div id="tvStatsSection">
-            <h3 class="mt-5"><i class="bi bi-tv"></i> <span data-i18n="header_tv">TV Channels</span></h3>
+            <h3 class="mt-5">
+              <i class="bi bi-tv"></i>
+              <span data-i18n="header_tv">TV Channels</span>
+            </h3>
             <table class="table table-dark table-striped table-hover">
               <thead>
                 <tr>
                   <th scope="col">#</th>
                   <th scope="col" data-i18n="col_channel_name">Channel Name</th>
                   <th scope="col" data-i18n="col_last_clicked">Last Clicked</th>
-                  <th scope="col" class="text-end" data-i18n="col_clicks">Clicks</th>
+                  <th scope="col" class="text-end" data-i18n="col_clicks">
+                    Clicks
+                  </th>
                 </tr>
               </thead>
               <tbody id="tvBody"></tbody>
@@ -335,16 +375,22 @@
           </div>
         </div>
 
-
-
         <div class="tab-pane fade" id="apps" role="tabpanel">
           <p class="text-light mb-3">
-            <i class="bi bi-info-circle"></i> <span data-i18n="text_catalog_info">Add apps from the catalog. Drag "My Apps" to reorder.</span>
+            <i class="bi bi-info-circle"></i>
+            <span data-i18n="text_catalog_info"
+              >Add apps from the catalog. Drag "My Apps" to reorder.</span
+            >
           </p>
 
           <div class="row">
             <div class="col-md-6">
-              <h5 class="text-white border-bottom pb-2" data-i18n="header_catalog">Catalog</h5>
+              <h5
+                class="text-white border-bottom pb-2"
+                data-i18n="header_catalog"
+              >
+                Catalog
+              </h5>
               <input
                 type="text"
                 id="catalog-search"
@@ -358,7 +404,12 @@
               ></div>
             </div>
             <div class="col-md-6">
-              <h5 class="text-white border-bottom pb-2" data-i18n="header_my_apps">My Apps</h5>
+              <h5
+                class="text-white border-bottom pb-2"
+                data-i18n="header_my_apps"
+              >
+                My Apps
+              </h5>
               <div
                 id="myapp-list"
                 class="list-group"
@@ -370,10 +421,17 @@
 
         <div class="tab-pane fade" id="links" role="tabpanel">
           <div class="card bg-dark border-secondary p-4 text-white">
-            <h4 class="mb-4" data-i18n="header_custom_links">Manage Custom Links</h4>
+            <h4 class="mb-4" data-i18n="header_custom_links">
+              Manage Custom Links
+            </h4>
             <form id="linkForm" class="row g-3 mb-4">
               <div class="col-md-4">
-                <label for="linkName" class="form-label" data-i18n="label_link_name">Name (Optional)</label>
+                <label
+                  for="linkName"
+                  class="form-label"
+                  data-i18n="label_link_name"
+                  >Name (Optional)</label
+                >
                 <input
                   type="text"
                   class="form-control bg-dark text-white border-secondary"
@@ -382,7 +440,9 @@
                 />
               </div>
               <div class="col-md-6">
-                <label for="linkUrl" class="form-label" data-i18n="label_url">URL</label>
+                <label for="linkUrl" class="form-label" data-i18n="label_url"
+                  >URL</label
+                >
                 <input
                   type="url"
                   class="form-control bg-dark text-white border-secondary"
@@ -393,7 +453,8 @@
               </div>
               <div class="col-md-2 d-flex align-items-end">
                 <button type="submit" class="btn btn-success w-100">
-                  <i class="bi bi-plus-lg"></i> <span data-i18n="btn_add">Add</span>
+                  <i class="bi bi-plus-lg"></i>
+                  <span data-i18n="btn_add">Add</span>
                 </button>
               </div>
             </form>
@@ -402,7 +463,7 @@
               <table class="table table-dark table-striped table-hover">
                 <thead>
                   <tr>
-                    <th style="width: 40px;"></th>
+                    <th style="width: 40px"></th>
                     <th data-i18n="col_name">Name</th>
                     <th data-i18n="col_url">URL</th>
                     <th class="text-end" data-i18n="col_action">Action</th>
@@ -417,10 +478,14 @@
         <div class="tab-pane fade" id="birthdays" role="tabpanel">
           <div class="card bg-dark border-secondary p-4 text-white">
             <h4 class="mb-4" data-i18n="header_birthdays">Birthdays</h4>
-            <p class="text-muted small" data-i18n="text_birthdays_sub">Celebrations with balloons!</p>
+            <p class="text-muted small" data-i18n="text_birthdays_sub">
+              Celebrations with balloons!
+            </p>
             <form id="birthdayForm" class="row g-3 mb-4">
               <div class="col-md-6">
-                <label for="bdayName" class="form-label" data-i18n="label_name">Name</label>
+                <label for="bdayName" class="form-label" data-i18n="label_name"
+                  >Name</label
+                >
                 <input
                   type="text"
                   class="form-control bg-dark text-white border-secondary"
@@ -431,8 +496,16 @@
                 />
               </div>
               <div class="col-md-2">
-                <label for="bdayMonth" class="form-label" data-i18n="label_month">Month</label>
-                <select id="bdayMonth" class="form-select bg-dark text-white border-secondary">
+                <label
+                  for="bdayMonth"
+                  class="form-label"
+                  data-i18n="label_month"
+                  >Month</label
+                >
+                <select
+                  id="bdayMonth"
+                  class="form-select bg-dark text-white border-secondary"
+                >
                   <option value="01">January</option>
                   <option value="02">February</option>
                   <option value="03">March</option>
@@ -448,12 +521,18 @@
                 </select>
               </div>
               <div class="col-md-2">
-                 <label for="bdayDay" class="form-label" data-i18n="label_day">Day</label>
-                 <select id="bdayDay" class="form-select bg-dark text-white border-secondary"></select>
+                <label for="bdayDay" class="form-label" data-i18n="label_day"
+                  >Day</label
+                >
+                <select
+                  id="bdayDay"
+                  class="form-select bg-dark text-white border-secondary"
+                ></select>
               </div>
               <div class="col-md-2 d-flex align-items-end">
                 <button type="submit" class="btn btn-success w-100">
-                  <i class="bi bi-plus-lg"></i> <span data-i18n="btn_add">Add</span>
+                  <i class="bi bi-plus-lg"></i>
+                  <span data-i18n="btn_add">Add</span>
                 </button>
               </div>
             </form>
@@ -478,10 +557,17 @@
           <!-- ANNUAL EVENTS SECTION -->
           <div class="card bg-dark border-secondary p-4 text-white mt-4">
             <h4 class="mb-4" data-i18n="header_annual">Annual Events</h4>
-            <p class="text-muted small" data-i18n="text_annual_sub">Anniversaries and yearly reminders (no balloons).</p>
+            <p class="text-muted small" data-i18n="text_annual_sub">
+              Anniversaries and yearly reminders (no balloons).
+            </p>
             <form id="annualEventForm" class="row g-3 mb-4">
               <div class="col-md-4">
-                <label for="annualName" class="form-label" data-i18n="label_name">Name</label>
+                <label
+                  for="annualName"
+                  class="form-label"
+                  data-i18n="label_name"
+                  >Name</label
+                >
                 <input
                   type="text"
                   class="form-control bg-dark text-white border-secondary"
@@ -492,7 +578,12 @@
                 />
               </div>
               <div class="col-md-3">
-                <label for="annualUrl" class="form-label" data-i18n="label_url_optional">URL (Optional)</label>
+                <label
+                  for="annualUrl"
+                  class="form-label"
+                  data-i18n="label_url_optional"
+                  >URL (Optional)</label
+                >
                 <input
                   type="url"
                   class="form-control bg-dark text-white border-secondary"
@@ -501,8 +592,16 @@
                 />
               </div>
               <div class="col-md-2">
-                <label for="annualMonth" class="form-label" data-i18n="label_month">Month</label>
-                <select id="annualMonth" class="form-select bg-dark text-white border-secondary">
+                <label
+                  for="annualMonth"
+                  class="form-label"
+                  data-i18n="label_month"
+                  >Month</label
+                >
+                <select
+                  id="annualMonth"
+                  class="form-select bg-dark text-white border-secondary"
+                >
                   <option value="01">January</option>
                   <option value="02">February</option>
                   <option value="03">March</option>
@@ -518,12 +617,18 @@
                 </select>
               </div>
               <div class="col-md-2">
-                 <label for="annualDay" class="form-label" data-i18n="label_day">Day</label>
-                 <select id="annualDay" class="form-select bg-dark text-white border-secondary"></select>
+                <label for="annualDay" class="form-label" data-i18n="label_day"
+                  >Day</label
+                >
+                <select
+                  id="annualDay"
+                  class="form-select bg-dark text-white border-secondary"
+                ></select>
               </div>
               <div class="col-md-2 d-flex align-items-end">
                 <button type="submit" class="btn btn-warning w-100">
-                  <i class="bi bi-plus-lg"></i> <span data-i18n="btn_add">Add</span>
+                  <i class="bi bi-plus-lg"></i>
+                  <span data-i18n="btn_add">Add</span>
                 </button>
               </div>
             </form>
@@ -554,7 +659,12 @@
             </p>
             <form id="eventForm" class="row g-3 mb-4">
               <div class="col-md-4">
-                <label for="eventName" class="form-label" data-i18n="label_event_name">Event Name</label>
+                <label
+                  for="eventName"
+                  class="form-label"
+                  data-i18n="label_event_name"
+                  >Event Name</label
+                >
                 <input
                   type="text"
                   class="form-control bg-dark text-white border-secondary"
@@ -563,7 +673,9 @@
                 />
               </div>
               <div class="col-md-3">
-                <label for="eventDate" class="form-label" data-i18n="label_date">Date</label>
+                <label for="eventDate" class="form-label" data-i18n="label_date"
+                  >Date</label
+                >
                 <input
                   type="date"
                   class="form-control bg-dark text-white border-secondary"
@@ -572,7 +684,12 @@
                 />
               </div>
               <div class="col-md-4">
-                <label for="eventUrl" class="form-label" data-i18n="label_url_optional">URL (Optional)</label>
+                <label
+                  for="eventUrl"
+                  class="form-label"
+                  data-i18n="label_url_optional"
+                  >URL (Optional)</label
+                >
                 <input
                   type="url"
                   class="form-control bg-dark text-white border-secondary"
@@ -611,86 +728,191 @@
         </div>
 
         <div class="tab-pane fade" id="appearance" role="tabpanel">
-            <div class="card bg-dark border-secondary p-4 text-white">
-                <h4 class="mb-4" data-i18n="header_appearance">Appearance</h4>
-                
-                <div class="form-check form-switch mb-4">
-                  <input class="form-check-input" type="checkbox" id="checkFullWidth">
-                  <label class="form-check-label" for="checkFullWidth" data-i18n="label_fullwidth">Enable full width</label>
-                </div>
+          <div class="card bg-dark border-secondary p-4 text-white">
+            <h4 class="mb-4" data-i18n="header_appearance">Appearance</h4>
 
-                <div class="mb-4">
-                  <label for="selectTheme" class="form-label" data-i18n="label_theme">Theme</label>
-                  <select id="selectTheme" class="form-select bg-dark text-white border-secondary" style="max-width: 200px;">
-                    <option value="system" data-i18n="value_system">System</option>
-                    <option value="light" data-i18n="value_light">Light</option>
-                    <option value="dark" data-i18n="value_dark">Dark</option>
-                  </select>
-                  <div class="form-text text-light mt-2" data-i18n="text_theme_info">Choose your preferred theme.</div>
-                </div>
+            <div class="form-check form-switch mb-4">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="checkFullWidth"
+              />
+              <label
+                class="form-check-label"
+                for="checkFullWidth"
+                data-i18n="label_fullwidth"
+                >Enable full width</label
+              >
             </div>
-            
-            <div class="card bg-dark border-secondary p-4 text-white mt-4">
-                <h5 class="mb-4 text-white border-bottom pb-2">Background</h5>
-                
-                <!-- Pattern Selector (Global) -->
-                <div class="mb-3">
-                  <label for="selectBgPattern" class="form-label" data-i18n="label_bg_pattern">Background Pattern</label>
-                  <select id="selectBgPattern" class="form-select bg-dark text-white border-secondary">
-                    <option value="none" data-i18n="value_none">None</option>
-                  </select>
-                  <small class="text-secondary mt-1 d-block" data-i18n="disclaimer_patterns">Patterns provided by <a href='https://heropatterns.com/' target='_blank' class='text-info'>Hero Patterns</a>.</small>
-                </div>
 
-                <!-- LIGHT MODE SETTINGS -->
-                <h6 class="text-white mt-3 border-bottom pb-1">Light Mode</h6>
-                <div class="row mb-3">
-                    <div class="col-md-6 mb-3">
-                      <label for="inputBgColorLight" class="form-label" data-i18n="label_bg_color_light">Background Color (Light)</label>
-                      <input type="color" class="form-control form-control-color bg-dark border-secondary" id="inputBgColorLight" value="#016293">
-                    </div>
-                    
-                    <div id="patternSettingsLight" class="col-md-6 mb-3">
-                         <label for="inputPatternColorLight" class="form-label" data-i18n="label_pattern_color_light">Pattern Color (Light)</label>
-                         <input type="color" class="form-control form-control-color bg-dark border-secondary" id="inputPatternColorLight" value="#ffffff">
-                    </div>
-                </div>
-
-                <!-- DARK MODE SETTINGS -->
-                <h6 class="text-white mt-3 border-bottom pb-1">Dark Mode</h6>
-                <div class="row mb-3">
-                    <div class="col-md-6 mb-3">
-                      <label for="inputBgColorDark" class="form-label" data-i18n="label_bg_color_dark">Background Color (Dark)</label>
-                      <input type="color" class="form-control form-control-color bg-dark border-secondary" id="inputBgColorDark" value="#131313">
-                    </div>
-
-                    <div id="patternSettingsDark" class="col-md-6 mb-3">
-                         <label for="inputPatternColorDark" class="form-label" data-i18n="label_pattern_color_dark">Pattern Color (Dark)</label>
-                         <input type="color" class="form-control form-control-color bg-dark border-secondary" id="inputPatternColorDark" value="#ffffff">
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                     <label for="rangePatternOpacity" class="form-label" data-i18n="label_pattern_opacity">Pattern Opacity</label>
-                     <div class="d-flex align-items-center">
-                         <input type="range" class="form-range flex-grow-1 me-2" id="rangePatternOpacity" min="0.05" max="1" step="0.05" value="0.2">
-                         <span id="labelPatternOpacityVal">0.2</span>
-                     </div>
-                </div>
-                <div class="mb-3">
-                     <label for="rangeBgScrollSpeed" class="form-label" data-i18n="label_scroll_speed">Scroll Speed</label>
-                     <div class="d-flex align-items-center">
-                         <input type="range" class="form-range flex-grow-1 me-2" id="rangeBgScrollSpeed" min="0" max="100" step="1" value="20">
-                         <span id="labelBgScrollSpeedVal">20</span>
-                     </div>
-                </div>
-                <button id="btnSaveAppearance" class="btn btn-primary">
-                  <i class="bi bi-save"></i> <span data-i18n="btn_save_preferences">Save Preferences</span>
-                </button>
+            <div class="mb-4">
+              <label
+                for="selectTheme"
+                class="form-label"
+                data-i18n="label_theme"
+                >Theme</label
+              >
+              <select
+                id="selectTheme"
+                class="form-select bg-dark text-white border-secondary"
+                style="max-width: 200px"
+              >
+                <option value="system" data-i18n="value_system">System</option>
+                <option value="light" data-i18n="value_light">Light</option>
+                <option value="dark" data-i18n="value_dark">Dark</option>
+              </select>
+              <div
+                class="form-text text-light mt-2"
+                data-i18n="text_theme_info"
+              >
+                Choose your preferred theme.
+              </div>
             </div>
-                    </div>
-                </div>
+          </div>
+
+          <div class="card bg-dark border-secondary p-4 text-white mt-4">
+            <h5 class="mb-4 text-white border-bottom pb-2">Background</h5>
+
+            <!-- Pattern Selector (Global) -->
+            <div class="mb-3">
+              <label
+                for="selectBgPattern"
+                class="form-label"
+                data-i18n="label_bg_pattern"
+                >Background Pattern</label
+              >
+              <select
+                id="selectBgPattern"
+                class="form-select bg-dark text-white border-secondary"
+              >
+                <option value="none" data-i18n="value_none">None</option>
+              </select>
+              <small
+                class="text-secondary mt-1 d-block"
+                data-i18n="disclaimer_patterns"
+                >Patterns provided by
+                <a
+                  href="https://heropatterns.com/"
+                  target="_blank"
+                  class="text-info"
+                  >Hero Patterns</a
+                >.</small
+              >
             </div>
+
+            <!-- LIGHT MODE SETTINGS -->
+            <h6 class="text-white mt-3 border-bottom pb-1">Light Mode</h6>
+            <div class="row mb-3">
+              <div class="col-md-6 mb-3">
+                <label
+                  for="inputBgColorLight"
+                  class="form-label"
+                  data-i18n="label_bg_color_light"
+                  >Background Color (Light)</label
+                >
+                <input
+                  type="color"
+                  class="form-control form-control-color bg-dark border-secondary"
+                  id="inputBgColorLight"
+                  value="#016293"
+                />
+              </div>
+
+              <div id="patternSettingsLight" class="col-md-6 mb-3">
+                <label
+                  for="inputPatternColorLight"
+                  class="form-label"
+                  data-i18n="label_pattern_color_light"
+                  >Pattern Color (Light)</label
+                >
+                <input
+                  type="color"
+                  class="form-control form-control-color bg-dark border-secondary"
+                  id="inputPatternColorLight"
+                  value="#ffffff"
+                />
+              </div>
+            </div>
+
+            <!-- DARK MODE SETTINGS -->
+            <h6 class="text-white mt-3 border-bottom pb-1">Dark Mode</h6>
+            <div class="row mb-3">
+              <div class="col-md-6 mb-3">
+                <label
+                  for="inputBgColorDark"
+                  class="form-label"
+                  data-i18n="label_bg_color_dark"
+                  >Background Color (Dark)</label
+                >
+                <input
+                  type="color"
+                  class="form-control form-control-color bg-dark border-secondary"
+                  id="inputBgColorDark"
+                  value="#131313"
+                />
+              </div>
+
+              <div id="patternSettingsDark" class="col-md-6 mb-3">
+                <label
+                  for="inputPatternColorDark"
+                  class="form-label"
+                  data-i18n="label_pattern_color_dark"
+                  >Pattern Color (Dark)</label
+                >
+                <input
+                  type="color"
+                  class="form-control form-control-color bg-dark border-secondary"
+                  id="inputPatternColorDark"
+                  value="#ffffff"
+                />
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label
+                for="rangePatternOpacity"
+                class="form-label"
+                data-i18n="label_pattern_opacity"
+                >Pattern Opacity</label
+              >
+              <div class="d-flex align-items-center">
+                <input
+                  type="range"
+                  class="form-range flex-grow-1 me-2"
+                  id="rangePatternOpacity"
+                  min="0.05"
+                  max="1"
+                  step="0.05"
+                  value="0.2"
+                />
+                <span id="labelPatternOpacityVal">0.2</span>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label
+                for="rangeBgScrollSpeed"
+                class="form-label"
+                data-i18n="label_scroll_speed"
+                >Scroll Speed</label
+              >
+              <div class="d-flex align-items-center">
+                <input
+                  type="range"
+                  class="form-range flex-grow-1 me-2"
+                  id="rangeBgScrollSpeed"
+                  min="0"
+                  max="100"
+                  step="1"
+                  value="20"
+                />
+                <span id="labelBgScrollSpeedVal">20</span>
+              </div>
+            </div>
+            <button id="btnSaveAppearance" class="btn btn-primary">
+              <i class="bi bi-save"></i>
+              <span data-i18n="btn_save_preferences">Save Preferences</span>
+            </button>
+          </div>
         </div>
 
         <div class="tab-pane fade" id="preferences" role="tabpanel">
@@ -698,19 +920,39 @@
             <h4 class="mb-4" data-i18n="header_preferences">Preferences</h4>
 
             <!-- STORAGE SECTION -->
-            <h5 class="text-white border-bottom pb-2 mb-3" data-i18n="header_storage">Storage</h5>
-            <p class="text-light" data-i18n="text_storage_explanation">For total privacy...</p>
+            <h5
+              class="text-white border-bottom pb-2 mb-3"
+              data-i18n="header_storage"
+            >
+              Storage
+            </h5>
+            <p class="text-light" data-i18n="text_storage_explanation">
+              For total privacy...
+            </p>
             <button id="btnPersistentStorage" class="btn btn-outline-info mb-4">
-               <i class="bi bi-hdd-network"></i> <span data-i18n="btn_persistent_storage">Request persistent storage</span>
+              <i class="bi bi-hdd-network"></i>
+              <span data-i18n="btn_persistent_storage"
+                >Request persistent storage</span
+              >
             </button>
-            <p id="textPersistentStorageActive" class="text-success mb-4" style="display: none;" data-i18n="text_storage_active">
+            <p
+              id="textPersistentStorageActive"
+              class="text-success mb-4"
+              style="display: none"
+              data-i18n="text_storage_active"
+            >
               Persistent storage is active.
             </p>
 
             <!-- VISIBILITY RULES SECTION -->
-            <h5 class="text-white border-bottom pb-2 mb-3" data-i18n="header_visibility">Visibility Rules</h5>
-            
-             <div class="form-check form-switch mb-3">
+            <h5
+              class="text-white border-bottom pb-2 mb-3"
+              data-i18n="header_visibility"
+            >
+              Visibility Rules
+            </h5>
+
+            <div class="form-check form-switch mb-3">
               <input
                 class="form-check-input"
                 type="checkbox"
@@ -725,8 +967,11 @@
             </div>
 
             <div class="mb-4">
-              <label for="inputMinClicks" class="form-label text-light"
-                data-i18n="label_min_clicks">Hide apps with fewer clicks than:</label
+              <label
+                for="inputMinClicks"
+                class="form-label text-light"
+                data-i18n="label_min_clicks"
+                >Hide apps with fewer clicks than:</label
               >
               <input
                 type="number"
@@ -742,43 +987,103 @@
             </div>
 
             <!-- GENERAL PREFERENCES SECTION -->
-            <h5 class="text-white border-bottom pb-2 mb-3 mt-4" data-i18n="header_general_pref" style="margin-top: 2rem;">General</h5>
+            <h5
+              class="text-white border-bottom pb-2 mb-3 mt-4"
+              data-i18n="header_general_pref"
+              style="margin-top: 2rem"
+            >
+              General
+            </h5>
 
             <!-- Evening Start Time -->
             <div class="mb-4">
-              <label for="prefEveningStart" class="form-label" data-i18n="label_evening_start">Evening starts at</label>
-              <select id="prefEveningStart" class="form-select bg-dark text-white border-secondary" style="max-width: 200px;">
+              <label
+                for="prefEveningStart"
+                class="form-label"
+                data-i18n="label_evening_start"
+                >Evening starts at</label
+              >
+              <select
+                id="prefEveningStart"
+                class="form-select bg-dark text-white border-secondary"
+                style="max-width: 200px"
+              >
                 <!-- Options populated by JS -->
               </select>
             </div>
 
             <!-- Custom Greeting -->
             <div class="mb-4">
-              <label for="prefLateGreeting" class="form-label" data-i18n="label_late_greeting">Custom Late Night Greeting</label>
-              <input type="text" id="prefLateGreeting" class="form-control bg-dark text-white border-secondary" placeholder="{name}'s Late Late Show">
-              <div class="form-text text-light mt-2" data-i18n="text_late_greeting_help">Use <strong>{name}</strong> to insert the user's name.</div>
+              <label
+                for="prefLateGreeting"
+                class="form-label"
+                data-i18n="label_late_greeting"
+                >Custom Late Night Greeting</label
+              >
+              <input
+                type="text"
+                id="prefLateGreeting"
+                class="form-control bg-dark text-white border-secondary"
+                placeholder="{name}'s Late Late Show"
+              />
+              <div
+                class="form-text text-light mt-2"
+                data-i18n="text_late_greeting_help"
+              >
+                Use <strong>{name}</strong> to insert the user's name.
+              </div>
             </div>
 
             <!-- Tree Toggle -->
             <div class="form-check form-switch mb-4">
-              <input class="form-check-input" type="checkbox" id="prefTreeToggle" checked>
-              <label class="form-check-label" for="prefTreeToggle" data-i18n="label_tree_toggle">Show Tree of Seasons</label>
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="prefTreeToggle"
+                checked
+              />
+              <label
+                class="form-check-label"
+                for="prefTreeToggle"
+                data-i18n="label_tree_toggle"
+                >Show Tree of Seasons</label
+              >
             </div>
 
             <!-- Auto Delete Toggle -->
             <div class="form-check form-switch mb-4">
-              <input class="form-check-input" type="checkbox" id="checkAutoDeleteEvents" checked>
-              <label class="form-check-label" for="checkAutoDeleteEvents" data-i18n="label_auto_delete">Auto-delete expired events</label>
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="checkAutoDeleteEvents"
+                checked
+              />
+              <label
+                class="form-check-label"
+                for="checkAutoDeleteEvents"
+                data-i18n="label_auto_delete"
+                >Auto-delete expired events</label
+              >
             </div>
 
             <!-- Life Calculator Toggle -->
             <div class="form-check form-switch mb-4">
-              <input class="form-check-input" type="checkbox" id="checkEnableCalculator">
-              <label class="form-check-label" for="checkEnableCalculator" data-i18n="label_enable_calculator">Enable Life Calculator (Days Counter)</label>
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="checkEnableCalculator"
+              />
+              <label
+                class="form-check-label"
+                for="checkEnableCalculator"
+                data-i18n="label_enable_calculator"
+                >Enable Life Calculator (Days Counter)</label
+              >
             </div>
 
             <button id="btnSavePreferences" class="btn btn-primary">
-              <i class="bi bi-save"></i> <span data-i18n="btn_save_preferences">Save Preferences</span>
+              <i class="bi bi-save"></i>
+              <span data-i18n="btn_save_preferences">Save Preferences</span>
             </button>
           </div>
         </div>
@@ -790,10 +1095,12 @@
               single file.
             </p>
             <button id="btnExport" class="btn btn-primary btn-lg me-3">
-              <i class="bi bi-download"></i> <span data-i18n="btn_export">Export Full Backup</span>
+              <i class="bi bi-download"></i>
+              <span data-i18n="btn_export">Export Full Backup</span>
             </button>
             <button id="btnImport" class="btn btn-warning btn-lg">
-              <i class="bi bi-upload"></i> <span data-i18n="btn_import">Import Full Backup</span>
+              <i class="bi bi-upload"></i>
+              <span data-i18n="btn_import">Import Full Backup</span>
             </button>
             <input
               type="file"
@@ -824,7 +1131,6 @@
     <script src="js/date-utils.js"></script>
     <script src="js/i18n.js"></script>
 
-
     <script>
       function goHome(e) {
         if (e) e.preventDefault();
@@ -838,8 +1144,8 @@
       const MYAPPS_KEY = "myApps";
       const LINKS_KEY = "userLinks";
       const EVENTS_KEY = "customEvents";
-      const BIRTHDAYS_KEY = "userBirthdays"; 
-      const ANNUAL_EVENTS_KEY = "annualEvents"; 
+      const BIRTHDAYS_KEY = "userBirthdays";
+      const ANNUAL_EVENTS_KEY = "annualEvents";
       const PREFERENCES_KEY = "userPreferences";
 
       // Default Config
@@ -858,7 +1164,7 @@
         customLateGreeting: "",
         autoDeleteEvents: true,
         enableCalculator: false, // Default DISABLED
-        
+
         // Appearance
         fullWidth: false,
         theme: "system", // system, light, dark
@@ -868,16 +1174,16 @@
         patternColorLight: "#014669",
         patternColorDark: "#313131",
         patternOpacity: 0.2,
-        bgScrollSpeed: 20
+        bgScrollSpeed: 20,
       };
 
       // Global Catalog Cache
       let fullCatalog = [];
-      
+
       // I18n Manager -> MOVED TO js/i18n.js
       // (Using global I18nManager)
       const I18n = {
-         t: (key) => I18nManager.getString(key) // Adapter for existing code
+        t: (key) => I18nManager.getString(key), // Adapter for existing code
       };
 
       // Load Data
@@ -897,8 +1203,9 @@
           JSON.parse(localStorage.getItem(BIRTHDAYS_KEY)) || [];
         const annualEvents =
           JSON.parse(localStorage.getItem(ANNUAL_EVENTS_KEY)) || [];
-        const preferences = 
-          JSON.parse(localStorage.getItem(PREFERENCES_KEY)) || defaultPreferences;
+        const preferences =
+          JSON.parse(localStorage.getItem(PREFERENCES_KEY)) ||
+          defaultPreferences;
 
         if (!config.filters) config.filters = defaultConfig.filters;
 
@@ -912,7 +1219,7 @@
           userLinks,
           userBirthdays,
           annualEvents,
-          preferences
+          preferences,
         };
       }
 
@@ -921,17 +1228,20 @@
       }
 
       function updateLastBackupText() {
-         const last = localStorage.getItem("lastBackupTime");
-         const el = document.getElementById("lastBackupText");
-         if (!el) return;
-         
-         if (last) {
-             const { profile } = getData();
-             const strTime = dayjs(last).locale(profile.lang || 'en').format("LL LTS"); // Format: January 12 2026 5:30 PM
-             el.innerHTML = I18n.t("text_last_backup") + " <strong>" + strTime + "</strong>";
-         } else {
-             el.innerHTML = I18n.t("text_backup_never");
-         }
+        const last = localStorage.getItem("lastBackupTime");
+        const el = document.getElementById("lastBackupText");
+        if (!el) return;
+
+        if (last) {
+          const { profile } = getData();
+          const strTime = dayjs(last)
+            .locale(profile.lang || "en")
+            .format("LL LTS"); // Format: January 12 2026 5:30 PM
+          el.innerHTML =
+            I18n.t("text_last_backup") + " <strong>" + strTime + "</strong>";
+        } else {
+          el.innerHTML = I18n.t("text_backup_never");
+        }
       }
 
       function showAlert(message, type = "success") {
@@ -960,7 +1270,8 @@
         document.getElementById("setting-dob").value = profile.birthday || "";
         document.getElementById("setting-lang").value = profile.lang || "en";
         // Default to detected hemisphere if not set (legacy profiles)
-        document.getElementById("setting-hemisphere").value = profile.hemisphere || DateUtils.getHemisphere();
+        document.getElementById("setting-hemisphere").value =
+          profile.hemisphere || DateUtils.getHemisphere();
       }
 
       document
@@ -969,7 +1280,8 @@
           const name = document.getElementById("setting-name").value;
           const birthday = document.getElementById("setting-dob").value;
           const lang = document.getElementById("setting-lang").value;
-          const hemisphere = document.getElementById("setting-hemisphere").value;
+          const hemisphere =
+            document.getElementById("setting-hemisphere").value;
 
           if (!name || !birthday)
             return showAlert(I18n.t("alert_fill_fields"), "danger");
@@ -1006,7 +1318,7 @@
                 .catch(() => []), */
             ]);
             fullCatalog = [...apps].sort((a, b) =>
-              a.name.localeCompare(b.name)
+              a.name.localeCompare(b.name),
             );
           } catch (e) {
             console.error(e);
@@ -1024,7 +1336,7 @@
         const filtered = fullCatalog.filter(
           (app) =>
             app.name.toLowerCase().includes(filter.toLowerCase()) &&
-            !myApps.some((s) => s.name === app.name)
+            !myApps.some((s) => s.name === app.name),
         );
 
         filtered.forEach((app) => {
@@ -1113,8 +1425,6 @@
           renderCatalog(e.target.value);
         });
 
-
-
       // --- TAB 3: STATS ---
       function renderStats() {
         const { stats } = getData();
@@ -1169,10 +1479,10 @@
 
         const tvSection = document.getElementById("tvStatsSection");
         if (tv.length === 0) {
-           if(tvSection) tvSection.style.display = 'none';
+          if (tvSection) tvSection.style.display = "none";
         } else {
-           if(tvSection) tvSection.style.display = 'block';
-           tv.forEach((item, i) => renderRow(item, i, tvBody));
+          if (tvSection) tvSection.style.display = "block";
+          tv.forEach((item, i) => renderRow(item, i, tvBody));
         }
       }
 
@@ -1192,7 +1502,7 @@
         sorted.forEach((evt, index) => {
           const tr = document.createElement("tr");
           const displayDate = dayjs(evt.date, "DD/MM/YYYY").format(
-            "DD/MM/YYYY"
+            "DD/MM/YYYY",
           );
           tr.innerHTML = `
             <td>${displayDate}</td>
@@ -1223,7 +1533,7 @@
           (e) =>
             e.name === itemToDelete.name &&
             e.date === itemToDelete.date &&
-            e.url === itemToDelete.url
+            e.url === itemToDelete.url,
         );
 
         if (realIndex !== -1) {
@@ -1242,7 +1552,7 @@
 
         // Sort by date (Day/Month)
         // Since format is DD/MM, we can use dayjs to parse - dayOfYear plugin required
-         const sorted = [...userBirthdays].sort((a, b) => {
+        const sorted = [...userBirthdays].sort((a, b) => {
           const mA = dayjs(a.birthday, "DD/MM");
           const mB = dayjs(b.birthday, "DD/MM");
           return mA.dayOfYear() - mB.dayOfYear();
@@ -1272,7 +1582,8 @@
         const itemToDelete = sorted[index];
         const realIndex = userBirthdays.findIndex(
           (b) =>
-            b.name === itemToDelete.name && b.birthday === itemToDelete.birthday
+            b.name === itemToDelete.name &&
+            b.birthday === itemToDelete.birthday,
         );
 
         if (realIndex !== -1) {
@@ -1323,8 +1634,7 @@
 
         const itemToDelete = sorted[index];
         const realIndex = annualEvents.findIndex(
-          (e) =>
-            e.name === itemToDelete.name && e.date === itemToDelete.date
+          (e) => e.name === itemToDelete.name && e.date === itemToDelete.date,
         );
 
         if (realIndex !== -1) {
@@ -1346,7 +1656,7 @@
           // Store data for reconstruction
           tr.dataset.name = link.name || "";
           tr.dataset.url = link.url;
-          
+
           tr.innerHTML = `
                 <td><i class="bi bi-list text-secondary sort-handle" style="cursor: move;"></i></td>
                 <td>${
@@ -1355,8 +1665,8 @@
                 <td><a href="${
                   link.url
                 }" target="_blank" class="text-info text-decoration-none">${
-            link.url
-          }</a></td>
+                  link.url
+                }</a></td>
                 <td class="text-end">
                     <button class="btn btn-sm btn-danger" onclick="deleteLink(${index})"><i class="bi bi-trash"></i></button>
                 </td>
@@ -1365,30 +1675,30 @@
         });
 
         // Initialize Sortable
-        // Check if already initialized to avoid duplicates (naive check: does it have the class?) 
-        // Actually, safer to just re-create or relying on Sortable to handle it. 
+        // Check if already initialized to avoid duplicates (naive check: does it have the class?)
+        // Actually, safer to just re-create or relying on Sortable to handle it.
         // Given the structure, let's keep it simple.
         new Sortable(tbody, {
-           handle: '.sort-handle',
-           animation: 150,
-           onEnd: saveLinksOrder
+          handle: ".sort-handle",
+          animation: 150,
+          onEnd: saveLinksOrder,
         });
       }
 
       window.saveLinksOrder = () => {
-         const tbody = document.getElementById("linksListBody");
-         const newLinks = [];
-         
-         tbody.querySelectorAll("tr").forEach(tr => {
-             newLinks.push({
-                 name: tr.dataset.name,
-                 url: tr.dataset.url
-             });
-         });
-         
-         saveData(LINKS_KEY, newLinks);
-         // Re-render to update indices for delete button
-         loadLinksManager(); 
+        const tbody = document.getElementById("linksListBody");
+        const newLinks = [];
+
+        tbody.querySelectorAll("tr").forEach((tr) => {
+          newLinks.push({
+            name: tr.dataset.name,
+            url: tr.dataset.url,
+          });
+        });
+
+        saveData(LINKS_KEY, newLinks);
+        // Re-render to update indices for delete button
+        loadLinksManager();
       };
 
       window.deleteLink = (index) => {
@@ -1403,27 +1713,29 @@
       function loadPreferencesManager() {
         const { preferences, profile, config } = getData();
         const lang = profile.lang || "en";
-        
+
         // Evening Start Dropdown
         const eveningSelect = document.getElementById("prefEveningStart");
         eveningSelect.innerHTML = "";
-        
+
         // --- VISIBILITY RULES ---
-        if(config && config.filters) {
-            document.getElementById("checkHideNeverClicked").checked = config.filters.hideNeverClicked;
-            document.getElementById("inputMinClicks").value = config.filters.minClicks;
+        if (config && config.filters) {
+          document.getElementById("checkHideNeverClicked").checked =
+            config.filters.hideNeverClicked;
+          document.getElementById("inputMinClicks").value =
+            config.filters.minClicks;
         }
-        
+
         // Populate options (12 PM - 11 PM / 12 - 23)
         // Range 12 to 23
         for (let i = 12; i <= 23; i++) {
           const opt = document.createElement("option");
           opt.value = i;
           if (lang === "en") {
-             const display = i === 12 ? "12 PM" : (i - 12) + " PM";
-             opt.textContent = display;
+            const display = i === 12 ? "12 PM" : i - 12 + " PM";
+            opt.textContent = display;
           } else {
-             opt.textContent = i + ":00";
+            opt.textContent = i + ":00";
           }
           eveningSelect.appendChild(opt);
         }
@@ -1432,28 +1744,34 @@
         // If null, use default from I18n data
         let current = preferences.eveningStart;
         if (current === null) {
-           current = I18nManager.data.greetingRules ? I18nManager.data.greetingRules.eveningStart : 18;
+          current = I18nManager.data.greetingRules
+            ? I18nManager.data.greetingRules.eveningStart
+            : 18;
         }
         eveningSelect.value = current;
 
         // Calculator Toggle
-        document.getElementById("checkEnableCalculator").checked = preferences.enableCalculator === true;
+        document.getElementById("checkEnableCalculator").checked =
+          preferences.enableCalculator === true;
 
         // Tree Toggle
-        document.getElementById("prefTreeToggle").checked = preferences.treeEnabled !== false; // Default true
+        document.getElementById("prefTreeToggle").checked =
+          preferences.treeEnabled !== false; // Default true
 
         // Custom Greeting
         // Show current value (preference or default from I18n)
         let currentGreeting = preferences.customLateGreeting;
         if (!currentGreeting) {
-             currentGreeting = I18nManager.getString("greeting_latelateshow");
+          currentGreeting = I18nManager.getString("greeting_latelateshow");
         }
         document.getElementById("prefLateGreeting").value = currentGreeting;
 
         // Appearance
-        document.getElementById("checkFullWidth").checked = preferences.fullWidth || false;
-        document.getElementById("selectTheme").value = preferences.theme || "system";
-        
+        document.getElementById("checkFullWidth").checked =
+          preferences.fullWidth || false;
+        document.getElementById("selectTheme").value =
+          preferences.theme || "system";
+
         applyThemeSettings(preferences.theme || "system"); // Ensure theme is visually applied on load
       }
 
@@ -1462,54 +1780,67 @@
       let _settingsThemeListener = null;
 
       function applyThemeSettings(theme) {
-          const body = document.body;
-          body.classList.remove("light-mode", "dark-mode");
+        const body = document.body;
+        body.classList.remove("light-mode", "dark-mode");
 
-          if (theme === "light") {
-              body.classList.add("light-mode");
-          } else if (theme === "dark") {
-              body.classList.add("dark-mode");
-          }
+        if (theme === "light") {
+          body.classList.add("light-mode");
+        } else if (theme === "dark") {
+          body.classList.add("dark-mode");
+        }
       }
 
-      document.getElementById("btnSavePreferences").addEventListener("click", () => {
-         const { preferences, config } = getData();
-         
-         // Save Filter Settings
-         config.filters.hideNeverClicked = document.getElementById("checkHideNeverClicked").checked;
-         config.filters.minClicks = parseInt(document.getElementById("inputMinClicks").value) || 0;
-         saveData(CONFIG_KEY, config);
-         
-          const eveningVal = parseInt(document.getElementById("prefEveningStart").value);
+      document
+        .getElementById("btnSavePreferences")
+        .addEventListener("click", () => {
+          const { preferences, config } = getData();
+
+          // Save Filter Settings
+          config.filters.hideNeverClicked = document.getElementById(
+            "checkHideNeverClicked",
+          ).checked;
+          config.filters.minClicks =
+            parseInt(document.getElementById("inputMinClicks").value) || 0;
+          saveData(CONFIG_KEY, config);
+
+          const eveningVal = parseInt(
+            document.getElementById("prefEveningStart").value,
+          );
           const treeEnabled = document.getElementById("prefTreeToggle").checked;
-          const calculatorEnabled = document.getElementById("checkEnableCalculator").checked;
-          const lateGreeting = document.getElementById("prefLateGreeting").value.trim();
+          const calculatorEnabled = document.getElementById(
+            "checkEnableCalculator",
+          ).checked;
+          const lateGreeting = document
+            .getElementById("prefLateGreeting")
+            .value.trim();
 
           preferences.eveningStart = eveningVal;
           preferences.treeEnabled = treeEnabled;
           preferences.enableCalculator = calculatorEnabled;
           preferences.customLateGreeting = lateGreeting;
 
-         saveData(PREFERENCES_KEY, preferences);
-         showAlert(I18n.t("alert_preferences_saved"), "success");
-         // Since visuals might change, maybe reload? Or just alert.
-         // Let's reload to be safe and consistent with Profile
-         setTimeout(() => location.reload(), 1000); 
-      });
+          saveData(PREFERENCES_KEY, preferences);
+          showAlert(I18n.t("alert_preferences_saved"), "success");
+          // Since visuals might change, maybe reload? Or just alert.
+          // Let's reload to be safe and consistent with Profile
+          setTimeout(() => location.reload(), 1000);
+        });
 
       // Storage Persistence
       const btnPersistent = document.getElementById("btnPersistentStorage");
-      const textPersistent = document.getElementById("textPersistentStorageActive");
+      const textPersistent = document.getElementById(
+        "textPersistentStorageActive",
+      );
 
       async function checkStorage() {
         if (navigator.storage && navigator.storage.persisted) {
           const isPersisted = await navigator.storage.persisted();
           if (isPersisted) {
-             if(btnPersistent) btnPersistent.style.display = 'none';
-             if(textPersistent) textPersistent.style.display = 'block';
+            if (btnPersistent) btnPersistent.style.display = "none";
+            if (textPersistent) textPersistent.style.display = "block";
           } else {
-             if(btnPersistent) btnPersistent.style.display = 'inline-block';
-             if(textPersistent) textPersistent.style.display = 'none';
+            if (btnPersistent) btnPersistent.style.display = "inline-block";
+            if (textPersistent) textPersistent.style.display = "none";
           }
         }
       }
@@ -1540,19 +1871,19 @@
         loadBirthdaysManager();
         loadAnnualEventsManager();
         try {
-            loadAppearanceManager();
+          loadAppearanceManager();
         } catch (e) {
-            console.error("Appearance Manager failed:", e);
+          console.error("Appearance Manager failed:", e);
         }
 
         // Init I18n
         const { profile } = getData();
         const userLang = profile.lang || "en";
-        
-        await I18nManager.init(); 
+
+        await I18nManager.init();
         // Sync check
-        if(I18nManager.getLang() !== userLang) {
-             await I18nManager.loadLocale(userLang);
+        if (I18nManager.getLang() !== userLang) {
+          await I18nManager.loadLocale(userLang);
         }
         I18nManager.applyToPage();
         loadPreferencesManager();
@@ -1560,7 +1891,7 @@
         checkStorage(); // Check persistence
 
         // Update Tab Label - No longer needed manually as I18n handles it
-        // if (profile.lang === "es") { ... } 
+        // if (profile.lang === "es") { ... }
 
         // Restrict date picker to today+
         const dateInput = document.getElementById("eventDate");
@@ -1568,33 +1899,34 @@
 
         // Event Listeners (Safely inside DOMLoaded)
 
-
-
         // Birthday Form
         const birthdayForm = document.getElementById("birthdayForm");
         const monthSelect = document.getElementById("bdayMonth");
         const daySelect = document.getElementById("bdayDay");
 
         if (birthdayForm && monthSelect && daySelect) {
-           const updateDays = (monthEl, dayEl, val) => {
-              const month = parseInt(monthEl.value);
-              let maxDays = 31;
-              if (month === 4 || month === 6 || month === 9 || month === 11) maxDays = 30;
-              else if (month === 2) maxDays = 29; // Assume leap year for safety
-              
-              dayEl.innerHTML = "";
-              for(let i=1; i<=maxDays; i++) {
-                 const d = i < 10 ? "0" + i : i;
-                 const opt = document.createElement("option");
-                 opt.value = d;
-                 opt.textContent = i;
-                 dayEl.appendChild(opt);
-              }
-              if (val && parseInt(val) <= maxDays) dayEl.value = val;
-           };
+          const updateDays = (monthEl, dayEl, val) => {
+            const month = parseInt(monthEl.value);
+            let maxDays = 31;
+            if (month === 4 || month === 6 || month === 9 || month === 11)
+              maxDays = 30;
+            else if (month === 2) maxDays = 29; // Assume leap year for safety
 
-           monthSelect.addEventListener("change", () => updateDays(monthSelect, daySelect, daySelect.value));
-           updateDays(monthSelect, daySelect);
+            dayEl.innerHTML = "";
+            for (let i = 1; i <= maxDays; i++) {
+              const d = i < 10 ? "0" + i : i;
+              const opt = document.createElement("option");
+              opt.value = d;
+              opt.textContent = i;
+              dayEl.appendChild(opt);
+            }
+            if (val && parseInt(val) <= maxDays) dayEl.value = val;
+          };
+
+          monthSelect.addEventListener("change", () =>
+            updateDays(monthSelect, daySelect, daySelect.value),
+          );
+          updateDays(monthSelect, daySelect);
 
           birthdayForm.addEventListener("submit", (e) => {
             e.preventDefault();
@@ -1619,28 +1951,30 @@
           const annualDay = document.getElementById("annualDay");
 
           if (annualForm && annualMonth && annualDay) {
-              annualMonth.addEventListener("change", () => updateDays(annualMonth, annualDay, annualDay.value));
+            annualMonth.addEventListener("change", () =>
+              updateDays(annualMonth, annualDay, annualDay.value),
+            );
+            updateDays(annualMonth, annualDay);
+
+            annualForm.addEventListener("submit", (e) => {
+              e.preventDefault();
+
+              const name = document.getElementById("annualName").value.trim();
+              const url = document.getElementById("annualUrl").value.trim();
+              const month = annualMonth.value;
+              const day = annualDay.value;
+              const dateStr = `${day}/${month}`;
+
+              const { annualEvents } = getData();
+              annualEvents.push({ name, date: dateStr, url });
+              saveData(ANNUAL_EVENTS_KEY, annualEvents);
+
+              loadAnnualEventsManager();
+              annualForm.reset();
+              annualMonth.value = "01";
               updateDays(annualMonth, annualDay);
-
-              annualForm.addEventListener("submit", (e) => {
-                  e.preventDefault();
-
-                  const name = document.getElementById("annualName").value.trim();
-                  const url = document.getElementById("annualUrl").value.trim();
-                  const month = annualMonth.value;
-                  const day = annualDay.value;
-                  const dateStr = `${day}/${month}`;
-
-                  const { annualEvents } = getData();
-                  annualEvents.push({ name, date: dateStr, url });
-                  saveData(ANNUAL_EVENTS_KEY, annualEvents);
-
-                  loadAnnualEventsManager();
-                  annualForm.reset();
-                  annualMonth.value = "01";
-                  updateDays(annualMonth, annualDay);
-                  showAlert(I18n.t("alert_annual_added"), "success");
-              });
+              showAlert(I18n.t("alert_annual_added"), "success");
+            });
           }
         }
 
@@ -1651,7 +1985,7 @@
             e.preventDefault();
             const name = document.getElementById("eventName").value;
             const date = dayjs(
-              document.getElementById("eventDate").value
+              document.getElementById("eventDate").value,
             ).format("DD/MM/YYYY");
             const url = document.getElementById("eventUrl").value;
 
@@ -1685,207 +2019,335 @@
 
         // Listeners for Appearance (Auto-Save removed in favor of Save Button pattern to simplify)
         // ... except theme which might need preview? No, let's stick to Save button for all appearance to be consistent.
-        
+
         function loadAppearanceManager() {
+          const { preferences } = getData();
+
+          // Theme
+          const currentTheme = preferences.theme || "system";
+          document.getElementById("selectTheme").value = currentTheme;
+
+          // Full width
+          document.getElementById("checkFullWidth").checked =
+            preferences.fullWidth === true;
+
+          // Bg Color & Pattern Colors
+          document.getElementById("inputBgColorLight").value =
+            preferences.bgColorLight || "#016293";
+          document.getElementById("inputBgColorDark").value =
+            preferences.bgColorDark || "#131313";
+          document.getElementById("inputPatternColorLight").value =
+            preferences.patternColorLight || "#014669";
+          document.getElementById("inputPatternColorDark").value =
+            preferences.patternColorDark || "#313131";
+
+          // Patterns
+          const patternSelect = document.getElementById("selectBgPattern");
+          // Keep "None" and append others
+          // Clear first to be safe if called multiple times
+          patternSelect.innerHTML = `<option value="none" data-i18n="value_none">${I18n.t("value_none") || "None"}</option>`;
+
+          if (typeof bgPatterns !== "undefined") {
+            bgPatterns.forEach((p) => {
+              const opt = document.createElement("option");
+              opt.value = p.name;
+              opt.textContent = p.name;
+              patternSelect.appendChild(opt);
+            });
+          }
+
+          const currentPattern = preferences.bgPattern || "Endless Clouds";
+          patternSelect.value = currentPattern;
+
+          // Pattern Settings visibility
+          const patternSettingsLight = document.getElementById(
+            "patternSettingsLight",
+          );
+          const patternSettingsDark = document.getElementById(
+            "patternSettingsDark",
+          );
+
+          const updatePatternVisibility = () => {
+            const isNone = patternSelect.value === "none";
+            if (patternSettingsLight)
+              patternSettingsLight.style.visibility = isNone
+                ? "hidden"
+                : "visible";
+            if (patternSettingsDark)
+              patternSettingsDark.style.visibility = isNone
+                ? "hidden"
+                : "visible";
+          };
+          updatePatternVisibility();
+
+          document.getElementById("rangePatternOpacity").value =
+            preferences.patternOpacity || 0.2;
+          const opacityValLabel = document.getElementById(
+            "labelPatternOpacityVal",
+          );
+          if (opacityValLabel)
+            opacityValLabel.textContent = preferences.patternOpacity || 0.2;
+
+          document.getElementById("rangeBgScrollSpeed").value =
+            preferences.bgScrollSpeed ?? 20;
+          const scrollSpeedValLabel = document.getElementById(
+            "labelBgScrollSpeedVal",
+          );
+          if (scrollSpeedValLabel) {
+            const currentSpeed = preferences.bgScrollSpeed ?? 20;
+            scrollSpeedValLabel.textContent =
+              currentSpeed === 0 ? "0 (Disabled)" : currentSpeed;
+          }
+
+          // Preview Logic (Directly on Body)
+          const updatePreview = () => {
+            // Determine logic similar to webdesk.js apply() but with current form values
+            // We want to verify what the user sees IS what they will get.
+
+            // 1. Determine "visual" mode for preview.
+            const selectedTheme = document.getElementById("selectTheme").value;
+            let isDark = false;
+            if (selectedTheme === "dark") isDark = true;
+            else if (selectedTheme === "light") isDark = false;
+            else {
+              isDark =
+                window.matchMedia &&
+                window.matchMedia("(prefers-color-scheme: dark)").matches;
+            }
+
+            // 2. Fetch all values
+            const bgColorLight =
+              document.getElementById("inputBgColorLight").value;
+            const bgColorDark =
+              document.getElementById("inputBgColorDark").value;
+            const pColorLight = document.getElementById(
+              "inputPatternColorLight",
+            ).value;
+            const pColorDark = document.getElementById(
+              "inputPatternColorDark",
+            ).value;
+            const patternName = patternSelect.value;
+            const opacity = parseFloat(
+              document.getElementById("rangePatternOpacity").value,
+            );
+            const speed = parseInt(
+              document.getElementById("rangeBgScrollSpeed").value,
+            );
+
+            // 3. Apply themed variables for instant switch test
+            document.body.style.setProperty("--bg-color-light", bgColorLight);
+            document.body.style.setProperty("--bg-color-dark", bgColorDark);
+
+            if (
+              patternName !== "none" &&
+              typeof generatePatternUri !== "undefined"
+            ) {
+              const uriLight = generatePatternUri(
+                patternName,
+                pColorLight,
+                opacity,
+              );
+              const uriDark = generatePatternUri(
+                patternName,
+                pColorDark,
+                opacity,
+              );
+
+              if (uriLight)
+                document.body.style.setProperty(
+                  "--bg-image-light",
+                  `url("${uriLight}")`,
+                );
+              if (uriDark)
+                document.body.style.setProperty(
+                  "--bg-image-dark",
+                  `url("${uriDark}")`,
+                );
+
+              // Handle Speed in Preview
+              const patternObj = bgPatterns.find((p) => p.name === patternName);
+              if (patternObj && patternObj.size) {
+                document.body.style.setProperty(
+                  "--bg-size",
+                  patternObj.size + "px",
+                );
+                if (speed > 0) {
+                  document.body.classList.remove("paused");
+                  const duration = patternObj.size / speed;
+                  document.body.style.setProperty(
+                    "--bg-animate-duration",
+                    duration + "s",
+                  );
+                } else {
+                  document.body.classList.add("paused");
+                }
+              }
+            } else {
+              document.body.style.setProperty("--bg-image-light", "none");
+              document.body.style.setProperty("--bg-image-dark", "none");
+            }
+
+            // Also update body classes to match selected theme for immediate text color feedback
+            document.body.classList.remove("light-mode", "dark-mode");
+            if (!isDark) {
+              // Light
+              document.body.classList.add("light-mode");
+            } else {
+              document.body.classList.add("dark-mode");
+            }
+          };
+
+          // Helper function to save appearance settings to localStorage
+          const saveAppearanceSettings = () => {
             const { preferences } = getData();
-            
-            // Theme
-            const currentTheme = preferences.theme || "system";
-            document.getElementById("selectTheme").value = currentTheme;
-            
-            // Full width
-            document.getElementById("checkFullWidth").checked = preferences.fullWidth === true;
 
-            // Bg Color & Pattern Colors
-            document.getElementById("inputBgColorLight").value = preferences.bgColorLight || "#016293";
-            document.getElementById("inputBgColorDark").value = preferences.bgColorDark || "#131313";
-            document.getElementById("inputPatternColorLight").value = preferences.patternColorLight || "#014669";
-            document.getElementById("inputPatternColorDark").value = preferences.patternColorDark || "#313131";
+            preferences.theme = document.getElementById("selectTheme").value;
+            preferences.fullWidth =
+              document.getElementById("checkFullWidth").checked;
+            preferences.bgPattern =
+              document.getElementById("selectBgPattern").value;
+            preferences.patternOpacity = parseFloat(
+              document.getElementById("rangePatternOpacity").value,
+            );
+            preferences.bgScrollSpeed = parseInt(
+              document.getElementById("rangeBgScrollSpeed").value,
+            );
+            preferences.bgColorLight =
+              document.getElementById("inputBgColorLight").value;
+            preferences.bgColorDark =
+              document.getElementById("inputBgColorDark").value;
+            preferences.patternColorLight = document.getElementById(
+              "inputPatternColorLight",
+            ).value;
+            preferences.patternColorDark = document.getElementById(
+              "inputPatternColorDark",
+            ).value;
 
-            // Patterns
-            const patternSelect = document.getElementById("selectBgPattern");
-            // Keep "None" and append others
-            // Clear first to be safe if called multiple times
-            patternSelect.innerHTML = `<option value="none" data-i18n="value_none">${I18n.t("value_none") || "None"}</option>`;
-            
-            if (typeof bgPatterns !== 'undefined') {
-                bgPatterns.forEach(p => {
-                    const opt = document.createElement("option");
-                    opt.value = p.name; 
-                    opt.textContent = p.name;
-                    patternSelect.appendChild(opt);
-                });
+            // Cleanup old keys
+            delete preferences.bgColor;
+            delete preferences.patternColor;
+
+            saveData(PREFERENCES_KEY, preferences);
+
+            // Cache the pattern for instant load
+            let isDark = document.body.classList.contains("dark-mode");
+            if (preferences.theme === "light") isDark = false;
+            if (preferences.theme === "dark") isDark = true;
+
+            const bgColor = isDark
+              ? preferences.bgColorDark
+              : preferences.bgColorLight;
+            const pColor = isDark
+              ? preferences.patternColorDark
+              : preferences.patternColorLight;
+            const pName = preferences.bgPattern;
+            const pOpacity = preferences.patternOpacity;
+
+            let uri = "";
+            if (
+              pName &&
+              pName !== "none" &&
+              typeof generatePatternUri !== "undefined"
+            ) {
+              uri = generatePatternUri(
+                pName,
+                pColor || (isDark ? "#313131" : "#014669"),
+                pOpacity || 0.2,
+              );
             }
 
-            const currentPattern = preferences.bgPattern || "Endless Clouds";
-            patternSelect.value = currentPattern;
+            // Cache for instant load on page reload
+            localStorage.setItem("cachedBgPattern", uri || "");
+            localStorage.setItem("cachedBgColor", bgColor || "");
+          };
 
-            // Pattern Settings visibility
-            const patternSettingsLight = document.getElementById("patternSettingsLight");
-            const patternSettingsDark = document.getElementById("patternSettingsDark");
-            
-            const updatePatternVisibility = () => {
-                 const isNone = patternSelect.value === "none";
-                 if(patternSettingsLight) patternSettingsLight.style.visibility = isNone ? "hidden" : "visible";
-                 if(patternSettingsDark) patternSettingsDark.style.visibility = isNone ? "hidden" : "visible";
-            };
+          // Listeners for UI interaction to trigger Live Preview
+          // Pattern Select: Update preview + save immediately
+          patternSelect.addEventListener("change", () => {
             updatePatternVisibility();
-
-            document.getElementById("rangePatternOpacity").value = preferences.patternOpacity || 0.2;
-            const opacityValLabel = document.getElementById("labelPatternOpacityVal");
-            if(opacityValLabel) opacityValLabel.textContent = preferences.patternOpacity || 0.2;
-
-            document.getElementById("rangeBgScrollSpeed").value = preferences.bgScrollSpeed ?? 20;
-            const scrollSpeedValLabel = document.getElementById("labelBgScrollSpeedVal");
-            if(scrollSpeedValLabel) {
-                 const currentSpeed = preferences.bgScrollSpeed ?? 20;
-                 scrollSpeedValLabel.textContent = currentSpeed === 0 ? "0 (Disabled)" : currentSpeed;
-            }
-
-            // Preview Logic (Directly on Body)
-            const updatePreview = () => {
-                // Determine logic similar to webdesk.js apply() but with current form values
-                // We want to verify what the user sees IS what they will get.
-                
-                // 1. Determine "visual" mode for preview.
-                const selectedTheme = document.getElementById("selectTheme").value;
-                let isDark = false;
-                if (selectedTheme === 'dark') isDark = true;
-                else if (selectedTheme === 'light') isDark = false;
-                else {
-                    isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-                }
-                
-                // 2. Fetch all values
-                const bgColorLight = document.getElementById("inputBgColorLight").value;
-                const bgColorDark = document.getElementById("inputBgColorDark").value;
-                const pColorLight = document.getElementById("inputPatternColorLight").value;
-                const pColorDark = document.getElementById("inputPatternColorDark").value;
-                const patternName = patternSelect.value;
-                const opacity = parseFloat(document.getElementById("rangePatternOpacity").value);
-                const speed = parseInt(document.getElementById("rangeBgScrollSpeed").value);
-                
-                // 3. Apply themed variables for instant switch test
-                document.body.style.setProperty('--bg-color-light', bgColorLight);
-                document.body.style.setProperty('--bg-color-dark', bgColorDark);
-                
-                if (patternName !== 'none' && typeof generatePatternUri !== 'undefined') {
-                    const uriLight = generatePatternUri(patternName, pColorLight, opacity);
-                    const uriDark = generatePatternUri(patternName, pColorDark, opacity);
-                    
-                    if(uriLight) document.body.style.setProperty('--bg-image-light', `url("${uriLight}")`);
-                    if(uriDark) document.body.style.setProperty('--bg-image-dark', `url("${uriDark}")`);
-                    
-                    // Handle Speed in Preview
-                    const patternObj = bgPatterns.find(p => p.name === patternName);
-                    if (patternObj && patternObj.size) {
-                         document.body.style.setProperty('--bg-size', patternObj.size + 'px');
-                         if (speed > 0) {
-                             document.body.classList.remove("paused");
-                             const duration = patternObj.size / speed;
-                             document.body.style.setProperty('--bg-animate-duration', duration + 's');
-                         } else {
-                             document.body.classList.add("paused");
-                         }
-                    }
-                } else {
-                    document.body.style.setProperty('--bg-image-light', 'none');
-                    document.body.style.setProperty('--bg-image-dark', 'none');
-                }
-                
-                // Also update body classes to match selected theme for immediate text color feedback
-                document.body.classList.remove("light-mode", "dark-mode");
-                if (!isDark) { // Light
-                     document.body.classList.add("light-mode");
-                } else {
-                     document.body.classList.add("dark-mode");
-                }
-            };
-
-            // Listeners for UI interaction to trigger Live Preview
-            patternSelect.addEventListener("change", () => {
-                updatePatternVisibility();
-                updatePreview();
-            });
-
-            const rangeOpp = document.getElementById("rangePatternOpacity");
-            if(rangeOpp) {
-                rangeOpp.addEventListener("input", (e) => {
-                    if(opacityValLabel) opacityValLabel.textContent = e.target.value;
-                    updatePreview();
-                });
-            }
-
-            const rangeSpeed = document.getElementById("rangeBgScrollSpeed");
-            if(rangeSpeed) {
-                rangeSpeed.addEventListener("input", (e) => {
-                    const val = parseInt(e.target.value);
-                    if(scrollSpeedValLabel) scrollSpeedValLabel.textContent = val === 0 ? "0 (Disabled)" : val;
-                    updatePreview();
-                });
-            }
-            
-            // Color Inputs
-            ['inputBgColorLight', 'inputBgColorDark', 'inputPatternColorLight', 'inputPatternColorDark'].forEach(id => {
-                const el = document.getElementById(id);
-                if(el) el.addEventListener("input", updatePreview);
-            });
-            
-            // Theme Select
-            document.getElementById("selectTheme").addEventListener("change", updatePreview);
-            
-            // Initial Preview
             updatePreview();
+            saveAppearanceSettings();
+          });
+
+          // Pattern Opacity: Two-stage logic
+          const rangeOpp = document.getElementById("rangePatternOpacity");
+          if (rangeOpp) {
+            // On input (dragging): Update preview only (performance)
+            rangeOpp.addEventListener("input", (e) => {
+              if (opacityValLabel) opacityValLabel.textContent = e.target.value;
+              updatePreview();
+            });
+            // On change (released): Save to localStorage
+            rangeOpp.addEventListener("change", () => {
+              saveAppearanceSettings();
+            });
+          }
+
+          // Scroll Speed: Two-stage logic
+          const rangeSpeed = document.getElementById("rangeBgScrollSpeed");
+          if (rangeSpeed) {
+            // On input (dragging): Update preview only (performance)
+            rangeSpeed.addEventListener("input", (e) => {
+              const val = parseInt(e.target.value);
+              if (scrollSpeedValLabel)
+                scrollSpeedValLabel.textContent =
+                  val === 0 ? "0 (Disabled)" : val;
+              updatePreview();
+            });
+            // On change (released): Save to localStorage
+            rangeSpeed.addEventListener("change", () => {
+              saveAppearanceSettings();
+            });
+          }
+
+          // Color Inputs: Update preview on input, save on change
+          [
+            "inputBgColorLight",
+            "inputBgColorDark",
+            "inputPatternColorLight",
+            "inputPatternColorDark",
+          ].forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) {
+              el.addEventListener("input", updatePreview);
+              el.addEventListener("change", saveAppearanceSettings);
+            }
+          });
+
+          // Theme Select: Update preview + save immediately
+          const themeSelect = document.getElementById("selectTheme");
+          if (themeSelect) {
+            themeSelect.addEventListener("change", () => {
+              updatePreview();
+              saveAppearanceSettings();
+            });
+          }
+
+          // Full Width Toggle: Update preview + save immediately
+          const fullWidthCheck = document.getElementById("checkFullWidth");
+          if (fullWidthCheck) {
+            fullWidthCheck.addEventListener("change", () => {
+              updatePreview();
+              saveAppearanceSettings();
+            });
+          }
+
+          // Initial Preview
+          updatePreview();
         }
 
+        // The "Save" button provides manual confirmation and feedback
         const btnSaveAppearance = document.getElementById("btnSaveAppearance");
-        if(btnSaveAppearance) {
-            btnSaveAppearance.addEventListener("click", () => {
-                const { preferences } = getData();
-                
-                preferences.theme = document.getElementById("selectTheme").value;
-                preferences.fullWidth = document.getElementById("checkFullWidth").checked;
-                
-                preferences.bgPattern = document.getElementById("selectBgPattern").value;
-                preferences.patternOpacity = parseFloat(document.getElementById("rangePatternOpacity").value);
-                preferences.bgScrollSpeed = parseInt(document.getElementById("rangeBgScrollSpeed").value);
-
-                preferences.bgColorLight = document.getElementById("inputBgColorLight").value;
-                preferences.bgColorDark = document.getElementById("inputBgColorDark").value;
-                preferences.patternColorLight = document.getElementById("inputPatternColorLight").value;
-                preferences.patternColorDark = document.getElementById("inputPatternColorDark").value;
-                
-                // Cleanup old keys if they exist
-                delete preferences.bgColor;
-                delete preferences.patternColor;
-
-                saveData(PREFERENCES_KEY, preferences);
-                
-                // Cache the pattern for instant load
-                let isDark = document.body.classList.contains("dark-mode");
-                // If user specifically set a theme, stick to that logic
-                if (preferences.theme === 'light') isDark = false;
-                if (preferences.theme === 'dark') isDark = true;
-                
-                const bgColor = isDark ? preferences.bgColorDark : preferences.bgColorLight;
-                const pColor = isDark ? preferences.patternColorDark : preferences.patternColorLight;
-                const pName = preferences.bgPattern;
-                const pOpacity = preferences.patternOpacity;
-                
-                let uri = "";
-                if (pName && pName !== 'none' && typeof generatePatternUri !== 'undefined') {
-                     uri = generatePatternUri(pName, pColor || (isDark ? "#313131" : "#014669"), pOpacity || 0.2);
-                }
-                
-                // Use PreferencesManager (if available) or manual cache
-                localStorage.setItem("cachedBgPattern", uri || "");
-                localStorage.setItem("cachedBgColor", bgColor || (isDark ? "#131313" : "#016293"));
-
-                showAlert(I18n.t("alert_preferences_saved"), "success");
-                
-                // Reload to apply changes cleanly
-                setTimeout(() => location.reload(), 500);
-            });
+        if (btnSaveAppearance) {
+          btnSaveAppearance.addEventListener("click", () => {
+            // Settings are already saved via live listeners
+            // This button serves as confirmation/manual save trigger
+            saveAppearanceSettings();
+            showAlert(
+              I18n.t("alert_preferences_saved") || "Preferences saved!",
+              "success",
+            );
+          });
         }
 
         const btnExportEvents = document.getElementById("btnExportEvents");
@@ -1937,7 +2399,7 @@
             userLinks,
             userBirthdays,
             annualEvents,
-            preferences
+            preferences,
           } = getData();
           const exportData = {
             stats,
@@ -1965,18 +2427,18 @@
           a.click();
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
-          
+
           // Save Timestamp
           localStorage.setItem("lastBackupTime", new Date().toISOString());
           updateLastBackupText();
-          
+
           showAlert(I18n.t("alert_backup_exported"), "success");
         });
 
         document
           .getElementById("btnImport")
           .addEventListener("click", () =>
-            document.getElementById("fileInput").click()
+            document.getElementById("fileInput").click(),
           );
 
         document.getElementById("fileInput").addEventListener("change", (e) => {
