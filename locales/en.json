@@ -84,7 +84,7 @@
     "theme_summer": "☀️ Summer (Berry)",
     "theme_autumn": "🍂 Autumn (Orange)",
     "label_auto_season": "Change automatically based on current season",
-    "alert_settings_saved": "Settings saved successfully!"
+    "alert_settings_saved": "Settings saved successfully!",
     "text_backup_info": "Backup your stats, settings, birthdays, events, and links in a single file.",
     "btn_export": "Export Full Backup",
     "btn_import": "Import Full Backup",
