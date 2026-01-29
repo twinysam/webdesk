@@ -865,74 +865,78 @@
             </div>
 
             <!-- LIGHT MODE SETTINGS -->
-            <h6 class="text-white mt-3 border-bottom pb-1">Light Mode</h6>
-            <div class="row mb-3">
-              <div class="col-md-6 mb-3">
-                <label
-                  for="inputBgColorLight"
-                  class="form-label"
-                  data-i18n="label_bg_color_light"
-                  >Background Color (Light)</label
-                >
-                <input
-                  type="text"
-                  class="form-control bg-dark border-secondary"
-                  id="inputBgColorLight"
-                  value="#016293"
-                  data-coloris
-                />
-              </div>
+            <div id="lightModeSection">
+              <h6 class="text-white mt-3 border-bottom pb-1">Light Mode</h6>
+              <div class="row mb-3">
+                <div class="col-md-6 mb-3">
+                  <label
+                    for="inputBgColorLight"
+                    class="form-label"
+                    data-i18n="label_bg_color_light"
+                    >Background Color (Light)</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control bg-dark border-secondary"
+                    id="inputBgColorLight"
+                    value="#016293"
+                    data-coloris
+                  />
+                </div>
 
-              <div id="patternSettingsLight" class="col-md-6 mb-3">
-                <label
-                  for="inputPatternColorLight"
-                  class="form-label"
-                  data-i18n="label_pattern_color_light"
-                  >Pattern Color (Light)</label
-                >
-                <input
-                  type="text"
-                  class="form-control bg-dark border-secondary"
-                  id="inputPatternColorLight"
-                  value="#ffffff"
-                  data-coloris
-                />
+                <div id="patternSettingsLight" class="col-md-6 mb-3">
+                  <label
+                    for="inputPatternColorLight"
+                    class="form-label"
+                    data-i18n="label_pattern_color_light"
+                    >Pattern Color (Light)</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control bg-dark border-secondary"
+                    id="inputPatternColorLight"
+                    value="#ffffff"
+                    data-coloris
+                  />
+                </div>
               </div>
             </div>
 
             <!-- DARK MODE SETTINGS -->
-            <h6 class="text-white mt-3 border-bottom pb-1">Dark Mode</h6>
-            <div class="row mb-3">
-              <div class="col-md-6 mb-3">
-                <label
-                  for="inputBgColorDark"
-                  class="form-label"
-                  data-i18n="label_bg_color_dark"
-                  >Background Color (Dark)</label
-                >
-                <input
-                  type="text"
-                  class="form-control bg-dark border-secondary"
-                  id="inputBgColorDark"
-                  value="#131313"
-                  data-coloris
-                />
-              </div>
+            <div id="darkModeSection">
+              <h6 class="text-white mt-3 border-bottom pb-1">Dark Mode</h6>
+              <div class="row mb-3">
+                <div class="col-md-6 mb-3">
+                  <label
+                    for="inputBgColorDark"
+                    class="form-label"
+                    data-i18n="label_bg_color_dark"
+                    >Background Color (Dark)</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control bg-dark border-secondary"
+                    id="inputBgColorDark"
+                    value="#131313"
+                    data-coloris
+                  />
+                </div>
 
-              <div id="patternSettingsDark" class="col-md-6 mb-3">
-                <label
-                  for="inputPatternColorDark"
-                  class="form-label"
-                  data-i18n="label_pattern_color_dark"
-                  >Pattern Color (Dark)</label
-                >
-                <input
-                  type="text"
-                  class="form-control bg-dark border-secondary"
-                  id="inputPatternColorDark"
-                  value="#ffffff"
-                  data-coloris
-                />
+                <div id="patternSettingsDark" class="col-md-6 mb-3">
+                  <label
+                    for="inputPatternColorDark"
+                    class="form-label"
+                    data-i18n="label_pattern_color_dark"
+                    >Pattern Color (Dark)</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control bg-dark border-secondary"
+                    id="inputPatternColorDark"
+                    value="#ffffff"
+                    data-coloris
+                  />
+                </div>
               </div>
             </div>
 
@@ -2427,34 +2431,17 @@
                 window.matchMedia("(prefers-color-scheme: dark)").matches;
             }
 
-            // Find Light Mode section: h6 with text "Light Mode" and its following row
-            const allH6s = document.querySelectorAll("h6");
-            let lightModeH6 = null;
-            let darkModeH6 = null;
-
-            allH6s.forEach((h6) => {
-              if (h6.textContent.includes("Light Mode") && !lightModeH6) {
-                lightModeH6 = h6;
-              }
-              if (h6.textContent.includes("Dark Mode") && !darkModeH6) {
-                darkModeH6 = h6;
-              }
-            });
-
-            const lightModeRow = lightModeH6?.nextElementSibling;
-            const darkModeRow = darkModeH6?.nextElementSibling;
+            const lightModeSection =
+              document.getElementById("lightModeSection");
+            const darkModeSection = document.getElementById("darkModeSection");
 
             // Show/hide light mode section
-            if (lightModeH6)
-              lightModeH6.style.display = isDark ? "none" : "block";
-            if (lightModeRow)
-              lightModeRow.style.display = isDark ? "none" : "block";
+            if (lightModeSection)
+              lightModeSection.style.display = isDark ? "none" : "block";
 
             // Show/hide dark mode section
-            if (darkModeH6)
-              darkModeH6.style.display = isDark ? "block" : "none";
-            if (darkModeRow)
-              darkModeRow.style.display = isDark ? "block" : "none";
+            if (darkModeSection)
+              darkModeSection.style.display = isDark ? "block" : "none";
           };
           updateColorInputsForTheme();
 
