@@ -1732,8 +1732,6 @@
                 // We want to verify what the user sees IS what they will get.
                 
                 // 1. Determine "visual" mode for preview.
-                // If the user selected "Light" or "Dark" explicitly in Settings, show that.
-                // If "System", check system.
                 const selectedTheme = document.getElementById("selectTheme").value;
                 let isDark = false;
                 if (selectedTheme === 'dark') isDark = true;
@@ -1752,8 +1750,8 @@
                 document.body.style.backgroundColor = bgColor;
                 document.body.style.setProperty('--bg-color', bgColor); // Consistency
                 
-                if (patternName !== 'none' && typeof PreferencesManager !== 'undefined') {
-                    const uri = PreferencesManager.getPatternDataUri(patternName, pColor, opacity);
+                if (patternName !== 'none' && typeof generatePatternUri !== 'undefined') {
+                    const uri = generatePatternUri(patternName, pColor, opacity);
                     if(uri) {
                         document.body.style.backgroundImage = `url("${uri}")`;
                     } else {
@@ -1830,11 +1828,13 @@
                 const pOpacity = preferences.patternOpacity;
                 
                 let uri = "";
-                if (pName && pName !== 'none') {
-                     uri = PreferencesManager.getPatternDataUri(pName, pColor || (isDark ? "#313131" : "#014669"), pOpacity || 0.2);
+                if (pName && pName !== 'none' && typeof generatePatternUri !== 'undefined') {
+                     uri = generatePatternUri(pName, pColor || (isDark ? "#313131" : "#014669"), pOpacity || 0.2);
                 }
                 
-                PreferencesManager.cachePattern(uri, bgColor || (isDark ? "#131313" : "#016293"));
+                // Use PreferencesManager (if available) or manual cache
+                localStorage.setItem("cachedBgPattern", uri || "");
+                localStorage.setItem("cachedBgColor", bgColor || (isDark ? "#131313" : "#016293"));
 
                 showAlert(I18n.t("alert_preferences_saved"), "success");
                 

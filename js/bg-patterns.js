@@ -347,3 +347,44 @@ const bgPatterns = [{
             image: '<svg width="84" height="16" viewBox="0 0 84 16" xmlns="http://www.w3.org/2000/svg"><path d="M78 7V4h-2v3h-3v2h3v3h2V9h3V7h-3zM30 7V4h-2v3h-3v2h3v3h2V9h3V7h-3zM10 0h2v16h-2V0zm6 0h4v16h-4V0zM2 0h4v16H2V0zm50 0h2v16h-2V0zM38 0h2v16h-2V0zm28 0h2v16h-2V0zm-8 0h6v16h-6V0zM42 0h6v16h-6V0z" fill="#000" fill-rule="evenodd"/></svg>',
             download: './svg/wallpaper.zip'
     }];
+
+    /**
+ * Shared utility to generate a Data URI for an SVG pattern.
+ * Accessible by both index.html and settings.html.
+ */
+function generatePatternUri(patternName, color, opacity) {
+    // Safety check in case the array isn't loaded
+    if (typeof bgPatterns === 'undefined') return null;
+    
+    // Find the requested pattern object
+    const pattern = bgPatterns.find(p => p.name === patternName);
+    if (!pattern) return null;
+
+    let newImage = pattern.image;
+    if (!newImage) return null;
+
+    // 1. Replace Fill Color
+    // We look for the hardcoded fill="#000" and replace it with our dynamic color
+    // This allows the user's color picker to take effect instantly.
+    newImage = newImage.replace(/fill=["']#[a-fA-F0-9]{3,6}["']/g, `fill='${color}'`);
+    
+    // 2. Handle Opacity
+    // We inject or replace the fill-opacity attribute to control "subtlety"
+    if (newImage.includes("fill-opacity")) {
+         newImage = newImage.replace(/fill-opacity=["'][\d.]+["']/g, `fill-opacity='${opacity}'`);
+    } else {
+         newImage = newImage.replace('/>', ` fill-opacity='${opacity}' />`);
+    }
+
+    // 3. Encode for Data URI
+    // This cleans the string so it can be used safely in a CSS "url()"
+    const encoded = newImage
+        .replace(/"/g, "'")
+        .replace(/</g, "%3C")
+        .replace(/>/g, "%3E")
+        .replace(/&/g, "%26")
+        .replace(/#/g, "%23")
+        .replace(/\s+/g, " ");
+
+    return `data:image/svg+xml,${encoded}`;
+}
