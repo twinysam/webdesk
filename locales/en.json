@@ -77,6 +77,14 @@
     "text_onetime_sub": "Specific dates (e.g., Doctor appointment, Concert).",
     "label_event_name": "Event Name",
     "label_date": "Date",
+    "label_presets": "Color Theme Presets (Light Mode Only)",
+    "theme_custom": "Custom / Select Theme...",
+    "theme_winter": "❄️ Winter (Blue)",
+    "theme_spring": "🌸 Spring (Green)",
+    "theme_summer": "☀️ Summer (Berry)",
+    "theme_autumn": "🍂 Autumn (Orange)",
+    "label_auto_season": "Change automatically based on current season",
+    "alert_settings_saved": "Settings saved successfully!"
     "text_backup_info": "Backup your stats, settings, birthdays, events, and links in a single file.",
     "btn_export": "Export Full Backup",
     "btn_import": "Import Full Backup",
@@ -145,7 +153,7 @@
     "onboarding_happy_days": "Happy {days}th day!",
     "mobile_block_message": "WebDesk is a workspace meant to live as a pinned tab on your computer.<br><br>On phones/small tablets, most features don’t translate well, and the experience wouldn’t reflect how it’s meant to be used.<br><br>Please, open this page on your laptop or desktop to get the full experience.",
     "mobile_cta_share": "Send this link to my computer",
-    "disclaimer_patterns": "Patterns provided by <a href='https://heropatterns.com/' target='_blank' class='text-info'>Hero Patterns</a>."
+    "disclaimer_patterns": "Patterns stolen from <a href='https://heropatterns.com/' target='_blank' class='text-info'>Hero Patterns</a>."
   },
   "greetingRules": {
     "morningStart": 5,

@@ -821,19 +821,47 @@
               <label
                 for="presetThemeSelect"
                 class="form-label text-white"
+                data-i18n="label_presets"
                 >Color Theme Presets</label
               >
-              <select
-                id="presetThemeSelect"
-                class="form-select bg-dark text-white border-secondary"
-                style="max-width: 280px"
-              >
-                <option value="custom">Custom / Select Theme...</option>
-                <option value="winter">❄️ Winter (Blue)</option>
-                <option value="spring">🌿 Spring (Green)</option>
-                <option value="summer">☀️ Summer (Berry)</option>
-                <option value="autumn">🍂 Autumn (Orange)</option>
-              </select>
+              <div class="d-flex align-items-center gap-3">
+                <select
+                  id="presetThemeSelect"
+                  class="form-select bg-dark text-white border-secondary"
+                  style="flex: 1"
+                >
+                  <option value="custom" data-i18n="theme_custom">
+                    Custom / Select Theme...
+                  </option>
+                  <option value="winter" data-i18n="theme_winter">
+                    Winter
+                  </option>
+                  <option value="spring" data-i18n="theme_spring">
+                    Spring
+                  </option>
+                  <option value="summer" data-i18n="theme_summer">
+                    Summer
+                  </option>
+                  <option value="autumn" data-i18n="theme_autumn">
+                    Autumn
+                  </option>
+                </select>
+
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="autoSeasonToggle"
+                  />
+                  <label
+                    class="form-check-label text-light small"
+                    for="autoSeasonToggle"
+                    data-i18n="label_auto_season"
+                  >
+                    Change automatically based on current season
+                  </label>
+                </div>
+              </div>
             </div>
 
             <!-- LIGHT MODE SETTINGS -->
@@ -2065,6 +2093,40 @@
 
         function loadAppearanceManager() {
           const { preferences } = getData();
+          const autoToggle = document.getElementById("autoSeasonToggle");
+          const presetSelect = document.getElementById("presetThemeSelect");
+
+          let activePreset = presetSelect.value;
+
+          // If automatic mode is ON, calculate season from date-utils.js
+          if (autoToggle.checked) {
+            const currentSeasonData = DateUtils.getSeason(); // Returns { season: 'winter', ... }
+            // Note: date-utils returns 'fall', but our preset is 'autumn'
+            activePreset =
+              currentSeasonData.season === "fall"
+                ? "autumn"
+                : currentSeasonData.season;
+
+            // Visually update the (disabled) dropdown to show the current auto-detected season
+            presetSelect.value = activePreset;
+            presetSelect.disabled = true;
+          } else {
+            presetSelect.disabled = false;
+          }
+
+          // If a preset is active, update the color pickers to match the preset palette
+          if (activePreset !== "custom" && THEME_PRESETS[activePreset]) {
+            const preset = THEME_PRESETS[activePreset];
+            document.getElementById("inputBgColorLight").value = preset.bg;
+            document.getElementById("inputPatternColorLight").value =
+              preset.pattern;
+
+            // Update Coloris swatches visually
+            document.querySelectorAll(".clr-field").forEach((field) => {
+              const input = field.querySelector("input");
+              field.style.color = input.value;
+            });
+          }
 
           const THEME_PRESETS = {
             winter: { bg: "#016293", pattern: "#014669" },
@@ -2142,12 +2204,12 @@
           const opacityPercent = Math.round(
             (preferences.patternOpacity ?? 0.2) * 100,
           );
-          document.getElementById("rangePatternOpacity").value =
-            opacityPercent;
+          document.getElementById("rangePatternOpacity").value = opacityPercent;
           const opacityValLabel = document.getElementById(
             "labelPatternOpacityVal",
           );
-          if (opacityValLabel) opacityValLabel.textContent = opacityPercent + "%";
+          if (opacityValLabel)
+            opacityValLabel.textContent = opacityPercent + "%";
 
           document.getElementById("rangeBgScrollSpeed").value =
             preferences.bgScrollSpeed ?? 20;
@@ -2190,8 +2252,7 @@
             );
             const opacityDecimal = opacityRaw / 100;
 
-            if (opacityValLabel)
-              opacityValLabel.textContent = opacityRaw + "%";
+            if (opacityValLabel) opacityValLabel.textContent = opacityRaw + "%";
 
             const speed = parseInt(
               document.getElementById("rangeBgScrollSpeed").value,
@@ -2220,19 +2281,23 @@
               );
               document.body.style.setProperty(
                 "--bg-image-light",
-                `url("${generatePatternUri(
-                  patternName,
-                  document.getElementById("inputPatternColorLight").value,
-                  opacityDecimal,
-                ) || ""}")`,
+                `url("${
+                  generatePatternUri(
+                    patternName,
+                    document.getElementById("inputPatternColorLight").value,
+                    opacityDecimal,
+                  ) || ""
+                }")`,
               );
               document.body.style.setProperty(
                 "--bg-image-dark",
-                `url("${generatePatternUri(
-                  patternName,
-                  document.getElementById("inputPatternColorDark").value,
-                  opacityDecimal,
-                ) || ""}")`,
+                `url("${
+                  generatePatternUri(
+                    patternName,
+                    document.getElementById("inputPatternColorDark").value,
+                    opacityDecimal,
+                  ) || ""
+                }")`,
               );
             } else {
               document.body.style.setProperty("--bg-image-light", "none");
@@ -2366,8 +2431,33 @@
             document.getElementById("btnSaveAppearance");
           if (btnSaveAppearance) {
             btnSaveAppearance.addEventListener("click", () => {
+              // Ensure visual apply + autosave runs
               saveAppearanceSettings();
-              showAlert("Settings saved successfully!", "success");
+
+              // Also ensure specific preference keys are set as requested
+              const { preferences } = getData();
+              const patternSelect = document.getElementById("selectBgPattern");
+              preferences.bgPattern = patternSelect
+                ? patternSelect.value
+                : preferences.bgPattern;
+              preferences.bgColorLight =
+                document.getElementById("inputBgColorLight").value;
+              preferences.patternColorLight = document.getElementById(
+                "inputPatternColorLight",
+              ).value;
+
+              const presetSelect = document.getElementById("presetThemeSelect");
+              preferences.selectedPreset = presetSelect
+                ? presetSelect.value
+                : preferences.selectedPreset;
+              const autoToggle = document.getElementById("autoSeasonToggle");
+              preferences.autoSeason = autoToggle
+                ? autoToggle.checked
+                : preferences.autoSeason || false;
+
+              saveData(PREFERENCES_KEY, preferences);
+
+              showAlert(I18n.t("alert_settings_saved"), "success");
             });
           }
 
