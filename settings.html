@@ -21,7 +21,12 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@latest/font/bootstrap-icons.css"
     />
     <link rel="stylesheet" type="text/css" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css"
+    />
     <script src="js/bg-patterns.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js"></script>
     <script>
       (function () {
         const cachedBg = localStorage.getItem("cachedBgPattern");
@@ -811,10 +816,11 @@
                   >Background Color (Light)</label
                 >
                 <input
-                  type="color"
-                  class="form-control form-control-color bg-dark border-secondary"
+                  type="text"
+                  class="form-control bg-dark border-secondary"
                   id="inputBgColorLight"
                   value="#016293"
+                  data-coloris
                 />
               </div>
 
@@ -826,10 +832,11 @@
                   >Pattern Color (Light)</label
                 >
                 <input
-                  type="color"
-                  class="form-control form-control-color bg-dark border-secondary"
+                  type="text"
+                  class="form-control bg-dark border-secondary"
                   id="inputPatternColorLight"
                   value="#ffffff"
+                  data-coloris
                 />
               </div>
             </div>
@@ -845,10 +852,11 @@
                   >Background Color (Dark)</label
                 >
                 <input
-                  type="color"
-                  class="form-control form-control-color bg-dark border-secondary"
+                  type="text"
+                  class="form-control bg-dark border-secondary"
                   id="inputBgColorDark"
                   value="#131313"
+                  data-coloris
                 />
               </div>
 
@@ -860,10 +868,11 @@
                   >Pattern Color (Dark)</label
                 >
                 <input
-                  type="color"
-                  class="form-control form-control-color bg-dark border-secondary"
+                  type="text"
+                  class="form-control bg-dark border-secondary"
                   id="inputPatternColorDark"
                   value="#ffffff"
+                  data-coloris
                 />
               </div>
             </div>
@@ -1863,6 +1872,9 @@
 
       // --- INIT ---
       document.addEventListener("DOMContentLoaded", async () => {
+        if (typeof Coloris !== "undefined") {
+          Coloris({ alpha: false });
+        }
         loadProfile();
         loadAppManager();
         renderStats();
