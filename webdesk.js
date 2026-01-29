@@ -196,6 +196,14 @@ document.addEventListener("DOMContentLoaded", function () {
              const patternUri = PreferencesManager.getPatternDataUri(prefs.bgPattern, pColor, pOpacity);
              if (patternUri) {
                  body.style.setProperty('--bg-image', `url("${patternUri}")`);
+                 
+                 // Set background size for animation
+                 const patternObj = bgPatterns.find(p => p.name === prefs.bgPattern);
+                 if (patternObj && patternObj.size) {
+                     body.style.setProperty('--bg-size', patternObj.size + 'px');
+                 } else {
+                     body.style.removeProperty('--bg-size');
+                 }
              }
           } else if (prefs.bgPattern === 'none') {
              body.style.setProperty('--bg-image', 'none');

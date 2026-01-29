@@ -275,7 +275,8 @@ ul.columns {
     background-position: 0 0;
   }
   100% {
-    background-position: 224px -224px;
+    /* Loop exactly one tile size for seamless infinite scroll */
+    background-position: var(--bg-size, 56px) calc(var(--bg-size, 56px) * -1);
   }
 }
 
