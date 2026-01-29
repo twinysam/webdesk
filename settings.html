@@ -2427,33 +2427,28 @@
                 window.matchMedia("(prefers-color-scheme: dark)").matches;
             }
 
-            const bgColorInput = document.getElementById("inputBgColorLight");
-            const patternColorInput = document.getElementById(
-              "inputPatternColorLight",
+            // Find the section headers and row containers
+            const lightModeSection = document.querySelector(
+              "h6:has(+ .row:has(#inputBgColorLight))",
             );
-            const bgColorDarkInput =
-              document.getElementById("inputBgColorDark");
-            const patternColorDarkInput = document.getElementById(
-              "inputPatternColorDark",
+            const darkModeSection = document.querySelector(
+              "h6:has(+ .row:has(#inputBgColorDark))",
             );
 
-            // Show dark inputs, hide light inputs (or vice versa) for visual clarity
-            if (bgColorInput)
-              bgColorInput.parentElement.style.display = isDark
-                ? "none"
-                : "block";
-            if (patternColorInput)
-              patternColorInput.parentElement.style.display = isDark
-                ? "none"
-                : "block";
-            if (bgColorDarkInput)
-              bgColorDarkInput.parentElement.style.display = isDark
-                ? "block"
-                : "none";
-            if (patternColorDarkInput)
-              patternColorDarkInput.parentElement.style.display = isDark
-                ? "block"
-                : "none";
+            const lightModeRow = lightModeSection?.nextElementSibling;
+            const darkModeRow = darkModeSection?.nextElementSibling;
+
+            // Show/hide light mode section
+            if (lightModeSection)
+              lightModeSection.style.display = isDark ? "none" : "block";
+            if (lightModeRow)
+              lightModeRow.style.display = isDark ? "none" : "block";
+
+            // Show/hide dark mode section
+            if (darkModeSection)
+              darkModeSection.style.display = isDark ? "block" : "none";
+            if (darkModeRow)
+              darkModeRow.style.display = isDark ? "block" : "none";
           };
           updateColorInputsForTheme();
 
