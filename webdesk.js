@@ -184,31 +184,48 @@ document.addEventListener("DOMContentLoaded", function () {
           }
           
           // 6. Background Appearance
-          const bgColor = isDark ? (prefs.bgColorDark || "#131313") : (prefs.bgColorLight || "#016293");
-          const pColor = isDark ? (prefs.patternColorDark || "#313131") : (prefs.patternColorLight || "#014669");
+          const bgColorLight = prefs.bgColorLight || "#016293";
+          const bgColorDark = prefs.bgColorDark || "#131313";
+          const pColorLight = prefs.patternColorLight || "#014669";
+          const pColorDark = prefs.patternColorDark || "#313131";
+          const pOpacity = prefs.patternOpacity || 0.2;
           
-          // Apply BG Color
-          body.style.setProperty('--bg-color', bgColor);
+          // Apply BG Color Variables
+          body.style.setProperty('--bg-color-light', bgColorLight);
+          body.style.setProperty('--bg-color-dark', bgColorDark);
 
           // Apply BG Pattern
           if (prefs.bgPattern && prefs.bgPattern !== 'none') {
-             const pOpacity = prefs.patternOpacity || 0.2;
-             const patternUri = PreferencesManager.getPatternDataUri(prefs.bgPattern, pColor, pOpacity);
-             if (patternUri) {
-                 body.style.setProperty('--bg-image', `url("${patternUri}")`);
+             const uriLight = PreferencesManager.getPatternDataUri(prefs.bgPattern, pColorLight, pOpacity);
+             const uriDark = PreferencesManager.getPatternDataUri(prefs.bgPattern, pColorDark, pOpacity);
+             
+             if (uriLight) body.style.setProperty('--bg-image-light', `url("${uriLight}")`);
+             if (uriDark) body.style.setProperty('--bg-image-dark', `url("${uriDark}")`);
                  
-                 // Set background size for animation
-                 const patternObj = bgPatterns.find(p => p.name === prefs.bgPattern);
-                 if (patternObj && patternObj.size) {
-                     body.style.setProperty('--bg-size', patternObj.size + 'px');
+             // Set background size for animation (Size is intrinsic to pattern, same for both modes)
+             const patternObj = bgPatterns.find(p => p.name === prefs.bgPattern);
+             if (patternObj && patternObj.size) {
+                 body.style.setProperty('--bg-size', patternObj.size + 'px');
+                 
+                 // Calculate duration for constant speed
+                 const speed = prefs.bgScrollSpeed ?? 20; 
+                 if (speed > 0) {
+                     body.classList.remove("paused");
+                     const duration = patternObj.size / speed;
+                     body.style.setProperty('--bg-animate-duration', duration + 's');
                  } else {
-                     body.style.removeProperty('--bg-size');
+                     body.classList.add("paused");
                  }
+             } else {
+                 body.style.removeProperty('--bg-size');
+                 body.style.removeProperty('--bg-animate-duration');
              }
           } else if (prefs.bgPattern === 'none') {
-             body.style.setProperty('--bg-image', 'none');
+             body.style.setProperty('--bg-image-light', 'none');
+             body.style.setProperty('--bg-image-dark', 'none');
           } else {
-             body.style.removeProperty('--bg-image');
+             body.style.removeProperty('--bg-image-light');
+             body.style.removeProperty('--bg-image-dark');
           }
       },
 
@@ -374,7 +391,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     startAnimationControl: () => {
       const setAnim = (state) => {
-        if (state === "paused") document.body.classList.add("paused");
+        const prefs = PreferencesManager.getPreferences();
+        const speed = prefs.bgScrollSpeed ?? 20;
+        if (state === "paused" || speed === 0) document.body.classList.add("paused");
         else document.body.classList.remove("paused");
       };
       window.addEventListener("blur", () => setAnim("paused"));

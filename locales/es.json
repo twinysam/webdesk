@@ -125,6 +125,7 @@
     "label_pattern_color_dark": "Color del Patrón (Oscuro)",
     "label_bg_pattern": "Patrón de Fondo",
     "label_pattern_opacity": "Opacidad del Patrón",
+    "label_scroll_speed": "Velocidad de Movimiento",
     "value_none": "Ninguno",
     "text_theme_info": "Elige tu tema preferido.",
     "onboarding_welcome": "¡Hola!<br>¿Cómo te llamas?",

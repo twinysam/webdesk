@@ -125,6 +125,7 @@
     "label_pattern_color_dark": "Pattern Color (Dark)",
     "label_bg_pattern": "Background Pattern",
     "label_pattern_opacity": "Pattern Opacity",
+    "label_scroll_speed": "Scroll Speed",
     "value_none": "None",
     "text_theme_info": "Choose your preferred theme.",
     "onboarding_welcome": "Hi!<br>What's your name?",

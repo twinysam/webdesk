@@ -677,6 +677,13 @@
                          <span id="labelPatternOpacityVal">0.4</span>
                      </div>
                 </div>
+                <div class="mb-3">
+                     <label for="rangeBgScrollSpeed" class="form-label" data-i18n="label_scroll_speed">Scroll Speed</label>
+                     <div class="d-flex align-items-center">
+                         <input type="range" class="form-range flex-grow-1 me-2" id="rangeBgScrollSpeed" min="0" max="100" step="1" value="20">
+                         <span id="labelBgScrollSpeedVal">20</span>
+                     </div>
+                </div>
                 <button id="btnSaveAppearance" class="btn btn-primary">
                   <i class="bi bi-save"></i> <span data-i18n="btn_save_preferences">Save Preferences</span>
                 </button>
@@ -860,7 +867,8 @@
         bgColorDark: "#131313",
         patternColorLight: "#014669",
         patternColorDark: "#313131",
-        patternOpacity: 0.2
+        patternOpacity: 0.2,
+        bgScrollSpeed: 20
       };
 
       // Global Catalog Cache
@@ -1723,9 +1731,15 @@
             };
             updatePatternVisibility();
 
-            document.getElementById("rangePatternOpacity").value = preferences.patternOpacity || 0.2;
             const opacityValLabel = document.getElementById("labelPatternOpacityVal");
             if(opacityValLabel) opacityValLabel.textContent = preferences.patternOpacity || 0.2;
+
+            document.getElementById("rangeBgScrollSpeed").value = preferences.bgScrollSpeed ?? 20;
+            const scrollSpeedValLabel = document.getElementById("labelBgScrollSpeedVal");
+            if(scrollSpeedValLabel) {
+                 const currentSpeed = preferences.bgScrollSpeed ?? 20;
+                 scrollSpeedValLabel.textContent = currentSpeed === 0 ? "0 (Disabled)" : currentSpeed;
+            }
 
             // Preview Logic (Directly on Body)
             const updatePreview = () => {
@@ -1741,25 +1755,41 @@
                     isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
                 }
                 
-                // 2. Fetch appropriate colors
-                const bgColor = isDark ? document.getElementById("inputBgColorDark").value : document.getElementById("inputBgColorLight").value;
-                const pColor = isDark ? document.getElementById("inputPatternColorDark").value : document.getElementById("inputPatternColorLight").value;
+                // 2. Fetch all values
+                const bgColorLight = document.getElementById("inputBgColorLight").value;
+                const bgColorDark = document.getElementById("inputBgColorDark").value;
+                const pColorLight = document.getElementById("inputPatternColorLight").value;
+                const pColorDark = document.getElementById("inputPatternColorDark").value;
                 const patternName = patternSelect.value;
                 const opacity = parseFloat(document.getElementById("rangePatternOpacity").value);
+                const speed = parseInt(document.getElementById("rangeBgScrollSpeed").value);
                 
-                // 3. Apply to Body
-                document.body.style.backgroundColor = bgColor;
-                document.body.style.setProperty('--bg-color', bgColor); // Consistency
+                // 3. Apply themed variables for instant switch test
+                document.body.style.setProperty('--bg-color-light', bgColorLight);
+                document.body.style.setProperty('--bg-color-dark', bgColorDark);
                 
                 if (patternName !== 'none' && typeof generatePatternUri !== 'undefined') {
-                    const uri = generatePatternUri(patternName, pColor, opacity);
-                    if(uri) {
-                        document.body.style.backgroundImage = `url("${uri}")`;
-                    } else {
-                        document.body.style.backgroundImage = "none";
+                    const uriLight = generatePatternUri(patternName, pColorLight, opacity);
+                    const uriDark = generatePatternUri(patternName, pColorDark, opacity);
+                    
+                    if(uriLight) document.body.style.setProperty('--bg-image-light', `url("${uriLight}")`);
+                    if(uriDark) document.body.style.setProperty('--bg-image-dark', `url("${uriDark}")`);
+                    
+                    // Handle Speed in Preview
+                    const patternObj = bgPatterns.find(p => p.name === patternName);
+                    if (patternObj && patternObj.size) {
+                         document.body.style.setProperty('--bg-size', patternObj.size + 'px');
+                         if (speed > 0) {
+                             document.body.classList.remove("paused");
+                             const duration = patternObj.size / speed;
+                             document.body.style.setProperty('--bg-animate-duration', duration + 's');
+                         } else {
+                             document.body.classList.add("paused");
+                         }
                     }
                 } else {
-                    document.body.style.backgroundImage = "none";
+                    document.body.style.setProperty('--bg-image-light', 'none');
+                    document.body.style.setProperty('--bg-image-dark', 'none');
                 }
                 
                 // Also update body classes to match selected theme for immediate text color feedback
@@ -1784,6 +1814,15 @@
                     updatePreview();
                 });
             }
+
+            const rangeSpeed = document.getElementById("rangeBgScrollSpeed");
+            if(rangeSpeed) {
+                rangeSpeed.addEventListener("input", (e) => {
+                    const val = parseInt(e.target.value);
+                    if(scrollSpeedValLabel) scrollSpeedValLabel.textContent = val === 0 ? "0 (Disabled)" : val;
+                    updatePreview();
+                });
+            }
             
             // Color Inputs
             ['inputBgColorLight', 'inputBgColorDark', 'inputPatternColorLight', 'inputPatternColorDark'].forEach(id => {
@@ -1793,6 +1832,9 @@
             
             // Theme Select
             document.getElementById("selectTheme").addEventListener("change", updatePreview);
+            
+            // Initial Preview
+            updatePreview();
         }
 
         const btnSaveAppearance = document.getElementById("btnSaveAppearance");
@@ -1805,6 +1847,7 @@
                 
                 preferences.bgPattern = document.getElementById("selectBgPattern").value;
                 preferences.patternOpacity = parseFloat(document.getElementById("rangePatternOpacity").value);
+                preferences.bgScrollSpeed = parseInt(document.getElementById("rangeBgScrollSpeed").value);
 
                 preferences.bgColorLight = document.getElementById("inputBgColorLight").value;
                 preferences.bgColorDark = document.getElementById("inputBgColorDark").value;
