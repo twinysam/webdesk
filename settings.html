@@ -2413,6 +2413,7 @@
           const themeSelect = document.getElementById("selectTheme");
           if (themeSelect) {
             themeSelect.addEventListener("change", () => {
+              console.log("Theme changed to:", themeSelect.value);
               // Update color inputs to show active mode colors
               updateColorInputsForTheme();
               applyLiveBackground();
@@ -2435,13 +2436,30 @@
               document.getElementById("lightModeSection");
             const darkModeSection = document.getElementById("darkModeSection");
 
+            console.log("updateColorInputsForTheme called:", {
+              theme,
+              isDark,
+              lightModeSectionFound: !!lightModeSection,
+              darkModeSectionFound: !!darkModeSection,
+            });
+
             // Show/hide light mode section
-            if (lightModeSection)
+            if (lightModeSection) {
               lightModeSection.style.display = isDark ? "none" : "block";
+              console.log(
+                "Set lightModeSection display to:",
+                lightModeSection.style.display,
+              );
+            }
 
             // Show/hide dark mode section
-            if (darkModeSection)
+            if (darkModeSection) {
               darkModeSection.style.display = isDark ? "block" : "none";
+              console.log(
+                "Set darkModeSection display to:",
+                darkModeSection.style.display,
+              );
+            }
           };
 
           // Listen for changes to system prefers-color-scheme when theme is set to "system"
