@@ -2557,6 +2557,7 @@
 
           // Lazy-load bg-patterns.js when Appearance tab is shown
           let bgPatternsLoaded = typeof bgPatterns !== "undefined";
+          const appearanceTab = document.getElementById("appearance-tab");
           if (appearanceTab) {
             appearanceTab.addEventListener("shown.bs.tab", () => {
               if (bgPatternsLoaded) return;
