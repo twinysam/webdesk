@@ -1254,10 +1254,9 @@
       // Global Catalog Cache
       let fullCatalog = [];
 
-      // I18n Manager -> MOVED TO js/i18n.js
-      // (Using global I18nManager)
+      // Adapter for I18nManager (loaded globally from js/i18n.js)
       const I18n = {
-        t: (key) => I18nManager.getString(key), // Adapter for existing code
+        t: (key) => I18nManager.getString(key),
       };
 
       // Load Data

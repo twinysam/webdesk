@@ -1,18 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   if (window.isMobileBlocked) return;
-  // ==========================================================================
-  // MODULE: DateUtils
-  // Centralized date/time helpers and constants
-  // ==========================================================================
-  // ==========================================================================
-  // MODULE: DateUtils -> MOVED TO js/date-utils.js
-  // ==========================================================================
-  // (DateUtils is now global)
 
-  // ==========================================================================
-  // MODULE: I18nManager -> MOVED TO js/i18n.js
-  // ==========================================================================
-  // Extending I18nManager with time-based logic which depends on Moment (loaded here)
+  // Extend I18nManager with time-based greeting logic (depends on Day.js loaded here)
   if (window.I18nManager) {
     window.I18nManager.getGreetingTime = (m) => {
       const g = window.I18nManager.data.greetingRules || {}; // fallback
@@ -370,14 +359,6 @@ document.addEventListener("DOMContentLoaded", function () {
       };
       window.addEventListener("blur", () => setAnim("paused"));
       window.addEventListener("focus", () => setAnim("running"));
-
-      let resizeTimeout;
-      window.addEventListener("resize", () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-          // Resize logic removed as per user request
-        }, 100);
-      });
     },
 
     init: () => {
@@ -841,8 +822,6 @@ document.addEventListener("DOMContentLoaded", function () {
     },
 
     init: () => {
-      // (Handlebars removed)
-
       return Promise.all([
         fetch("items.json")
           .then((res) => res.json())

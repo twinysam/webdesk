@@ -63,10 +63,6 @@ window.OnboardingManager = {
        .catch(err => console.error("Error loading items.json:", err));
   },
 
-  // ... (inside renderApps loop) ...
-
-
-
   applyLang: () => {
     // Strings are now loaded directly into OnboardingManager.strings variable from fetch
     const txt = OnboardingManager.strings;
@@ -636,11 +632,8 @@ window.OnboardingManager = {
   },
 };
 
-// Auto-init logic moved to index.html or main loop
+// Initialize onboarding when DOM is ready (if profile is not set)
 document.addEventListener("DOMContentLoaded", () => {
-  // Only start if not importing or something?
-  // Actually, webdesk.js loads stats and things.
-  // We want this to run if profile is missing.
   if (window.isMobileBlocked) return;
   OnboardingManager.init();
 });
