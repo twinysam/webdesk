@@ -14,22 +14,25 @@ document.addEventListener("DOMContentLoaded", function () {
   // ==========================================================================
   // Extending I18nManager with time-based logic which depends on Moment (loaded here)
   if (window.I18nManager) {
-      window.I18nManager.getGreetingTime = (m) => {
-          const g = window.I18nManager.data.greetingRules || {}; // fallback
-          if (!m || !m.isValid()) return "generic";
-      
-          const currentHour = parseFloat(m.format("H"));
-      
-          if (currentHour >= g.morningStart && currentHour < g.morningEnd) {
-            return "morning";
-          } else if (currentHour >= g.afternoonStart && currentHour < g.eveningStart) {
-            return "afternoon";
-          } else if (currentHour >= g.eveningStart) {
-            return "evening";
-          } else {
-            return "generic";
-          }
-      };
+    window.I18nManager.getGreetingTime = (m) => {
+      const g = window.I18nManager.data.greetingRules || {}; // fallback
+      if (!m || !m.isValid()) return "generic";
+
+      const currentHour = parseFloat(m.format("H"));
+
+      if (currentHour >= g.morningStart && currentHour < g.morningEnd) {
+        return "morning";
+      } else if (
+        currentHour >= g.afternoonStart &&
+        currentHour < g.eveningStart
+      ) {
+        return "afternoon";
+      } else if (currentHour >= g.eveningStart) {
+        return "evening";
+      } else {
+        return "generic";
+      }
+    };
   }
 
   // ==========================================================================
@@ -69,134 +72,146 @@ document.addEventListener("DOMContentLoaded", function () {
   // Internal OS Preferences
   // ==========================================================================
   const PreferencesManager = {
-      STORAGE_KEY: "userPreferences",
+    STORAGE_KEY: "userPreferences",
 
-      getPreferences: () => JSON.parse(localStorage.getItem(PreferencesManager.STORAGE_KEY)) || {},
-      
-      // Helper for SVG Patterns
-      getPatternDataUri: (patternName, color, opacity) => {
-            if (typeof generatePatternUri === 'function') {
-                return generatePatternUri(patternName, color, opacity);
-            }
-            return null;
-      },
+    getPreferences: () =>
+      JSON.parse(localStorage.getItem(PreferencesManager.STORAGE_KEY)) || {},
 
-      cachePattern: (patternUri, bgColor) => {
-          localStorage.setItem("cachedBgPattern", patternUri || "");
-          localStorage.setItem("cachedBgColor", bgColor || "");
-      },
-
-      apply: () => {
-          const prefs = PreferencesManager.getPreferences();
-
-          
-          // 1. Evening Start Override
-          if (prefs.eveningStart !== null && prefs.eveningStart !== undefined) {
-              if (!I18nManager.data.greetingRules) I18nManager.data.greetingRules = {};
-              I18nManager.data.greetingRules.eveningStart = prefs.eveningStart;
-          }
-
-          // 2. Tree Toggle
-          const tree = document.querySelector(".tree");
-          if (tree) {
-             if (prefs.treeEnabled === false) {
-                 tree.classList.add("d-none");
-             } else {
-                 tree.classList.remove("d-none"); // Reset
-             }
-          }
-
-          // 3. Custom Late Late Show Greeting
-           if (prefs.customLateGreeting) {
-              if (!I18nManager.data.strings) I18nManager.data.strings = {};
-              I18nManager.data.strings["greeting_latelateshow"] = prefs.customLateGreeting;
-           }
-
-          // 4. Full Width
-          const caja = document.querySelector(".caja");
-          if (caja) {
-             if (prefs.fullWidth) {
-                 caja.classList.add("fullwidth");
-             } else {
-                 caja.classList.remove("fullwidth");
-             }
-          }
-
-          // 5. Theme & Mode Calculation
-          const theme = prefs.theme || "system";
-          const body = document.body;
-          
-          body.classList.remove("light-mode", "dark-mode");
-
-          let isDark = false;
-          if (theme === "light") {
-              body.classList.add("light-mode");
-              isDark = false;
-          } else if (theme === "dark") {
-              body.classList.add("dark-mode");
-              isDark = true;
-          } else {
-              // System
-              isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-          }
-          
-          // 6. Background Appearance
-          const bgColorLight = prefs.bgColorLight || "#016293";
-          const bgColorDark = prefs.bgColorDark || "#131313";
-          const pColorLight = prefs.patternColorLight || "#014669";
-          const pColorDark = prefs.patternColorDark || "#313131";
-          const pOpacity = prefs.patternOpacity || 0.2;
-          
-          // Apply BG Color Variables
-          body.style.setProperty('--bg-color-light', bgColorLight);
-          body.style.setProperty('--bg-color-dark', bgColorDark);
-
-          // Apply BG Pattern
-          if (prefs.bgPattern && prefs.bgPattern !== 'none') {
-             const uriLight = PreferencesManager.getPatternDataUri(prefs.bgPattern, pColorLight, pOpacity);
-             const uriDark = PreferencesManager.getPatternDataUri(prefs.bgPattern, pColorDark, pOpacity);
-             
-             if (uriLight) body.style.setProperty('--bg-image-light', `url("${uriLight}")`);
-             if (uriDark) body.style.setProperty('--bg-image-dark', `url("${uriDark}")`);
-                 
-             // Set background size for animation (Size is intrinsic to pattern, same for both modes)
-             const patternObj = bgPatterns.find(p => p.name === prefs.bgPattern);
-             if (patternObj && patternObj.size) {
-                 body.style.setProperty('--bg-size', patternObj.size + 'px');
-                 
-                 // Calculate duration for constant speed
-                 const speed = prefs.bgScrollSpeed ?? 20; 
-                 if (speed > 0) {
-                     body.classList.remove("paused");
-                     const duration = patternObj.size / speed;
-                     body.style.setProperty('--bg-animate-duration', duration + 's');
-                 } else {
-                     body.classList.add("paused");
-                 }
-             } else {
-                 body.style.removeProperty('--bg-size');
-                 body.style.removeProperty('--bg-animate-duration');
-             }
-          } else if (prefs.bgPattern === 'none') {
-             body.style.setProperty('--bg-image-light', 'none');
-             body.style.setProperty('--bg-image-dark', 'none');
-          } else {
-             body.style.removeProperty('--bg-image-light');
-             body.style.removeProperty('--bg-image-dark');
-          }
-      },
-
-      init: () => {
-          PreferencesManager.apply();
-          
-          // Listen for system theme changes if set to system
-          window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-              const prefs = PreferencesManager.getPreferences();
-              if (!prefs.theme || prefs.theme === 'system') {
-                  PreferencesManager.apply();
-              }
-          });
+    // Helper for SVG Patterns
+    getPatternDataUri: (patternName, color, opacity) => {
+      if (typeof generatePatternUri === "function") {
+        return generatePatternUri(patternName, color, opacity);
       }
+      return null;
+    },
+
+    cachePattern: (patternUri, bgColor) => {
+      localStorage.setItem("cachedBgPattern", patternUri || "");
+      localStorage.setItem("cachedBgColor", bgColor || "");
+    },
+
+    apply: () => {
+      const prefs = PreferencesManager.getPreferences();
+
+      // 1. Evening Start Override
+      if (prefs.eveningStart !== null && prefs.eveningStart !== undefined) {
+        if (!I18nManager.data.greetingRules)
+          I18nManager.data.greetingRules = {};
+        I18nManager.data.greetingRules.eveningStart = prefs.eveningStart;
+      }
+
+      // 2. Tree Toggle
+      const tree = document.querySelector(".tree");
+      if (tree) {
+        if (prefs.treeEnabled === false) {
+          tree.classList.add("d-none");
+        } else {
+          tree.classList.remove("d-none"); // Reset
+        }
+      }
+
+      // 3. Custom Late Late Show Greeting
+      if (prefs.customLateGreeting) {
+        if (!I18nManager.data.strings) I18nManager.data.strings = {};
+        I18nManager.data.strings["greeting_latelateshow"] =
+          prefs.customLateGreeting;
+      }
+
+      // 4. Full Width
+      const caja = document.querySelector(".caja");
+      if (caja) {
+        if (prefs.fullWidth) {
+          caja.classList.add("fullwidth");
+        } else {
+          caja.classList.remove("fullwidth");
+        }
+      }
+
+      // 5. Theme & Mode Calculation
+      const theme = prefs.theme || "system";
+      const body = document.body;
+
+      // 1. Reset Classes - Clean slate
+      body.classList.remove("light-mode", "dark-mode");
+
+      // Only force a class if explicitly set to light or dark
+      // If theme is 'system', let CSS media queries handle it
+      if (theme === "light") {
+        body.classList.add("light-mode");
+      } else if (theme === "dark") {
+        body.classList.add("dark-mode");
+      }
+      // No class added for 'system' mode - CSS media queries will handle theme switching
+
+      // 6. Background Appearance - Inject Dual Variables
+      // We define both light and dark variables so CSS media queries can swap instantly
+      const pColorLight = prefs.patternColorLight || "#014669";
+      const pColorDark = prefs.patternColorDark || "#313131";
+      const pOpacity = prefs.patternOpacity || 0.2;
+
+      // Set Colors - Both light and dark values always injected
+      body.style.setProperty(
+        "--bg-color-light",
+        prefs.bgColorLight || "#016293",
+      );
+      body.style.setProperty("--bg-color-dark", prefs.bgColorDark || "#131313");
+
+      // Set Patterns - Generate both URIs regardless of current mode
+      if (prefs.bgPattern && prefs.bgPattern !== "none") {
+        const uriLight =
+          typeof generatePatternUri === "function"
+            ? generatePatternUri(prefs.bgPattern, pColorLight, pOpacity)
+            : null;
+        const uriDark =
+          typeof generatePatternUri === "function"
+            ? generatePatternUri(prefs.bgPattern, pColorDark, pOpacity)
+            : null;
+
+        if (uriLight)
+          body.style.setProperty("--bg-image-light", `url("${uriLight}")`);
+        if (uriDark)
+          body.style.setProperty("--bg-image-dark", `url("${uriDark}")`);
+
+        // Set background size for animation (Size is intrinsic to pattern, same for both modes)
+        const patternObj = bgPatterns.find((p) => p.name === prefs.bgPattern);
+        if (patternObj && patternObj.size) {
+          body.style.setProperty("--bg-size", patternObj.size + "px");
+
+          // Calculate duration for constant speed
+          const speed = prefs.bgScrollSpeed ?? 20;
+          if (speed > 0) {
+            body.classList.remove("paused");
+            const duration = patternObj.size / speed;
+            body.style.setProperty("--bg-animate-duration", duration + "s");
+          } else {
+            body.classList.add("paused");
+          }
+        } else {
+          body.style.removeProperty("--bg-size");
+          body.style.removeProperty("--bg-animate-duration");
+        }
+      } else if (prefs.bgPattern === "none") {
+        body.style.setProperty("--bg-image-light", "none");
+        body.style.setProperty("--bg-image-dark", "none");
+      } else {
+        body.style.removeProperty("--bg-image-light");
+        body.style.removeProperty("--bg-image-dark");
+      }
+    },
+
+    init: () => {
+      PreferencesManager.apply();
+
+      // Listen for system theme changes if set to system
+      window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .addEventListener("change", () => {
+          const prefs = PreferencesManager.getPreferences();
+          if (!prefs.theme || prefs.theme === "system") {
+            PreferencesManager.apply();
+          }
+        });
+    },
   };
 
   // ==========================================================================
@@ -281,13 +296,13 @@ document.addEventListener("DOMContentLoaded", function () {
       if (time < 5) timeKey = "latelateshow"; // Late Late Show override
 
       const greetingText = t(`greeting_${timeKey}`, { name: name });
-      
-      // If the localized string already contains the name (checked by presence of {name} placeholder in source), 
+
+      // If the localized string already contains the name (checked by presence of {name} placeholder in source),
       // t() handles it if we passed params. If it's a standard greeting without placeholder, we append name.
       if (greetingText.includes(name)) {
-         message = greetingText;
+        message = greetingText;
       } else {
-         message = `${greetingText}, <span class="name-highlight">${name}</span>`;
+        message = `${greetingText}, <span class="name-highlight">${name}</span>`;
       }
 
       // 2. Overrides
@@ -323,10 +338,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const politeElem = document.getElementById("polite");
       if (politeElem) {
-          politeElem.innerHTML = message;
+        politeElem.innerHTML = message;
       }
     },
-
 
     updateVisuals: () => {
       // Xmas Class
@@ -350,18 +364,19 @@ document.addEventListener("DOMContentLoaded", function () {
       const setAnim = (state) => {
         const prefs = PreferencesManager.getPreferences();
         const speed = prefs.bgScrollSpeed ?? 20;
-        if (state === "paused" || speed === 0) document.body.classList.add("paused");
+        if (state === "paused" || speed === 0)
+          document.body.classList.add("paused");
         else document.body.classList.remove("paused");
       };
       window.addEventListener("blur", () => setAnim("paused"));
       window.addEventListener("focus", () => setAnim("running"));
-      
+
       let resizeTimeout;
       window.addEventListener("resize", () => {
-          clearTimeout(resizeTimeout);
-          resizeTimeout = setTimeout(() => {
-              // Resize logic removed as per user request
-          }, 100);
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          // Resize logic removed as per user request
+        }, 100);
       });
     },
 
@@ -388,26 +403,26 @@ document.addEventListener("DOMContentLoaded", function () {
     },
 
     getSpecialDayClass: (n) => {
-        if (n < 2000) return null; // Start checking from Day 2000 per user request
-        
-        // Priority 1: Orange for 1000s
-        if (n % 1000 === 0) return "special-day-orange";
-        
-        // Priority 2: Green for others
-        if (n % 100 === 0) return "special-day-green";
-        
-        const s = n.toString();
-        
-        // Repdigit (e.g. 2222, 33333)
-        if (/^(\d)\1+$/.test(s)) return "special-day-green";
-        
-        // Palindrome (e.g. 1221, 12321)
-        if (s === s.split('').reverse().join('')) return "special-day-green";
-        
-        // Consecutive (e.g. 1234, 23456)
-        if ("0123456789".includes(s)) return "special-day-green";
-        
-        return null;
+      if (n < 2000) return null; // Start checking from Day 2000 per user request
+
+      // Priority 1: Orange for 1000s
+      if (n % 1000 === 0) return "special-day-orange";
+
+      // Priority 2: Green for others
+      if (n % 100 === 0) return "special-day-green";
+
+      const s = n.toString();
+
+      // Repdigit (e.g. 2222, 33333)
+      if (/^(\d)\1+$/.test(s)) return "special-day-green";
+
+      // Palindrome (e.g. 1221, 12321)
+      if (s === s.split("").reverse().join("")) return "special-day-green";
+
+      // Consecutive (e.g. 1234, 23456)
+      if ("0123456789".includes(s)) return "special-day-green";
+
+      return null;
     },
 
     checkDailyEvents: () => {
@@ -428,35 +443,37 @@ document.addEventListener("DOMContentLoaded", function () {
           const t = (key) => I18nManager.getString(key);
           const tSafe = (key) => I18nManager.data.strings[key] || key; // Direct access helper
 
-
           // --- INTRO MESSAGE LOGIC ---
-          const hasIntroDate = localStorage.getItem('introDateShown');
+          const hasIntroDate = localStorage.getItem("introDateShown");
           let dayLabel = t("day");
           let showIntro = !hasIntroDate;
 
           // Check if user is "old" (has stats > 24h ago) to skip intro
           if (showIntro) {
-              const stats = StatsManager.getStats();
-              const hasOldActivity = Object.values(stats).some(s => 
-                  s.lastClick && dayjs(s.lastClick).isBefore(dayjs().subtract(24, 'hour'))
-              );
-              if (hasOldActivity) {
-                  showIntro = false;
-                  localStorage.setItem('introDateShown', 'true'); // Silently mark as shown
-              }
-          }
-          
-          if (showIntro && ProfileManager.isSetup()) {
-              dayLabel = t("day_intro");
-              localStorage.setItem('introDateShown', 'true');
+            const stats = StatsManager.getStats();
+            const hasOldActivity = Object.values(stats).some(
+              (s) =>
+                s.lastClick &&
+                dayjs(s.lastClick).isBefore(dayjs().subtract(24, "hour")),
+            );
+            if (hasOldActivity) {
+              showIntro = false;
+              localStorage.setItem("introDateShown", "true"); // Silently mark as shown
+            }
           }
 
+          if (showIntro && ProfileManager.isSetup()) {
+            dayLabel = t("day_intro");
+            localStorage.setItem("introDateShown", "true");
+          }
 
           // Calculate day count and check for special highlighting
           const daysInfo = DateUtils.getDaysSinceStart();
-          const dayCount = typeof daysInfo === 'number' ? daysInfo : daysInfo; // It is number
+          const dayCount = typeof daysInfo === "number" ? daysInfo : daysInfo; // It is number
           const specialClass = EventsManager.getSpecialDayClass(dayCount);
-          const dayCountHtml = specialClass ? `<span class="${specialClass}">${dayCount}</span>` : dayCount;
+          const dayCountHtml = specialClass
+            ? `<span class="${specialClass}">${dayCount}</span>`
+            : dayCount;
 
           let baseMsg = `${todayFull} - ${dayLabel} ${dayCountHtml}`;
 
@@ -495,7 +512,8 @@ document.addEventListener("DOMContentLoaded", function () {
           });
 
           // --- ANNUAL EVENTS (Treat as regular events for display) ---
-          const annualEvents = JSON.parse(localStorage.getItem("annualEvents")) || [];
+          const annualEvents =
+            JSON.parse(localStorage.getItem("annualEvents")) || [];
           annualEvents.forEach((e) => {
             const nameHtml = e.url
               ? `<a href="${e.url}" target="_blank"><span>${e.name}</span></a>`
@@ -535,7 +553,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
           const fechaEl = document.getElementById("fecha");
           if (fechaEl) {
-             fechaEl.innerHTML = baseMsg.trim();
+            fechaEl.innerHTML = baseMsg.trim();
           }
         })
         .catch((err) => console.error("Error loading events:", err));
@@ -557,54 +575,56 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Today
       if (hasCT) {
-         if (I18nManager.getLang() === 'en') {
-             // ENGLISH LOGIC: "[Name]'s birthday is today" / "[Names]'s birthdays are today"
-             const list = EventsManager.formatList(cumplesToday);
-             const isPlural = cumplesToday.length > 1;
-             const subject = isPlural ? "birthdays" : "birthday";
-             const verb = isPlural ? "are" : "is";
-             // e.g. "Spike's birthday is today" / "Carlos and Vivi's birthdays are today"
-             parts.push(`${list}'s ${subject} ${verb} ${t("today")}`);
-         } else {
-             // SPANISH / DEFAULT LOGIC
-             parts.push(
-               `${t("today")} ${t(
-                 cumplesToday.length > 1 ? "turns" : "isBirthday"
-               )} ${EventsManager.formatList(cumplesToday)}`
-             );
-         }
+        if (I18nManager.getLang() === "en") {
+          // ENGLISH LOGIC: "[Name]'s birthday is today" / "[Names]'s birthdays are today"
+          const list = EventsManager.formatList(cumplesToday);
+          const isPlural = cumplesToday.length > 1;
+          const subject = isPlural ? "birthdays" : "birthday";
+          const verb = isPlural ? "are" : "is";
+          // e.g. "Spike's birthday is today" / "Carlos and Vivi's birthdays are today"
+          parts.push(`${list}'s ${subject} ${verb} ${t("today")}`);
+        } else {
+          // SPANISH / DEFAULT LOGIC
+          parts.push(
+            `${t("today")} ${t(
+              cumplesToday.length > 1 ? "turns" : "isBirthday",
+            )} ${EventsManager.formatList(cumplesToday)}`,
+          );
+        }
       }
       if (hasET)
         parts.push(
           `${
             hasCT ? t("alsoToday") + " " : t("today") + ": "
-          }${EventsManager.formatList(eventsToday)}`
+          }${EventsManager.formatList(eventsToday)}`,
         );
 
       // Tomorrow
       if (hasCTM) {
-         if (I18nManager.getLang() === 'en') {
-             // ENGLISH LOGIC
-             const list = EventsManager.formatList(cumplesTomorrow);
-             const isPlural = cumplesTomorrow.length > 1;
-             const subject = isPlural ? "birthdays" : "birthday";
-             const verb = isPlural ? "are" : "is";
-             parts.push(`${list}'s ${subject} ${verb} ${t("today") === "Today" ? "tomorrow" : t("tomorrow")}`);
-             // Note: t("today") check is a hack if "tomorrow" key isn't strictly just "tomorrow". 
-             // Better: just hardcode "tomorrow" since this IS the English block.
-         } else {
-             parts.push(
-               `${t("tomorrow")} ${t(
-                 cumplesTomorrow.length > 1 ? "turns" : "isBirthday"
-               )} ${EventsManager.formatList(cumplesTomorrow)}`
-             );
-         }
+        if (I18nManager.getLang() === "en") {
+          // ENGLISH LOGIC
+          const list = EventsManager.formatList(cumplesTomorrow);
+          const isPlural = cumplesTomorrow.length > 1;
+          const subject = isPlural ? "birthdays" : "birthday";
+          const verb = isPlural ? "are" : "is";
+          parts.push(
+            `${list}'s ${subject} ${verb} ${t("today") === "Today" ? "tomorrow" : t("tomorrow")}`,
+          );
+          // Note: t("today") check is a hack if "tomorrow" key isn't strictly just "tomorrow".
+          // Better: just hardcode "tomorrow" since this IS the English block.
+        } else {
+          parts.push(
+            `${t("tomorrow")} ${t(
+              cumplesTomorrow.length > 1 ? "turns" : "isBirthday",
+            )} ${EventsManager.formatList(cumplesTomorrow)}`,
+          );
+        }
       }
       if (hasETM)
         parts.push(
           `${
             hasCTM ? t("alsoTomorrow") + " " : t("tomorrow") + ": "
-          }${EventsManager.formatList(eventsTomorrow)}`
+          }${EventsManager.formatList(eventsTomorrow)}`,
         );
 
       return parts.length > 0 ? parts.join(". ") + "." : "";
@@ -626,8 +646,8 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="input-group mb-3">
           <span class="input-group-text">${t("calcDate")}</span>
           <input type="date" class="form-control dias-calc-date" min="${calcMinDate}" max="${dayjs().format(
-        "YYYY-MM-DD"
-      )}">
+            "YYYY-MM-DD",
+          )}">
           <span class="ms-3 dias-calc-dia"></span>
         </div>
       `;
@@ -637,10 +657,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const hr = document.createElement("hr");
         const h2 = document.createElement("h2");
         h2.innerHTML = t("calcTitle");
-        
+
         const pDesc = document.createElement("p");
         pDesc.innerHTML = t("calcDescription");
-       // pDesc.className = "text-muted mb-3";
+        // pDesc.className = "text-muted mb-3";
 
         caja.appendChild(hr);
         caja.appendChild(h2);
@@ -655,9 +675,10 @@ document.addEventListener("DOMContentLoaded", function () {
         inputDias.addEventListener("input", () => {
           const days = parseInt(inputDias.value, 10);
           if (!isNaN(days) && days >= 0) {
-            resultDias.textContent = DateUtils.START_DATE
-              .add(days, "days")
-              .format("DD/MM/YYYY");
+            resultDias.textContent = DateUtils.START_DATE.add(
+              days,
+              "days",
+            ).format("DD/MM/YYYY");
           } else {
             resultDias.textContent = "";
           }
@@ -667,7 +688,7 @@ document.addEventListener("DOMContentLoaded", function () {
           if (inputFecha.value) {
             const days = dayjs(inputFecha.value, "YYYY-MM-DD").diff(
               DateUtils.START_DATE,
-              "days"
+              "days",
             );
             resultFecha.textContent = `${t("calcDay")} ${days}`;
           } else {
@@ -680,7 +701,7 @@ document.addEventListener("DOMContentLoaded", function () {
           if (val)
             inputFecha.setAttribute(
               "data-date",
-              dayjs(val).format("DD/MM/YYYY")
+              dayjs(val).format("DD/MM/YYYY"),
             );
           else inputFecha.removeAttribute("data-date");
         });
@@ -690,47 +711,50 @@ document.addEventListener("DOMContentLoaded", function () {
     init: () => {
       // Ensure START_DATE is correct before checking events
       const userBirthday = ProfileManager.getBirthday();
-      if (userBirthday)
-        DateUtils.START_DATE = dayjs(userBirthday);
+      if (userBirthday) DateUtils.START_DATE = dayjs(userBirthday);
 
       // Auto-Delete Logic
       const prefs = PreferencesManager.getPreferences();
       if (prefs.autoDeleteEvents !== false) {
-          EventsManager.cleanExpiredEvents();
+        EventsManager.cleanExpiredEvents();
       }
 
       EventsManager.checkDailyEvents();
     },
 
     cleanExpiredEvents: () => {
-       try {
-           const customEvents = JSON.parse(localStorage.getItem("customEvents")) || [];
-           if (customEvents.length === 0) return;
+      try {
+        const customEvents =
+          JSON.parse(localStorage.getItem("customEvents")) || [];
+        if (customEvents.length === 0) return;
 
-           // Clean events older than yesterday (allow today and tomorrow and yesterday? No, User said: "older than 24 hours (strictly speaking, older than "yesterday")")
-           // If today is 12th. 
-           // 12th - OK
-           // 11th - OK (Yesterday - Grace Period?) "built-in grace period of 24 hours"
-           // 10th - DELETE
-           
-           const yesterday = dayjs().subtract(1, 'day');
-           
-            // We keep event if date >= yesterday (in YYYY-MM-DD string comp works if format is ISO)
-            const filtered = customEvents.filter(e => {
-                const eDate = dayjs(e.date, "DD/MM/YYYY"); // e.date is DD/MM/YYYY
-                // isAfter or Same yesterday
-                return eDate.isSame(yesterday, 'day') || eDate.isAfter(yesterday, 'day');
-            });
+        // Clean events older than yesterday (allow today and tomorrow and yesterday? No, User said: "older than 24 hours (strictly speaking, older than "yesterday")")
+        // If today is 12th.
+        // 12th - OK
+        // 11th - OK (Yesterday - Grace Period?) "built-in grace period of 24 hours"
+        // 10th - DELETE
 
-           if (filtered.length !== customEvents.length) {
-               localStorage.setItem("customEvents", JSON.stringify(filtered));
-               console.log(`Auto cleaned ${customEvents.length - filtered.length} events.`);
-           }
-       } catch (err) {
-           console.error("Error cleaning events", err);
-       }
+        const yesterday = dayjs().subtract(1, "day");
+
+        // We keep event if date >= yesterday (in YYYY-MM-DD string comp works if format is ISO)
+        const filtered = customEvents.filter((e) => {
+          const eDate = dayjs(e.date, "DD/MM/YYYY"); // e.date is DD/MM/YYYY
+          // isAfter or Same yesterday
+          return (
+            eDate.isSame(yesterday, "day") || eDate.isAfter(yesterday, "day")
+          );
+        });
+
+        if (filtered.length !== customEvents.length) {
+          localStorage.setItem("customEvents", JSON.stringify(filtered));
+          console.log(
+            `Auto cleaned ${customEvents.length - filtered.length} events.`,
+          );
+        }
+      } catch (err) {
+        console.error("Error cleaning events", err);
+      }
     },
-
   };
 
   // ==========================================================================
@@ -743,7 +767,9 @@ document.addEventListener("DOMContentLoaded", function () {
     renderGrid: (userAppsItems) => {
       if (!userAppsItems || userAppsItems.length === 0) return;
 
-      const html = userAppsItems.map(item => `
+      const html = userAppsItems
+        .map(
+          (item) => `
         <div class="item">
           <a href="${item.url}"
              target="_blank"
@@ -752,7 +778,9 @@ document.addEventListener("DOMContentLoaded", function () {
              data-bs-placement="bottom"
              title="${item.title}">${item.name}</a>
         </div>
-      `).join('');
+      `,
+        )
+        .join("");
 
       const tempDiv = document.createElement("div");
       tempDiv.innerHTML = html;
@@ -789,8 +817,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const div = document.createElement("div");
       div.className = "links tv";
-      
-      div.innerHTML = items.map(item => `
+
+      div.innerHTML = items
+        .map(
+          (item) => `
         <div class="item">
           <a href="${item.url}"
              target="_blank"
@@ -799,7 +829,9 @@ document.addEventListener("DOMContentLoaded", function () {
              data-bs-placement="bottom"
              title="${item.title}">${item.name}</a>
         </div>
-      `).join('');
+      `,
+        )
+        .join("");
 
       const caja = document.querySelector(".caja");
       caja.appendChild(hr);
@@ -819,11 +851,9 @@ document.addEventListener("DOMContentLoaded", function () {
           .then((res) => res.json())
           .catch(() => []),
       ]).then(([appCatalog, tvCatalog]) => {
-
-
         const userApps = AppManager.getUserApps();
         const catalogMap = new Map(
-          [...appCatalog, ...tvCatalog].map((item) => [item.name, item])
+          [...appCatalog, ...tvCatalog].map((item) => [item.name, item]),
         );
 
         const hydratedApps = [];
@@ -872,7 +902,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         Array.from(
-          document.querySelectorAll('[data-bs-toggle="tooltip"]')
+          document.querySelectorAll('[data-bs-toggle="tooltip"]'),
         ).forEach((el) => new bootstrap.Tooltip(el));
 
         // EventsManager.initCalculator(); // Handled separately in startWebDesk based on prefs
@@ -932,50 +962,50 @@ document.addEventListener("DOMContentLoaded", function () {
   // First-time UX Enhancements
   // ==========================================================================
   const TooltipManager = {
-      init: () => {
-          // Check if already seen or not setup
-          if (localStorage.getItem("settingsTooltipSeen")) return;
-          
-          const icon = document.querySelector(".settings-icon");
-          if (!icon) return;
+    init: () => {
+      // Check if already seen or not setup
+      if (localStorage.getItem("settingsTooltipSeen")) return;
 
-          // Create Tooltip
-          const tooltip = document.createElement("div");
-          tooltip.className = "settings-tooltip";
-          const text = I18nManager.getString("custom_tooltip");
-          tooltip.innerHTML = `
+      const icon = document.querySelector(".settings-icon");
+      if (!icon) return;
+
+      // Create Tooltip
+      const tooltip = document.createElement("div");
+      tooltip.className = "settings-tooltip";
+      const text = I18nManager.getString("custom_tooltip");
+      tooltip.innerHTML = `
               <div class="tooltip-text">
                   ${text}
               </div>
               <button class="tooltip-close" aria-label="Close">×</button>
           `;
 
-          // Append
-          icon.appendChild(tooltip);
+      // Append
+      icon.appendChild(tooltip);
 
-          // Events
-          const close = () => {
-              tooltip.remove();
-              localStorage.setItem("settingsTooltipSeen", "true");
-          };
+      // Events
+      const close = () => {
+        tooltip.remove();
+        localStorage.setItem("settingsTooltipSeen", "true");
+      };
 
-          const closeBtn = tooltip.querySelector(".tooltip-close");
-          if (closeBtn) {
-              closeBtn.addEventListener("click", (e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  close();
-              });
-          }
-
-          // Also close if they actually click the link
-          const link = icon.querySelector("a");
-          if(link) {
-              link.addEventListener("click", () => {
-                  localStorage.setItem("settingsTooltipSeen", "true");
-              });
-          }
+      const closeBtn = tooltip.querySelector(".tooltip-close");
+      if (closeBtn) {
+        closeBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          close();
+        });
       }
+
+      // Also close if they actually click the link
+      const link = icon.querySelector("a");
+      if (link) {
+        link.addEventListener("click", () => {
+          localStorage.setItem("settingsTooltipSeen", "true");
+        });
+      }
+    },
   };
 
   // ==========================================================================
@@ -986,51 +1016,56 @@ document.addEventListener("DOMContentLoaded", function () {
   StatsManager.init();
 
   const startWebDesk = () => {
-      I18nManager.init().then(() => {
-          // Initialize other non-gating managers in parallel/early
-          EventsManager.init();
-          LinksManager.init();
+    I18nManager.init()
+      .then(() => {
+        // Initialize other non-gating managers in parallel/early
+        EventsManager.init();
+        LinksManager.init();
 
-          // Wait for Apps to be fetched and rendered
-          return AppManager.init();
-      }).then(() => {
-          // Once apps are ready, initialize visuals
-          GreetingManager.updateVisuals(); // Set tree image (starts load)
-          PreferencesManager.init();       // Apply prefs (might reveal tree container)
+        // Wait for Apps to be fetched and rendered
+        return AppManager.init();
+      })
+      .then(() => {
+        // Once apps are ready, initialize visuals
+        GreetingManager.updateVisuals(); // Set tree image (starts load)
+        PreferencesManager.init(); // Apply prefs (might reveal tree container)
 
-          // Life Calculator (Optional)
-          const prefs = PreferencesManager.getPreferences();
-          if (prefs.enableCalculator === true) {
-              EventsManager.initCalculator();
-          }
-          
-          GreetingManager.updateMessage();
-          GreetingManager.startAnimationControl();
-          setInterval(GreetingManager.updateMessage, 60000 * 5);
+        // Life Calculator (Optional)
+        const prefs = PreferencesManager.getPreferences();
+        if (prefs.enableCalculator === true) {
+          EventsManager.initCalculator();
+        }
 
-          TooltipManager.init();
+        GreetingManager.updateMessage();
+        GreetingManager.startAnimationControl();
+        setInterval(GreetingManager.updateMessage, 60000 * 5);
 
-          // Reveal Main Content
-          const caja = document.querySelector(".caja");
-          if(caja) caja.style.display = "";
+        TooltipManager.init();
+
+        // Reveal Main Content
+        const caja = document.querySelector(".caja");
+        if (caja) caja.style.display = "";
       });
   };
 
   if (ProfileManager.isSetup()) {
-      // Legacy Migration: Detect Once and Save if missing
-      const profile = ProfileManager.getProfile();
-      if (!profile.hemisphere) {
-          profile.hemisphere = DateUtils.detectHemisphere();
-          localStorage.setItem(ProfileManager.STORAGE_KEY, JSON.stringify(profile));
-          console.log("Migrated Legacy User: Hemisphere set to", profile.hemisphere);
-      }
-      startWebDesk();
+    // Legacy Migration: Detect Once and Save if missing
+    const profile = ProfileManager.getProfile();
+    if (!profile.hemisphere) {
+      profile.hemisphere = DateUtils.detectHemisphere();
+      localStorage.setItem(ProfileManager.STORAGE_KEY, JSON.stringify(profile));
+      console.log(
+        "Migrated Legacy User: Hemisphere set to",
+        profile.hemisphere,
+      );
+    }
+    startWebDesk();
   } else {
-      if (window.OnboardingManager) {
-          OnboardingManager.start();
-      } else {
-          console.error("OnboardingManager not found");
-          startWebDesk(); // Fallback
-      }
+    if (window.OnboardingManager) {
+      OnboardingManager.start();
+    } else {
+      console.error("OnboardingManager not found");
+      startWebDesk(); // Fallback
+    }
   }
 });
