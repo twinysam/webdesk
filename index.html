@@ -25,67 +25,46 @@
     <link rel="stylesheet" type="text/css" href="app-icons.css" />
     <link rel="stylesheet" type="text/css" href="tv-icons.css" />
     <link rel="stylesheet" type="text/css" href="onboarding.css" />
-    <script src="js/bg-patterns.js"></script>
     <script>
+      // IIFE to apply cached background pattern immediately (no bg-patterns.js needed)
       (function () {
-        // 1. Load the pattern engine and preferences immediately
-        // Note: This relies on bg-patterns.js being loaded in the head above this script
-        const prefs = JSON.parse(
-          localStorage.getItem("userPreferences") || "{}",
-        );
         const root = document.documentElement;
+        const prefs = JSON.parse(localStorage.getItem("userPreferences") || "{}");
 
-        // 2. Set Basic Colors (Light/Dark)
-        const lightColor = prefs.bgColorLight || "#016293";
-        const darkColor = prefs.bgColorDark || "#131313";
+        // 1. Apply background colors
+        const colorLight = localStorage.getItem("cachedBgColorLight") || prefs.bgColorLight || "#016293";
+        const colorDark = localStorage.getItem("cachedBgColorDark") || prefs.bgColorDark || "#131313";
+        root.style.setProperty("--bg-color-light", colorLight);
+        root.style.setProperty("--bg-color-dark", colorDark);
 
-        root.style.setProperty("--bg-color-light", lightColor);
-        root.style.setProperty("--bg-color-dark", darkColor);
+        // 2. Apply cached pattern images (generated and saved by Settings page)
+        const cachedLight = localStorage.getItem("cachedBgImageLight");
+        const cachedDark = localStorage.getItem("cachedBgImageDark");
+        const cachedSize = localStorage.getItem("cachedBgSize");
 
-        // 3. Generate and Set Patterns for both modes
-        const pName = prefs.bgPattern || "Endless Clouds";
-
-        // Only generate if we have a pattern and the generator function exists
-        if (pName !== "none" && typeof generatePatternUri === "function") {
-          const pOpacity = prefs.patternOpacity || 0.2;
-          const pColorLight = prefs.patternColorLight || "#014669";
-          const pColorDark = prefs.patternColorDark || "#313131";
-
-          const uriLight = generatePatternUri(pName, pColorLight, pOpacity);
-          const uriDark = generatePatternUri(pName, pColorDark, pOpacity);
-
-          if (uriLight)
-            root.style.setProperty("--bg-image-light", `url("${uriLight}")`);
-          if (uriDark)
-            root.style.setProperty("--bg-image-dark", `url("${uriDark}")`);
-
-          // Set Size and Animation Speed
-          // We need to find the size in the global bgPatterns array
-          if (typeof bgPatterns !== "undefined") {
-            const patternObj = bgPatterns.find((p) => p.name === pName);
-            if (patternObj && patternObj.size) {
-              root.style.setProperty("--bg-size", patternObj.size + "px");
-
-              const speed = prefs.bgScrollSpeed ?? 20;
-              if (speed > 0) {
-                const duration = patternObj.size / speed;
-                root.style.setProperty("--bg-animate-duration", duration + "s");
-              }
-            }
-          }
-        } else {
-          // Handle "None"
+        if (cachedLight && cachedLight !== "none") {
+          root.style.setProperty("--bg-image-light", `url("${cachedLight}")`);
+        } else if (cachedLight === "none" || prefs.bgPattern === "none") {
           root.style.setProperty("--bg-image-light", "none");
+        }
+
+        if (cachedDark && cachedDark !== "none") {
+          root.style.setProperty("--bg-image-dark", `url("${cachedDark}")`);
+        } else if (cachedDark === "none" || prefs.bgPattern === "none") {
           root.style.setProperty("--bg-image-dark", "none");
         }
 
-        // 4. Handle Theme Class (Force Light/Dark or leave empty for System)
-        const theme = prefs.theme || "system";
-        // Ensure we start clean
-        document.body
-          ? document.body.classList.remove("light-mode", "dark-mode")
-          : null;
+        // 3. Apply pattern size and animation speed
+        if (cachedSize) {
+          root.style.setProperty("--bg-size", cachedSize + "px");
+          const speed = prefs.bgScrollSpeed ?? 20;
+          if (speed > 0) {
+            root.style.setProperty("--bg-animate-duration", (parseInt(cachedSize) / speed) + "s");
+          }
+        }
 
+        // 4. Apply theme class
+        const theme = prefs.theme || "system";
         if (theme === "light") {
           root.classList.add("light-mode");
         } else if (theme === "dark") {

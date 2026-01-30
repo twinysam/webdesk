@@ -25,21 +25,31 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css"
     />
-    <script src="js/bg-patterns.js"></script>
+    <!-- bg-patterns.js is now lazy-loaded when Appearance tab is clicked -->
     <script src="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js"></script>
     <script>
+      // Apply cached background immediately for fast render
       (function () {
-        const cachedBg = localStorage.getItem("cachedBgPattern");
-        const cachedColor = localStorage.getItem("cachedBgColor");
-        if (cachedColor) {
-          document.write(
-            `<style>body { background-color: ${cachedColor}; --bg-color: ${cachedColor}; }</style>`,
-          );
+        const prefs = JSON.parse(localStorage.getItem("userPreferences") || "{}");
+        const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const theme = prefs.theme || "system";
+        const effectiveDark = theme === "dark" || (theme === "system" && isDark);
+
+        // Use cached colors
+        const bgColor = effectiveDark
+          ? (localStorage.getItem("cachedBgColorDark") || prefs.bgColorDark || "#131313")
+          : (localStorage.getItem("cachedBgColorLight") || prefs.bgColorLight || "#016293");
+
+        // Use cached pattern image
+        const bgImage = effectiveDark
+          ? localStorage.getItem("cachedBgImageDark")
+          : localStorage.getItem("cachedBgImageLight");
+
+        if (bgColor) {
+          document.write(`<style>body { background-color: ${bgColor}; }</style>`);
         }
-        if (cachedBg) {
-          document.write(
-            `<style>body { background-image: url("${cachedBg}"); --bg-image: url("${cachedBg}"); }</style>`,
-          );
+        if (bgImage && bgImage !== "none") {
+          document.write(`<style>body { background-image: url("${bgImage}"); }</style>`);
         }
       })();
     </script>
@@ -2169,17 +2179,22 @@
 
           // Patterns
           const patternSelect = document.getElementById("selectBgPattern");
-          // Keep "None" and append others
-          // Clear first to be safe if called multiple times
-          patternSelect.innerHTML = `<option value="none" data-i18n="value_none">${I18n.t("value_none") || "None"}</option>`;
-
-          if (typeof bgPatterns !== "undefined") {
+          
+          function populatePatterns() {
+            if (typeof bgPatterns === "undefined") return;
+            const currentVal = patternSelect.value;
+            patternSelect.innerHTML = `<option value="none" data-i18n="value_none">${I18n.t("value_none") || "None"}</option>`;
             bgPatterns.forEach((p) => {
               const opt = document.createElement("option");
               opt.value = p.name;
               opt.textContent = p.name;
               patternSelect.appendChild(opt);
             });
+            patternSelect.value = currentVal;
+          }
+
+          if (typeof bgPatterns !== "undefined") {
+            populatePatterns();
           }
 
           const currentPattern = preferences.bgPattern || "Endless Clouds";
@@ -2372,6 +2387,30 @@
             delete preferences.bgColor;
             delete preferences.patternColor;
             saveData(PREFERENCES_KEY, preferences);
+            
+            // Cache everything index.html needs to render without bg-patterns.js
+            const pOpacity = preferences.patternOpacity || 0.2;
+            const pColorLight = preferences.patternColorLight || "#014669";
+            const pColorDark = preferences.patternColorDark || "#313131";
+            
+            let uriLight = "none";
+            let uriDark = "none";
+            let pSize = "";
+
+            if (patternName && patternName !== "none" && typeof generatePatternUri !== "undefined") {
+              uriLight = generatePatternUri(patternName, pColorLight, pOpacity) || "none";
+              uriDark = generatePatternUri(patternName, pColorDark, pOpacity) || "none";
+              const pObj = bgPatterns.find(p => p.name === patternName);
+              if (pObj) pSize = pObj.size.toString();
+            }
+
+            localStorage.setItem("cachedBgImageLight", uriLight);
+            localStorage.setItem("cachedBgImageDark", uriDark);
+            localStorage.setItem("cachedBgSize", pSize);
+            localStorage.setItem("cachedBgColorLight", preferences.bgColorLight || "#016293");
+            localStorage.setItem("cachedBgColorDark", preferences.bgColorDark || "#131313");
+            
+            // Legacy keys for backward compatibility/other parts of the app
             localStorage.setItem("cachedBgPattern", uri || "");
             localStorage.setItem("cachedBgColor", bgColor || "");
           }
@@ -2515,6 +2554,25 @@
 
           applyLiveBackground();
           updateColorInputsForTheme();
+
+          // Lazy-load bg-patterns.js when Appearance tab is shown
+          let bgPatternsLoaded = typeof bgPatterns !== "undefined";
+          if (appearanceTab) {
+            appearanceTab.addEventListener("shown.bs.tab", () => {
+              if (bgPatternsLoaded) return;
+              const script = document.createElement("script");
+              script.src = "js/bg-patterns.js";
+              script.onload = () => {
+                bgPatternsLoaded = true;
+                populatePatterns();
+                // Refresh visuals with the generator function now available
+                if (patternSelect.value !== "none") {
+                  applyLiveBackground();
+                }
+              };
+              document.head.appendChild(script);
+            });
+          }
         }
 
         const btnExportEvents = document.getElementById("btnExportEvents");
