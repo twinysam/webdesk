@@ -1256,7 +1256,7 @@
         patternColorLight: "#014669",
         patternColorDark: "#313131",
         patternOpacity: 0.2,
-        bgScrollSpeed: 20,
+        bgScrollSpeed: 10,
         selectedPreset: "winter", // Color theme preset
         autoSeason: false, // Auto-detect season for theme
       };
@@ -2232,12 +2232,12 @@
             opacityValLabel.textContent = opacityPercent + "%";
 
           document.getElementById("rangeBgScrollSpeed").value =
-            preferences.bgScrollSpeed ?? 20;
+            preferences.bgScrollSpeed ?? 10;
           const scrollSpeedValLabel = document.getElementById(
             "labelBgScrollSpeedVal",
           );
           if (scrollSpeedValLabel) {
-            const currentSpeed = preferences.bgScrollSpeed ?? 20;
+            const currentSpeed = preferences.bgScrollSpeed ?? 10;
             scrollSpeedValLabel.textContent =
               currentSpeed === 0 ? "0 (Disabled)" : currentSpeed;
           }
@@ -2334,29 +2334,48 @@
                   ) || ""
                 }")`,
               );
+            } else if (patternName === "none") {
+              document.body.style.setProperty("--bg-image-light", "none");
+              document.body.style.setProperty("--bg-image-dark", "none");
+            } else if (patternName === "Endless Clouds") {
+              // If it's the default pattern but generator is missing, do NOT clear it.
+              // We'll let the hardcoded URL in style.css take over.
+              // Note: We don't explicitly set it to none, we just don't override the CSS default vars if we can't generate.
+              // However, since we might have set them previously, we'll only do nothing if they are already at default.
+              // Actually, to be safe, if generator is missing, we just don't touch --bg-image-light/dark
             } else {
+              // Any other pattern that requires generator? Clear it so it's not confusing.
               document.body.style.setProperty("--bg-image-light", "none");
               document.body.style.setProperty("--bg-image-dark", "none");
             }
 
-            document.body.style.backgroundImage = uri
-              ? `url("${uri}")`
-              : "none";
+            if (uri) {
+              document.body.style.backgroundImage = `url("${uri}")`;
+            } else if (patternName === "none") {
+              document.body.style.backgroundImage = "none";
+            } else if (patternName === "Endless Clouds") {
+              // Let style.css handle it if we can't generate it yet
+              document.body.style.removeProperty("background-image");
+            }
+
             document.body.style.backgroundColor = bgColor;
 
             const patternObj =
               typeof bgPatterns !== "undefined" &&
               bgPatterns.find((p) => p.name === patternName);
-            if (patternObj && patternObj.size) {
+            let activeSize = patternObj ? patternObj.size : null;
+            if (!activeSize && (patternName === "Endless Clouds" || !patternName)) activeSize = 56;
+
+            if (activeSize) {
               document.body.style.setProperty(
                 "--bg-size",
-                patternObj.size + "px",
+                activeSize + "px",
               );
               if (speed > 0) {
                 document.body.classList.remove("paused");
                 document.body.style.setProperty(
                   "--bg-animate-duration",
-                  patternObj.size / speed + "s",
+                  activeSize / speed + "s",
                 );
               } else {
                 document.body.classList.add("paused");

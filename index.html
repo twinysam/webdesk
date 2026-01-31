@@ -55,11 +55,12 @@
         }
 
         // 3. Apply pattern size and animation speed
-        if (cachedSize) {
-          root.style.setProperty("--bg-size", cachedSize + "px");
-          const speed = prefs.bgScrollSpeed ?? 20;
+        const patternSize = cachedSize || 56; // Default to 56 for Endless Clouds
+        if (patternSize) {
+          root.style.setProperty("--bg-size", patternSize + "px");
+          const speed = prefs.bgScrollSpeed ?? 10;
           if (speed > 0) {
-            root.style.setProperty("--bg-animate-duration", (parseInt(cachedSize) / speed) + "s");
+            root.style.setProperty("--bg-animate-duration", (parseInt(patternSize) / speed) + "s");
           }
         }
 

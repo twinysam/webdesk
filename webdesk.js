@@ -63,8 +63,16 @@ document.addEventListener("DOMContentLoaded", function () {
   const PreferencesManager = {
     STORAGE_KEY: "userPreferences",
 
-    getPreferences: () =>
-      JSON.parse(localStorage.getItem(PreferencesManager.STORAGE_KEY)) || {},
+    getPreferences: () => {
+      const prefs = JSON.parse(localStorage.getItem(PreferencesManager.STORAGE_KEY)) || {};
+      return {
+        bgPattern: "Endless Clouds",
+        bgScrollSpeed: 10,
+        patternOpacity: 0.2,
+        theme: "system",
+        ...prefs
+      };
+    },
 
     // Helper for SVG Patterns
     getPatternDataUri: (patternName, color, opacity) => {
@@ -181,9 +189,10 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       // Calculate duration for constant speed
-      const currentSize = cachedSize || (typeof bgPatterns !== "undefined" ? bgPatterns.find((p) => p.name === prefs.bgPattern)?.size : null);
+      let currentSize = cachedSize || (typeof bgPatterns !== "undefined" ? bgPatterns.find((p) => p.name === prefs.bgPattern)?.size : null);
+      if (!currentSize && (prefs.bgPattern === "Endless Clouds" || !prefs.bgPattern)) currentSize = 56;
       if (currentSize) {
-        const speed = prefs.bgScrollSpeed ?? 20;
+        const speed = prefs.bgScrollSpeed ?? 10;
         if (speed > 0) {
           body.classList.remove("paused");
           body.style.setProperty(
@@ -363,7 +372,7 @@ document.addEventListener("DOMContentLoaded", function () {
     startAnimationControl: () => {
       const setAnim = (state) => {
         const prefs = PreferencesManager.getPreferences();
-        const speed = prefs.bgScrollSpeed ?? 20;
+        const speed = prefs.bgScrollSpeed ?? 10;
         if (state === "paused" || speed === 0)
           document.body.classList.add("paused");
         else document.body.classList.remove("paused");
