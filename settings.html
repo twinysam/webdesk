@@ -812,6 +812,7 @@
                 class="form-select bg-dark text-white border-secondary"
               >
                 <option value="none" data-i18n="value_none">None</option>
+                <option value="Endless Clouds">Endless Clouds</option>
               </select>
               <small
                 class="text-secondary mt-1 d-block"
@@ -2190,7 +2191,8 @@
               opt.textContent = p.name;
               patternSelect.appendChild(opt);
             });
-            patternSelect.value = currentVal;
+            patternSelect.value = currentVal || preferences.bgPattern || "Endless Clouds";
+            console.log("[Patterns] Populated list. Restored value:", patternSelect.value);
           }
 
           if (typeof bgPatterns !== "undefined") {
@@ -2199,6 +2201,7 @@
 
           const currentPattern = preferences.bgPattern || "Endless Clouds";
           patternSelect.value = currentPattern;
+          console.log("[Patterns] Initialized with:", currentPattern, "Actual value:", patternSelect.value);
 
           // Pattern Settings visibility
           const patternSettingsLight = document.getElementById(
@@ -2583,10 +2586,12 @@
               const script = document.createElement("script");
               script.src = "js/bg-patterns.js";
               script.onload = () => {
+                console.log("[Patterns] script loaded.");
                 bgPatternsLoaded = true;
                 populatePatterns();
                 // Refresh visuals with the generator function now available
                 if (patternSelect.value !== "none") {
+                  console.log("[Patterns] Refreshing visuals after lazy load.");
                   applyLiveBackground();
                 }
               };
