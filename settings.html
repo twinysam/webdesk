@@ -2201,6 +2201,16 @@
           }
 
           const currentPattern = preferences.bgPattern || "Endless Clouds";
+          
+          // Temporary Option Guard: If the saved pattern is missing (e.g., because bg-patterns.js hasn't loaded),
+          // add it as a temporary option so the dropdown can correctly reflect the stored state.
+          if (currentPattern && currentPattern !== "none" && ![...patternSelect.options].some(opt => opt.value === currentPattern)) {
+            const tempOpt = document.createElement("option");
+            tempOpt.value = currentPattern;
+            tempOpt.textContent = currentPattern;
+            patternSelect.appendChild(tempOpt);
+          }
+
           patternSelect.value = currentPattern;
           console.log('Dropdown Value after setting:', patternSelect.value);
           console.log("[Patterns] Initialized with:", currentPattern, "Actual value:", patternSelect.value);
