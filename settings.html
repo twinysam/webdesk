@@ -2384,20 +2384,20 @@
               typeof bgPatterns !== "undefined" &&
               bgPatterns.find((p) => p.name === patternName);
             let activeSize = patternObj ? patternObj.size : null;
-            if (!activeSize && (patternName === "Endless Clouds" || !patternName)) activeSize = 56;
 
-            console.log('Calculating speed for:', patternName, 'Size:', activeSize, 'Speed:', speed);
+            console.log('Background Physics:', activeSize ? 'Precise' : 'Estimated', 'Size:', activeSize || 100, 'Speed:', speed);
 
-            if (activeSize) {
+            if (activeSize || (patternName !== "none" && patternName)) {
+              const sizeForDuration = activeSize || 100;
               document.body.style.setProperty(
                 "--bg-size",
-                activeSize + "px",
+                sizeForDuration + "px",
               );
               if (speed > 0) {
                 document.body.classList.remove("paused");
                 document.body.style.setProperty(
                   "--bg-animate-duration",
-                  activeSize / speed + "s",
+                  sizeForDuration / speed + "s",
                 );
               } else {
                 document.body.classList.add("paused");
@@ -2608,24 +2608,33 @@
           applyLiveBackground(true); // Initial load: skip save
           updateColorInputsForTheme();
 
-          // Lazy-load bg-patterns.js when Appearance tab is shown
+          // Manage Pattern Library Loading
           let bgPatternsLoaded = typeof bgPatterns !== "undefined";
+          const loadPatternsScript = () => {
+            if (bgPatternsLoaded) return;
+            bgPatternsLoaded = true; // Mark as loading to avoid duplicate triggers
+            const script = document.createElement("script");
+            script.src = "js/bg-patterns.js";
+            script.onload = () => {
+              console.log("[Patterns] script loaded.");
+              populatePatterns(preferences.bgPattern); // Explicitly restore
+              // Refresh visuals with the generator function now available
+              console.log("[Patterns] Refreshing visuals and recalculating speed after script load.");
+              applyLiveBackground(true); // Refresh preview: skip save
+            };
+            document.head.appendChild(script);
+          };
+
+          // Lazy-load when Appearance tab is shown (original behavior)
           const appearanceTab = document.getElementById("appearance-tab");
           if (appearanceTab) {
-            appearanceTab.addEventListener("shown.bs.tab", () => {
-              if (bgPatternsLoaded) return;
-              const script = document.createElement("script");
-              script.src = "js/bg-patterns.js";
-              script.onload = () => {
-                console.log("[Patterns] script loaded.");
-                bgPatternsLoaded = true;
-                populatePatterns(preferences.bgPattern); // Explicitly restore
-                // Refresh visuals with the generator function now available
-                console.log("[Patterns] Refreshing visuals and recalculating speed after lazy load.");
-                applyLiveBackground(true); // Refresh preview and recalculate speed: skip save
-              };
-              document.head.appendChild(script);
-            });
+            appearanceTab.addEventListener("shown.bs.tab", loadPatternsScript);
+          }
+
+          // Eager-load if we have an active pattern (new optimization)
+          if (preferences.bgPattern && preferences.bgPattern !== "none") {
+            console.log("[Patterns] Active pattern detected. Initiating conditional eager load.");
+            loadPatternsScript();
           }
         }
 

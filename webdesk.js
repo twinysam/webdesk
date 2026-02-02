@@ -179,28 +179,24 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       // Set background size for animation
-      if (cachedSize) {
-        body.style.setProperty("--bg-size", cachedSize + "px");
-      } else if (typeof bgPatterns !== "undefined") {
-        const patternObj = bgPatterns.find((p) => p.name === prefs.bgPattern);
-        if (patternObj && patternObj.size) {
-          body.style.setProperty("--bg-size", patternObj.size + "px");
-        }
-      }
-
-      // Calculate duration for constant speed
       let currentSize = cachedSize || (typeof bgPatterns !== "undefined" ? bgPatterns.find((p) => p.name === prefs.bgPattern)?.size : null);
-      if (!currentSize && (prefs.bgPattern === "Endless Clouds" || !prefs.bgPattern)) currentSize = 56;
-      if (currentSize) {
-        const speed = prefs.bgScrollSpeed ?? 10;
+      
+      const speed = prefs.bgScrollSpeed ?? 10;
+      console.log('Background Physics:', currentSize ? 'Precise' : 'Estimated', 'Size:', currentSize || 100, 'Speed:', speed);
+
+      if (currentSize || prefs.bgPattern !== "none") {
+        const activeSize = currentSize || 100;
+        body.style.setProperty("--bg-size", activeSize + "px");
+
         if (speed > 0) {
           body.classList.remove("paused");
           body.style.setProperty(
             "--bg-animate-duration",
-            currentSize / speed + "s",
+            activeSize / speed + "s",
           );
         } else {
           body.classList.add("paused");
+          body.style.removeProperty("--bg-animate-duration");
         }
       } else {
         body.style.removeProperty("--bg-size");
