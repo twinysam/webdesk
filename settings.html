@@ -2109,6 +2109,7 @@
 
         function loadAppearanceManager() {
           const { preferences } = getData();
+          console.log('Loaded Pattern from Storage:', preferences.bgPattern);
           const autoToggle = document.getElementById("autoSeasonToggle");
           const presetSelect = document.getElementById("presetThemeSelect");
 
@@ -2181,9 +2182,9 @@
           // Patterns
           const patternSelect = document.getElementById("selectBgPattern");
           
-          function populatePatterns() {
+          function populatePatterns(preferedValue) {
             if (typeof bgPatterns === "undefined") return;
-            const currentVal = patternSelect.value;
+            const currentVal = preferedValue || patternSelect.value || preferences.bgPattern;
             patternSelect.innerHTML = `<option value="none" data-i18n="value_none">${I18n.t("value_none") || "None"}</option>`;
             bgPatterns.forEach((p) => {
               const opt = document.createElement("option");
@@ -2191,7 +2192,7 @@
               opt.textContent = p.name;
               patternSelect.appendChild(opt);
             });
-            patternSelect.value = currentVal || preferences.bgPattern || "Endless Clouds";
+            patternSelect.value = currentVal || "Endless Clouds";
             console.log("[Patterns] Populated list. Restored value:", patternSelect.value);
           }
 
@@ -2201,6 +2202,7 @@
 
           const currentPattern = preferences.bgPattern || "Endless Clouds";
           patternSelect.value = currentPattern;
+          console.log('Dropdown Value after setting:', patternSelect.value);
           console.log("[Patterns] Initialized with:", currentPattern, "Actual value:", patternSelect.value);
 
           // Pattern Settings visibility
@@ -2261,7 +2263,7 @@
           }
 
           // Live preview + instant autosave: read form, apply to body, persist preferences and cache
-          function applyLiveBackground() {
+          function applyLiveBackground(skipSave = false) {
             const theme = document.getElementById("selectTheme").value;
             let isDark = false;
             if (theme === "dark") isDark = true;
@@ -2284,6 +2286,10 @@
               document.getElementById(activePatternColorId).value;
 
             const patternName = patternSelect.value;
+
+            if (!skipSave) {
+              console.log('Saving Pattern:', patternName);
+            }
             const opacityRaw = parseInt(
               document.getElementById("rangePatternOpacity").value,
               10,
@@ -2408,6 +2414,14 @@
             ).value;
             delete preferences.bgColor;
             delete preferences.patternColor;
+
+            // Safety check: Don't overwrite if dropdown is empty but storage has a pattern
+            if (!patternName && preferences.bgPattern) {
+              console.warn('[Patterns] Blocking save: Dropdown is empty but storage has a pattern preference.');
+              return;
+            }
+
+            if (skipSave) return;
             saveData(PREFERENCES_KEY, preferences);
             
             // Cache everything index.html needs to render without bg-patterns.js
@@ -2574,7 +2588,7 @@
             });
           }
 
-          applyLiveBackground();
+          applyLiveBackground(true); // Initial load: skip save
           updateColorInputsForTheme();
 
           // Lazy-load bg-patterns.js when Appearance tab is shown
@@ -2588,11 +2602,11 @@
               script.onload = () => {
                 console.log("[Patterns] script loaded.");
                 bgPatternsLoaded = true;
-                populatePatterns();
+                populatePatterns(preferences.bgPattern); // Explicitly restore
                 // Refresh visuals with the generator function now available
                 if (patternSelect.value !== "none") {
                   console.log("[Patterns] Refreshing visuals after lazy load.");
-                  applyLiveBackground();
+                  applyLiveBackground(true); // Refresh preview: skip save
                 }
               };
               document.head.appendChild(script);
