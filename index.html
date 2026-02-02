@@ -60,7 +60,13 @@
           root.style.setProperty("--bg-size", patternSize + "px");
           const speed = prefs.bgScrollSpeed ?? 10;
           if (speed > 0) {
-            root.style.setProperty("--bg-animate-duration", (parseInt(patternSize) / speed) + "s");
+            root.classList.remove("paused");
+            // Use geometric fallback: if cachedSize is unknown, assume 100px for a consistent kinetic feel.
+            const sizeForDuration = cachedSize ? parseInt(cachedSize) : 100;
+            root.style.setProperty("--bg-animate-duration", (sizeForDuration / speed) + "s");
+          } else {
+            root.classList.add("paused");
+            root.style.removeProperty("--bg-animate-duration");
           }
         }
 

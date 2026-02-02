@@ -2379,11 +2379,14 @@
 
             document.body.style.backgroundColor = bgColor;
 
+            // Calculate duration for constant speed
             const patternObj =
               typeof bgPatterns !== "undefined" &&
               bgPatterns.find((p) => p.name === patternName);
             let activeSize = patternObj ? patternObj.size : null;
             if (!activeSize && (patternName === "Endless Clouds" || !patternName)) activeSize = 56;
+
+            console.log('Calculating speed for:', patternName, 'Size:', activeSize, 'Speed:', speed);
 
             if (activeSize) {
               document.body.style.setProperty(
@@ -2398,7 +2401,11 @@
                 );
               } else {
                 document.body.classList.add("paused");
+                document.body.style.removeProperty("--bg-animate-duration");
               }
+            } else {
+              document.body.style.removeProperty("--bg-size");
+              document.body.style.removeProperty("--bg-animate-duration");
             }
 
             document.body.classList.remove("light-mode", "dark-mode");
@@ -2614,10 +2621,8 @@
                 bgPatternsLoaded = true;
                 populatePatterns(preferences.bgPattern); // Explicitly restore
                 // Refresh visuals with the generator function now available
-                if (patternSelect.value !== "none") {
-                  console.log("[Patterns] Refreshing visuals after lazy load.");
-                  applyLiveBackground(true); // Refresh preview: skip save
-                }
+                console.log("[Patterns] Refreshing visuals and recalculating speed after lazy load.");
+                applyLiveBackground(true); // Refresh preview and recalculate speed: skip save
               };
               document.head.appendChild(script);
             });
