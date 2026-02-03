@@ -178,22 +178,28 @@ document.addEventListener("DOMContentLoaded", function () {
           if (uriDark) body.style.setProperty("--bg-image-dark", `url("${uriDark}")`);
       }
 
-      // Set background size for animation
-      let currentSize = cachedSize || (typeof bgPatterns !== "undefined" ? bgPatterns.find((p) => p.name === prefs.bgPattern)?.size : null);
+      // Set background dimensions for animation
+      const patternObj = typeof bgPatterns !== "undefined" ? bgPatterns.find((p) => p.name === prefs.bgPattern) : null;
+      let width = cachedSize || (patternObj ? patternObj.width || patternObj.size : null);
+      let height = cachedSizeY || (patternObj ? patternObj.height || patternObj.size : width);
       
       const speed = prefs.bgScrollSpeed ?? 10;
-      console.log('Background Physics:', currentSize ? 'Precise' : 'Estimated', 'Size:', currentSize || 100, 'Speed:', speed);
+      console.log('Background Physics:', (width && height) ? 'Precise' : 'Estimated', 'Dim:', (width || 100) + 'x' + (height || width || 100), 'Speed:', speed);
 
-      if (currentSize || prefs.bgPattern !== "none") {
-        const activeSize = currentSize || 100;
-        body.style.setProperty("--bg-size", activeSize + "px");
-        body.style.setProperty("--bg-pattern-size", activeSize + "px"); // Loop distance
+      if (width || prefs.bgPattern !== "none") {
+        const activeWidth = width || 100;
+        const activeHeight = height || activeWidth;
+
+        body.style.setProperty("--bg-size", activeWidth + "px");
+        // Set loop distances for perfect alignment
+        body.style.setProperty("--bg-pattern-width", activeWidth + "px");
+        body.style.setProperty("--bg-pattern-height", activeHeight + "px");
 
         if (speed > 0) {
           body.classList.remove("paused");
           body.style.setProperty(
             "--bg-animate-duration",
-            activeSize / speed + "s",
+            activeWidth / speed + "s",
           );
         } else {
           body.classList.add("paused");
@@ -201,7 +207,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       } else {
         body.style.removeProperty("--bg-size");
-        body.style.removeProperty("--bg-pattern-size");
+        body.style.removeProperty("--bg-pattern-width");
+        body.style.removeProperty("--bg-pattern-height");
         body.style.removeProperty("--bg-animate-duration");
       }
     },

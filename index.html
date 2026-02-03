@@ -56,23 +56,31 @@
 
         // 3. Apply pattern size and animation speed
         const speed = prefs.bgScrollSpeed ?? 10;
-        const size = cachedSize ? parseInt(cachedSize) : (prefs.bgPattern === "none" ? 0 : 100);
         
-        console.log('Background Physics:', cachedSize ? 'Precise' : 'Estimated', 'Size:', size || 100, 'Speed:', speed);
+        // Set dimensions (supporting rectangular patterns)
+        let width = cachedSize ? parseInt(cachedSize) : (prefs.bgPattern === "none" ? 0 : 100);
+        let height = cachedSizeY ? parseInt(cachedSizeY) : width;
+        
+        console.log('Background Physics:', (cachedSize && cachedSizeY) ? 'Precise' : 'Estimated', 'Dim:', width + 'x' + height, 'Speed:', speed);
 
-        if (size > 0) {
-          root.style.setProperty("--bg-size", size + "px");
-          root.style.setProperty("--bg-pattern-size", size + "px"); // Loop distance
+        if (width > 0) {
+          root.style.setProperty("--bg-size", width + "px");
+          // Set loop distances for perfect alignment
+          root.style.setProperty("--bg-pattern-width", width + "px");
+          root.style.setProperty("--bg-pattern-height", height + "px");
+
           if (speed > 0) {
             root.classList.remove("paused");
-            root.style.setProperty("--bg-animate-duration", (size / speed) + "s");
+            // Scale duration by width to maintain consistent visual speed
+            root.style.setProperty("--bg-animate-duration", (width / speed) + "s");
           } else {
             root.classList.add("paused");
             root.style.removeProperty("--bg-animate-duration");
           }
         } else {
           root.style.removeProperty("--bg-size");
-          root.style.removeProperty("--bg-pattern-size");
+          root.style.removeProperty("--bg-pattern-width");
+          root.style.removeProperty("--bg-pattern-height");
           root.style.removeProperty("--bg-animate-duration");
         }
 

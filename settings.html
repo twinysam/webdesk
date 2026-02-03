@@ -2383,20 +2383,28 @@
             const patternObj =
               typeof bgPatterns !== "undefined" &&
               bgPatterns.find((p) => p.name === patternName);
-            let activeSize = patternObj ? patternObj.size : null;
+            let width = patternObj ? patternObj.width || patternObj.size : null;
+            let height = patternObj ? patternObj.height || patternObj.size : width;
 
-            console.log('Background Physics:', activeSize ? 'Precise' : 'Estimated', 'Size:', activeSize || 100, 'Speed:', speed);
+            console.log('Background Physics:', (width && height) ? 'Precise' : 'Estimated', 'Dim:', (width || 100) + 'x' + (height || width || 100), 'Speed:', speed);
 
-            if (activeSize || (patternName !== "none" && patternName)) {
-              const sizeForDuration = activeSize || 100;
+            if (width || (patternName !== "none" && patternName)) {
+              const sizeForDuration = width || 100;
+              const heightForLoop = height || sizeForDuration;
+
               document.body.style.setProperty(
                 "--bg-size",
                 sizeForDuration + "px",
               );
+              // Set loop distances for perfect alignment
               document.body.style.setProperty(
-                "--bg-pattern-size",
+                "--bg-pattern-width",
                 sizeForDuration + "px",
-              ); // Loop distance
+              );
+              document.body.style.setProperty(
+                "--bg-pattern-height",
+                heightForLoop + "px",
+              );
 
               if (speed > 0) {
                 document.body.classList.remove("paused");
@@ -2410,7 +2418,8 @@
               }
             } else {
               document.body.style.removeProperty("--bg-size");
-              document.body.style.removeProperty("--bg-pattern-size");
+              document.body.style.removeProperty("--bg-pattern-width");
+              document.body.style.removeProperty("--bg-pattern-height");
               document.body.style.removeProperty("--bg-animate-duration");
             }
 
