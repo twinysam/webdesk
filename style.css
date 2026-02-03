@@ -284,7 +284,7 @@ ul.columns {
   }
   100% {
     /* Loop exactly one tile size for seamless infinite scroll */
-    background-position: var(--bg-size, 56px) calc(var(--bg-size, 56px) * -1);
+    background-position: var(--bg-pattern-size, 56px) var(--bg-pattern-size, 56px);
   }
 }
 

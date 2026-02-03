@@ -62,6 +62,7 @@
 
         if (size > 0) {
           root.style.setProperty("--bg-size", size + "px");
+          root.style.setProperty("--bg-pattern-size", size + "px"); // Loop distance
           if (speed > 0) {
             root.classList.remove("paused");
             root.style.setProperty("--bg-animate-duration", (size / speed) + "s");
@@ -71,6 +72,7 @@
           }
         } else {
           root.style.removeProperty("--bg-size");
+          root.style.removeProperty("--bg-pattern-size");
           root.style.removeProperty("--bg-animate-duration");
         }
 

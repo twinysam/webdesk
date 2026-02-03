@@ -187,6 +187,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (currentSize || prefs.bgPattern !== "none") {
         const activeSize = currentSize || 100;
         body.style.setProperty("--bg-size", activeSize + "px");
+        body.style.setProperty("--bg-pattern-size", activeSize + "px"); // Loop distance
 
         if (speed > 0) {
           body.classList.remove("paused");
@@ -200,6 +201,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       } else {
         body.style.removeProperty("--bg-size");
+        body.style.removeProperty("--bg-pattern-size");
         body.style.removeProperty("--bg-animate-duration");
       }
     },

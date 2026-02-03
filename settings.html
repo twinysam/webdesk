@@ -2393,6 +2393,11 @@
                 "--bg-size",
                 sizeForDuration + "px",
               );
+              document.body.style.setProperty(
+                "--bg-pattern-size",
+                sizeForDuration + "px",
+              ); // Loop distance
+
               if (speed > 0) {
                 document.body.classList.remove("paused");
                 document.body.style.setProperty(
@@ -2405,6 +2410,7 @@
               }
             } else {
               document.body.style.removeProperty("--bg-size");
+              document.body.style.removeProperty("--bg-pattern-size");
               document.body.style.removeProperty("--bg-animate-duration");
             }
 
