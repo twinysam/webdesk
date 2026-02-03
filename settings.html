@@ -2464,17 +2464,22 @@
             let uriLight = "none";
             let uriDark = "none";
             let pSize = "";
+            let pSizeY = "";
 
             if (patternName && patternName !== "none" && typeof generatePatternUri !== "undefined") {
               uriLight = generatePatternUri(patternName, pColorLight, pOpacity) || "none";
               uriDark = generatePatternUri(patternName, pColorDark, pOpacity) || "none";
               const pObj = bgPatterns.find(p => p.name === patternName);
-              if (pObj) pSize = pObj.size.toString();
+              if (pObj) {
+                  pSize = (pObj.width || pObj.size).toString();
+                  pSizeY = (pObj.height || pObj.size).toString();
+              }
             }
 
             localStorage.setItem("cachedBgImageLight", uriLight);
             localStorage.setItem("cachedBgImageDark", uriDark);
             localStorage.setItem("cachedBgSize", pSize);
+            localStorage.setItem("cachedBgSizeY", pSizeY);
             localStorage.setItem("cachedBgColorLight", preferences.bgColorLight || "#016293");
             localStorage.setItem("cachedBgColorDark", preferences.bgColorDark || "#131313");
             

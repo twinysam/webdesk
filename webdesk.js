@@ -157,6 +157,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const cachedLight = localStorage.getItem("cachedBgImageLight");
       const cachedDark = localStorage.getItem("cachedBgImageDark");
       const cachedSize = localStorage.getItem("cachedBgSize");
+      const cachedSizeY = localStorage.getItem("cachedBgSizeY");
 
       if (cachedLight && cachedLight !== "none") {
         body.style.setProperty("--bg-image-light", `url("${cachedLight}")`);
