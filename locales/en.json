@@ -7,6 +7,7 @@
     "greeting_latelateshow": "<i class=\"bi bi-moon-stars-fill\"></i> {name}'s Late Late Show",
     "greeting_generic": "Hello",
     "birthday": "Happy Birthday!",
+    "lunar_new_year": "Happy New Lunar Year!",
     "day": "Day",
     "day_intro": "Today is your day number",
     "today": "Today",

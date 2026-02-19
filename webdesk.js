@@ -339,7 +339,7 @@ document.addEventListener("DOMContentLoaded", function () {
         message = '<i class="bi bi-egg-fill"></i> Happy Easter!';
       } else if (DateUtils.isTodayChineseNewYear(now.toDate())) {
         const info = DateUtils.getChineseNewYearInfo(now.year());
-        message = `${info.elementEmoji}${info.zodiacEmoji} Happy New Lunar Year! (${info.ganzhi})`;
+        message = `${info.elementEmoji}${info.zodiacEmoji} ${t("lunar_new_year")} (${info.ganzhi})`;
       } else if (isFirstDay) {
         const emojis = { spring: "🌸", summer: "🏖️", fall: "🍂", winter: "❄️" };
         message = `${emojis[season]} Happy first day of ${season}!`;
