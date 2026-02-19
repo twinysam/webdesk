@@ -338,8 +338,8 @@ document.addEventListener("DOMContentLoaded", function () {
       } else if (DateUtils.isTodayEaster(now.toDate())) {
         message = '<i class="bi bi-egg-fill"></i> Happy Easter!';
       } else if (DateUtils.isTodayChineseNewYear(now.toDate())) {
-        const zodiac = DateUtils.getChineseZodiac(now.year());
-        message = `${zodiac.emoji} Happy New Lunar Year!`;
+        const info = DateUtils.getChineseNewYearInfo(now.year());
+        message = `${info.elementEmoji}${info.zodiacEmoji} Happy New Lunar Year! (${info.ganzhi})`;
       } else if (isFirstDay) {
         const emojis = { spring: "🌸", summer: "🏖️", fall: "🍂", winter: "❄️" };
         message = `${emojis[season]} Happy first day of ${season}!`;
