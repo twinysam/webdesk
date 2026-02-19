@@ -281,7 +281,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // MODULE: GreetingManager
   // Dynamic header messages and visuals
   // ==========================================================================
-  const GreetingManager = {
+  window.GreetingManager = {
     specialDates: {
       "14/03": '<i class="bi bi-infinity"></i> Happy π Day!',
       "25/05":
