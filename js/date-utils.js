@@ -19,82 +19,147 @@
       getDaysSinceStart: (date = dayjs()) =>
         date.diff(scope.DateUtils.START_DATE, "days"),
 
-      LUNAR_DATA: [
-        { "year": 2027, "cny": "2027-02-06", "zodiac": "Goat", "element": "Fire", "ganzhi": "丁未", "liChun": "2027-02-04", "leapMonth": null },
-        { "year": 2028, "cny": "2028-01-26", "zodiac": "Monkey", "element": "Earth", "ganzhi": "戊申", "liChun": "2028-02-04", "leapMonth": 5 },
-        { "year": 2029, "cny": "2029-02-13", "zodiac": "Rooster", "element": "Earth", "ganzhi": "己酉", "liChun": "2029-02-03", "leapMonth": null },
-        { "year": 2030, "cny": "2030-02-03", "zodiac": "Dog", "element": "Metal", "ganzhi": "庚戌", "liChun": "2030-02-04", "leapMonth": null },
-        { "year": 2031, "cny": "2031-01-23", "zodiac": "Pig", "element": "Metal", "ganzhi": "辛亥", "liChun": "2031-02-04", "leapMonth": 3 },
-        { "year": 2032, "cny": "2032-02-11", "zodiac": "Rat", "element": "Water", "ganzhi": "壬子", "liChun": "2032-02-04", "leapMonth": null },
-        { "year": 2033, "cny": "2033-01-31", "zodiac": "Ox", "element": "Water", "ganzhi": "癸丑", "liChun": "2033-02-03", "leapMonth": 11 },
-        { "year": 2034, "cny": "2034-02-19", "zodiac": "Tiger", "element": "Wood", "ganzhi": "甲寅", "liChun": "2034-02-04", "leapMonth": null },
-        { "year": 2035, "cny": "2035-02-08", "zodiac": "Rabbit", "element": "Wood", "ganzhi": "乙卯", "liChun": "2035-02-04", "leapMonth": null },
-        { "year": 2036, "cny": "2036-01-28", "zodiac": "Dragon", "element": "Fire", "ganzhi": "丙辰", "liChun": "2036-02-04", "leapMonth": 6 },
-        { "year": 2037, "cny": "2037-02-15", "zodiac": "Snake", "element": "Fire", "ganzhi": "丁巳", "liChun": "2037-02-03", "leapMonth": null },
-        { "year": 2038, "cny": "2038-02-04", "zodiac": "Horse", "element": "Earth", "ganzhi": "戊午", "liChun": "2038-02-04", "leapMonth": null },
-        { "year": 2039, "cny": "2039-01-24", "zodiac": "Goat", "element": "Earth", "ganzhi": "己未", "liChun": "2039-02-04", "leapMonth": 5 },
-        { "year": 2040, "cny": "2040-02-12", "zodiac": "Monkey", "element": "Metal", "ganzhi": "庚申", "liChun": "2040-02-04", "leapMonth": null },
-        { "year": 2041, "cny": "2041-02-01", "zodiac": "Rooster", "element": "Metal", "ganzhi": "辛酉", "liChun": "2041-02-03", "leapMonth": null },
-        { "year": 2042, "cny": "2042-01-22", "zodiac": "Dog", "element": "Water", "ganzhi": "壬戌", "liChun": "2042-02-04", "leapMonth": 2 },
-        { "year": 2043, "cny": "2043-02-10", "zodiac": "Pig", "element": "Water", "ganzhi": "癸亥", "liChun": "2043-02-04", "leapMonth": null },
-        { "year": 2044, "cny": "2044-01-30", "zodiac": "Rat", "element": "Wood", "ganzhi": "甲子", "liChun": "2044-02-04", "leapMonth": 7 },
-        { "year": 2045, "cny": "2045-02-17", "zodiac": "Ox", "element": "Wood", "ganzhi": "乙丑", "liChun": "2045-02-03", "leapMonth": null },
-        { "year": 2046, "cny": "2046-02-06", "zodiac": "Tiger", "element": "Fire", "ganzhi": "丙寅", "liChun": "2046-02-04", "leapMonth": null },
-        { "year": 2047, "cny": "2047-01-26", "zodiac": "Rabbit", "element": "Fire", "ganzhi": "丁卯", "liChun": "2047-02-04", "leapMonth": 5 },
-        { "year": 2048, "cny": "2048-02-14", "zodiac": "Dragon", "element": "Earth", "ganzhi": "戊辰", "liChun": "2048-02-04", "leapMonth": null },
-        { "year": 2049, "cny": "2049-02-02", "zodiac": "Snake", "element": "Earth", "ganzhi": "己巳", "liChun": "2049-02-03", "leapMonth": null },
-        { "year": 2050, "cny": "2050-01-23", "zodiac": "Horse", "element": "Metal", "ganzhi": "庚午", "liChun": "2050-02-03", "leapMonth": 3 },
-        { "year": 2051, "cny": "2051-02-11", "zodiac": "Goat", "element": "Metal", "ganzhi": "辛未", "liChun": "2051-02-04", "leapMonth": null },
-        { "year": 2052, "cny": "2052-02-01", "zodiac": "Monkey", "element": "Water", "ganzhi": "壬申", "liChun": "2052-02-04", "leapMonth": 8 },
-        { "year": 2053, "cny": "2053-02-19", "zodiac": "Rooster", "element": "Water", "ganzhi": "癸酉", "liChun": "2053-02-03", "leapMonth": null },
-        { "year": 2054, "cny": "2054-02-08", "zodiac": "Dog", "element": "Wood", "ganzhi": "甲戌", "liChun": "2054-02-03", "leapMonth": null },
-        { "year": 2055, "cny": "2055-01-28", "zodiac": "Pig", "element": "Wood", "ganzhi": "乙亥", "liChun": "2055-02-04", "leapMonth": 6 },
-        { "year": 2056, "cny": "2056-02-15", "zodiac": "Rat", "element": "Fire", "ganzhi": "丙子", "liChun": "2056-02-04", "leapMonth": null },
-        { "year": 2057, "cny": "2057-02-04", "zodiac": "Ox", "element": "Fire", "ganzhi": "丁丑", "liChun": "2057-02-03", "leapMonth": null },
-        { "year": 2058, "cny": "2058-01-24", "zodiac": "Tiger", "element": "Earth", "ganzhi": "戊寅", "liChun": "2058-02-03", "leapMonth": 4 },
-        { "year": 2059, "cny": "2059-02-12", "zodiac": "Rabbit", "element": "Earth", "ganzhi": "己卯", "liChun": "2059-02-04", "leapMonth": null },
-        { "year": 2060, "cny": "2060-02-02", "zodiac": "Dragon", "element": "Metal", "ganzhi": "庚辰", "liChun": "2060-02-04", "leapMonth": null },
-        { "year": 2061, "cny": "2061-01-21", "zodiac": "Snake", "element": "Metal", "ganzhi": "辛巳", "liChun": "2061-02-03", "leapMonth": 3 },
-        { "year": 2062, "cny": "2062-02-09", "zodiac": "Horse", "element": "Water", "ganzhi": "壬午", "liChun": "2062-02-03", "leapMonth": null },
-        { "year": 2063, "cny": "2063-01-29", "zodiac": "Goat", "element": "Water", "ganzhi": "癸未", "liChun": "2063-02-04", "leapMonth": 7 },
-        { "year": 2064, "cny": "2064-02-17", "zodiac": "Monkey", "element": "Wood", "ganzhi": "甲申", "liChun": "2064-02-04", "leapMonth": null },
-        { "year": 2065, "cny": "2065-02-05", "zodiac": "Rooster", "element": "Wood", "ganzhi": "乙酉", "liChun": "2065-02-03", "leapMonth": null },
-        { "year": 2066, "cny": "2066-01-26", "zodiac": "Dog", "element": "Fire", "ganzhi": "丙戌", "liChun": "2066-02-03", "leapMonth": 5 },
-        { "year": 2067, "cny": "2067-02-14", "zodiac": "Pig", "element": "Fire", "ganzhi": "丁亥", "liChun": "2067-02-04", "leapMonth": null },
-        { "year": 2068, "cny": "2068-02-03", "zodiac": "Rat", "element": "Earth", "ganzhi": "戊子", "liChun": "2068-02-04", "leapMonth": null },
-        { "year": 2069, "cny": "2069-01-23", "zodiac": "Ox", "element": "Earth", "ganzhi": "己丑", "liChun": "2069-02-03", "leapMonth": 4 },
-        { "year": 2070, "cny": "2070-02-11", "zodiac": "Tiger", "element": "Metal", "ganzhi": "庚寅", "liChun": "2070-02-03", "leapMonth": null },
-        { "year": 2071, "cny": "2071-01-31", "zodiac": "Rabbit", "element": "Metal", "ganzhi": "辛卯", "liChun": "2071-02-04", "leapMonth": 8 },
-        { "year": 2072, "cny": "2072-02-19", "zodiac": "Dragon", "element": "Water", "ganzhi": "壬辰", "liChun": "2072-02-04", "leapMonth": null },
-        { "year": 2073, "cny": "2073-02-07", "zodiac": "Snake", "element": "Water", "ganzhi": "癸巳", "liChun": "2073-02-03", "leapMonth": null },
-        { "year": 2074, "cny": "2074-01-27", "zodiac": "Horse", "element": "Wood", "ganzhi": "甲午", "liChun": "2074-02-03", "leapMonth": 6 },
-        { "year": 2075, "cny": "2075-02-15", "zodiac": "Goat", "element": "Wood", "ganzhi": "乙未", "liChun": "2075-02-04", "leapMonth": null },
-        { "year": 2076, "cny": "2076-02-05", "zodiac": "Monkey", "element": "Fire", "ganzhi": "丙申", "liChun": "2076-02-04", "leapMonth": null },
-        { "year": 2077, "cny": "2077-01-24", "zodiac": "Rooster", "element": "Fire", "ganzhi": "丁酉", "liChun": "2077-02-03", "leapMonth": 4 },
-        { "year": 2078, "cny": "2078-02-12", "zodiac": "Dog", "element": "Earth", "ganzhi": "戊戌", "liChun": "2078-02-03", "leapMonth": null },
-        { "year": 2079, "cny": "2079-02-02", "zodiac": "Pig", "element": "Earth", "ganzhi": "己亥", "liChun": "2079-02-04", "leapMonth": null },
-        { "year": 2080, "cny": "2080-01-22", "zodiac": "Rat", "element": "Metal", "ganzhi": "庚子", "liChun": "2080-02-04", "leapMonth": 3 },
-        { "year": 2081, "cny": "2081-02-09", "zodiac": "Ox", "element": "Metal", "ganzhi": "辛丑", "liChun": "2081-02-03", "leapMonth": null },
-        { "year": 2082, "cny": "2082-01-29", "zodiac": "Tiger", "element": "Water", "ganzhi": "壬寅", "liChun": "2082-02-03", "leapMonth": 7 },
-        { "year": 2083, "cny": "2083-02-17", "zodiac": "Rabbit", "element": "Water", "ganzhi": "癸卯", "liChun": "2083-02-03", "leapMonth": null },
-        { "year": 2084, "cny": "2084-02-06", "zodiac": "Dragon", "element": "Wood", "ganzhi": "甲辰", "liChun": "2084-02-04", "leapMonth": null },
-        { "year": 2085, "cny": "2085-01-26", "zodiac": "Snake", "element": "Wood", "ganzhi": "乙巳", "liChun": "2085-02-03", "leapMonth": 5 },
-        { "year": 2086, "cny": "2086-02-14", "zodiac": "Horse", "element": "Fire", "ganzhi": "丙午", "liChun": "2086-02-03", "leapMonth": null },
-        { "year": 2087, "cny": "2087-02-03", "zodiac": "Goat", "element": "Fire", "ganzhi": "丁未", "liChun": "2087-02-03", "leapMonth": null },
-        { "year": 2088, "cny": "2088-01-24", "zodiac": "Monkey", "element": "Earth", "ganzhi": "戊申", "liChun": "2088-02-04", "leapMonth": 4 },
-        { "year": 2089, "cny": "2089-02-10", "zodiac": "Rooster", "element": "Earth", "ganzhi": "己酉", "liChun": "2089-02-03", "leapMonth": null },
-        { "year": 2090, "cny": "2090-01-30", "zodiac": "Dog", "element": "Metal", "ganzhi": "庚戌", "liChun": "2090-02-03", "leapMonth": 8 },
-        { "year": 2091, "cny": "2091-02-18", "zodiac": "Pig", "element": "Metal", "ganzhi": "辛亥", "liChun": "2091-02-03", "leapMonth": null },
-        { "year": 2092, "cny": "2092-02-07", "zodiac": "Rat", "element": "Water", "ganzhi": "壬子", "liChun": "2092-02-04", "leapMonth": null },
-        { "year": 2093, "cny": "2093-01-27", "zodiac": "Ox", "element": "Water", "ganzhi": "癸丑", "liChun": "2093-02-03", "leapMonth": 6 },
-        { "year": 2094, "cny": "2094-02-15", "zodiac": "Tiger", "element": "Wood", "ganzhi": "甲寅", "liChun": "2094-02-03", "leapMonth": null },
-        { "year": 2095, "cny": "2095-02-05", "zodiac": "Rabbit", "element": "Wood", "ganzhi": "乙卯", "liChun": "2095-02-03", "leapMonth": null },
-        { "year": 2096, "cny": "2096-01-25", "zodiac": "Dragon", "element": "Fire", "ganzhi": "丙辰", "liChun": "2096-02-04", "leapMonth": 4 },
-        { "year": 2097, "cny": "2097-02-12", "zodiac": "Snake", "element": "Fire", "ganzhi": "丁巳", "liChun": "2097-02-03", "leapMonth": null },
-        { "year": 2098, "cny": "2098-02-01", "zodiac": "Horse", "element": "Earth", "ganzhi": "戊午", "liChun": "2098-02-03", "leapMonth": null },
-        { "year": 2099, "cny": "2099-01-21", "zodiac": "Goat", "element": "Earth", "ganzhi": "己未", "liChun": "2099-02-03", "leapMonth": 2 },
-        { "year": 2100, "cny": "2100-02-09", "zodiac": "Monkey", "element": "Metal", "ganzhi": "庚申", "liChun": "2100-02-04", "leapMonth": null }
-      ],
+      initLunarData: () => {
+        // Clean up any old cached TT payload
+        localStorage.removeItem("webdesk_tt_data_v1");
+
+        const now = dayjs();
+        // Check if we are past Jan 15th, if so, ensure the current year's data is computed.
+        if (now.month() > 0 || (now.month() === 0 && now.date() >= 15)) {
+            scope.DateUtils.getChineseNewYearInfo(now.year());
+        }
+      },
+
+      _computingYears: new Set(),
+      
+      _attachEmojis: (item) => {
+        const elementEmojis = { "Wood": "🌳", "Fire": "🔥", "Earth": "🌍", "Metal": "🪙", "Water": "🌊" };
+        const zodiacEmojis = { "Rat": "🐀", "Ox": "🐂", "Tiger": "🐅", "Rabbit": "🐇", "Dragon": "🐉", "Snake": "🐍", "Horse": "🐎", "Goat": "🐐", "Monkey": "🐒", "Rooster": "🐓", "Dog": "🐕", "Pig": "🐖" };
+        
+        return {
+          ...item,
+          elementEmoji: elementEmojis[item.element] || "",
+          zodiacEmoji: zodiacEmojis[item.zodiac] || ""
+        };
+      },
+
+      ensureLunarComputed: async (year) => {
+          if (scope.DateUtils._computingYears.has(year)) return;
+          scope.DateUtils._computingYears.add(year);
+
+          try {
+              const res = await fetch("webdesk-tt-2027-3000.json");
+              const ttData = await res.json();
+
+              const cnyInfo = scope.DateUtils.computeLunarYearFromTT(year, ttData);
+              if (cnyInfo) {
+                  localStorage.setItem("cny_data_" + year, JSON.stringify(cnyInfo));
+                  if (window.GreetingManager && window.GreetingManager.updateMessage) {
+                      window.GreetingManager.updateMessage();
+                  }
+              }
+          } catch (e) {
+              console.error("Error computing CNY data:", e);
+          } finally {
+              scope.DateUtils._computingYears.delete(year);
+          }
+      },
+
+      computeLunarYearFromTT: (year, ttData) => {
+          // Accuracy Note:
+          // TT timestamps are absolute. For the Chinese Calendar, the day starts at Beijing midnight (UTC+8).
+          // We convert JD to an integer representing the Beijing calendar day before comparing, ensuring that if a 
+          // new moon and a solar term occur on the same true calendar day, they fall into the correct relative month.
+          const getJdDay = (jd) => Math.floor(jd + 8 / 24 + 0.5);
+          
+          const getJdMs = (jd) => (jd - 2440587.5) * 86400000 + 28800000;
+          const jdToDayjsStr = (jd) => {
+              const ms = getJdMs(jd);
+              const d = new Date(ms);
+              return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
+          };
+
+          const newMoons = ttData.new_moons_tt;
+          const solarTerms = ttData.solar_terms_tt;
+
+          const ws_all = solarTerms.filter(st => st[1] === 18);
+          // Use UTC+8 string to match the year reliably
+          const wsPrev = ws_all.find(st => Number(jdToDayjsStr(st[0]).substring(0, 4)) === year - 1);
+          const wsCurr = ws_all.find(st => Number(jdToDayjsStr(st[0]).substring(0, 4)) === year);
+
+          if (!wsPrev || !wsCurr) return null;
+
+          let nmPrev = 0;
+          for (let i = 0; i < newMoons.length; i++) {
+              // Compare exactly or day-by-day? Astronomically, Month 11 starts with the new moon prioritizing the Solstice.
+              // We compare strict astronomically: the New Moon immediately preceding or equal to the Winter Solstice.
+              if (newMoons[i] <= wsPrev[0]) nmPrev = newMoons[i];
+              else break;
+          }
+
+          let nmCurr = 0;
+          for (let i = 0; i < newMoons.length; i++) {
+              if (newMoons[i] <= wsCurr[0]) nmCurr = newMoons[i];
+              else break;
+          }
+
+          const moons = newMoons.filter(nm => nm >= nmPrev && nm <= nmCurr);
+          // If there are 14 moons in the array, there are 13 months, which means it's a leap year.
+          const isLeapYear = moons.length === 14;
+
+          let currMonthNum = 11;
+          let hasLeaped = false;
+          let leapMonth = null;
+          let cny_str = null;
+
+          for (let i = 0; i < moons.length - 1; i++) {
+              const startDay = getJdDay(moons[i]);
+              const endDay = getJdDay(moons[i + 1]);
+
+              const hasZhongqi = solarTerms.some(st => {
+                  if (st[1] % 2 !== 0) return false;
+                  const stDay = getJdDay(st[0]);
+                  return stDay >= startDay && stDay < endDay;
+              });
+
+              let isThisLeap = false;
+              if (isLeapYear && !hasZhongqi && !hasLeaped) {
+                  isThisLeap = true;
+                  hasLeaped = true;
+                  leapMonth = currMonthNum;
+              } else if (i > 0) {
+                  // We skip incrementing when i === 0 because the sequence starts on Month 11.
+                  // For all subsequent non-leap months, we increment (wrapping 12 -> 1).
+                  currMonthNum = currMonthNum === 12 ? 1 : currMonthNum + 1;
+              }
+
+              if (currMonthNum === 1 && !isThisLeap && !cny_str) {
+                  cny_str = jdToDayjsStr(moons[i]);
+              }
+          }
+
+          const lunarYear = year - 4;
+          const stems = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
+          const branches = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
+          const zodiacs = ["Rat", "Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse", "Goat", "Monkey", "Rooster", "Dog", "Pig"];
+          const elements = ["Wood", "Fire", "Earth", "Metal", "Water"];
+
+          const stem_idx = ((lunarYear % 10) + 10) % 10;
+          const branch_idx = ((lunarYear % 12) + 12) % 12;
+
+          const ganzhi = stems[stem_idx] + branches[branch_idx];
+          const zodiac = zodiacs[branch_idx];
+          const element = elements[Math.floor(stem_idx / 2)];
+
+          return {
+              year,
+              cny: cny_str,
+              zodiac,
+              element,
+              ganzhi,
+              leapMonth
+          };
+      },
 
       detectHemisphere: () => {
           try {
@@ -205,49 +270,26 @@
       },
   
       getChineseNewYearDate: (year) => {
-        const item = scope.DateUtils.LUNAR_DATA.find(d => d.year === year);
+        const item = scope.DateUtils.getChineseNewYearInfo(year);
         return item ? dayjs(item.cny, "YYYY-MM-DD").toDate() : null;
       },
   
       getChineseNewYearInfo: (year) => {
-        const item = scope.DateUtils.LUNAR_DATA.find(d => d.year === year);
-        if (!item) return null;
+        const cached = localStorage.getItem("cny_data_" + year);
+        if (cached) {
+            try { return scope.DateUtils._attachEmojis(JSON.parse(cached)); } catch(e) {}
+        }
 
-        const elementEmojis = {
-          "Wood": "🌳",
-          "Fire": "🔥",
-          "Earth": "🌍",
-          "Metal": "🪙",
-          "Water": "🌊"
-        };
-        const zodiacEmojis = {
-          "Rat": "🐀",
-          "Ox": "🐂",
-          "Tiger": "🐅",
-          "Rabbit": "🐇",
-          "Dragon": "🐉",
-          "Snake": "🐍",
-          "Horse": "🐎",
-          "Goat": "🐐",
-          "Monkey": "🐒",
-          "Rooster": "🐓",
-          "Dog": "🐕",
-          "Pig": "🐖"
-        };
-
-        return {
-          ...item,
-          elementEmoji: elementEmojis[item.element] || "",
-          zodiacEmoji: zodiacEmojis[item.zodiac] || ""
-        };
+        // Trigger async computation if missing, returning null for now
+        scope.DateUtils.ensureLunarComputed(year);
+        return null;
       },
 
       isTodayChineseNewYear: (date) => {
-        const year = date.getFullYear();
-        const item = scope.DateUtils.LUNAR_DATA.find(d => d.year === year);
-        if (!item) return false;
+        const info = scope.DateUtils.getChineseNewYearInfo(date.getFullYear());
+        if (!info || !info.cny) return false;
 
-        const cny = dayjs(item.cny, "YYYY-MM-DD");
+        const cny = dayjs(info.cny, "YYYY-MM-DD");
         return (
           date.getFullYear() === cny.year() &&
           date.getMonth() === cny.month() &&

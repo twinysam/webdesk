@@ -24,6 +24,10 @@ document.addEventListener("DOMContentLoaded", function () {
     };
   }
 
+  if (DateUtils.initLunarData) {
+    DateUtils.initLunarData();
+  }
+
   // ==========================================================================
   // MODULE: ProfileManager
   // User Identity
