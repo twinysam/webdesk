@@ -295,6 +295,37 @@
           date.getMonth() === cny.month() &&
           date.getDate() === cny.date()
         );
+      },
+
+      checkNextLunarNewYear: async () => {
+          console.log("%cCalculating next Lunar New Year...", "color: #aaa; font-style: italic;");
+          try {
+              const res = await fetch("webdesk-tt-2027-3000.json");
+              const ttData = await res.json();
+              const now = dayjs();
+              let year = now.year();
+              let nextCny = scope.DateUtils.computeLunarYearFromTT(year, ttData);
+
+              // If current year's CNY is already past, calculate for the next year
+              if (nextCny && dayjs(nextCny.cny).isBefore(now, 'day')) {
+                  year++;
+                  nextCny = scope.DateUtils.computeLunarYearFromTT(year, ttData);
+              }
+
+              if (nextCny) {
+                  const info = scope.DateUtils._attachEmojis(nextCny);
+                  console.log(
+                      `%cNext Lunar New Year: %c${info.cny}\n%cYear of the ${info.elementEmoji} ${info.element} ${info.zodiacEmoji} ${info.zodiac} (${info.ganzhi})`,
+                      "font-weight: bold;", 
+                      "color: #e74c3c; font-weight: bold;",
+                      "color: #3498db;"
+                  );
+              } else {
+                  console.error("Could not calculate Lunar New Year data for the upcoming period.");
+              }
+          } catch (e) {
+              console.error("Failed to fetch or compute lunar data:", e);
+          }
       }
     };
 })(window);
