@@ -5,8 +5,15 @@
 // ==========================================================================
 (function(scope) {
     scope.DateUtils = {
-      START_DATE: dayjs(), // Will be updated by ProfileManager/Init if available
+      START_DATE: typeof dayjs !== "undefined" ? dayjs() : null, // Will be updated by ProfileManager/Init if available
   
+      THEME_PRESETS: {
+        winter: { bg: "#016293", pattern: "#014669" },
+        spring: { bg: "#2d6a4f", pattern: "#1b4332" },
+        summer: { bg: "#be123c", pattern: "#881337" },
+        autumn: { bg: "#ca6702", pattern: "#9d0208" },
+      },
+
       getToday: () => dayjs(),
       getTomorrow: () => dayjs().add(1, "days"),
   

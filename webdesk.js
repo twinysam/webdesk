@@ -219,6 +219,29 @@ document.addEventListener("DOMContentLoaded", function () {
     },
 
     init: () => {
+      // Auto Season Syncer: silently updates cache and prefs if season has changed
+      const prefs = PreferencesManager.getPreferences();
+      if (prefs.autoSeason && window.DateUtils && DateUtils.getSeason) {
+        const currentSeasonData = DateUtils.getSeason();
+        const season = currentSeasonData.season === "fall" ? "autumn" : currentSeasonData.season;
+        const preset = DateUtils.THEME_PRESETS[season];
+        
+        if (preset && prefs.bgColorLight !== preset.bg) {
+          const oldPatternColor = prefs.patternColorLight || "#014669";
+          prefs.bgColorLight = preset.bg;
+          prefs.patternColorLight = preset.pattern;
+          
+          localStorage.setItem(PreferencesManager.STORAGE_KEY, JSON.stringify(prefs));
+          localStorage.setItem("cachedBgColorLight", preset.bg);
+          
+          let cachedLight = localStorage.getItem("cachedBgImageLight");
+          if (cachedLight && cachedLight !== "none") {
+            cachedLight = cachedLight.replace(encodeURIComponent(oldPatternColor), encodeURIComponent(preset.pattern));
+            localStorage.setItem("cachedBgImageLight", cachedLight);
+          }
+        }
+      }
+
       PreferencesManager.apply();
 
       // Listen for system theme changes if set to system
