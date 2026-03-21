@@ -2108,15 +2108,26 @@
         // ... except theme which might need preview? No, let's stick to Save button for all appearance to be consistent.
 
         function loadAppearanceManager() {
+          const THEME_PRESETS = {
+            winter: { bg: "#016293", pattern: "#014669" },
+            spring: { bg: "#2d6a4f", pattern: "#1b4332" },
+            summer: { bg: "#be123c", pattern: "#881337" },
+            autumn: { bg: "#ca6702", pattern: "#9d0208" },
+          };
+
           const { preferences } = getData();
           console.log('Loaded Pattern from Storage:', preferences.bgPattern);
           const autoToggle = document.getElementById("autoSeasonToggle");
           const presetSelect = document.getElementById("presetThemeSelect");
 
-          let activePreset = presetSelect.value;
+          const autoSeasonEnabled = preferences.autoSeason || false;
+          if (autoToggle) autoToggle.checked = autoSeasonEnabled;
+
+          let activePreset = preferences.selectedPreset || (presetSelect ? presetSelect.value : "custom");
+          if (presetSelect) presetSelect.value = activePreset !== "custom" ? activePreset : "custom";
 
           // If automatic mode is ON, calculate season from date-utils.js
-          if (autoToggle.checked) {
+          if (autoToggle && autoToggle.checked) {
             const currentSeasonData = DateUtils.getSeason(); // Returns { season: 'winter', ... }
             // Note: date-utils returns 'fall', but our preset is 'autumn'
             activePreset =
@@ -2125,32 +2136,32 @@
                 : currentSeasonData.season;
 
             // Visually update the (disabled) dropdown to show the current auto-detected season
-            presetSelect.value = activePreset;
-            presetSelect.disabled = true;
-          } else {
+            if (presetSelect) {
+              presetSelect.value = activePreset;
+              presetSelect.disabled = true;
+            }
+          } else if (presetSelect) {
             presetSelect.disabled = false;
           }
 
           // If a preset is active, update the color pickers to match the preset palette
           if (activePreset !== "custom" && THEME_PRESETS[activePreset]) {
             const preset = THEME_PRESETS[activePreset];
-            document.getElementById("inputBgColorLight").value = preset.bg;
-            document.getElementById("inputPatternColorLight").value =
-              preset.pattern;
+            const bgLight = document.getElementById("inputBgColorLight");
+            const patternLight = document.getElementById("inputPatternColorLight");
+            if (bgLight && patternLight) {
+              bgLight.value = preset.bg;
+              patternLight.value = preset.pattern;
+              bgLight.dispatchEvent(new Event("input", { bubbles: true }));
+              patternLight.dispatchEvent(new Event("input", { bubbles: true }));
+            }
 
             // Update Coloris swatches visually
             document.querySelectorAll(".clr-field").forEach((field) => {
               const input = field.querySelector("input");
-              field.style.color = input.value;
+              if (input) field.style.color = input.value;
             });
           }
-
-          const THEME_PRESETS = {
-            winter: { bg: "#016293", pattern: "#014669" },
-            spring: { bg: "#2d6a4f", pattern: "#1b4332" },
-            summer: { bg: "#be123c", pattern: "#881337" },
-            autumn: { bg: "#ca6702", pattern: "#9d0208" },
-          };
 
           // Theme
           const currentTheme = preferences.theme || "system";
@@ -2257,20 +2268,8 @@
               currentSpeed === 0 ? "0 (Disabled)" : currentSpeed;
           }
 
-          // Load and initialize Color Theme Presets
-          const selectedPreset = preferences.selectedPreset || "winter";
-          const autoSeasonEnabled = preferences.autoSeason || false;
-          const presetSelectEl = document.getElementById("presetThemeSelect");
-          const autoSeasonToggle = document.getElementById("autoSeasonToggle");
-
-          if (presetSelectEl) {
-            presetSelectEl.value =
-              selectedPreset !== "custom" ? selectedPreset : "custom";
-            presetSelectEl.disabled = autoSeasonEnabled; // Disable if auto-season is on
-          }
-          if (autoSeasonToggle) {
-            autoSeasonToggle.checked = autoSeasonEnabled;
-          }
+          // Color Theme Presets are now initialized at the top 
+          // of loadAppearanceManager for instant reflection
 
           // Live preview + instant autosave: read form, apply to body, persist preferences and cache
           function applyLiveBackground(skipSave = false) {
@@ -2580,6 +2579,32 @@
                   new Event("input", { bubbles: true }),
                 );
                 applyLiveBackground();
+              }
+            });
+          }
+
+          if (autoToggle) {
+            autoToggle.addEventListener("change", () => {
+              if (autoToggle.checked) {
+                if (presetSelect) presetSelect.disabled = true;
+                const currentSeasonData = DateUtils.getSeason();
+                const season = currentSeasonData.season === "fall" ? "autumn" : currentSeasonData.season;
+                if (presetSelect) presetSelect.value = season;
+
+                const preset = THEME_PRESETS[season];
+                if (preset) {
+                  const bgLight = document.getElementById("inputBgColorLight");
+                  const patternLight = document.getElementById("inputPatternColorLight");
+                  if (bgLight && patternLight) {
+                    bgLight.value = preset.bg;
+                    patternLight.value = preset.pattern;
+                    bgLight.dispatchEvent(new Event("input", { bubbles: true }));
+                    patternLight.dispatchEvent(new Event("input", { bubbles: true }));
+                    applyLiveBackground();
+                  }
+                }
+              } else {
+                if (presetSelect) presetSelect.disabled = false;
               }
             });
           }
