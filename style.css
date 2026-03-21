@@ -283,9 +283,8 @@ ul.columns {
     background-position: 0 0;
   }
   100% {
-    /* Loop exactly one tile size for seamless infinite scroll */
-    /* Using independent width and height for perfect rectangular alignment */
-    background-position: var(--bg-pattern-width, 56px) var(--bg-pattern-height, 56px);
+    /* Loop with a double vertical multiplier for a steeper downward angle */
+    background-position: var(--bg-pattern-width, 56px) calc(var(--bg-pattern-height, 56px) * 2);
   }
 }
 
