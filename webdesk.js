@@ -1041,6 +1041,166 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   // ==========================================================================
+  // MODULE: CalendarManager
+  // Optional FullCalendar Integration
+  // ==========================================================================
+  const CalendarManager = {
+    instance: null,
+
+    loadDependencies: () => {
+      return new Promise((resolve, reject) => {
+        if (window.FullCalendar) {
+          return resolve();
+        }
+
+        const addJs = (src) => {
+          return new Promise((res, rej) => {
+            const script = document.createElement("script");
+            script.src = src;
+            script.onload = res;
+            script.onerror = rej;
+            document.head.appendChild(script);
+          });
+        };
+
+        // Load core, then daygrid and bootstrap5 plugins sequentially
+        addJs("https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.15/index.global.min.js")
+          .then(() => addJs("https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.15/index.global.min.js"))
+          .then(() => addJs("https://cdn.jsdelivr.net/npm/@fullcalendar/bootstrap5@6.1.15/index.global.min.js"))
+          .then(resolve)
+          .catch(reject);
+      });
+    },
+
+    getEventData: async () => {
+      const customEvents = JSON.parse(localStorage.getItem("customEvents")) || [];
+      const userBirthdays = JSON.parse(localStorage.getItem("userBirthdays")) || [];
+      const annualEvents = JSON.parse(localStorage.getItem("annualEvents")) || [];
+      let cumplesFile = [];
+
+      try {
+        const res = await fetch("cumples.json");
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0 && data[0].people) {
+          cumplesFile = data[0].people;
+        } else if (Array.isArray(data)) {
+          cumplesFile = data;
+        }
+      } catch (e) {
+        console.warn("Could not load cumples.json for calendar", e);
+      }
+
+      const allBirthdays = [...cumplesFile, ...userBirthdays];
+      const fcEvents = [];
+
+      // Custom Events (DD/MM/YYYY)
+      customEvents.forEach(e => {
+        if (!e.date) return;
+        const d = dayjs(e.date, "DD/MM/YYYY");
+        if (d.isValid()) {
+          fcEvents.push({
+            title: e.name,
+            start: d.format("YYYY-MM-DD"),
+            allDay: true,
+            url: e.url || "",
+            className: "bg-success border-success text-white" 
+          });
+        }
+      });
+
+      // Birthdays and Annual Events (recurrence)
+      const currentYear = dayjs().year();
+      const years = [currentYear - 1, currentYear, currentYear + 1];
+
+      allBirthdays.forEach(b => {
+        if (!b.birthday) return;
+        const [day, month] = b.birthday.split("/");
+        if (!day || !month) return;
+        years.forEach(y => {
+          fcEvents.push({
+            title: `🎈 ${b.name}`,
+            start: `${y}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`,
+            allDay: true,
+            className: "bg-info border-info text-dark"
+          });
+        });
+      });
+
+      annualEvents.forEach(e => {
+        if (!e.date) return;
+        const [day, month] = e.date.split("/");
+        if (!day || !month) return;
+        years.forEach(y => {
+          fcEvents.push({
+            title: e.name,
+            start: `${y}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`,
+            allDay: true,
+            url: e.url || "",
+            className: "bg-warning border-warning text-dark"
+          });
+        });
+      });
+
+      return fcEvents;
+    },
+
+    init: () => {
+      CalendarManager.loadDependencies().then(async () => {
+        const caja = document.querySelector(".caja");
+        if (!caja) return;
+
+        let container = document.getElementById("calendar-container");
+        if (!container) {
+          const hr = document.createElement("hr");
+          caja.appendChild(hr);
+          
+          container = document.createElement("div");
+          container.id = "calendar-container";
+          container.className = "mt-5 p-4 bg-dark rounded border border-secondary CalendarManager-wrapper";
+          
+          // FullCalendar text defaults to dark in some themes, force white text container-wide
+          container.style.color = "white";
+          caja.appendChild(container);
+        }
+
+        if (CalendarManager.instance) {
+          CalendarManager.instance.destroy();
+        }
+
+        const events = await CalendarManager.getEventData();
+
+        CalendarManager.instance = new FullCalendar.Calendar(container, {
+          initialView: 'dayGridMonth',
+          themeSystem: 'bootstrap5',
+          events: events,
+          firstDay: 1, 
+          eventClick: function(info) {
+            info.jsEvent.preventDefault();
+            if (info.event.url) {
+              window.open(info.event.url, "_blank");
+            }
+          }
+        });
+
+        CalendarManager.instance.render();
+
+        // Fix header text colors dynamically for dark mode if missed by theme
+        const fixColors = () => {
+          container.querySelectorAll('.fc-col-header-cell-cushion, .fc-daygrid-day-number, .fc-toolbar-title').forEach(el => {
+            el.style.color = 'white';
+            el.style.textDecoration = 'none';
+          });
+        };
+        fixColors();
+        // Since FC renders asynchronously sometimes, observer can help but timeout is fine for quick fix
+        setTimeout(fixColors, 100);
+      }).catch(err => {
+        console.error("Failed to load Calendar dependencies", err);
+      });
+    }
+  };
+
+  // ==========================================================================
   // INITIALIZATION
   // ==========================================================================
 
@@ -1077,6 +1237,11 @@ document.addEventListener("DOMContentLoaded", function () {
         // Reveal Main Content
         const caja = document.querySelector(".caja");
         if (caja) caja.style.display = "";
+
+        // Lazy load Calendar if enabled
+        if (prefs.enableCalendar === true) {
+          CalendarManager.init();
+        }
       });
   };
 

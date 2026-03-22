@@ -114,6 +114,7 @@
     "label_late_greeting": "Custom Late Night Greeting",
     "label_auto_delete": "Auto-delete expired events",
     "label_enable_calculator": "Enable Life Calculator (Days Counter)",
+    "label_enable_calendar": "Enable Calendar (with your birthdays and events)",
     "text_late_greeting_help": "Use <strong>{name}</strong> for username. <a href='https://icons.getbootstrap.com/' target='_blank' class='text-info'>Bootstrap Icons</a> and emojis 🎹 are supported.",
     "btn_save_preferences": "Save Preferences",
     "alert_preferences_saved": "Preferences Saved!",

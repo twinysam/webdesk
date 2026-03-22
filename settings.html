@@ -1164,6 +1164,21 @@
               >
             </div>
 
+            <!-- Calendar Toggle -->
+            <div class="form-check form-switch mb-4">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="checkEnableCalendar"
+              />
+              <label
+                class="form-check-label"
+                for="checkEnableCalendar"
+                data-i18n="label_enable_calendar"
+                >Enable Calendar (with your birthdays and events)</label
+              >
+            </div>
+
             <button id="btnSavePreferences" class="btn btn-primary">
               <i class="bi bi-save"></i>
               <span data-i18n="btn_save_preferences">Save Preferences</span>
@@ -1247,6 +1262,7 @@
         customLateGreeting: "",
         autoDeleteEvents: true,
         enableCalculator: false, // Default DISABLED
+        enableCalendar: false, // Default DISABLED
 
         // Appearance
         fullWidth: false,
@@ -1838,6 +1854,10 @@
         document.getElementById("checkEnableCalculator").checked =
           preferences.enableCalculator === true;
 
+        // Calendar Toggle
+        document.getElementById("checkEnableCalendar").checked =
+          preferences.enableCalendar === true;
+
         // Tree Toggle
         document.getElementById("prefTreeToggle").checked =
           preferences.treeEnabled !== false; // Default true
@@ -1894,6 +1914,9 @@
           const calculatorEnabled = document.getElementById(
             "checkEnableCalculator",
           ).checked;
+          const calendarEnabled = document.getElementById(
+            "checkEnableCalendar",
+          ).checked;
           const lateGreeting = document
             .getElementById("prefLateGreeting")
             .value.trim();
@@ -1901,6 +1924,7 @@
           preferences.eveningStart = eveningVal;
           preferences.treeEnabled = treeEnabled;
           preferences.enableCalculator = calculatorEnabled;
+          preferences.enableCalendar = calendarEnabled;
           preferences.customLateGreeting = lateGreeting;
 
           saveData(PREFERENCES_KEY, preferences);
