@@ -1145,23 +1145,26 @@ document.addEventListener("DOMContentLoaded", function () {
     },
 
     init: () => {
-      CalendarManager.loadDependencies().then(async () => {
-        const caja = document.querySelector(".caja");
-        if (!caja) return;
+      const caja = document.querySelector(".caja");
+      if (!caja) return;
 
-        let container = document.getElementById("calendar-container");
-        if (!container) {
-          const hr = document.createElement("hr");
-          caja.appendChild(hr);
-          
-          container = document.createElement("div");
-          container.id = "calendar-container";
-          container.className = "mt-5 p-4 bg-dark rounded border border-secondary CalendarManager-wrapper";
-          
-          // FullCalendar text defaults to dark in some themes, force white text container-wide
-          container.style.color = "white";
-          caja.appendChild(container);
-        }
+      let wrapper = document.getElementById("calendar-wrapper");
+      if (!wrapper) {
+        const hr = document.createElement("hr");
+        caja.appendChild(hr);
+        
+        wrapper = document.createElement("div");
+        wrapper.id = "calendar-wrapper";
+        
+        const titleText = I18nManager.getString("title_calendar") || "Calendar";
+        wrapper.innerHTML = `<h2><i class="bi bi-calendar3"></i> ${titleText}</h2>
+          <div id="calendar-container" class="mt-4 p-4 bg-dark rounded border border-secondary CalendarManager-wrapper mx-auto" style="max-width: 900px; color: white;"></div>`;
+        caja.appendChild(wrapper);
+      }
+
+      CalendarManager.loadDependencies().then(async () => {
+        const container = document.getElementById("calendar-container");
+        if (!container) return;
 
         if (CalendarManager.instance) {
           CalendarManager.instance.destroy();
@@ -1169,11 +1172,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const events = await CalendarManager.getEventData();
 
+        const screenHeight = window.screen.height || window.innerHeight;
+        let calHeight = screenHeight * 0.75;
+        if (calHeight < 400) calHeight = 400;
+
         CalendarManager.instance = new FullCalendar.Calendar(container, {
           initialView: 'dayGridMonth',
           themeSystem: 'bootstrap5',
           events: events,
           firstDay: 1, 
+          height: calHeight,
           eventClick: function(info) {
             info.jsEvent.preventDefault();
             if (info.event.url) {
@@ -1222,8 +1230,18 @@ document.addEventListener("DOMContentLoaded", function () {
         GreetingManager.updateVisuals(); // Set tree image (starts load)
         PreferencesManager.init(); // Apply prefs (might reveal tree container)
 
-        // Life Calculator (Optional)
         const prefs = PreferencesManager.getPreferences();
+
+        // Reveal Main Content early so appends work visibly
+        const caja = document.querySelector(".caja");
+        if (caja) caja.style.display = "";
+
+        // Calendar Manager (Optional)
+        if (prefs.enableCalendar === true) {
+          CalendarManager.init();
+        }
+
+        // Life Calculator (Optional)
         if (prefs.enableCalculator === true) {
           EventsManager.initCalculator();
         }
@@ -1233,15 +1251,6 @@ document.addEventListener("DOMContentLoaded", function () {
         setInterval(GreetingManager.updateMessage, 60000 * 5);
 
         TooltipManager.init();
-
-        // Reveal Main Content
-        const caja = document.querySelector(".caja");
-        if (caja) caja.style.display = "";
-
-        // Lazy load Calendar if enabled
-        if (prefs.enableCalendar === true) {
-          CalendarManager.init();
-        }
       });
   };
 
