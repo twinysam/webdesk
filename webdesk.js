@@ -1161,9 +1161,18 @@ document.addEventListener("DOMContentLoaded", function () {
           <style>
             #calendar-container {
               font-size: clamp(0.7rem, 1.5vh, 0.95rem);
+              background-color: var(--calc-input-bg);
+              color: var(--calc-input-color);
+              border: 1px solid var(--calc-input-border);
             }
             #calendar-container .fc-toolbar-title {
               font-size: clamp(1rem, 2vh, 1.3rem) !important;
+              color: var(--calc-input-color);
+            }
+            #calendar-container a.fc-col-header-cell-cushion, 
+            #calendar-container a.fc-daygrid-day-number {
+              color: var(--calc-input-color);
+              text-decoration: none;
             }
             #calendar-container .fc-event {
               font-size: 0.85em;
@@ -1172,9 +1181,27 @@ document.addEventListener("DOMContentLoaded", function () {
             #calendar-container .fc-daygrid-more-link {
               font-size: 0.85em;
               font-weight: bold;
+              color: var(--calc-input-color);
+            }
+            /* Button Theming based on available CSS vars */
+            #calendar-container .btn-primary {
+              background-color: var(--calc-input-border);
+              border-color: var(--calc-input-border);
+              color: var(--calc-input-color);
+            }
+            #calendar-container .btn-primary:hover,
+            #calendar-container .btn-primary:not(:disabled):active {
+              background-color: var(--calc-input-color);
+              border-color: var(--calc-input-color);
+              color: var(--calc-input-bg);
+            }
+            #calendar-container .btn-primary:disabled {
+              background-color: var(--calc-input-bg);
+              border-color: var(--calc-input-border);
+              color: var(--calc-input-border);
             }
           </style>
-          <div id="calendar-container" class="mt-4 p-3 bg-dark rounded border border-secondary CalendarManager-wrapper mx-auto" style="max-width: 900px; color: white;"></div>`;
+          <div id="calendar-container" class="mt-4 p-3 rounded CalendarManager-wrapper mx-auto" style="max-width: 900px;"></div>`;
         caja.appendChild(wrapper);
       }
 
@@ -1208,17 +1235,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         CalendarManager.instance.render();
-
-        // Fix header text colors dynamically for dark mode if missed by theme
-        const fixColors = () => {
-          container.querySelectorAll('.fc-col-header-cell-cushion, .fc-daygrid-day-number, .fc-toolbar-title').forEach(el => {
-            el.style.color = 'white';
-            el.style.textDecoration = 'none';
-          });
-        };
-        fixColors();
-        // Since FC renders asynchronously sometimes, observer can help but timeout is fine for quick fix
-        setTimeout(fixColors, 100);
       }).catch(err => {
         console.error("Failed to load Calendar dependencies", err);
       });
