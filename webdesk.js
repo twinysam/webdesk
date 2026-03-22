@@ -1158,7 +1158,23 @@ document.addEventListener("DOMContentLoaded", function () {
         
         const titleText = I18nManager.getString("title_calendar") || "Calendar";
         wrapper.innerHTML = `<h2><i class="bi bi-calendar3"></i> ${titleText}</h2>
-          <div id="calendar-container" class="mt-4 p-4 bg-dark rounded border border-secondary CalendarManager-wrapper mx-auto" style="max-width: 900px; color: white;"></div>`;
+          <style>
+            #calendar-container {
+              font-size: clamp(0.7rem, 1.5vh, 0.95rem);
+            }
+            #calendar-container .fc-toolbar-title {
+              font-size: clamp(1rem, 2vh, 1.3rem) !important;
+            }
+            #calendar-container .fc-event {
+              font-size: 0.85em;
+              padding: 1px 3px;
+            }
+            #calendar-container .fc-daygrid-more-link {
+              font-size: 0.85em;
+              font-weight: bold;
+            }
+          </style>
+          <div id="calendar-container" class="mt-4 p-3 bg-dark rounded border border-secondary CalendarManager-wrapper mx-auto" style="max-width: 900px; color: white;"></div>`;
         caja.appendChild(wrapper);
       }
 
@@ -1182,6 +1198,7 @@ document.addEventListener("DOMContentLoaded", function () {
           events: events,
           firstDay: 1, 
           height: calHeight,
+          dayMaxEvents: true, // Limits events per day and shows "+X more" to prevent vertical stretching
           eventClick: function(info) {
             info.jsEvent.preventDefault();
             if (info.event.url) {
