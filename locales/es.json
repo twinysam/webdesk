@@ -159,7 +159,7 @@
     "disclaimer_patterns": "Patrones robados de <a href='https://heropatterns.com/' target='_blank' class='text-info'>Hero Patterns</a>."
   },
   "greetingRules": {
-    "morningStart": 6,
+    "morningStart": 5,
     "morningEnd": 13,
     "afternoonStart": 13,
     "afternoonEnd": 20,
