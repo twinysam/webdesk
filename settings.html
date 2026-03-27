@@ -73,9 +73,9 @@
         font-size: 1.2rem;
       }
       .nav-tabs .nav-link.active {
-        background-color: #016293;
+        background-color: var(--bg-color-light, #016293);
         color: white;
-        border-color: #016293;
+        border-color: var(--bg-color-light, #016293);
       }
       .tab-content {
         padding: 2rem 0;
@@ -151,7 +151,7 @@
         transition: color 0.2s;
       }
       .home-btn:hover {
-        color: #83d3fa;
+        color: var(--link-color, #83d3fa);
       }
 
       /* Coloris: visible text in color inputs and correct swatch after programmatic value */
@@ -163,6 +163,16 @@
       }
       .clr-field input {
         color: #fff !important;
+      }
+
+      /* Form Toggle Switches Seasonal Override */
+      .form-check-input:checked {
+        background-color: var(--bg-color-light, #016293) !important;
+        border-color: var(--bg-color-light, #016293) !important;
+      }
+      .form-check-input:focus {
+        border-color: var(--link-color, #83d3fa) !important;
+        box-shadow: none !important;
       }
     </style>
   </head>
