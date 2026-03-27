@@ -8,10 +8,10 @@
       START_DATE: typeof dayjs !== "undefined" ? dayjs() : null, // Will be updated by ProfileManager/Init if available
   
       THEME_PRESETS: {
-        winter: { bg: "#016293", pattern: "#014669" },
-        spring: { bg: "#2d6a4f", pattern: "#1b4332" },
-        summer: { bg: "#be123c", pattern: "#881337" },
-        autumn: { bg: "#ca6702", pattern: "#9d0208" },
+        winter: { bg: "#016293", pattern: "#014669", link: "#83d3fa", linkHover: "#c4eafd" },
+        spring: { bg: "#2d6a4f", pattern: "#1b4332", link: "#95d5b2", linkHover: "#b7e4c7" },
+        summer: { bg: "#be123c", pattern: "#881337", link: "#fda4af", linkHover: "#fecdd3" },
+        autumn: { bg: "#ca6702", pattern: "#9d0208", link: "#ffc300", linkHover: "#ffd60a" },
       },
 
       getToday: () => dayjs(),

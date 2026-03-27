@@ -14,6 +14,9 @@
   --calc-input-bg: #fff;
   --calc-input-color: #212529;
   --calc-input-border: #ced4da;
+  
+  --link-color: #83d3fa;
+  --link-hover-color: #c4eafd;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -138,11 +141,23 @@ h2 {
 
 a,
 a:visited {
-  color: #83d3fa;
+  color: var(--link-color);
 }
 
 a:hover {
-  color: #c4eafd;
+  color: var(--link-hover-color);
+}
+
+.btn-primary {
+  --bs-btn-bg: var(--link-color);
+  --bs-btn-border-color: var(--link-color);
+  --bs-btn-hover-bg: var(--link-hover-color);
+  --bs-btn-hover-border-color: var(--link-hover-color);
+  --bs-btn-active-bg: var(--link-hover-color);
+  --bs-btn-active-border-color: var(--link-hover-color);
+  --bs-btn-color: #000;
+  --bs-btn-hover-color: #000;
+  --bs-btn-active-color: #000;
 }
 
 links,

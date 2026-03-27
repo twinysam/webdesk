@@ -2446,6 +2446,18 @@
             if (isDark) document.body.classList.add("dark-mode");
             else document.body.classList.add("light-mode");
 
+            const presetSel = document.getElementById("presetThemeSelect");
+            const activeP = presetSel ? presetSel.value : "custom";
+            if (activeP !== "custom" && typeof DateUtils !== "undefined" && DateUtils.THEME_PRESETS[activeP]) {
+               const p = DateUtils.THEME_PRESETS[activeP];
+               document.body.style.setProperty("--link-color", p.link);
+               document.body.style.setProperty("--link-hover-color", p.linkHover);
+            } else {
+               const prefTemp = getData().preferences || {};
+               document.body.style.setProperty("--link-color", prefTemp.linkColor || "#83d3fa");
+               document.body.style.setProperty("--link-hover-color", prefTemp.linkHoverColor || "#c4eafd");
+            }
+
             const { preferences } = getData();
             preferences.theme = theme;
             preferences.fullWidth =
@@ -2465,6 +2477,12 @@
             ).value;
             delete preferences.bgColor;
             delete preferences.patternColor;
+
+            if (activeP !== "custom" && typeof DateUtils !== "undefined" && DateUtils.THEME_PRESETS[activeP]) {
+               const p = DateUtils.THEME_PRESETS[activeP];
+               preferences.linkColor = p.link;
+               preferences.linkHoverColor = p.linkHover;
+            }
 
             // Safety check: Don't overwrite if dropdown is empty but storage has a pattern
             if (!patternName && preferences.bgPattern) {
@@ -2502,6 +2520,11 @@
             localStorage.setItem("cachedBgColorLight", preferences.bgColorLight || "#016293");
             localStorage.setItem("cachedBgColorDark", preferences.bgColorDark || "#131313");
             
+            if (preferences.linkColor) {
+               localStorage.setItem("cachedLinkColor", preferences.linkColor);
+               localStorage.setItem("cachedLinkHoverColor", preferences.linkHoverColor);
+            }
+
             // Legacy keys for backward compatibility/other parts of the app
             localStorage.setItem("cachedBgPattern", uri || "");
             localStorage.setItem("cachedBgColor", bgColor || "");

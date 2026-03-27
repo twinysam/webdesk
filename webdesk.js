@@ -156,6 +156,8 @@ document.addEventListener("DOMContentLoaded", function () {
         prefs.bgColorLight || "#016293",
       );
       body.style.setProperty("--bg-color-dark", prefs.bgColorDark || "#131313");
+      body.style.setProperty("--link-color", prefs.linkColor || "#83d3fa");
+      body.style.setProperty("--link-hover-color", prefs.linkHoverColor || "#c4eafd");
 
       // Set Patterns - Use cached values if available to avoid loading bg-patterns.js
       const cachedLight = localStorage.getItem("cachedBgImageLight");
@@ -230,9 +232,13 @@ document.addEventListener("DOMContentLoaded", function () {
           const oldPatternColor = prefs.patternColorLight || "#014669";
           prefs.bgColorLight = preset.bg;
           prefs.patternColorLight = preset.pattern;
+          prefs.linkColor = preset.link;
+          prefs.linkHoverColor = preset.linkHover;
           
           localStorage.setItem(PreferencesManager.STORAGE_KEY, JSON.stringify(prefs));
           localStorage.setItem("cachedBgColorLight", preset.bg);
+          localStorage.setItem("cachedLinkColor", preset.link);
+          localStorage.setItem("cachedLinkHoverColor", preset.linkHover);
           
           let cachedLight = localStorage.getItem("cachedBgImageLight");
           if (cachedLight && cachedLight !== "none") {
