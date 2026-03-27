@@ -36,11 +36,13 @@
         const colorDark = localStorage.getItem("cachedBgColorDark") || prefs.bgColorDark || "#131313";
         const linkColor = localStorage.getItem("cachedLinkColor") || prefs.linkColor || "#83d3fa";
         const linkHoverColor = localStorage.getItem("cachedLinkHoverColor") || prefs.linkHoverColor || "#c4eafd";
+        const highlightColor = localStorage.getItem("cachedHighlightColor") || prefs.highlightColor || "#93007c";
 
         root.style.setProperty("--bg-color-light", colorLight);
         root.style.setProperty("--bg-color-dark", colorDark);
         root.style.setProperty("--link-color", linkColor);
         root.style.setProperty("--link-hover-color", linkHoverColor);
+        root.style.setProperty("--fecha-highlight", highlightColor);
 
         // 2. Apply cached pattern images (generated and saved by Settings page)
         const cachedLight = localStorage.getItem("cachedBgImageLight");

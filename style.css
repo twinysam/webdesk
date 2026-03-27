@@ -17,6 +17,7 @@
   
   --link-color: #83d3fa;
   --link-hover-color: #c4eafd;
+  --fecha-highlight: #93007c;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -109,7 +110,7 @@ body.xmas {
 }*/
 
 #fecha span {
-  background-color: #93007c;
+  background-color: var(--fecha-highlight);
 }
 
 #fecha a span,

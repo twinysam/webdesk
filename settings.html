@@ -2462,10 +2462,12 @@
                const p = DateUtils.THEME_PRESETS[activeP];
                document.body.style.setProperty("--link-color", p.link);
                document.body.style.setProperty("--link-hover-color", p.linkHover);
+               document.body.style.setProperty("--fecha-highlight", p.highlight);
             } else {
                const prefTemp = getData().preferences || {};
                document.body.style.setProperty("--link-color", prefTemp.linkColor || "#83d3fa");
                document.body.style.setProperty("--link-hover-color", prefTemp.linkHoverColor || "#c4eafd");
+               document.body.style.setProperty("--fecha-highlight", prefTemp.highlightColor || "#93007c");
             }
 
             const { preferences } = getData();
@@ -2492,6 +2494,7 @@
                const p = DateUtils.THEME_PRESETS[activeP];
                preferences.linkColor = p.link;
                preferences.linkHoverColor = p.linkHover;
+               preferences.highlightColor = p.highlight;
             }
 
             // Safety check: Don't overwrite if dropdown is empty but storage has a pattern
@@ -2533,6 +2536,7 @@
             if (preferences.linkColor) {
                localStorage.setItem("cachedLinkColor", preferences.linkColor);
                localStorage.setItem("cachedLinkHoverColor", preferences.linkHoverColor);
+               localStorage.setItem("cachedHighlightColor", preferences.highlightColor);
             }
 
             // Legacy keys for backward compatibility/other parts of the app
