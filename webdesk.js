@@ -229,7 +229,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const season = currentSeasonData.season === "fall" ? "autumn" : currentSeasonData.season;
         const preset = DateUtils.THEME_PRESETS[season];
         
-        if (preset && prefs.bgColorLight !== preset.bg) {
+        if (preset && (
+            prefs.bgColorLight !== preset.bg || 
+            prefs.linkColor !== preset.link || 
+            prefs.highlightColor !== preset.highlight
+        )) {
           const oldPatternColor = prefs.patternColorLight || "#014669";
           prefs.bgColorLight = preset.bg;
           prefs.patternColorLight = preset.pattern;
