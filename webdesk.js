@@ -195,12 +195,16 @@ document.addEventListener("DOMContentLoaded", function () {
           if (typeof generatePatternUri === "function") {
             const uriLight = generatePatternUri(prefs.bgPattern, pColorLight, pOpacity);
             const uriDark = generatePatternUri(prefs.bgPattern, pColorDark, pOpacity);
+            // Must set on documentElement (:root) because style.css resolves
+            // var(--bg-image) → var(--bg-image-light) at the :root level.
+            // Setting on body would NOT override the :root-level default.
+            const root = document.documentElement;
             if (uriLight) {
-              body.style.setProperty("--bg-image-light", `url("${uriLight}")`);
+              root.style.setProperty("--bg-image-light", `url("${uriLight}")`);
               localStorage.setItem("cachedBgImageLight", uriLight);
             }
             if (uriDark) {
-              body.style.setProperty("--bg-image-dark", `url("${uriDark}")`);
+              root.style.setProperty("--bg-image-dark", `url("${uriDark}")`);
               localStorage.setItem("cachedBgImageDark", uriDark);
             }
             // Cache pattern dimensions
