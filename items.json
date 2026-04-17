@@ -569,7 +569,12 @@
     "icon": "metaai",
     "title": "Meta AI"
   },
-
+  {
+    "name": "Claude AI",
+    "url": "https://claude.ai/new",
+    "icon": "claude",
+    "title": "Claude AI"
+  },
   {
     "name": "Github",
     "url": "https://github.com/",

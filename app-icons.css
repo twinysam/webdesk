@@ -1,5 +1,5 @@
 .item a.whatsapp {
-  background-image: url(images/app_whatsapp.png);
+  background-image: url(images/app_whatsapp.webp);
 }
 
 .item a.yahoo-mail {
@@ -11,15 +11,15 @@
 }
 
 .item a.google-drive {
-  background-image: url(images/app_google-drive.png);
+  background-image: url(images/app_google-drive.webp);
 }
 
 .item a.meli {
-  background-image: url(images/app_meli.png);
+  background-image: url(images/app_meli.webp);
 }
 
 .item a.calendar {
-  background-image: url(images/app_google-calendar.png);
+  background-image: url(images/app_google-calendar.webp);
   background-size: 95%;
   background-repeat: no-repeat;
   background-position: center;
@@ -31,7 +31,7 @@
 }
 
 .item a.mercado-pago {
-  background-image: url(images/app_mercado-pago.png);
+  background-image: url(images/app_mercado-pago.webp);
 }
 
 .item a.youtube {
@@ -39,53 +39,53 @@
 }
 
 .item a.reddit {
-  background-image: url(images/app_reddit.png);
+  background-image: url(images/app_reddit.webp);
 }
 
 .item a.gmail {
-  background-image: url(images/app_gmail.png);
+  background-image: url(images/app_gmail.webp);
 }
 
 .item a.outlook {
-  background-image: url(images/app_outlook.png);
+  background-image: url(images/app_outlook.webp);
 }
 
 .item a.netflix {
-  background-image: url(images/app_netflix.png);
+  background-image: url(images/app_netflix.webp);
 }
 
 .item a.github {
-  background-image: url(images/app_github.png);
+  background-image: url(images/app_github.webp);
 }
 
 .item a.santander {
-  background-image: url(images/app_santander.png);
+  background-image: url(images/app_santander.webp);
   background-position: center;
   background-size: 105%;
 }
 
 .item a.letterboxd {
-  background-image: url(images/app_letterboxd.png);
+  background-image: url(images/app_letterboxd.webp);
 }
 
 .item a.telecentro {
-  background-image: url(images/app_telecentro.png);
+  background-image: url(images/app_telecentro.webp);
 }
 
 .item a.lichess {
-  background-image: url(images/app_lichess.png);
+  background-image: url(images/app_lichess.webp);
 }
 
 .item a.piratebay {
-  background-image: url(images/app_piratebay.png);
+  background-image: url(images/app_piratebay.webp);
 }
 
 .item a.calm {
-  background-image: url(images/app_calm.png);
+  background-image: url(images/app_calm.webp);
 }
 
 .item a.todo {
-  background-image: url(images/app_todo.png);
+  background-image: url(images/app_todo.webp);
 }
 
 .item a.instagram {
@@ -93,73 +93,73 @@
 }
 
 .item a.trello {
-  background-image: url(images/app_trello.png);
+  background-image: url(images/app_trello.webp);
 }
 
 .item a.sesse {
-  background-image: url(images/app_sesse.png);
+  background-image: url(images/app_sesse.webp);
 }
 
 .item a.eztv {
-  background-image: url(images/app_eztv.png);
+  background-image: url(images/app_eztv.webp);
 }
 
 .item a.yts {
-  background-image: url(images/app_yts.png);
+  background-image: url(images/app_yts.webp);
 }
 
 .item a.pocket {
-  background-image: url(images/app_pocket.png);
+  background-image: url(images/app_pocket.webp);
 }
 
 .item a.instapaper {
-  background-image: url(images/app_instapaper.png);
+  background-image: url(images/app_instapaper.webp);
 }
 
 .item a.google-news {
-  background-image: url(images/app_google-news.png);
+  background-image: url(images/app_google-news.webp);
 }
 
 .item a.google-maps {
-  background-image: url(images/app_google-maps.png);
+  background-image: url(images/app_google-maps.webp);
 }
 
 .item a.yt-music {
-  background-image: url(images/app_ytm.png);
+  background-image: url(images/app_ytm.webp);
 }
 
 .item a.btc-wisdom {
-  background-image: url(images/app_btc-wisdom.png);
+  background-image: url(images/app_btc-wisdom.webp);
 }
 
 .item a.telegram {
-  background-image: url(images/app_telegram.png);
+  background-image: url(images/app_telegram.webp);
 }
 
 .item a.appletv {
-  background-image: url(images/app_appletv.png);
+  background-image: url(images/app_appletv.webp);
 }
 
 .item a.messenger {
-  background-image: url(images/app_messenger.png);
+  background-image: url(images/app_messenger.webp);
 }
 
 .item a.tuenti {
-  background-image: url(images/app_tuenti.png);
+  background-image: url(images/app_tuenti.webp);
   /*background-size: 120%;*/
   background-position: center;
 }
 
 .item a.remote {
   background-color: white;
-  background-image: url(images/app_google-remote-desktop.png);
+  background-image: url(images/app_google-remote-desktop.webp);
   background-position: center;
   background-repeat: no-repeat;
   background-size: 85%;
 }
 
 .item a.amazon {
-  background-image: url(images/app_amazon.png);
+  background-image: url(images/app_amazon.webp);
 }
 
 .item a.trailers {
@@ -171,11 +171,11 @@
 }
 
 .item a.cinemark {
-  background-image: url(images/app_cinemark.png);
+  background-image: url(images/app_cinemark.webp);
 }
 
 .item a.lanacion {
-  background-image: url(images/app_lanacion.png);
+  background-image: url(images/app_lanacion.webp);
 }
 
 .item a.mundomaravilloso {
@@ -192,7 +192,7 @@
 
 .item a.phcode {
   background-color: white;
-  background-image: url(images/app_phcode.png);
+  background-image: url(images/app_phcode.webp);
 }
 
 .item a.localbitcoins {
@@ -200,11 +200,11 @@
 }
 
 .item a.simplenote {
-  background-image: url(images/app_simplenote.png);
+  background-image: url(images/app_simplenote.webp);
 }
 
 .item a.sube {
-  background-image: url(images/app_sube.png);
+  background-image: url(images/app_sube.webp);
 }
 
 .item a.preev {
@@ -212,7 +212,7 @@
 }
 
 .item a.wordle {
-  background-image: url(https://www.nytimes.com/games-assets/v2/metadata/wordle-apple-touch-icon.png?v=v2209071210);
+  background-image: url(https://www.nytimes.com/games-assets/v2/metadata/wordle-apple-touch-icon.webp?v=v2209071210);
 }
 
 .item a.hackernews {
@@ -220,7 +220,7 @@
 }
 
 .item a.duckduckgo {
-  background-image: url(images/app_duckduckgo.png);
+  background-image: url(images/app_duckduckgo.webp);
 }
 
 .item a.google-contacts {
@@ -232,7 +232,7 @@
 }
 
 .item a.radiogarden {
-  background-image: url(https://radio.garden/public/icons/ios/ios-appicon-180-180.png);
+  background-image: url(https://radio.garden/public/icons/ios/ios-appicon-180-180.webp);
   background-color: black;
 }
 
@@ -241,7 +241,7 @@
 }
 
 .item a.disneyplus {
-  background-image: url(images/app_disneyplus.png);
+  background-image: url(images/app_disneyplus.webp);
 }
 
 .item a.memrise {
@@ -261,7 +261,7 @@
 }
 
 .item a.mixnmojo {
-  background-image: url(https://i.imgur.com/lsfNHF2.png);
+  background-image: url(https://i.imgur.com/lsfNHF2.webp);
 }
 
 .item a.anydo {
@@ -319,7 +319,7 @@
 }
 
 .item a.icloud {
-  background-image: url(https://apps.apple.com/redeem/assets/images/icon_icloud_152@3x.png);
+  background-image: url(https://apps.apple.com/redeem/assets/images/icon_icloud_152@3x.webp);
 }
 
 .item a.substack {
@@ -328,11 +328,11 @@
 }
 
 .item a.hbo-max {
-  background-image: url(images/app_hbo-max.png);
+  background-image: url(images/app_hbo-max.webp);
 }
 
 .item a.pulp {
-  background-image: url(https://static-cdn.play.date/static/images/apple-touch-icon.588a13acdab4.png);
+  background-image: url(https://static-cdn.play.date/static/images/apple-touch-icon.588a13acdab4.webp);
 }
 
 .item a.phcode {
@@ -344,7 +344,7 @@
 }
 
 .item a.gemini {
-  background-image: url(images/app_gemini.png);
+  background-image: url(images/app_gemini.webp);
 }
 
 .item a.eltrece {
@@ -352,15 +352,15 @@
 }
 
 .item a.twitch {
-  background-image: url(images/app_twitch.png);
+  background-image: url(images/app_twitch.webp);
 }
 
 .item a.mitelefe {
-  background-image: url(images/app_mitelefe.png);
+  background-image: url(images/app_mitelefe.webp);
 }
 
 .item a.copilot {
-  background-image: url(images/app_copilot.png);
+  background-image: url(images/app_copilot.webp);
 }
 
 .item a.mangadex {
@@ -372,47 +372,47 @@
 }
 
 .item a.deepseek {
-  background-image: url(images/app_deepseek.png);
+  background-image: url(images/app_deepseek.webp);
 }
 
 .item a.wikipedia {
-  background-image: url(images/app_wikipedia.png);
+  background-image: url(images/app_wikipedia.webp);
 }
 
 .item a.x {
-  background-image: url(images/app_x.png);
+  background-image: url(images/app_x.webp);
 }
 
 .item a.bing {
-  background-image: url(images/app_bing.png);
+  background-image: url(images/app_bing.webp);
 }
 
 .item a.chatgpt {
-  background-image: url(images/app_chatgpt.png);
+  background-image: url(images/app_chatgpt.webp);
 }
 
 .item a.metaai {
-  background-image: url(images/app_metaai.png);
+  background-image: url(images/app_metaai.webp);
 }
 
 .item a.grok {
-  background-image: url(images/app_grok.png);
+  background-image: url(images/app_grok.webp);
 }
 
 .item a.newyorker {
-  background-image: url(images/app_newyorker.png);
+  background-image: url(images/app_newyorker.webp);
 }
 
 .item a.facebook {
-  background-image: url(images/app_facebook.png);
+  background-image: url(images/app_facebook.webp);
 }
 
 .item a.pinterest {
-  background-image: url(images/app_pinterest.png);
+  background-image: url(images/app_pinterest.webp);
 }
 
 .item a.colab {
-  background-image: url(images/app_colab.png);
+  background-image: url(images/app_colab.webp);
   background-color: white;
   background-position: center;
   background-repeat: no-repeat;
@@ -420,63 +420,63 @@
 }
 
 .item a.aspen {
-  background-image: url(images/app_aspen.png);
+  background-image: url(images/app_aspen.webp);
 }
 
 .item a.meet {
-  background-image: url(images/app_meet.png);
+  background-image: url(images/app_meet.webp);
 }
 
 .item a.tiktok {
-  background-image: url(images/app_tiktok.png);
+  background-image: url(images/app_tiktok.webp);
 }
 
 .item a.yahoo {
-  background-image: url(images/app_yahoo.png);
+  background-image: url(images/app_yahoo.webp);
 }
 
 .item a.linkedin {
-  background-image: url(images/app_linkedin.png);
+  background-image: url(images/app_linkedin.webp);
 }
 
 .item a.ebay {
-  background-image: url(images/app_ebay.png);
+  background-image: url(images/app_ebay.webp);
 }
 
 .item a.temu {
-  background-image: url(images/app_temu.png);
+  background-image: url(images/app_temu.webp);
 }
 
 .item a.canva {
-  background-image: url(images/app_canva.png);
+  background-image: url(images/app_canva.webp);
 }
 
 .item a.etsy {
-  background-image: url(images/app_etsy.png);
+  background-image: url(images/app_etsy.webp);
 }
 
 .item a.ipsy {
-  background-image: url(images/app_ipsy.png);
+  background-image: url(images/app_ipsy.webp);
 }
 
 .item a.walmart {
-  background-image: url(images/app_walmart.png);
+  background-image: url(images/app_walmart.webp);
 }
 
 .item a.washingtonpost {
-  background-image: url(images/app_washingtonpost.png);
+  background-image: url(images/app_washingtonpost.webp);
 }
 
 .item a.apnews {
-  background-image: url(images/app_apnews.png);
+  background-image: url(images/app_apnews.webp);
 }
 
 .item a.latimes {
-  background-image: url(images/app_latimes.png);
+  background-image: url(images/app_latimes.webp);
 }
 
 .item a.reuters {
-  background-image: url(images/app_reuters.png);
+  background-image: url(images/app_reuters.webp);
 }
 
 .item a.onedrive {
@@ -500,23 +500,23 @@
 }
 
 .item a.box {
-  background-image: url(images/app_box.png);
+  background-image: url(images/app_box.webp);
 }
 
 .item a.crunchyroll {
-  background-image: url(images/app_crunchyroll.png);
+  background-image: url(images/app_crunchyroll.webp);
 }
 
 .item a.dazn {
-  background-image: url(images/app_dazn.png);
+  background-image: url(images/app_dazn.webp);
 }
 
 .item a.discord {
-  background-image: url(images/app_discord.png);
+  background-image: url(images/app_discord.webp);
 }
 
 .item a.f1 {
-  background-image: url(images/app_f1.png);
+  background-image: url(images/app_f1.webp);
 }
 
 .item a.fifa {
@@ -524,7 +524,7 @@
 }
 
 .item a.flickr {
-  background-image: url(images/app_flickr.png);
+  background-image: url(images/app_flickr.webp);
 }
 
 .item a.goodnotes {
@@ -536,7 +536,7 @@
 }
 
 .item a.googletranslate {
-  background-image: url(images/app_googletranslate.png);
+  background-image: url(images/app_googletranslate.webp);
   background-color: white;
   background-size: 80%;
   background-repeat: no-repeat;
@@ -544,12 +544,12 @@
 }
 
 .item a.googlekeep {
-  background-image: url(images/app_googlekeep.png);
+  background-image: url(images/app_googlekeep.webp);
   background-color: white;
 }
 
 .item a.googlehome {
-  background-image: url(images/app_googlehome.png);
+  background-image: url(images/app_googlehome.webp);
 }
 
 .item a.headspace {
@@ -569,27 +569,27 @@
 }
 
 .item a.mubi {
-  background-image: url(images/app_mubi.png);
+  background-image: url(images/app_mubi.webp);
 }
 
 .item a.mlb {
-  background-image: url(images/app_mlb.png);
+  background-image: url(images/app_mlb.webp);
 }
 
 .item a.nba {
-  background-image: url(images/app_nba.png);
+  background-image: url(images/app_nba.webp);
 }
 
 .item a.paramount {
-  background-image: url(images/app_paramount.png);
+  background-image: url(images/app_paramount.webp);
 }
 
 .item a.primevideo {
-  background-image: url(images/app_primevideo.png);
+  background-image: url(images/app_primevideo.webp);
 }
 
 .item a.soundcloud {
-  background-image: url(images/app_soundcloud.png);
+  background-image: url(images/app_soundcloud.webp);
 }
 
 .item a.spotify {
@@ -597,11 +597,11 @@
 }
 
 .item a.threads {
-  background-image: url(images/app_threads.png);
+  background-image: url(images/app_threads.webp);
 }
 
 .item a.vix {
-  background-image: url(images/app_vix.png);
+  background-image: url(images/app_vix.webp);
 }
 
 .item a.wattpad {
@@ -609,13 +609,17 @@
 }
 
 .item a.worldcup2026 {
-  background-image: url(images/app_worldcup2026.png);
+  background-image: url(images/app_worldcup2026.webp);
 }
 
 .item a.associatedpress {
-  background-image: url(images/app_associatedpress.png);
+  background-image: url(images/app_associatedpress.webp);
 }
 
 .item a.linkedin {
   background-image: url(images/app_linkedin.webp);
+}
+
+.item a.claude {
+  background-image: url(images/app_claude.webp);
 }
