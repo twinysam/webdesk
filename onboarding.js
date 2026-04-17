@@ -589,7 +589,6 @@ window.OnboardingManager = {
   },
 
   handleImport: (event) => {
-    // Reuse existing logic from previous version, just adapted
     const file = event.target.files[0];
     if (!file) return;
 
@@ -598,28 +597,12 @@ window.OnboardingManager = {
       try {
         const data = JSON.parse(e.target.result);
 
-        if (data.stats)
-          localStorage.setItem("clickStats", JSON.stringify(data.stats));
-        if (data.config)
-          localStorage.setItem("appConfig", JSON.stringify(data.config));
-        if (data.customEvents)
-          localStorage.setItem(
-            "customEvents",
-            JSON.stringify(data.customEvents)
-          );
-        if (data.myApps)
-          localStorage.setItem("myApps", JSON.stringify(data.myApps));
-        if (data.userLinks)
-          localStorage.setItem("userLinks", JSON.stringify(data.userLinks));
-        if (data.userBirthdays)
-          localStorage.setItem(
-            "userBirthdays",
-            JSON.stringify(data.userBirthdays)
-          );
+        // Use shared BackupManager for consistent import
+        // (handles all 9 keys, cache regeneration, and first-time-user flags)
+        BackupManager.importData(data);
 
-        if (data.profile) {
-          localStorage.setItem("userProfile", JSON.stringify(data.profile));
-        } else {
+        // Fallback: if backup had no profile, create a minimal one
+        if (!data.profile) {
           ProfileManager.setProfile("User", "1985-10-17", "en");
         }
 

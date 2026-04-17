@@ -1237,6 +1237,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
     <script src="js/date-utils.js"></script>
+    <script src="js/backup.js"></script>
     <script src="js/i18n.js"></script>
 
     <script>
@@ -2786,30 +2787,7 @@
 
         // Backup
         document.getElementById("btnExport").addEventListener("click", () => {
-          const {
-            stats,
-            config,
-            customEvents,
-            profile,
-            myApps,
-            userLinks,
-            userBirthdays,
-            annualEvents,
-            preferences,
-          } = getData();
-          const exportData = {
-            stats,
-            config,
-            customEvents,
-            profile,
-            myApps,
-            userLinks,
-            userBirthdays,
-            annualEvents,
-            preferences,
-            version: 5,
-            date: new Date().toISOString(),
-          };
+          const exportData = BackupManager.exportData();
           const blob = new Blob([JSON.stringify(exportData, null, 2)], {
             type: "application/json",
           });
@@ -2852,23 +2830,7 @@
           reader.onload = (event) => {
             try {
               const data = JSON.parse(event.target.result);
-              if (data.stats) saveData(STATS_KEY, data.stats);
-              if (data.config) saveData(CONFIG_KEY, data.config);
-              if (data.customEvents) saveData(EVENTS_KEY, data.customEvents);
-              if (data.profile) saveData(PROFILE_KEY, data.profile);
-              if (data.myApps) saveData(MYAPPS_KEY, data.myApps);
-              if (data.userLinks) saveData(LINKS_KEY, data.userLinks);
-              if (data.userBirthdays)
-                saveData(BIRTHDAYS_KEY, data.userBirthdays);
-              if (data.annualEvents)
-                saveData(ANNUAL_EVENTS_KEY, data.annualEvents);
-              if (data.preferences) saveData(PREFERENCES_KEY, data.preferences);
-
-              // Legacy
-              if (!data.config && !data.stats) {
-                saveData(STATS_KEY, data);
-              }
-
+              BackupManager.importData(data);
               showAlert("Restored data successfully!", "success");
               setTimeout(() => location.reload(), 1500);
             } catch (err) {

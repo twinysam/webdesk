@@ -186,6 +186,43 @@ document.addEventListener("DOMContentLoaded", function () {
           if (uriDark) body.style.setProperty("--bg-image-dark", `url("${uriDark}")`);
       }
 
+      // If no cache AND no generator available, lazy-load bg-patterns.js to rebuild the cache.
+      // This typically happens after a backup import where the pattern SVG cache was cleared.
+      if (!cachedLight && prefs.bgPattern && prefs.bgPattern !== "none" && typeof generatePatternUri === "undefined") {
+        const script = document.createElement("script");
+        script.src = "js/bg-patterns.js";
+        script.onload = () => {
+          if (typeof generatePatternUri === "function") {
+            const uriLight = generatePatternUri(prefs.bgPattern, pColorLight, pOpacity);
+            const uriDark = generatePatternUri(prefs.bgPattern, pColorDark, pOpacity);
+            if (uriLight) {
+              body.style.setProperty("--bg-image-light", `url("${uriLight}")`);
+              localStorage.setItem("cachedBgImageLight", uriLight);
+            }
+            if (uriDark) {
+              body.style.setProperty("--bg-image-dark", `url("${uriDark}")`);
+              localStorage.setItem("cachedBgImageDark", uriDark);
+            }
+            // Cache pattern dimensions
+            const pObj = typeof bgPatterns !== "undefined" && bgPatterns.find(p => p.name === prefs.bgPattern);
+            if (pObj) {
+              const w = (pObj.width || pObj.size).toString();
+              const h = (pObj.height || pObj.size).toString();
+              localStorage.setItem("cachedBgSize", w);
+              localStorage.setItem("cachedBgSizeY", h);
+              body.style.setProperty("--bg-size", w + "px");
+              body.style.setProperty("--bg-pattern-width", w + "px");
+              body.style.setProperty("--bg-pattern-height", h + "px");
+              if (speed > 0) {
+                body.style.setProperty("--bg-animate-duration", parseInt(w) / speed + "s");
+              }
+            }
+            console.log("[Patterns] Rebuilt cache after import/missing cache.");
+          }
+        };
+        document.head.appendChild(script);
+      }
+
       // Set background dimensions for animation
       const patternObj = typeof bgPatterns !== "undefined" ? bgPatterns.find((p) => p.name === prefs.bgPattern) : null;
       let width = cachedSize || (patternObj ? patternObj.width || patternObj.size : null);
