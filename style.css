@@ -759,7 +759,7 @@ ul.columns {
   background-color: transparent;
   z-index: 1; /* Keep text on top */
   color: white; /* Ensure text is readable */
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9), 0 0 8px rgba(0, 0, 0, 0.7); /* Stronger shadow for light mode readability */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2), 0 0 8px rgba(0, 0, 0, 0.1); /* Stronger shadow for light mode readability */
   font-weight: bold;
 }
 

@@ -636,7 +636,48 @@ document.addEventListener("DOMContentLoaded", function () {
             if (e.date === tomorrowFull) matches.eventsTomorrow.push(nameText);
           });
 
-          const extraMsg = EventsManager.buildEventMessage(matches);
+          let extraMsg = EventsManager.buildEventMessage(matches);
+
+          if (!extraMsg) {
+             const todayDayjs = DateUtils.getToday().startOf('day');
+             const countdowns = [];
+
+             // userBirthdays and annualEvents (DD/MM)
+             [...userBirthdays, ...annualEvents].forEach(item => {
+                 if (item.countdown) {
+                    const dateStr = item.birthday || item.date;
+                    let nextDate = dayjs(dateStr + '/' + todayDayjs.year(), 'DD/MM/YYYY').startOf('day');
+                    if (nextDate.isBefore(todayDayjs)) {
+                        nextDate = nextDate.add(1, 'year');
+                    }
+                    countdowns.push({ name: item.name, days: nextDate.diff(todayDayjs, 'day') });
+                 }
+             });
+
+             // customEvents (DD/MM/YYYY)
+             customEvents.forEach(item => {
+                 if (item.countdown) {
+                    const nextDate = dayjs(item.date, 'DD/MM/YYYY').startOf('day');
+                    const diff = nextDate.diff(todayDayjs, 'day');
+                    if (diff >= 0) countdowns.push({ name: item.name, days: diff });
+                 }
+             });
+
+             if (countdowns.length > 0) {
+                 countdowns.sort((a, b) => a.days - b.days);
+                 const closest = countdowns[0];
+                 const d = closest.days;
+
+                 if (d === 7) {
+                     extraMsg = I18nManager.getString("countdown_week", { name: closest.name });
+                 } else if (d >= 2 && d < 7) {
+                     extraMsg = I18nManager.getString("countdown_days", { name: closest.name, days: d });
+                 } else if (d > 7 && Math.random() < 0.20) {
+                     extraMsg = I18nManager.getString("countdown_generic", { name: closest.name, days: d });
+                 }
+             }
+          }
+
           if (extraMsg) baseMsg += " - " + extraMsg;
 
           const fechaEl = document.getElementById("fecha");

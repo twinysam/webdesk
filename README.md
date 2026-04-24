@@ -13,6 +13,7 @@
 - Ability to export/import your data to use it in another browser, another computer, etc.
 - Keeps track of how many days old you are, which is a more interesting way to see it than as just years.
 - An optional "life calculator" that you can use to find out what date it was when you were X days old. Or conversely, select any past date and see how many days old you were on that date. Pointless? Maybe. Mildly interesting? Hopefully!
+- A dynamic countdown feature that occasionally highlights how many days are left until your upcoming birthdays or custom events.
 - A little tree at the bottom that reflects the current season.
 
 ## Privacy

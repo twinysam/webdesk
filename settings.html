@@ -1624,6 +1624,7 @@
                 : "-"
             }</td>
             <td class="text-end">
+              <button class="btn btn-sm btn-${evt.countdown ? 'warning' : 'outline-warning'} me-1" onclick="toggleCountdown('events', ${index})" title="${I18n.t('tooltip_countdown')}"><i class="bi bi-stopwatch"></i></button>
               <button class="btn btn-sm btn-danger" onclick="deleteEvent(${index})"><i class="bi bi-trash"></i></button>
             </td>
           `;
@@ -1675,6 +1676,7 @@
                   <td>${bday.birthday}</td>
                   <td>${bday.name}</td>
                   <td class="text-end">
+                      <button class="btn btn-sm btn-${bday.countdown ? 'warning' : 'outline-warning'} me-1" onclick="toggleCountdown('birthdays', ${index})" title="${I18n.t('tooltip_countdown')}"><i class="bi bi-stopwatch"></i></button>
                       <button class="btn btn-sm btn-danger" onclick="deleteBirthday(${index})"><i class="bi bi-trash"></i></button>
                   </td>
               `;
@@ -1728,6 +1730,7 @@
                       : "-"
                   }</td>
                   <td class="text-end">
+                      <button class="btn btn-sm btn-${evt.countdown ? 'warning' : 'outline-warning'} me-1" onclick="toggleCountdown('annual', ${index})" title="${I18n.t('tooltip_countdown')}"><i class="bi bi-stopwatch"></i></button>
                       <button class="btn btn-sm btn-danger" onclick="deleteAnnualEvent(${index})"><i class="bi bi-trash"></i></button>
                   </td>
               `;
@@ -1753,6 +1756,46 @@
           saveData(ANNUAL_EVENTS_KEY, annualEvents);
           loadAnnualEventsManager();
           showAlert(I18n.t("alert_annual_deleted"), "success");
+        }
+      };
+
+      // --- COUNTDOWN TOGGLE ---
+      window.toggleCountdown = (type, index) => {
+        const data = getData();
+        let targetArray = [];
+        let key = "";
+        let loadFunc = null;
+        let sorted = [];
+        let itemToToggle = null;
+        let realIndex = -1;
+
+        if (type === 'events') {
+           targetArray = data.customEvents;
+           key = EVENTS_KEY;
+           loadFunc = loadEventsManager;
+           sorted = [...targetArray].sort((a, b) => dayjs(a.date, "DD/MM/YYYY") - dayjs(b.date, "DD/MM/YYYY"));
+           itemToToggle = sorted[index];
+           realIndex = targetArray.findIndex(e => e.name === itemToToggle.name && e.date === itemToToggle.date && e.url === itemToToggle.url);
+        } else if (type === 'birthdays') {
+           targetArray = data.userBirthdays;
+           key = BIRTHDAYS_KEY;
+           loadFunc = loadBirthdaysManager;
+           sorted = [...targetArray].sort((a, b) => dayjs(a.birthday, "DD/MM").dayOfYear() - dayjs(b.birthday, "DD/MM").dayOfYear());
+           itemToToggle = sorted[index];
+           realIndex = targetArray.findIndex(b => b.name === itemToToggle.name && b.birthday === itemToToggle.birthday);
+        } else if (type === 'annual') {
+           targetArray = data.annualEvents;
+           key = ANNUAL_EVENTS_KEY;
+           loadFunc = loadAnnualEventsManager;
+           sorted = [...targetArray].sort((a, b) => dayjs(a.date, "DD/MM").dayOfYear() - dayjs(b.date, "DD/MM").dayOfYear());
+           itemToToggle = sorted[index];
+           realIndex = targetArray.findIndex(e => e.name === itemToToggle.name && e.date === itemToToggle.date);
+        }
+
+        if (realIndex !== -1) {
+            targetArray[realIndex].countdown = !targetArray[realIndex].countdown;
+            saveData(key, targetArray);
+            loadFunc();
         }
       };
 

@@ -156,7 +156,11 @@
     "onboarding_happy_days": "Happy {days}th day!",
     "mobile_block_message": "WebDesk is a workspace meant to live as a pinned tab on your computer.<br><br>On phones/small tablets, most features don’t translate well, and the experience wouldn’t reflect how it’s meant to be used.<br><br>Please, open this page on your laptop or desktop to get the full experience.",
     "mobile_cta_share": "Send this link to my computer",
-    "disclaimer_patterns": "Patterns stolen from <a href='https://heropatterns.com/' target='_blank' class='text-info'>Hero Patterns</a>."
+    "disclaimer_patterns": "Patterns stolen from <a href='https://heropatterns.com/' target='_blank' class='text-info'>Hero Patterns</a>.",
+    "countdown_week": "Just one week until {name}",
+    "countdown_days": "Just {days} days until {name}",
+    "countdown_generic": "Days until {name}: {days}",
+    "tooltip_countdown": "Toggle Countdown"
   },
   "greetingRules": {
     "morningStart": 5,
