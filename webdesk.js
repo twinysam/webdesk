@@ -558,7 +558,7 @@ document.addEventListener("DOMContentLoaded", function () {
           // Calculate day count and check for special highlighting
           const daysInfo = DateUtils.getDaysSinceStart();
           const dayCount = typeof daysInfo === "number" ? daysInfo : daysInfo; // It is number
-          const specialClass = EventsManager.getSpecialDayClass(dayCount);
+          const specialClass = window._forceSpecialDay || EventsManager.getSpecialDayClass(dayCount);
           const dayCountHtml = specialClass
             ? `<span class="${specialClass}">${dayCount}</span>`
             : dayCount;
@@ -1339,6 +1339,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
         TooltipManager.init();
       });
+  };
+
+  // For testing Special Days via the console
+  window.toggleSpecialDay = function(color = 'orange') {
+    if (window._forceSpecialDay === `special-day-${color}`) {
+      window._forceSpecialDay = null;
+      console.log('Special Day test disabled.');
+    } else {
+      window._forceSpecialDay = `special-day-${color}`;
+      console.log(`Special Day test enabled for: ${color}`);
+    }
+    // Re-render the events display to apply the new class immediately
+    EventsManager.checkDailyEvents();
+    return `Special Day forced to: ${window._forceSpecialDay || 'off'}`;
   };
 
   if (ProfileManager.isSetup()) {

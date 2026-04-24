@@ -19,6 +19,17 @@
 
 By design, WebDesk has no backend. There are no tracking pixels, no telemetry, and no synchronization scripts. It's all kept in your browser using [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage), so privacy isn't a promise, it's a fact (which you can confirm by looking at the code).
 
+## Testing Special Days
+
+WebDesk highlights certain round number of days (like 1000, 2222, etc.) with special visual effects. If you want to see what these look like without having to wait for the actual day, you can enable them temporarily via the browser console:
+
+1. Open your browser's Developer Tools (usually `F12` or `Ctrl+Shift+I`).
+2. Go to the **Console** tab.
+3. Type `toggleSpecialDay()` and press Enter to toggle the default orange effect.
+4. You can also specify the color by typing `toggleSpecialDay('green')` or `toggleSpecialDay('orange')`.
+5. Run the command again to disable the effect and return to normal.
+
+
 ## Contributing
 
 If you have questions, suggestions (like new websites to add) or ideas, feel free to [start a discussion](https://github.com/twinysam/webdesk/discussions).
