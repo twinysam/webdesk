@@ -2028,6 +2028,15 @@
         if (typeof Coloris !== "undefined") {
           Coloris({ alpha: false });
         }
+
+        // Init I18n first so translations are available for dynamically rendered components
+        const { profile } = getData();
+        const userLang = profile.lang || "en";
+        await I18nManager.init();
+        if (I18nManager.getLang() !== userLang) {
+          await I18nManager.loadLocale(userLang);
+        }
+
         loadProfile();
         loadAppManager();
         renderStats();
@@ -2041,15 +2050,6 @@
           console.error("Appearance Manager failed:", e);
         }
 
-        // Init I18n
-        const { profile } = getData();
-        const userLang = profile.lang || "en";
-
-        await I18nManager.init();
-        // Sync check
-        if (I18nManager.getLang() !== userLang) {
-          await I18nManager.loadLocale(userLang);
-        }
         I18nManager.applyToPage();
         loadPreferencesManager();
         updateLastBackupText();
