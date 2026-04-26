@@ -895,6 +895,14 @@ document.addEventListener("DOMContentLoaded", function () {
       const container = document.querySelector(".links");
       if (!container) return;
       container.innerHTML = "";
+
+      // Clean up overflow sections from previous renders
+      let sibling = container.nextElementSibling;
+      while (sibling && (sibling.tagName === "HR" || sibling.classList.contains("morelinks"))) {
+        const next = sibling.nextElementSibling;
+        sibling.remove();
+        sibling = next;
+      }
       
       const fragment = document.createDocumentFragment();
       let currentContainer = container;
