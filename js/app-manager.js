@@ -100,26 +100,22 @@ window.AppManager = (() => {
     const { signal } = abortController;
 
     const overlayHTML = `
-      <div class="modal modal-fullscreen" tabindex="-1" style="display: block; background: rgba(0,0,0,0.9); z-index: 1050;">
-        <div class="modal-dialog modal-fullscreen m-0">
-          <div class="modal-content bg-transparent border-0 text-white">
-            <div class="modal-header border-0 pb-0">
-              <h5 class="modal-title ms-3 mt-3"><i class="bi bi-grid-3x3-gap"></i> Manage Apps</h5>
-              <button type="button" class="btn-close btn-close-white me-3 mt-3" aria-label="Close" id="closeOverlayBtn"></button>
-            </div>
-            <div class="modal-body p-4 d-flex flex-column gap-4">
-              <!-- Search -->
-              <div class="search-container mx-auto" style="max-width: 600px; width: 100%;">
-                <p class="mb-1 text-light" data-i18n="label_search_add">Search to add:</p>
-                <input type="text" id="appSearchInput" class="form-control bg-dark text-white border-secondary" placeholder="...">
-                <div id="searchResults" class="list-group mt-2" style="max-height: 200px; overflow-y: auto;"></div>
-              </div>
-              
-              <!-- Grid -->
-              <div class="apps-grid-container mx-auto w-100" style="flex: 1; max-width: 1200px;">
-                <div id="overlayAppGrid" class="d-flex flex-wrap gap-3 justify-content-center"></div>
-              </div>
-            </div>
+      <div style="position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 1055; display: flex; flex-direction: column; overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 1.5rem 0;">
+          <h5 class="text-white m-0"><i class="bi bi-grid-3x3-gap"></i> Manage Apps</h5>
+          <button type="button" id="closeOverlayBtn" style="background: none; border: none; color: #fff; font-size: 1.75rem; cursor: pointer; padding: 0; line-height: 1;" aria-label="Close">&times;</button>
+        </div>
+        <div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; flex: 1;">
+          <!-- Search -->
+          <div style="max-width: 600px; width: 100%; margin: 0 auto;">
+            <p class="mb-1 text-light" data-i18n="label_search_add">Search to add:</p>
+            <input type="text" id="appSearchInput" class="form-control bg-dark text-white border-secondary" placeholder="...">
+            <div id="searchResults" class="list-group mt-2" style="max-height: 200px; overflow-y: auto;"></div>
+          </div>
+          
+          <!-- Grid -->
+          <div style="flex: 1; max-width: 1200px; width: 100%; margin: 0 auto;">
+            <div id="overlayAppGrid" class="d-flex flex-wrap gap-3 justify-content-center"></div>
           </div>
         </div>
       </div>
@@ -151,9 +147,9 @@ window.AppManager = (() => {
         item.dataset.name = app.name;
         
         item.innerHTML = `
-          <button class="btn btn-sm btn-danger rounded-circle position-absolute btn-delete-app" style="top: -4px; right: -4px; z-index: 2; width: 22px; height: 22px; padding: 0; line-height: 1; font-size: 14px;">&times;</button>
-          <div class="item mx-auto" style="width: 75px; height: 75px;">
+          <div class="item mx-auto" style="width: 75px; height: 75px; position: relative;">
             <a class="${app.icon}" style="width: 75px !important; height: 75px !important; margin: 0 !important; pointer-events: none;"></a>
+            <button class="btn btn-danger rounded-circle btn-delete-app" style="position: absolute; top: -6px; right: -6px; z-index: 2; width: 20px; height: 20px; padding: 0; line-height: 1; font-size: 13px; border: 2px solid rgba(0,0,0,0.8);">&times;</button>
           </div>
           <div class="app-name text-truncate text-white-50" style="font-size: 0.65rem; margin-top: 2px;">${app.name}</div>
         `;
