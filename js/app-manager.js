@@ -137,7 +137,7 @@ window.AppManager = (() => {
     const searchResults = document.getElementById('searchResults');
     const closeBtn = document.getElementById('closeOverlayBtn');
 
-    console.log('[AppManager] Overlay mounted. closeBtn found:', !!closeBtn);
+
 
     function renderGrid() {
       gridContainer.innerHTML = '';
@@ -198,7 +198,7 @@ window.AppManager = (() => {
     }
 
     renderGrid();
-    if (window.I18nManager) window.I18nManager.translatePage();
+    if (window.I18nManager) window.I18nManager.applyToPage();
 
     // Event Listeners
     searchInput.addEventListener('input', debounce((e) => {
@@ -219,7 +219,7 @@ window.AppManager = (() => {
 
     // Close handler — NOT using { signal } so abort() can't kill it mid-execution
     const closeOverlay = () => {
-      console.log('[AppManager] closeOverlay called');
+
       if (sortableInstance) {
         sortableInstance.destroy();
         sortableInstance = null;
@@ -230,14 +230,12 @@ window.AppManager = (() => {
     };
 
     closeBtn.addEventListener('click', (e) => {
-      console.log('[AppManager] Close button clicked');
       e.stopPropagation();
       closeOverlay();
     });
     
     const onKeydown = (e) => {
       if (e.key === 'Escape') {
-        console.log('[AppManager] Escape pressed');
         closeOverlay();
       }
     };
