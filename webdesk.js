@@ -887,155 +887,117 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   // ==========================================================================
-  // MODULE: AppManager
-  // Loading, Filtering, and Rendering Apps
+  // MODULE: DesktopAppRenderer
+  // Rendering Apps in Dashboard
   // ==========================================================================
-  const AppManager = {
-    getUserApps: () => JSON.parse(localStorage.getItem("myApps")) || [],
-
+  const DesktopAppRenderer = {
     renderGrid: (userAppsItems) => {
-      if (!userAppsItems || userAppsItems.length === 0) return;
-
-      const html = userAppsItems
-        .map(
-          (item) => `
-        <div class="item">
-          <a href="${item.url}"
-             target="_blank"
-             class="${item.icon}"
-             data-bs-toggle="tooltip"
-             data-bs-placement="bottom"
-             title="${item.title}">${item.name}</a>
-        </div>
-      `,
-        )
-        .join("");
-
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = html;
-
-      const fragment = document.createDocumentFragment();
-      let container = document.querySelector(".links");
+      const container = document.querySelector(".links");
+      if (!container) return;
       container.innerHTML = "";
+      
+      const fragment = document.createDocumentFragment();
+      let currentContainer = container;
 
-      const children = Array.from(tempDiv.children);
+      if (userAppsItems && userAppsItems.length > 0) {
+        userAppsItems.forEach((item, index) => {
+          if (index === 40) {
+            currentContainer.appendChild(fragment);
+            const hr = document.createElement("hr");
+            currentContainer.insertAdjacentElement("afterend", hr);
+            const newContainer = document.createElement("div");
+            newContainer.className = "morelinks";
+            hr.insertAdjacentElement("afterend", newContainer);
+            currentContainer = newContainer;
+          }
+          
+          const div = document.createElement("div");
+          div.className = "item";
+          
+          const a = document.createElement("a");
+          a.href = item.url;
+          a.target = "_blank";
+          a.className = item.icon;
+          a.dataset.bsToggle = "tooltip";
+          a.dataset.bsPlacement = "bottom";
+          a.title = item.title;
+          a.textContent = item.name;
+          
+          div.appendChild(a);
+          fragment.appendChild(div);
+        });
+      }
 
-      children.forEach((item, index) => {
-        if (index === 40) {
-          container.appendChild(fragment);
-          const hr = document.createElement("hr");
-          container.insertAdjacentElement("afterend", hr);
-          const newContainer = document.createElement("div");
-          newContainer.className = "morelinks";
-          hr.insertAdjacentElement("afterend", newContainer);
-          container = newContainer;
-        }
-        fragment.appendChild(item);
+      // Add Meta-App at the end
+      const metaItem = document.createElement("div");
+      metaItem.className = "item";
+      
+      const metaBtn = document.createElement("a");
+      metaBtn.href = "#";
+      metaBtn.className = "bg-secondary text-white";
+      metaBtn.style.display = "flex";
+      metaBtn.style.alignItems = "center";
+      metaBtn.style.justifyContent = "center";
+      metaBtn.style.borderRadius = "15%";
+      metaBtn.style.textDecoration = "none";
+      metaBtn.style.width = "100px";
+      metaBtn.style.height = "100px";
+      metaBtn.title = "Manage Apps";
+      metaBtn.dataset.bsToggle = "tooltip";
+      metaBtn.dataset.bsPlacement = "bottom";
+      metaBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (window.AppManager) window.AppManager.showOverlay();
       });
-      container.appendChild(fragment);
+
+      const icon = document.createElement("i");
+      icon.className = "bi bi-pencil";
+      icon.style.fontSize = "3rem";
+      metaBtn.appendChild(icon);
+
+      metaItem.appendChild(metaBtn);
+      fragment.appendChild(metaItem);
+
+      currentContainer.appendChild(fragment);
+      
+      // Re-init tooltips
+      Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]')).forEach(
+        (el) => new bootstrap.Tooltip(el)
+      );
     },
 
-    renderTv: (items) => {
-      const t = I18nManager.getString;
+    init: async () => {
+      if (!window.AppManager) return;
+      const hydratedApps = await window.AppManager.getApps();
+      const config = JSON.parse(localStorage.getItem("appConfig")) || { hidden: [], filters: {} };
+      const stats = typeof StatsManager !== 'undefined' ? StatsManager.getStats() : {};
 
-      if (!items || items.length === 0) return;
-
-      const hr = document.createElement("hr");
-      const h2 = document.createElement("h2");
-      h2.innerHTML = t("tvTitle");
-
-      const div = document.createElement("div");
-      div.className = "links tv";
-
-      div.innerHTML = items
-        .map(
-          (item) => `
-        <div class="item">
-          <a href="${item.url}"
-             target="_blank"
-             class="${item.icon}"
-             data-bs-toggle="tooltip"
-             data-bs-placement="bottom"
-             title="${item.title}">${item.name}</a>
-        </div>
-      `,
-        )
-        .join("");
-
-      const caja = document.querySelector(".caja");
-      caja.appendChild(hr);
-      caja.appendChild(h2);
-      caja.appendChild(div);
-      return div;
-    },
-
-    init: () => {
-      return Promise.all([
-        fetch("items.json")
-          .then((res) => res.json())
-          .catch(() => []),
-        fetch("tv-items.json")
-          .then((res) => res.json())
-          .catch(() => []),
-      ]).then(([appCatalog, tvCatalog]) => {
-        const userApps = AppManager.getUserApps();
-        const catalogMap = new Map(
-          [...appCatalog, ...tvCatalog].map((item) => [item.name, item]),
-        );
-
-        const hydratedApps = [];
-        const hydratedTv = [];
-
-        userApps.forEach((userApp) => {
-          const catalogItem = catalogMap.get(userApp.name);
-          if (catalogItem) {
-            const isTv = tvCatalog.some((t) => t.name === userApp.name);
-            if (isTv) hydratedTv.push(catalogItem);
-            else hydratedApps.push(catalogItem);
-          }
-        });
-
-        const config = JSON.parse(localStorage.getItem("appConfig")) || {
-          hidden: [],
-          filters: {},
-        };
-        const stats = StatsManager.getStats();
-
-        let finalApps = hydratedApps.filter((app) => {
-          if (config.hidden && config.hidden.includes(app.name)) return false;
-          if (config.filters) {
-            const appStats = stats[app.name];
-            const clickCount = appStats
-              ? typeof appStats === "number"
-                ? appStats
-                : appStats.count
-              : 0;
-
-            if (config.filters.hideNeverClicked && clickCount === 0)
-              return false;
-            if (
-              config.filters.minClicks > 0 &&
-              clickCount < config.filters.minClicks
-            )
-              return false;
-          }
-          return true;
-        });
-
-        AppManager.renderGrid(finalApps);
-
-        if (hydratedTv.length > 0) {
-          AppManager.renderTv(hydratedTv);
+      let finalApps = hydratedApps.filter((app) => {
+        if (config.hidden && config.hidden.includes(app.name)) return false;
+        if (config.filters) {
+          const appStats = stats[app.name];
+          const clickCount = appStats ? (typeof appStats === "number" ? appStats : appStats.count) : 0;
+          if (config.filters.hideNeverClicked && clickCount === 0) return false;
+          if (config.filters.minClicks > 0 && clickCount < config.filters.minClicks) return false;
         }
-
-        Array.from(
-          document.querySelectorAll('[data-bs-toggle="tooltip"]'),
-        ).forEach((el) => new bootstrap.Tooltip(el));
-
-        // EventsManager.initCalculator(); // Handled separately in startWebDesk based on prefs
+        return true;
       });
+
+      DesktopAppRenderer.renderGrid(finalApps);
     },
   };
+
+  // Listeners for reactivity
+  let renderTimeout;
+  const debouncedInit = () => {
+    clearTimeout(renderTimeout);
+    renderTimeout = setTimeout(() => DesktopAppRenderer.init(), 50);
+  };
+
+  window.addEventListener('webdesk:appsUpdated', debouncedInit);
+  window.addEventListener('storage', (e) => {
+    if (e.key === "myApps") debouncedInit();
+  });
 
   // ==========================================================================
   // MODULE: LinksManager
@@ -1351,7 +1313,7 @@ document.addEventListener("DOMContentLoaded", function () {
         LinksManager.init();
 
         // Wait for Apps to be fetched and rendered
-        return AppManager.init();
+        return DesktopAppRenderer.init();
       })
       .then(() => {
         // Once apps are ready, initialize visuals
