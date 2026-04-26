@@ -110,7 +110,8 @@ window.AppManager = (() => {
             <div class="modal-body p-4 d-flex flex-column gap-4">
               <!-- Search -->
               <div class="search-container mx-auto" style="max-width: 600px; width: 100%;">
-                <input type="text" id="appSearchInput" class="form-control bg-dark text-white border-secondary" placeholder="Search to add apps...">
+                <p class="mb-1 text-light" data-i18n="label_search_add">Search to add:</p>
+                <input type="text" id="appSearchInput" class="form-control bg-dark text-white border-secondary" placeholder="...">
                 <div id="searchResults" class="list-group mt-2" style="max-height: 200px; overflow-y: auto;"></div>
               </div>
               
@@ -145,7 +146,9 @@ window.AppManager = (() => {
         
         item.innerHTML = `
           <button class="btn btn-sm btn-danger rounded-circle position-absolute btn-delete-app" style="top: -10px; right: -10px; z-index: 2; width: 24px; height: 24px; padding: 0; line-height: 1;">&times;</button>
-          <div class="app-icon mx-auto mb-2 ${app.icon}" style="font-size: 2rem;"></div>
+          <div class="item mx-auto mb-1" style="width: 75px; height: 75px;">
+            <a class="${app.icon}" style="width: 75px !important; height: 75px !important; margin: 0 !important; pointer-events: none;"></a>
+          </div>
           <div class="app-name small text-truncate">${app.name}</div>
         `;
         gridContainer.appendChild(item);
@@ -192,6 +195,7 @@ window.AppManager = (() => {
     }
 
     renderGrid();
+    if (window.I18nManager) window.I18nManager.translatePage();
 
     // Event Listeners
     searchInput.addEventListener('input', debounce((e) => {
