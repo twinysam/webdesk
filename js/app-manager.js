@@ -125,6 +125,12 @@ window.AppManager = (() => {
       </div>
     `;
 
+    // Dismiss every open Bootstrap tooltip before mounting the overlay
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+      const tip = bootstrap.Tooltip.getInstance(el);
+      if (tip) tip.hide();
+    });
+
     const wrapper = document.createElement('div');
     wrapper.id = "appOverlayWrapper";
     wrapper.innerHTML = overlayHTML;
@@ -139,17 +145,17 @@ window.AppManager = (() => {
       gridContainer.innerHTML = '';
       userApps.forEach(app => {
         const item = document.createElement('div');
-        item.className = 'overlay-app-item position-relative p-2 bg-dark rounded border border-secondary text-center';
-        item.style.width = '100px';
+        item.className = 'overlay-app-item position-relative text-center';
+        item.style.width = '85px';
         item.style.cursor = 'grab';
         item.dataset.name = app.name;
         
         item.innerHTML = `
-          <button class="btn btn-sm btn-danger rounded-circle position-absolute btn-delete-app" style="top: -10px; right: -10px; z-index: 2; width: 24px; height: 24px; padding: 0; line-height: 1;">&times;</button>
-          <div class="item mx-auto mb-1" style="width: 75px; height: 75px;">
+          <button class="btn btn-sm btn-danger rounded-circle position-absolute btn-delete-app" style="top: -4px; right: -4px; z-index: 2; width: 22px; height: 22px; padding: 0; line-height: 1; font-size: 14px;">&times;</button>
+          <div class="item mx-auto" style="width: 75px; height: 75px;">
             <a class="${app.icon}" style="width: 75px !important; height: 75px !important; margin: 0 !important; pointer-events: none;"></a>
           </div>
-          <div class="app-name small text-truncate">${app.name}</div>
+          <div class="app-name text-truncate text-white-50" style="font-size: 0.65rem; margin-top: 2px;">${app.name}</div>
         `;
         gridContainer.appendChild(item);
       });
