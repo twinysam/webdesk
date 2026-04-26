@@ -114,8 +114,8 @@ window.AppManager = (() => {
           </div>
           
           <!-- Grid -->
-          <div style="flex: 1; max-width: 1200px; width: 100%; margin: 0 auto;">
-            <div id="overlayAppGrid" class="d-flex flex-wrap gap-3 justify-content-center"></div>
+          <div style="flex: 1; width: 100%; margin: 0 auto;">
+            <div id="overlayAppGrid" style="display: grid; grid-template-columns: repeat(10, 85px); gap: 12px; justify-content: center;"></div>
           </div>
         </div>
       </div>
@@ -137,12 +137,13 @@ window.AppManager = (() => {
     const searchResults = document.getElementById('searchResults');
     const closeBtn = document.getElementById('closeOverlayBtn');
 
+    console.log('[AppManager] Overlay mounted. closeBtn found:', !!closeBtn);
+
     function renderGrid() {
       gridContainer.innerHTML = '';
       userApps.forEach(app => {
         const item = document.createElement('div');
         item.className = 'overlay-app-item position-relative text-center';
-        item.style.width = '85px';
         item.style.cursor = 'grab';
         item.dataset.name = app.name;
         
@@ -216,19 +217,36 @@ window.AppManager = (() => {
       }
     }, { signal });
 
+    // Close handler — NOT using { signal } so abort() can't kill it mid-execution
     const closeOverlay = () => {
-      abortController.abort();
+      console.log('[AppManager] closeOverlay called');
       if (sortableInstance) {
         sortableInstance.destroy();
         sortableInstance = null;
       }
       wrapper.remove();
+      // Abort remaining listeners last
+      abortController.abort();
     };
 
-    closeBtn.addEventListener('click', closeOverlay, { signal });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeOverlay();
-    }, { signal });
+    closeBtn.addEventListener('click', (e) => {
+      console.log('[AppManager] Close button clicked');
+      e.stopPropagation();
+      closeOverlay();
+    });
+    
+    const onKeydown = (e) => {
+      if (e.key === 'Escape') {
+        console.log('[AppManager] Escape pressed');
+        closeOverlay();
+      }
+    };
+    document.addEventListener('keydown', onKeydown);
+    
+    // Store keydown ref so we can clean it up when aborting
+    signal.addEventListener('abort', () => {
+      document.removeEventListener('keydown', onKeydown);
+    });
     
     // Auto-sync if changed externally while open
     window.addEventListener('webdesk:appsUpdated', async () => {
