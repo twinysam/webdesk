@@ -319,7 +319,7 @@
 }
 
 .item a.icloud {
-  background-image: url(https://www.icloud.com/system/icloud.com/2612Build21/favicons/default-favicon-dark-180x180.png);
+  background-image: url(images/app_icloud.jpg);
 }
 
 .item a.substack {
@@ -424,7 +424,7 @@
 }
 
 .item a.meet {
-  background-image: url(images/app_meet.webp);
+  background-image: url(images/app_googlemeet.webp);
 }
 
 .item a.tiktok {
