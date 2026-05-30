@@ -92,7 +92,7 @@ window.LinksManager = (() => {
 
     const editBtn = document.createElement("a");
     editBtn.href = "#";
-    editBtn.className = "text-secondary hover-white ms-2";
+    editBtn.className = "edit-links-pencil ms-2";
     editBtn.style.fontSize = "1.5rem";
     editBtn.style.textDecoration = "none";
     editBtn.title = window.I18nManager ? window.I18nManager.getString("header_custom_links") : "Manage Custom Links";
@@ -109,38 +109,14 @@ window.LinksManager = (() => {
     if (count === 0) return;
 
     const ul = document.createElement("ul");
-    ul.className = "list-unstyled p-0 m-0";
-    links.forEach((link, index) => {
+    // Standard unstyled bullet points list as requested by the user
+    links.forEach((link) => {
       const li = document.createElement("li");
-      li.className = "d-flex align-items-center justify-content-between mb-2 py-1 px-2 rounded custom-link-item";
-      li.style.background = "rgba(255, 255, 255, 0.03)";
-      li.style.transition = "background 0.2s";
-
       const a = document.createElement("a");
       a.href = link.url;
       a.target = "_blank";
       a.textContent = link.name || link.url;
       li.appendChild(a);
-
-      const actionsDiv = document.createElement("div");
-      actionsDiv.className = "link-actions d-none";
-
-      if (index > 0) {
-        const upBtn = document.createElement("button");
-        upBtn.className = "btn btn-link btn-sm text-secondary p-0 me-2";
-        upBtn.title = "Push to top";
-        upBtn.innerHTML = '<i class="bi bi-arrow-up" style="font-size: 1.1rem; color: var(--link-color);"></i>';
-        upBtn.style.boxShadow = "none";
-        upBtn.style.border = "none";
-        upBtn.addEventListener("click", (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          moveLinkToTop(index);
-        });
-        actionsDiv.appendChild(upBtn);
-      }
-
-      li.appendChild(actionsDiv);
       ul.appendChild(li);
     });
     container.appendChild(ul);
@@ -201,14 +177,14 @@ window.LinksManager = (() => {
 
     const overlayHTML = `
       <div style="position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 1055; display: flex; flex-direction: column; overflow-y: auto;">
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 1.5rem 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 1.5rem 0; max-width: 1200px; width: 95%; margin: 0 auto;">
           <h5 class="text-white m-0"><i class="bi bi-link-45deg"></i> <span data-i18n="header_custom_links">Manage Custom Links</span></h5>
           <button type="button" id="closeLinksOverlayBtn" style="background: none; border: none; color: #fff; font-size: 1.75rem; cursor: pointer; padding: 0; line-height: 1;" aria-label="Close">&times;</button>
         </div>
         <div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; flex: 1;">
           <!-- Form -->
-          <div style="max-width: 600px; width: 100%; margin: 0 auto;">
-            <form id="overlayLinkForm" class="row g-2 align-items-end">
+          <div style="max-width: 900px; width: 100%; margin: 0 auto 0.5rem;">
+            <form id="overlayLinkForm" class="row g-2 align-items-end bg-dark p-3 rounded border border-secondary">
               <div class="col-md-5">
                 <label class="form-label text-light mb-1 small" data-i18n="label_link_name">Name (Optional)</label>
                 <input type="text" id="overlayLinkName" class="form-control bg-dark text-white border-secondary" placeholder="My Site">
@@ -223,21 +199,9 @@ window.LinksManager = (() => {
             </form>
           </div>
           
-          <!-- Links List -->
-          <div style="max-width: 600px; width: 100%; margin: 0 auto; flex: 1;">
-            <div class="table-responsive">
-              <table class="table table-dark table-striped table-hover align-middle">
-                <thead>
-                  <tr>
-                    <th style="width: 40px"></th>
-                    <th data-i18n="col_name">Name</th>
-                    <th data-i18n="col_url">URL</th>
-                    <th class="text-end" data-i18n="col_action">Action</th>
-                  </tr>
-                </thead>
-                <tbody id="overlayLinksListBody"></tbody>
-              </table>
-            </div>
+          <!-- Links Grid (Separated in columns, making full horizontal use of screen space) -->
+          <div style="max-width: 1200px; width: 95%; margin: 0 auto; flex: 1; padding-bottom: 2rem;">
+            <div id="overlayLinksGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;"></div>
           </div>
         </div>
       </div>
@@ -254,43 +218,49 @@ window.LinksManager = (() => {
     wrapper.innerHTML = overlayHTML;
     document.body.appendChild(wrapper);
 
-    const tbody = document.getElementById('overlayLinksListBody');
+    const grid = document.getElementById('overlayLinksGrid');
     const form = document.getElementById('overlayLinkForm');
     const closeBtn = document.getElementById('closeLinksOverlayBtn');
 
     function renderOverlayGrid() {
-      tbody.innerHTML = '';
+      grid.innerHTML = '';
       const currentLinks = getLinks();
 
       currentLinks.forEach((link, index) => {
-        const tr = document.createElement('tr');
-        tr.dataset.name = link.name || "";
-        tr.dataset.url = link.url;
+        const item = document.createElement('div');
+        item.className = 'overlay-link-card bg-dark text-white p-3 rounded border border-secondary d-flex align-items-center justify-content-between';
+        item.style.cursor = 'grab';
+        item.dataset.name = link.name || "";
+        item.dataset.url = link.url;
 
         const upBtn = index > 0
-          ? `<button type="button" class="btn btn-sm btn-outline-info me-2 btn-move-top" data-index="${index}"><i class="bi bi-arrow-up"></i></button>`
+          ? `<button type="button" class="btn btn-sm btn-outline-info me-1 btn-move-top" data-index="${index}" title="Push to top"><i class="bi bi-arrow-up"></i></button>`
           : "";
 
-        tr.innerHTML = `
-          <td><i class="bi bi-list sort-handle text-secondary" style="cursor: move;"></i></td>
-          <td>${link.name || '<em class="text-secondary" data-i18n="value_none">No Name</em>'}</td>
-          <td><a href="${link.url}" target="_blank" class="text-info text-decoration-none text-truncate d-inline-block" style="max-width: 250px;">${link.url}</a></td>
-          <td class="text-end">
+        item.innerHTML = `
+          <div class="d-flex align-items-center gap-2 text-truncate" style="flex: 1; min-width: 0;">
+            <i class="bi bi-list sort-handle text-secondary" style="cursor: move; font-size: 1.25rem;"></i>
+            <div class="text-truncate" style="min-width: 0; flex: 1;">
+              <strong class="d-block text-white text-truncate" style="font-size: 0.95rem;">${link.name || link.url}</strong>
+              <small class="text-white-50 text-truncate d-block" style="font-size: 0.75rem;">${link.url}</small>
+            </div>
+          </div>
+          <div class="d-flex align-items-center gap-1">
             ${upBtn}
-            <button type="button" class="btn btn-sm btn-danger btn-delete-link" data-index="${index}"><i class="bi bi-trash"></i></button>
-          </td>
+            <button type="button" class="btn btn-sm btn-danger btn-delete-link" data-index="${index}" style="padding: 2px 6px;"><i class="bi bi-trash"></i></button>
+          </div>
         `;
-        tbody.appendChild(tr);
+        grid.appendChild(item);
       });
 
       if (sortableInstance) sortableInstance.destroy();
-      sortableInstance = new Sortable(tbody, {
+      sortableInstance = new Sortable(grid, {
         handle: ".sort-handle",
         animation: 150,
         onEnd: () => {
-          const newOrder = Array.from(tbody.children).map(tr => ({
-            name: tr.dataset.name,
-            url: tr.dataset.url
+          const newOrder = Array.from(grid.children).map(item => ({
+            name: item.dataset.name,
+            url: item.dataset.url
           }));
           saveLinks(newOrder);
         }
@@ -308,7 +278,7 @@ window.LinksManager = (() => {
       renderOverlayGrid();
     }, { signal });
 
-    tbody.addEventListener('click', (e) => {
+    grid.addEventListener('click', (e) => {
       const deleteBtn = e.target.closest('.btn-delete-link');
       if (deleteBtn) {
         const index = parseInt(deleteBtn.dataset.index, 10);

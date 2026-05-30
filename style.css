@@ -687,15 +687,12 @@ ul.columns {
   text-decoration: underline;
 }
 
-.custom-link-item {
-  position: relative;
+.edit-links-pencil {
+  color: rgba(255, 255, 255, 0.5) !important;
+  transition: color 0.3s;
 }
-.custom-link-item:hover {
-  background: rgba(255, 255, 255, 0.08) !important;
-}
-.custom-link-item:hover .link-actions {
-  display: flex !important;
-  align-items: center;
+.edit-links-pencil:hover {
+  color: white !important;
 }
 
 /* Responsive adjustments for columns */
