@@ -687,6 +687,17 @@ ul.columns {
   text-decoration: underline;
 }
 
+.custom-link-item {
+  position: relative;
+}
+.custom-link-item:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+.custom-link-item:hover .link-actions {
+  display: flex !important;
+  align-items: center;
+}
+
 /* Responsive adjustments for columns */
 @media (max-width: 768px) {
   .links-cols-4,
