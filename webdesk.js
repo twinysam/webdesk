@@ -347,6 +347,9 @@ document.addEventListener("DOMContentLoaded", function () {
       document.body.addEventListener("click", function (event) {
         const link = event.target.closest(".item a");
         if (link) {
+          if (link.classList.contains("manage-apps-btn")) {
+            return;
+          }
           const appName =
             link.textContent.trim() || link.getAttribute("title") || link.href;
           const isTv = link.closest(".links.tv") !== null;
@@ -942,7 +945,7 @@ document.addEventListener("DOMContentLoaded", function () {
       
       const metaBtn = document.createElement("a");
       metaBtn.href = "#";
-      metaBtn.className = "bg-secondary text-white";
+      metaBtn.className = "bg-secondary text-white manage-apps-btn";
       metaBtn.style.display = "flex";
       metaBtn.style.alignItems = "center";
       metaBtn.style.justifyContent = "center";
@@ -950,7 +953,7 @@ document.addEventListener("DOMContentLoaded", function () {
       metaBtn.style.textDecoration = "none";
       metaBtn.style.width = "100px";
       metaBtn.style.height = "100px";
-      metaBtn.title = "Manage Apps";
+      metaBtn.title = I18nManager.getString("label_edit_apps") || "Manage Apps";
       metaBtn.dataset.bsToggle = "tooltip";
       metaBtn.dataset.bsPlacement = "bottom";
       metaBtn.addEventListener("click", (e) => {

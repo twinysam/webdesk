@@ -102,14 +102,14 @@ window.AppManager = (() => {
     const overlayHTML = `
       <div style="position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 1055; display: flex; flex-direction: column; overflow-y: auto;">
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 1.5rem 0;">
-          <h5 class="text-white m-0"><i class="bi bi-grid-3x3-gap"></i> Manage Apps</h5>
+          <h5 class="text-white m-0"><i class="bi bi-grid-3x3-gap"></i> <span data-i18n="label_edit_apps">Manage Apps</span></h5>
           <button type="button" id="closeOverlayBtn" style="background: none; border: none; color: #fff; font-size: 1.75rem; cursor: pointer; padding: 0; line-height: 1;" aria-label="Close">&times;</button>
         </div>
         <div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; flex: 1;">
           <!-- Search -->
           <div style="max-width: 600px; width: 100%; margin: 0 auto;">
             <p class="mb-1 text-light" data-i18n="label_search_add">Search to add:</p>
-            <input type="text" id="appSearchInput" class="form-control bg-dark text-white border-secondary" placeholder="...">
+            <input type="text" id="appSearchInput" class="form-control bg-dark text-white border-secondary" data-i18n="[placeholder]placeholder_search" placeholder="Search...">
             <div id="searchResults" class="list-group mt-2" style="max-height: 200px; overflow-y: auto;"></div>
           </div>
           
