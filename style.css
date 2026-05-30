@@ -695,6 +695,14 @@ ul.columns {
   color: white !important;
 }
 
+.manage-apps-btn {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100% !important;
+  text-decoration: none;
+}
+
 /* Responsive adjustments for columns */
 @media (max-width: 768px) {
   .links-cols-4,

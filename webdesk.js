@@ -983,13 +983,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const metaBtn = document.createElement("a");
       metaBtn.href = "#";
       metaBtn.className = "bg-secondary text-white manage-apps-btn";
-      metaBtn.style.display = "flex";
-      metaBtn.style.alignItems = "center";
-      metaBtn.style.justifyContent = "center";
-      metaBtn.style.borderRadius = "15%";
-      metaBtn.style.textDecoration = "none";
-      metaBtn.style.width = "100px";
-      metaBtn.style.height = "100px";
       metaBtn.title = I18nManager.getString("label_edit_apps") || "Manage Apps";
       metaBtn.dataset.bsToggle = "tooltip";
       metaBtn.dataset.bsPlacement = "bottom";
