@@ -135,9 +135,11 @@ window.LinksManager = (() => {
         <td><i class="bi bi-list text-secondary sort-handle"></i></td>
         <td>${link.name || '<em class="text-secondary" data-i18n="value_none">No Name</em>'}</td>
         <td><a href="${link.url}" target="_blank" class="text-info text-decoration-none">${link.url}</a></td>
-        <td class="links-action-cell">
+        <td class="text-end">
+          <div class="links-action-cell">
             ${upBtn}
             <button class="btn btn-sm btn-danger btn-delete-link" onclick="LinksManager.deleteLink(${index})"><i class="bi bi-trash"></i></button>
+          </div>
         </td>
       `;
       tbody.appendChild(tr);
