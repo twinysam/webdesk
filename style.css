@@ -689,6 +689,8 @@ ul.columns {
 
 .edit-links-pencil {
   color: rgba(255, 255, 255, 0.5) !important;
+  font-size: 1.5rem;
+  text-decoration: none;
   transition: color 0.3s;
 }
 .edit-links-pencil:hover {
@@ -701,6 +703,114 @@ ul.columns {
   justify-content: center;
   border-radius: 100% !important;
   text-decoration: none;
+}
+
+/* Links Sort Handle */
+.sort-handle {
+  cursor: move;
+}
+
+/* Links Table Drag Column */
+.links-drag-col {
+  width: 40px;
+}
+
+/* Links Table Action Cell (settings & overlay) */
+.links-action-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.25rem;
+  white-space: nowrap;
+}
+
+/* Column-spanning elements inside custom-links-container */
+.links-col-span {
+  column-span: all;
+  -webkit-column-span: all;
+}
+
+/* ===== Links Overlay ===== */
+.links-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  z-index: 1055;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.links-overlay-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem 0;
+  max-width: 1200px;
+  width: 95%;
+  margin: 0 auto;
+}
+
+.links-overlay-close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.75rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.links-overlay-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  flex: 1;
+}
+
+.links-overlay-form-wrapper {
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto 0.5rem;
+}
+
+.links-overlay-grid-wrapper {
+  max-width: 1200px;
+  width: 95%;
+  margin: 0 auto;
+  flex: 1;
+  padding-bottom: 2rem;
+}
+
+.links-overlay-grid {
+  column-width: 280px;
+  column-gap: 16px;
+  width: 100%;
+}
+
+/* Overlay Link Card */
+.overlay-link-card {
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  cursor: grab;
+}
+
+.overlay-link-card .sort-handle {
+  font-size: 1.25rem;
+}
+
+.overlay-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.overlay-card-name {
+  font-size: 0.95rem;
+}
+
+.overlay-card-url {
+  font-size: 0.75rem;
 }
 
 /* Responsive adjustments for columns */

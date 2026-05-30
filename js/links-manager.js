@@ -77,14 +77,11 @@ window.LinksManager = (() => {
     container.classList.add(colClass);
 
     const hr = document.createElement("hr");
-    hr.style.columnSpan = "all";
-    hr.style.webkitColumnSpan = "all";
+    hr.className = "links-col-span";
     container.appendChild(hr);
 
     const headerDiv = document.createElement("div");
-    headerDiv.className = "d-flex justify-content-between align-items-center mb-3";
-    headerDiv.style.columnSpan = "all";
-    headerDiv.style.webkitColumnSpan = "all";
+    headerDiv.className = "links-col-span d-flex justify-content-between align-items-center mb-3";
 
     const h2 = document.createElement("h2");
     h2.className = "m-0";
@@ -93,8 +90,6 @@ window.LinksManager = (() => {
     const editBtn = document.createElement("a");
     editBtn.href = "#";
     editBtn.className = "edit-links-pencil ms-2";
-    editBtn.style.fontSize = "1.5rem";
-    editBtn.style.textDecoration = "none";
     editBtn.title = window.I18nManager ? window.I18nManager.getString("header_custom_links") : "Manage Custom Links";
     editBtn.innerHTML = '<i class="bi bi-pencil-fill"></i>';
     editBtn.addEventListener("click", (e) => {
@@ -109,7 +104,6 @@ window.LinksManager = (() => {
     if (count === 0) return;
 
     const ul = document.createElement("ul");
-    // Standard unstyled bullet points list as requested by the user
     links.forEach((link) => {
       const li = document.createElement("li");
       const a = document.createElement("a");
@@ -134,14 +128,14 @@ window.LinksManager = (() => {
       tr.dataset.url = link.url;
 
       const upBtn = index > 0
-        ? `<button class="btn btn-sm btn-outline-info me-2 btn-move-top" onclick="LinksManager.moveLinkToTop(${index})"><i class="bi bi-arrow-up"></i></button>`
+        ? `<button class="btn btn-sm btn-outline-info btn-move-top" onclick="LinksManager.moveLinkToTop(${index})"><i class="bi bi-arrow-up"></i></button>`
         : "";
 
       tr.innerHTML = `
-        <td><i class="bi bi-list text-secondary sort-handle" style="cursor: move;"></i></td>
+        <td><i class="bi bi-list text-secondary sort-handle"></i></td>
         <td>${link.name || '<em class="text-secondary" data-i18n="value_none">No Name</em>'}</td>
         <td><a href="${link.url}" target="_blank" class="text-info text-decoration-none">${link.url}</a></td>
-        <td class="text-end">
+        <td class="links-action-cell">
             ${upBtn}
             <button class="btn btn-sm btn-danger btn-delete-link" onclick="LinksManager.deleteLink(${index})"><i class="bi bi-trash"></i></button>
         </td>
@@ -176,14 +170,14 @@ window.LinksManager = (() => {
     const { signal } = abortController;
 
     const overlayHTML = `
-      <div style="position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 1055; display: flex; flex-direction: column; overflow-y: auto;">
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 1.5rem 0; max-width: 1200px; width: 95%; margin: 0 auto;">
+      <div class="links-overlay">
+        <div class="links-overlay-header">
           <h5 class="text-white m-0"><i class="bi bi-link-45deg"></i> <span data-i18n="header_custom_links">Manage Custom Links</span></h5>
-          <button type="button" id="closeLinksOverlayBtn" style="background: none; border: none; color: #fff; font-size: 1.75rem; cursor: pointer; padding: 0; line-height: 1;" aria-label="Close">&times;</button>
+          <button type="button" id="closeLinksOverlayBtn" class="links-overlay-close" aria-label="Close">&times;</button>
         </div>
-        <div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; flex: 1;">
+        <div class="links-overlay-body">
           <!-- Form -->
-          <div style="max-width: 900px; width: 100%; margin: 0 auto 0.5rem;">
+          <div class="links-overlay-form-wrapper">
             <form id="overlayLinkForm" class="row g-2 align-items-end bg-dark p-3 rounded border border-secondary">
               <div class="col-md-5">
                 <label class="form-label text-light mb-1 small" data-i18n="label_link_name">Name (Optional)</label>
@@ -199,9 +193,9 @@ window.LinksManager = (() => {
             </form>
           </div>
           
-          <!-- Links Grid (Separated in columns, making full horizontal use of screen space) -->
-          <div style="max-width: 1200px; width: 95%; margin: 0 auto; flex: 1; padding-bottom: 2rem;">
-            <div id="overlayLinksGrid" style="column-width: 280px; column-gap: 16px; width: 100%;"></div>
+          <!-- Links Grid -->
+          <div class="links-overlay-grid-wrapper">
+            <div id="overlayLinksGrid" class="links-overlay-grid"></div>
           </div>
         </div>
       </div>
@@ -229,27 +223,24 @@ window.LinksManager = (() => {
       currentLinks.forEach((link, index) => {
         const item = document.createElement('div');
         item.className = 'overlay-link-card bg-dark text-white p-3 rounded border border-secondary d-flex align-items-center justify-content-between mb-3';
-        item.style.breakInside = 'avoid';
-        item.style.webkitColumnBreakInside = 'avoid';
-        item.style.cursor = 'grab';
         item.dataset.name = link.name || "";
         item.dataset.url = link.url;
 
         const upBtn = index > 0
-          ? `<button type="button" class="btn btn-sm btn-outline-info me-1 btn-move-top" data-index="${index}" title="Push to top"><i class="bi bi-arrow-up"></i></button>`
+          ? `<button type="button" class="btn btn-sm btn-outline-info btn-move-top" data-index="${index}" title="Push to top"><i class="bi bi-arrow-up"></i></button>`
           : "";
 
         item.innerHTML = `
-          <div class="d-flex align-items-center gap-2 text-truncate" style="flex: 1; min-width: 0;">
-            <i class="bi bi-list sort-handle text-secondary" style="cursor: move; font-size: 1.25rem;"></i>
-            <div class="text-truncate" style="min-width: 0; flex: 1;">
-              <strong class="d-block text-white text-truncate" style="font-size: 0.95rem;">${link.name || link.url}</strong>
-              <small class="text-white-50 text-truncate d-block" style="font-size: 0.75rem;">${link.url}</small>
+          <div class="d-flex align-items-center gap-2 text-truncate overlay-card-info">
+            <i class="bi bi-list sort-handle text-secondary"></i>
+            <div class="text-truncate overlay-card-info">
+              <strong class="d-block text-white text-truncate overlay-card-name">${link.name || link.url}</strong>
+              <small class="text-white-50 text-truncate d-block overlay-card-url">${link.url}</small>
             </div>
           </div>
-          <div class="d-flex align-items-center gap-1">
+          <div class="links-action-cell">
             ${upBtn}
-            <button type="button" class="btn btn-sm btn-danger btn-delete-link" data-index="${index}" style="padding: 2px 6px;"><i class="bi bi-trash"></i></button>
+            <button type="button" class="btn btn-sm btn-danger btn-delete-link" data-index="${index}"><i class="bi bi-trash"></i></button>
           </div>
         `;
         grid.appendChild(item);
