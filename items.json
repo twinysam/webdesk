@@ -331,13 +331,6 @@
     "title": "Telecentro"
   },
   {
-    "name": "Telecentro Gateway",
-    "url": "https://192.168.0.1",
-    "icon": "telecentro-play",
-    "title": "Telecentro Gateway"
-  },
-
-  {
     "name": "NBA",
     "url": "https://www.nba.com/",
     "icon": "nba",
