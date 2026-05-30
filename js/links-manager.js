@@ -201,7 +201,7 @@ window.LinksManager = (() => {
           
           <!-- Links Grid (Separated in columns, making full horizontal use of screen space) -->
           <div style="max-width: 1200px; width: 95%; margin: 0 auto; flex: 1; padding-bottom: 2rem;">
-            <div id="overlayLinksGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;"></div>
+            <div id="overlayLinksGrid" style="column-width: 280px; column-gap: 16px; width: 100%;"></div>
           </div>
         </div>
       </div>
@@ -228,7 +228,9 @@ window.LinksManager = (() => {
 
       currentLinks.forEach((link, index) => {
         const item = document.createElement('div');
-        item.className = 'overlay-link-card bg-dark text-white p-3 rounded border border-secondary d-flex align-items-center justify-content-between';
+        item.className = 'overlay-link-card bg-dark text-white p-3 rounded border border-secondary d-flex align-items-center justify-content-between mb-3';
+        item.style.breakInside = 'avoid';
+        item.style.webkitColumnBreakInside = 'avoid';
         item.style.cursor = 'grab';
         item.dataset.name = link.name || "";
         item.dataset.url = link.url;
