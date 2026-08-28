@@ -2,7 +2,7 @@
  * BackupManager — Shared import/export logic for WebDesk.
  * Used by both settings.html and onboarding.js.
  */
-window.BackupManager = {
+const BackupManager = {
   VERSION: 6,
 
   // Canonical localStorage key names
@@ -84,6 +84,11 @@ window.BackupManager = {
     //    ("Today is your day number X") or the settings gear tooltip.
     localStorage.setItem("introDateShown", "true");
     localStorage.setItem("settingsTooltipSeen", "true");
+
+    // 6. Notify active components of state changes
+    window.dispatchEvent(new CustomEvent("webdesk:eventsUpdated"));
+    window.dispatchEvent(new CustomEvent("webdesk:linksUpdated"));
+    window.dispatchEvent(new CustomEvent("webdesk:appsUpdated"));
   },
 
   /**
@@ -125,3 +130,6 @@ window.BackupManager = {
     }
   },
 };
+
+window.BackupManager = BackupManager;
+
