@@ -520,14 +520,16 @@ document.addEventListener("DOMContentLoaded", function () {
   // MODULE: EventsManager
   // Birthdays, Custom Events, Calculator
   // ==========================================================================
-  const EventsManager = {
     formatList: (arr) => {
+      if (!arr || arr.length === 0) return "";
       const sep = I18nManager.getString("list_separator") || ", ";
-      const lastSep = I18nManager.getString("list_last_separator") || " y ";
-      if (arr.length === 0) return "";
+      const lastSep =
+        I18nManager.getString("list_last_separator") ||
+        (I18nManager.getLang() === "es" ? " y " : " and ");
       if (arr.length === 1) return arr[0];
-      const last = arr.pop();
-      return arr.join(sep) + lastSep + last;
+      const copy = [...arr];
+      const last = copy.pop();
+      return copy.join(sep) + lastSep + last;
     },
 
     getSpecialDayClass: (n) => {
@@ -746,57 +748,59 @@ document.addEventListener("DOMContentLoaded", function () {
       if (hasCT) {
         if (I18nManager.getLang() === "en") {
           // ENGLISH LOGIC: "[Name]'s birthday is today" / "[Names]'s birthdays are today"
-          const list = EventsManager.formatList(cumplesToday);
           const isPlural = cumplesToday.length > 1;
+          const list = EventsManager.formatList(cumplesToday);
           const subject = isPlural ? "birthdays" : "birthday";
           const verb = isPlural ? "are" : "is";
-          // e.g. "Spike's birthday is today" / "Carlos and Vivi's birthdays are today"
-          parts.push(`${list}'s ${subject} ${verb} ${t("today")}`);
+          parts.push(`${list}'s ${subject} ${verb} today`);
         } else {
           // SPANISH / DEFAULT LOGIC
+          const isPlural = cumplesToday.length > 1;
+          const list = EventsManager.formatList(cumplesToday);
           parts.push(
             `${t("today")} ${t(
-              cumplesToday.length > 1 ? "turns" : "isBirthday",
-            )} ${EventsManager.formatList(cumplesToday)}`,
+              isPlural ? "turns" : "isBirthday",
+            )} ${list}`,
           );
         }
       }
-      if (hasET)
+      if (hasET) {
+        const alsoPrefix = t("alsoToday").replace(/:?\s*$/, ": ");
+        const todayPrefix = t("today").replace(/:?\s*$/, ": ");
         parts.push(
-          `${
-            hasCT ? t("alsoToday") + " " : t("today") + ": "
-          }${EventsManager.formatList(eventsToday)}`,
+          `${hasCT ? alsoPrefix : todayPrefix}${EventsManager.formatList(eventsToday)}`,
         );
+      }
 
       // Tomorrow
       if (hasCTM) {
         if (I18nManager.getLang() === "en") {
-          // ENGLISH LOGIC
-          const list = EventsManager.formatList(cumplesTomorrow);
+          // ENGLISH LOGIC: "[Name]'s birthday is tomorrow" / "[Names]'s birthdays are tomorrow"
           const isPlural = cumplesTomorrow.length > 1;
+          const list = EventsManager.formatList(cumplesTomorrow);
           const subject = isPlural ? "birthdays" : "birthday";
           const verb = isPlural ? "are" : "is";
-          parts.push(
-            `${list}'s ${subject} ${verb} ${t("today") === "Today" ? "tomorrow" : t("tomorrow")}`,
-          );
-          // Note: t("today") check is a hack if "tomorrow" key isn't strictly just "tomorrow".
-          // Better: just hardcode "tomorrow" since this IS the English block.
+          parts.push(`${list}'s ${subject} ${verb} tomorrow`);
         } else {
+          // SPANISH / DEFAULT LOGIC
+          const isPlural = cumplesTomorrow.length > 1;
+          const list = EventsManager.formatList(cumplesTomorrow);
           parts.push(
             `${t("tomorrow")} ${t(
-              cumplesTomorrow.length > 1 ? "turns" : "isBirthday",
-            )} ${EventsManager.formatList(cumplesTomorrow)}`,
+              isPlural ? "turns" : "isBirthday",
+            )} ${list}`,
           );
         }
       }
-      if (hasETM)
+      if (hasETM) {
+        const alsoPrefix = t("alsoTomorrow").replace(/:?\s*$/, ": ");
+        const tomorrowPrefix = t("tomorrow").replace(/:?\s*$/, ": ");
         parts.push(
-          `${
-            hasCTM ? t("alsoTomorrow") + " " : t("tomorrow") + ": "
-          }${EventsManager.formatList(eventsTomorrow)}`,
+          `${hasCTM ? alsoPrefix : tomorrowPrefix}${EventsManager.formatList(eventsTomorrow)}`,
         );
+      }
 
-      return parts.length > 0 ? parts.join(". ") + "." : "";
+      return parts.length > 0 ? parts.join(". ").replace(/\.+$/, "") + "." : "";
     },
 
     initCalculator: () => {
