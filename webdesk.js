@@ -520,6 +520,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // MODULE: EventsManager
   // Birthdays, Custom Events, Calculator
   // ==========================================================================
+  const EventsManager = {
     formatList: (arr) => {
       if (!arr || arr.length === 0) return "";
       const sep = I18nManager.getString("list_separator") || ", ";
