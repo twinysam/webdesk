@@ -180,7 +180,9 @@
     "no_events_year": "No events found for this year.",
     "label_countdown_enable": "Show countdown reminder",
     "label_year": "Year",
-    "label_all_types": "All Types"
+    "label_all_types": "All Types",
+    "backup_reminder_due": "It has been a while since your last backup. You should go to the Settings here to save your backup file",
+    "backup_reminder_first": "You should consider backing up your preferences and data just in case, right here in the Settings"
   },
   "greetingRules": {
     "morningStart": 5,

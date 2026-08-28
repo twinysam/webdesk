@@ -14,6 +14,9 @@ window.LinksManager = (() => {
 
   function saveLinks(links) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(links));
+    if (window.BackupManager && typeof window.BackupManager.recordChange === "function") {
+      window.BackupManager.recordChange();
+    }
     window.dispatchEvent(new CustomEvent("webdesk:linksUpdated", { detail: links }));
   }
 

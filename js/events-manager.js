@@ -38,6 +38,9 @@ window.EventManager = (() => {
   }
 
   function dispatchUpdate() {
+    if (window.BackupManager && typeof window.BackupManager.recordChange === "function") {
+      window.BackupManager.recordChange();
+    }
     window.dispatchEvent(new CustomEvent("webdesk:eventsUpdated"));
   }
 

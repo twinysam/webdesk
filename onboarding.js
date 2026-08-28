@@ -586,6 +586,9 @@ window.OnboardingManager = {
 
     // Save Profile
     ProfileManager.setProfile(name, birthday, lang);
+
+    // Record setup time for backup reminder tracking
+    localStorage.setItem("setupTime", new Date().toISOString());
   },
 
   handleImport: (event) => {

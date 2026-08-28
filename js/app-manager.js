@@ -27,6 +27,9 @@ window.AppManager = (() => {
   // Save sparse array and dispatch events
   function saveRawApps(apps) {
     localStorage.setItem(MYAPPS_KEY, JSON.stringify(apps));
+    if (window.BackupManager && typeof window.BackupManager.recordChange === "function") {
+      window.BackupManager.recordChange();
+    }
     window.dispatchEvent(new CustomEvent("webdesk:appsUpdated", { detail: apps }));
   }
 

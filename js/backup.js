@@ -86,9 +86,83 @@ const BackupManager = {
     localStorage.setItem("settingsTooltipSeen", "true");
 
     // 6. Notify active components of state changes
+    if (data.date) {
+      localStorage.setItem("lastBackupTime", data.date);
+    } else {
+      localStorage.setItem("lastBackupTime", new Date().toISOString());
+    }
+    localStorage.setItem("changesSinceBackup", "0");
+    localStorage.removeItem("lastBackupReminderTime");
+
     window.dispatchEvent(new CustomEvent("webdesk:eventsUpdated"));
     window.dispatchEvent(new CustomEvent("webdesk:linksUpdated"));
     window.dispatchEvent(new CustomEvent("webdesk:appsUpdated"));
+  },
+
+  /**
+   * Record a modification to data or preferences.
+   */
+  recordChange: () => {
+    const current = parseInt(localStorage.getItem("changesSinceBackup") || "0", 10);
+    localStorage.setItem("changesSinceBackup", (current + 1).toString());
+  },
+
+  /**
+   * Record that a backup export occurred and reset changes counter.
+   */
+  recordBackup: () => {
+    localStorage.setItem("lastBackupTime", new Date().toISOString());
+    localStorage.setItem("changesSinceBackup", "0");
+    localStorage.removeItem("lastBackupReminderTime");
+  },
+
+  /**
+   * Check if a backup has ever been recorded.
+   */
+  hasRecordedBackup: () => {
+    return !!localStorage.getItem("lastBackupTime");
+  },
+
+  /**
+   * Check if the backup reminder tooltip should be displayed on index.html.
+   * Condition: >2 changes, >=15 days since last backup (or setup), and >=7 days since last reminder.
+   */
+  shouldShowBackupReminder: () => {
+    const changesCount = parseInt(localStorage.getItem("changesSinceBackup") || "0", 10);
+    if (changesCount <= 2) return false;
+
+    const now = typeof dayjs === "function" ? dayjs() : null;
+    if (!now) return false;
+
+    const lastBackup = localStorage.getItem("lastBackupTime");
+    const setupTime = localStorage.getItem("setupTime");
+
+    if (lastBackup) {
+      const daysSinceBackup = now.diff(dayjs(lastBackup), "day");
+      if (daysSinceBackup < 15) return false;
+    } else {
+      if (setupTime) {
+        const daysSinceSetup = now.diff(dayjs(setupTime), "day");
+        if (daysSinceSetup < 15) return false;
+      } else {
+        if (!localStorage.getItem("userProfile")) return false;
+      }
+    }
+
+    const lastReminder = localStorage.getItem("lastBackupReminderTime");
+    if (lastReminder) {
+      const daysSinceReminder = now.diff(dayjs(lastReminder), "day");
+      if (daysSinceReminder < 7) return false;
+    }
+
+    return true;
+  },
+
+  /**
+   * Mark that a reminder tooltip was displayed.
+   */
+  markReminderShown: () => {
+    localStorage.setItem("lastBackupReminderTime", new Date().toISOString());
   },
 
   /**

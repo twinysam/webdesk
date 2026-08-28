@@ -1073,47 +1073,91 @@ document.addEventListener("DOMContentLoaded", function () {
   // ==========================================================================
   const TooltipManager = {
     init: () => {
-      // Check if already seen or not setup
-      if (localStorage.getItem("settingsTooltipSeen")) return;
+      // First-time tooltip (setup guidance)
+      if (!localStorage.getItem("settingsTooltipSeen")) {
+        const icon = document.querySelector(".settings-icon");
+        if (!icon) return;
 
-      const icon = document.querySelector(".settings-icon");
-      if (!icon) return;
+        const tooltip = document.createElement("div");
+        tooltip.className = "settings-tooltip";
+        const text = I18nManager.getString("custom_tooltip");
+        tooltip.innerHTML = `
+                <div class="tooltip-text">
+                    ${text}
+                </div>
+                <button class="tooltip-close" aria-label="Close">×</button>
+            `;
 
-      // Create Tooltip
-      const tooltip = document.createElement("div");
-      tooltip.className = "settings-tooltip";
-      const text = I18nManager.getString("custom_tooltip");
-      tooltip.innerHTML = `
-              <div class="tooltip-text">
-                  ${text}
-              </div>
-              <button class="tooltip-close" aria-label="Close">×</button>
-          `;
+        icon.appendChild(tooltip);
 
-      // Append
-      icon.appendChild(tooltip);
+        const close = () => {
+          tooltip.remove();
+          localStorage.setItem("settingsTooltipSeen", "true");
+        };
 
-      // Events
-      const close = () => {
-        tooltip.remove();
-        localStorage.setItem("settingsTooltipSeen", "true");
-      };
+        const closeBtn = tooltip.querySelector(".tooltip-close");
+        if (closeBtn) {
+          closeBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            close();
+          });
+        }
 
-      const closeBtn = tooltip.querySelector(".tooltip-close");
-      if (closeBtn) {
-        closeBtn.addEventListener("click", (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          close();
-        });
+        const link = icon.querySelector("a");
+        if (link) {
+          link.addEventListener("click", () => {
+            localStorage.setItem("settingsTooltipSeen", "true");
+          });
+        }
+        return; // Don't show backup reminder while first-time tooltip is active
       }
 
-      // Also close if they actually click the link
-      const link = icon.querySelector("a");
-      if (link) {
-        link.addEventListener("click", () => {
-          localStorage.setItem("settingsTooltipSeen", "true");
-        });
+      // Backup reminder tooltip
+      if (
+        typeof BackupManager !== "undefined" &&
+        typeof BackupManager.shouldShowBackupReminder === "function" &&
+        BackupManager.shouldShowBackupReminder()
+      ) {
+        const icon = document.querySelector(".settings-icon");
+        if (!icon) return;
+
+        const msgKey = BackupManager.hasRecordedBackup()
+          ? "backup_reminder_due"
+          : "backup_reminder_first";
+        const text = I18nManager.getString(msgKey);
+
+        const tooltip = document.createElement("div");
+        tooltip.className = "settings-tooltip";
+        tooltip.innerHTML = `
+                <div class="tooltip-text">
+                    ${text}
+                </div>
+                <button class="tooltip-close" aria-label="Close">×</button>
+            `;
+
+        icon.appendChild(tooltip);
+
+        const close = () => {
+          tooltip.remove();
+          BackupManager.markReminderShown();
+        };
+
+        const closeBtn = tooltip.querySelector(".tooltip-close");
+        if (closeBtn) {
+          closeBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            close();
+          });
+        }
+
+        const link = icon.querySelector("a");
+        if (link) {
+          link.addEventListener("click", () => {
+            close();
+          });
+        }
       }
     },
   };

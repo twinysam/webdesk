@@ -180,7 +180,9 @@
     "no_events_year": "No se encontraron eventos para este año.",
     "label_countdown_enable": "Mostrar recordatorio de cuenta regresiva",
     "label_year": "Año",
-    "label_all_types": "Todos los Tipos"
+    "label_all_types": "Todos los Tipos",
+    "backup_reminder_due": "Ha pasado un tiempo desde tu último backup. Deberías ir a la Configuración aquí para guardar tu archivo de backup",
+    "backup_reminder_first": "Deberías considerar hacer un backup de tus preferencias y datos por si acaso, justo aquí en la Configuración"
   },
   "greetingRules": {
     "morningStart": 5,

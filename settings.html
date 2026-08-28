@@ -1338,6 +1338,9 @@
 
       function saveData(key, data) {
         localStorage.setItem(key, JSON.stringify(data));
+        if (window.BackupManager && typeof window.BackupManager.recordChange === "function") {
+          BackupManager.recordChange();
+        }
       }
 
       function updateLastBackupText() {
@@ -2560,8 +2563,8 @@
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
 
-          // Save Timestamp
-          localStorage.setItem("lastBackupTime", new Date().toISOString());
+          // Save Timestamp via BackupManager
+          BackupManager.recordBackup();
           updateLastBackupText();
 
           showAlert(I18n.t("alert_backup_exported"), "success");
