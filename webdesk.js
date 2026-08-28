@@ -1045,6 +1045,26 @@ document.addEventListener("DOMContentLoaded", function () {
     if (e.key === "myApps") debouncedInit();
   });
 
+  // Event Listeners for Events reactivity
+  let eventsRenderTimeout;
+  const debouncedEventsInit = () => {
+    clearTimeout(eventsRenderTimeout);
+    eventsRenderTimeout = setTimeout(() => {
+      EventsManager.checkDailyEvents();
+      const prefs = JSON.parse(localStorage.getItem("userPreferences") || "{}");
+      if (prefs.enableCalendar !== false) {
+        CalendarManager.init();
+      }
+    }, 50);
+  };
+
+  window.addEventListener('webdesk:eventsUpdated', debouncedEventsInit);
+  window.addEventListener('storage', (e) => {
+    if (e.key === "userBirthdays" || e.key === "annualEvents" || e.key === "customEvents") {
+      debouncedEventsInit();
+    }
+  });
+
   // LinksManager module is now loaded globally from js/links-manager.js
 
   // ==========================================================================
@@ -1215,7 +1235,12 @@ document.addEventListener("DOMContentLoaded", function () {
         wrapper.id = "calendar-wrapper";
         
         const titleText = I18nManager.getString("title_calendar") || "Calendar";
-        wrapper.innerHTML = `<h2><i class="bi bi-calendar3"></i> ${titleText}</h2>
+        const manageTitle = I18nManager.getString("header_manage_events") || "Manage Events";
+        wrapper.innerHTML = `
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="m-0"><i class="bi bi-calendar3"></i> ${titleText}</h2>
+            <a href="#" id="editCalendarPencil" class="edit-calendar-pencil ms-2" title="${manageTitle}"><i class="bi bi-pencil-fill"></i></a>
+          </div>
           <style>
             #calendar-container {
               font-size: clamp(0.7rem, 1.5vh, 0.95rem);
@@ -1261,6 +1286,14 @@ document.addEventListener("DOMContentLoaded", function () {
           </style>
           <div id="calendar-container" class="mt-4 p-3 rounded CalendarManager-wrapper mx-auto" style="max-width: 900px;"></div>`;
         caja.appendChild(wrapper);
+
+        const pencil = wrapper.querySelector("#editCalendarPencil");
+        if (pencil) {
+          pencil.addEventListener("click", (e) => {
+            e.preventDefault();
+            if (window.EventManager) window.EventManager.showOverlay();
+          });
+        }
       }
 
       CalendarManager.loadDependencies().then(async () => {

@@ -1237,6 +1237,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.min.js"></script>
     <script src="js/app-manager.js"></script>
     <script src="js/links-manager.js"></script>
+    <script src="js/events-manager.js"></script>
     <script src="js/date-utils.js"></script>
     <script src="js/backup.js"></script>
     <script src="js/i18n.js"></script>
@@ -1559,205 +1560,30 @@
 
       // --- TAB 4: EVENTS ---
       function loadEventsManager() {
-        const { customEvents } = getData();
-        const tbody = document.getElementById("eventsListBody");
-        tbody.innerHTML = "";
-
-        // Sort by date (Chronological)
-        const sorted = [...customEvents].sort((a, b) => {
-          const dateA = dayjs(a.date, "DD/MM/YYYY");
-          const dateB = dayjs(b.date, "DD/MM/YYYY");
-          return dateA - dateB;
-        });
-
-        sorted.forEach((evt, index) => {
-          const tr = document.createElement("tr");
-          const displayDate = dayjs(evt.date, "DD/MM/YYYY").format(
-            "DD/MM/YYYY",
-          );
-          tr.innerHTML = `
-            <td>${displayDate}</td>
-            <td>${evt.name}</td>
-            <td>${
-              evt.url
-                ? `<a href="${evt.url}" target="_blank" class="text-info"><i class="bi bi-link-45deg"></i> Link</a>`
-                : "-"
-            }</td>
-            <td class="text-end">
-              <button class="btn btn-sm btn-${evt.countdown ? 'warning' : 'outline-warning'} me-1" onclick="toggleCountdown('events', ${index})" title="${I18n.t('tooltip_countdown')}"><i class="bi bi-stopwatch"></i></button>
-              <button class="btn btn-sm btn-danger" onclick="deleteEvent(${index})"><i class="bi bi-trash"></i></button>
-            </td>
-          `;
-          tbody.appendChild(tr);
-        });
+        if (window.EventManager) {
+          EventManager.renderCustomEventsTable("eventsListBody");
+        }
       }
 
-      window.deleteEvent = (index) => {
-        const { customEvents } = getData();
-        const sorted = [...customEvents].sort((a, b) => {
-          const dateA = dayjs(a.date, "DD/MM/YYYY");
-          const dateB = dayjs(b.date, "DD/MM/YYYY");
-          return dateA - dateB;
-        });
-
-        const itemToDelete = sorted[index];
-        const realIndex = customEvents.findIndex(
-          (e) =>
-            e.name === itemToDelete.name &&
-            e.date === itemToDelete.date &&
-            e.url === itemToDelete.url,
-        );
-
-        if (realIndex !== -1) {
-          customEvents.splice(realIndex, 1);
-          saveData(EVENTS_KEY, customEvents);
-          loadEventsManager();
-          showAlert(I18n.t("alert_event_deleted"), "success");
-        }
-      };
-
-      // --- TAB BIRTHDAYS (NEW) ---
+      // --- TAB BIRTHDAYS ---
       function loadBirthdaysManager() {
-        const { userBirthdays } = getData();
-        const tbody = document.getElementById("birthdaysListBody");
-        tbody.innerHTML = "";
-
-        // Sort by date (Day/Month)
-        // Since format is DD/MM, we can use dayjs to parse - dayOfYear plugin required
-        const sorted = [...userBirthdays].sort((a, b) => {
-          const mA = dayjs(a.birthday, "DD/MM");
-          const mB = dayjs(b.birthday, "DD/MM");
-          return mA.dayOfYear() - mB.dayOfYear();
-        });
-
-        sorted.forEach((bday, index) => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-                  <td>${bday.birthday}</td>
-                  <td>${bday.name}</td>
-                  <td class="text-end">
-                      <button class="btn btn-sm btn-${bday.countdown ? 'warning' : 'outline-warning'} me-1" onclick="toggleCountdown('birthdays', ${index})" title="${I18n.t('tooltip_countdown')}"><i class="bi bi-stopwatch"></i></button>
-                      <button class="btn btn-sm btn-danger" onclick="deleteBirthday(${index})"><i class="bi bi-trash"></i></button>
-                  </td>
-              `;
-          tbody.appendChild(tr);
-        });
-      }
-
-      window.deleteBirthday = (index) => {
-        const { userBirthdays } = getData();
-        const sorted = [...userBirthdays].sort((a, b) => {
-          const mA = dayjs(a.birthday, "DD/MM");
-          const mB = dayjs(b.birthday, "DD/MM");
-          return mA.dayOfYear() - mB.dayOfYear();
-        });
-
-        const itemToDelete = sorted[index];
-        const realIndex = userBirthdays.findIndex(
-          (b) =>
-            b.name === itemToDelete.name &&
-            b.birthday === itemToDelete.birthday,
-        );
-
-        if (realIndex !== -1) {
-          userBirthdays.splice(realIndex, 1);
-          saveData(BIRTHDAYS_KEY, userBirthdays);
-          loadBirthdaysManager();
-          showAlert(I18n.t("alert_birthday_deleted"), "success");
+        if (window.EventManager) {
+          EventManager.renderBirthdaysTable("birthdaysListBody");
         }
-      };
+      }
 
       // --- TAB ANNUAL EVENTS ---
       function loadAnnualEventsManager() {
-        const { annualEvents } = getData();
-        const tbody = document.getElementById("annualEventsListBody");
-        tbody.innerHTML = "";
-
-        const sorted = [...annualEvents].sort((a, b) => {
-          const mA = dayjs(a.date, "DD/MM");
-          const mB = dayjs(b.date, "DD/MM");
-          return mA.dayOfYear() - mB.dayOfYear();
-        });
-
-        sorted.forEach((evt, index) => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-                  <td>${evt.date}</td>
-                  <td>${evt.name}</td>
-                  <td>${
-                    evt.url
-                      ? `<a href="${evt.url}" target="_blank" class="text-info"><i class="bi bi-link-45deg"></i> Link</a>`
-                      : "-"
-                  }</td>
-                  <td class="text-end">
-                      <button class="btn btn-sm btn-${evt.countdown ? 'warning' : 'outline-warning'} me-1" onclick="toggleCountdown('annual', ${index})" title="${I18n.t('tooltip_countdown')}"><i class="bi bi-stopwatch"></i></button>
-                      <button class="btn btn-sm btn-danger" onclick="deleteAnnualEvent(${index})"><i class="bi bi-trash"></i></button>
-                  </td>
-              `;
-          tbody.appendChild(tr);
-        });
+        if (window.EventManager) {
+          EventManager.renderAnnualEventsTable("annualEventsListBody");
+        }
       }
 
-      window.deleteAnnualEvent = (index) => {
-        const { annualEvents } = getData();
-        const sorted = [...annualEvents].sort((a, b) => {
-          const mA = dayjs(a.date, "DD/MM");
-          const mB = dayjs(b.date, "DD/MM");
-          return mA.dayOfYear() - mB.dayOfYear();
-        });
-
-        const itemToDelete = sorted[index];
-        const realIndex = annualEvents.findIndex(
-          (e) => e.name === itemToDelete.name && e.date === itemToDelete.date,
-        );
-
-        if (realIndex !== -1) {
-          annualEvents.splice(realIndex, 1);
-          saveData(ANNUAL_EVENTS_KEY, annualEvents);
-          loadAnnualEventsManager();
-          showAlert(I18n.t("alert_annual_deleted"), "success");
-        }
-      };
-
-      // --- COUNTDOWN TOGGLE ---
-      window.toggleCountdown = (type, index) => {
-        const data = getData();
-        let targetArray = [];
-        let key = "";
-        let loadFunc = null;
-        let sorted = [];
-        let itemToToggle = null;
-        let realIndex = -1;
-
-        if (type === 'events') {
-           targetArray = data.customEvents;
-           key = EVENTS_KEY;
-           loadFunc = loadEventsManager;
-           sorted = [...targetArray].sort((a, b) => dayjs(a.date, "DD/MM/YYYY") - dayjs(b.date, "DD/MM/YYYY"));
-           itemToToggle = sorted[index];
-           realIndex = targetArray.findIndex(e => e.name === itemToToggle.name && e.date === itemToToggle.date && e.url === itemToToggle.url);
-        } else if (type === 'birthdays') {
-           targetArray = data.userBirthdays;
-           key = BIRTHDAYS_KEY;
-           loadFunc = loadBirthdaysManager;
-           sorted = [...targetArray].sort((a, b) => dayjs(a.birthday, "DD/MM").dayOfYear() - dayjs(b.birthday, "DD/MM").dayOfYear());
-           itemToToggle = sorted[index];
-           realIndex = targetArray.findIndex(b => b.name === itemToToggle.name && b.birthday === itemToToggle.birthday);
-        } else if (type === 'annual') {
-           targetArray = data.annualEvents;
-           key = ANNUAL_EVENTS_KEY;
-           loadFunc = loadAnnualEventsManager;
-           sorted = [...targetArray].sort((a, b) => dayjs(a.date, "DD/MM").dayOfYear() - dayjs(b.date, "DD/MM").dayOfYear());
-           itemToToggle = sorted[index];
-           realIndex = targetArray.findIndex(e => e.name === itemToToggle.name && e.date === itemToToggle.date);
-        }
-
-        if (realIndex !== -1) {
-            targetArray[realIndex].countdown = !targetArray[realIndex].countdown;
-            saveData(key, targetArray);
-            loadFunc();
-        }
-      };
+      window.addEventListener('webdesk:eventsUpdated', () => {
+        loadEventsManager();
+        loadBirthdaysManager();
+        loadAnnualEventsManager();
+      });
 
       // --- TAB 5: CUSTOM LINKS ---
       function loadLinksManager() {
@@ -2003,16 +1829,12 @@
             const name = document.getElementById("bdayName").value.trim();
             const month = monthSelect.value;
             const day = daySelect.value;
-            // DD/MM
-            const bdayStr = `${day}/${month}`;
-            const { userBirthdays } = getData();
-            userBirthdays.push({ name, birthday: bdayStr });
-            saveData(BIRTHDAYS_KEY, userBirthdays);
-            loadBirthdaysManager();
+            if (window.EventManager) {
+              EventManager.addEvent("birthday", { name, month, day });
+            }
             birthdayForm.reset();
             monthSelect.value = "01";
             updateDays(monthSelect, daySelect);
-            showAlert(I18n.t("alert_birthday_added"), "success");
           });
 
           // Annual Events Form Logic
@@ -2033,17 +1855,14 @@
               const url = document.getElementById("annualUrl").value.trim();
               const month = annualMonth.value;
               const day = annualDay.value;
-              const dateStr = `${day}/${month}`;
 
-              const { annualEvents } = getData();
-              annualEvents.push({ name, date: dateStr, url });
-              saveData(ANNUAL_EVENTS_KEY, annualEvents);
+              if (window.EventManager) {
+                EventManager.addEvent("annual", { name, month, day, url });
+              }
 
-              loadAnnualEventsManager();
               annualForm.reset();
               annualMonth.value = "01";
               updateDays(annualMonth, annualDay);
-              showAlert(I18n.t("alert_annual_added"), "success");
             });
           }
         }
@@ -2053,19 +1872,15 @@
         if (eventForm) {
           eventForm.addEventListener("submit", (e) => {
             e.preventDefault();
-            const name = document.getElementById("eventName").value;
-            const date = dayjs(
-              document.getElementById("eventDate").value,
-            ).format("DD/MM/YYYY");
-            const url = document.getElementById("eventUrl").value;
+            const name = document.getElementById("eventName").value.trim();
+            const date = document.getElementById("eventDate").value;
+            const url = document.getElementById("eventUrl").value.trim();
 
-            const { customEvents } = getData();
-            customEvents.push({ name, date, url });
-            saveData(EVENTS_KEY, customEvents);
+            if (window.EventManager) {
+              EventManager.addEvent("custom", { name, date, url });
+            }
 
-            loadEventsManager();
             e.target.reset();
-            showAlert(I18n.t("alert_event_added"), "success");
           });
         }
 
