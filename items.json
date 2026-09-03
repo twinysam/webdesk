@@ -361,6 +361,18 @@
     "title": "Lichess"
   },
   {
+    "name": "Chess.com",
+    "url": "https://www.chess.com/",
+    "icon": "chesscom",
+    "title": "Chess.com"
+  },
+  {
+    "name": "Steam",
+    "url": "https://store.steampowered.com/",
+    "icon": "steam",
+    "title": "Steam"
+  },
+  {
     "name": "Sesse Chess",
     "url": "http://analysis.sesse.net/",
     "icon": "sesse",

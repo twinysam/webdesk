@@ -631,3 +631,10 @@
 .item a.chesscom {
   background-image: url(images/app_chesscom.webp);
 }
+
+.item a.steam {
+  background-image: url(images/app_steam.webp);
+  background-color: black;
+  background-size: 80%;
+  background-position: center;
+}
