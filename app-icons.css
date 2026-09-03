@@ -20,10 +20,10 @@
 
 .item a.calendar {
   background-image: url(images/app_google-calendar.webp);
-  background-size: 95%;
+  /*background-size: 95%;
   background-repeat: no-repeat;
   background-position: center;
-  background-color: white;
+  background-color: white;*/
 }
 
 .item a.google {
@@ -59,9 +59,9 @@
 }
 
 .item a.santander {
-  background-image: url(images/app_santander.webp);
-  background-position: center;
-  background-size: 105%;
+  background-image: url(images/app_santander_ar.webp);
+  /*background-position: center;
+  background-size: 105%;*/
 }
 
 .item a.letterboxd {
@@ -121,7 +121,7 @@
 }
 
 .item a.google-maps {
-  background-image: url(images/app_google-maps.webp);
+  background-image: url(images/app_google-maps.jpg);
 }
 
 .item a.yt-music {
@@ -608,10 +608,6 @@
   background-image: url(images/app_wattpad.webp);
 }
 
-.item a.worldcup2026 {
-  background-image: url(images/app_worldcup2026.webp);
-}
-
 .item a.associatedpress {
   background-image: url(images/app_associatedpress.webp);
 }
@@ -622,4 +618,16 @@
 
 .item a.claude {
   background-image: url(images/app_claude.webp);
+}
+
+.item a.kimi {
+  background-image: url(images/app_kimi.webp);
+}
+
+.item a.qwen-studio {
+  background-image: url(images/app_qwen-studio.webp);
+}
+
+.item a.chesscom {
+  background-image: url(images/app_chesscom.webp);
 }

@@ -355,12 +355,6 @@
     "title": "FIFA"
   },
   {
-    "name": "FIFA World Cup 2026",
-    "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026",
-    "icon": "worldcup2026",
-    "title": "FIFA World Cup 2026"
-  },
-  {
     "name": "Lichess",
     "url": "https://www.lichess.org/",
     "icon": "lichess",
@@ -567,6 +561,18 @@
     "url": "https://claude.ai/new",
     "icon": "claude",
     "title": "Claude AI"
+  },
+  {
+    "name": "Kimi",
+    "url": "https://www.kimi.com/",
+    "icon": "kimi",
+    "title": "Kimi"
+  },
+  {
+    "name": "Qwen Studio",
+    "url": "https://chat.qwen.ai/",
+    "icon": "qwen-studio",
+    "title": "Qwen Studio"
   },
   {
     "name": "Github",
