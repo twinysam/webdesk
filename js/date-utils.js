@@ -51,7 +51,11 @@
       },
 
       ensureLunarComputed: async (year) => {
-          if (scope.DateUtils._computingYears.has(year)) return;
+          const cached = localStorage.getItem("cny_data_" + year);
+          if (cached) {
+              try { return scope.DateUtils._attachEmojis(JSON.parse(cached)); } catch(e) {}
+          }
+          if (scope.DateUtils._computingYears.has(year)) return null;
           scope.DateUtils._computingYears.add(year);
 
           try {
@@ -64,12 +68,14 @@
                   if (window.GreetingManager && window.GreetingManager.updateMessage) {
                       window.GreetingManager.updateMessage();
                   }
+                  return scope.DateUtils._attachEmojis(cnyInfo);
               }
           } catch (e) {
               console.error("Error computing CNY data:", e);
           } finally {
               scope.DateUtils._computingYears.delete(year);
           }
+          return null;
       },
 
       computeLunarYearFromTT: (year, ttData) => {
@@ -257,11 +263,11 @@
         return result;
       },
   
-      isTodayEaster: (date) => {
-        const year = date.getFullYear();
-        const a = year % 19;
-        const b = Math.floor(year / 100);
-        const c = year % 100;
+      getEasterDate: (year) => {
+        const y = parseInt(year, 10);
+        const a = y % 19;
+        const b = Math.floor(y / 100);
+        const c = y % 100;
         const d = Math.floor(b / 4);
         const e = b % 4;
         const f = Math.floor((b + 8) / 25);
@@ -273,7 +279,27 @@
         const m = Math.floor((a + 11 * h + 22 * l) / 451);
         const month = Math.floor((h + l - 7 * m + 114) / 31);
         const day = ((h + l - 7 * m + 114) % 31) + 1;
-        return date.getDate() === day && date.getMonth() + 1 === month;
+        const mStr = String(month).padStart(2, "0");
+        const dStr = String(day).padStart(2, "0");
+        return { year: y, month, day, dateStr: `${y}-${mStr}-${dStr}` };
+      },
+
+      isTodayEaster: (date) => {
+        const easter = scope.DateUtils.getEasterDate(date.getFullYear());
+        return date.getDate() === easter.day && date.getMonth() + 1 === easter.month;
+      },
+
+      getPianoDayDate: (year) => {
+        const y = parseInt(year, 10);
+        if (typeof dayjs === "undefined") return null;
+        const d = dayjs(`${y}-01-01`).add(87, "day");
+        if (!d.isValid()) return null;
+        return {
+          year: y,
+          month: d.month() + 1,
+          day: d.date(),
+          dateStr: d.format("YYYY-MM-DD")
+        };
       },
   
       getChineseNewYearDate: (year) => {
@@ -286,9 +312,6 @@
         if (cached) {
             try { return scope.DateUtils._attachEmojis(JSON.parse(cached)); } catch(e) {}
         }
-
-        // Trigger async computation if missing, returning null for now
-        scope.DateUtils.ensureLunarComputed(year);
         return null;
       },
 

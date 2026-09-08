@@ -1263,6 +1263,75 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       });
 
+      // Special Dates: User Birthday, Chinese New Year, Easter, Piano Day (Read-only, Current Year Only)
+      const userBirthday = ProfileManager.getBirthday();
+      if (userBirthday) {
+        let uMonth, uDay;
+        if (userBirthday.includes("-")) {
+          const parts = userBirthday.split("-");
+          if (parts.length >= 3) {
+            uMonth = parts[1].padStart(2, '0');
+            uDay = parts[2].padStart(2, '0');
+          }
+        } else if (userBirthday.includes("/")) {
+          const parts = userBirthday.split("/");
+          uDay = parts[0].padStart(2, '0');
+          uMonth = parts[1].padStart(2, '0');
+        }
+        if (uDay && uMonth) {
+          const uName = ProfileManager.getName() ? ProfileManager.getName() : "User";
+          fcEvents.push({
+            title: `🎂 ${uName}'s Birthday`,
+            start: `${currentYear}-${uMonth}-${uDay}`,
+            allDay: true,
+            className: "bg-danger border-danger text-white",
+            editable: false
+          });
+        }
+      }
+
+      if (window.DateUtils) {
+        // Chinese New Year (Only if already cached in localStorage)
+        if (typeof window.DateUtils.getChineseNewYearInfo === "function") {
+          const cnyInfo = window.DateUtils.getChineseNewYearInfo(currentYear);
+          if (cnyInfo && cnyInfo.cny) {
+            fcEvents.push({
+              title: `🧧 Chinese New Year`,
+              start: cnyInfo.cny,
+              allDay: true,
+              className: "bg-danger border-danger text-white",
+              editable: false
+            });
+          }
+        }
+        // Easter (Current Year Only)
+        if (typeof window.DateUtils.getEasterDate === "function") {
+          const easter = window.DateUtils.getEasterDate(currentYear);
+          if (easter && easter.dateStr) {
+            fcEvents.push({
+              title: `🥚 Easter`,
+              start: easter.dateStr,
+              allDay: true,
+              className: "bg-primary border-primary text-white",
+              editable: false
+            });
+          }
+        }
+        // Piano Day (Current Year Only)
+        if (typeof window.DateUtils.getPianoDayDate === "function") {
+          const piano = window.DateUtils.getPianoDayDate(currentYear);
+          if (piano && piano.dateStr) {
+            fcEvents.push({
+              title: `🎹 Piano Day`,
+              start: piano.dateStr,
+              allDay: true,
+              className: "bg-secondary border-secondary text-white",
+              editable: false
+            });
+          }
+        }
+      }
+
       return fcEvents;
     },
 

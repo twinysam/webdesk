@@ -308,6 +308,112 @@ window.EventManager = (() => {
       }
     });
 
+    // 4. Special / System Calculated Events (Read-only, Current Year / Cached Only)
+    const currentYear = typeof dayjs === "function" ? dayjs().year() : new Date().getFullYear();
+    
+    // Chinese New Year: only if already fetched and in localStorage
+    if (window.DateUtils && typeof window.DateUtils.getChineseNewYearInfo === "function") {
+      const cnyInfo = window.DateUtils.getChineseNewYearInfo(targetYear);
+      if (cnyInfo && cnyInfo.cny) {
+        const parts = cnyInfo.cny.split("-");
+        if (parts.length === 3) {
+          const day = parseInt(parts[2], 10);
+          const month = parseInt(parts[1], 10);
+          const dStr = `${String(day).padStart(2, "0")}/${String(month).padStart(2, "0")}`;
+          all.push({
+            type: "special",
+            name: `🧧 ${t("cny_title", "Chinese New Year")}`,
+            date: dStr,
+            day,
+            month,
+            year: targetYear,
+            displayDate: dStr,
+            url: "",
+            countdown: false,
+            readOnly: true,
+          });
+        }
+      }
+    }
+
+    // Other calculated special dates: current year only
+    if (targetYear === currentYear) {
+      // User's Birthday
+      if (window.ProfileManager && typeof window.ProfileManager.getBirthday === "function") {
+        const userBday = window.ProfileManager.getBirthday();
+        if (userBday) {
+          let day, month;
+          if (userBday.includes("-")) {
+            const parts = userBday.split("-");
+            if (parts.length >= 3) {
+              month = parseInt(parts[1], 10);
+              day = parseInt(parts[2], 10);
+            }
+          } else if (userBday.includes("/")) {
+            const parts = userBday.split("/");
+            day = parseInt(parts[0], 10);
+            month = parseInt(parts[1], 10);
+          }
+          if (day && month) {
+            const uName = window.ProfileManager.getName() ? window.ProfileManager.getName() : "User";
+            const dStr = `${String(day).padStart(2, "0")}/${String(month).padStart(2, "0")}`;
+            all.push({
+              type: "special",
+              name: `🎂 ${uName}'s Birthday`,
+              date: dStr,
+              day,
+              month,
+              year: targetYear,
+              displayDate: dStr,
+              url: "",
+              countdown: false,
+              readOnly: true,
+            });
+          }
+        }
+      }
+
+      // Easter
+      if (window.DateUtils && typeof window.DateUtils.getEasterDate === "function") {
+        const easter = window.DateUtils.getEasterDate(targetYear);
+        if (easter) {
+          const dStr = `${String(easter.day).padStart(2, "0")}/${String(easter.month).padStart(2, "0")}`;
+          all.push({
+            type: "special",
+            name: `🥚 ${t("easter_title", "Easter")}`,
+            date: dStr,
+            day: easter.day,
+            month: easter.month,
+            year: targetYear,
+            displayDate: dStr,
+            url: "",
+            countdown: false,
+            readOnly: true,
+          });
+        }
+      }
+
+      // Piano Day
+      if (window.DateUtils && typeof window.DateUtils.getPianoDayDate === "function") {
+        const piano = window.DateUtils.getPianoDayDate(targetYear);
+        if (piano) {
+          const dStr = `${String(piano.day).padStart(2, "0")}/${String(piano.month).padStart(2, "0")}`;
+          all.push({
+            type: "special",
+            name: `🎹 ${t("piano_day_title", "Piano Day")}`,
+            date: dStr,
+            day: piano.day,
+            month: piano.month,
+            year: targetYear,
+            displayDate: dStr,
+            url: "",
+            countdown: false,
+            readOnly: true,
+          });
+        }
+      }
+    }
+
     // Sort chronologically by month, then day, then name
     all.sort((a, b) => {
       if (a.month !== b.month) return a.month - b.month;
@@ -611,6 +717,8 @@ window.EventManager = (() => {
           typeBadge = `<span class="badge bg-info text-dark"><i class="bi bi-balloon-fill"></i> ${t("type_birthday", "Birthday")}</span>`;
         } else if (ev.type === "annual") {
           typeBadge = `<span class="badge bg-warning text-dark"><i class="bi bi-repeat"></i> ${t("type_annual", "Annual")}</span>`;
+        } else if (ev.type === "special" || ev.readOnly) {
+          typeBadge = `<span class="badge text-white" style="background-color: #6f42c1 !important;"><i class="bi bi-star-fill"></i> ${t("type_special", "Special")}</span>`;
         } else {
           typeBadge = `<span class="badge bg-success text-white"><i class="bi bi-calendar-event"></i> ${t("type_unique", "Unique")}</span>`;
         }
@@ -626,6 +734,22 @@ window.EventManager = (() => {
           ? `<a href="${ev.url}" target="_blank" class="text-info text-decoration-none fw-bold">${ev.name} <i class="bi bi-box-arrow-up-right small"></i></a>`
           : `<span class="fw-bold">${ev.name}</span>`;
 
+        let actionButtons = "";
+        if (ev.readOnly) {
+          actionButtons = `
+            <span class="badge bg-dark text-muted border border-secondary p-2" title="${t("tooltip_readonly_event", "Special date (cannot be edited or removed)")}">
+              <i class="bi bi-lock-fill"></i> ${t("readonly", "Read-only")}
+            </span>`;
+        } else {
+          actionButtons = `
+            <button type="button" class="btn btn-sm btn-outline-warning btn-edit-ev" title="${t("btn_edit", "Edit")}">
+              <i class="bi bi-pencil"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-danger btn-delete-ev" title="${t("btn_delete", "Delete")}">
+              <i class="bi bi-trash"></i>
+            </button>`;
+        }
+
         card.innerHTML = `
           <div class="d-flex justify-content-between align-items-start gap-2">
             <div>
@@ -636,27 +760,24 @@ window.EventManager = (() => {
               </div>
               <div class="fs-6">${nameDisplay}</div>
             </div>
-            <div class="d-flex gap-1">
-              <button type="button" class="btn btn-sm btn-outline-warning btn-edit-ev" title="${t("btn_edit", "Edit")}">
-                <i class="bi bi-pencil"></i>
-              </button>
-              <button type="button" class="btn btn-sm btn-outline-danger btn-delete-ev" title="${t("btn_delete", "Delete")}">
-                <i class="bi bi-trash"></i>
-              </button>
+            <div class="d-flex gap-1 align-items-center">
+              ${actionButtons}
             </div>
           </div>
         `;
 
-        card.querySelector(".btn-edit-ev").addEventListener("click", () => startEdit(ev));
-        card.querySelector(".btn-delete-ev").addEventListener("click", () => {
-          if (confirm(t("confirm_delete_event", "Are you sure you want to delete this event?"))) {
-            deleteEvent(ev.type, ev.raw);
-            if (editingState && editingState.raw === ev.raw) {
-              resetForm();
+        if (!ev.readOnly) {
+          card.querySelector(".btn-edit-ev").addEventListener("click", () => startEdit(ev));
+          card.querySelector(".btn-delete-ev").addEventListener("click", () => {
+            if (confirm(t("confirm_delete_event", "Are you sure you want to delete this event?"))) {
+              deleteEvent(ev.type, ev.raw);
+              if (editingState && editingState.raw === ev.raw) {
+                resetForm();
+              }
+              renderEventsList();
             }
-            renderEventsList();
-          }
-        });
+          });
+        }
 
         listContainer.appendChild(card);
       });
