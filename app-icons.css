@@ -596,6 +596,10 @@
   background-image: url(images/app_spotify.webp);
 }
 
+.item a.apple-music {
+  background-image: url(images/app_apple-music.webp);
+}
+
 .item a.threads {
   background-image: url(images/app_threads.webp);
 }

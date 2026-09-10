@@ -229,6 +229,12 @@
     "title": "Spotify"
   },
   {
+    "name": "Apple Music",
+    "url": "https://music.apple.com/",
+    "icon": "apple-music",
+    "title": "Apple Music"
+  },
+  {
     "name": "Soundcloud",
     "url": "https://soundcloud.com/",
     "icon": "soundcloud",

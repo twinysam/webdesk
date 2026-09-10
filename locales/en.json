@@ -182,7 +182,14 @@
     "label_year": "Year",
     "label_all_types": "All Types",
     "backup_reminder_due": "It has been a while since your last backup. You should go to the Settings here to save your backup file",
-    "backup_reminder_first": "You should consider backing up your preferences and data just in case, right here in the Settings"
+    "backup_reminder_first": "You should consider backing up your preferences and data just in case, right here in the Settings",
+    "label_remove_less_than": "Remove items with less than",
+    "label_clicks_text": "clicks",
+    "btn_remove": "Remove",
+    "confirm_remove_low_clicks": "Are you sure you want to remove items with less than {count} clicks?",
+    "alert_items_removed": "Removed {count} item(s) successfully!",
+    "alert_no_items_removed": "No items found with less than {count} clicks.",
+    "alert_invalid_clicks": "Please enter a valid number of clicks."
   },
   "greetingRules": {
     "morningStart": 5,

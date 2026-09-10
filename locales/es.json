@@ -182,7 +182,14 @@
     "label_year": "Año",
     "label_all_types": "Todos los Tipos",
     "backup_reminder_due": "Ha pasado un tiempo desde tu último backup. Deberías ir a la Configuración aquí para guardar tu archivo de backup",
-    "backup_reminder_first": "Deberías considerar hacer un backup de tus preferencias y datos por si acaso, justo aquí en la Configuración"
+    "backup_reminder_first": "Deberías considerar hacer un backup de tus preferencias y datos por si acaso, justo aquí en la Configuración",
+    "label_remove_less_than": "Eliminar elementos con menos de",
+    "label_clicks_text": "clicks",
+    "btn_remove": "Eliminar",
+    "confirm_remove_low_clicks": "¿Estás seguro de que deseas eliminar los elementos con menos de {count} clicks?",
+    "alert_items_removed": "¡Se eliminaron {count} elemento(s) con éxito!",
+    "alert_no_items_removed": "No se encontraron elementos con menos de {count} clicks.",
+    "alert_invalid_clicks": "Por favor ingresa un número válido de clicks."
   },
   "greetingRules": {
     "morningStart": 5,

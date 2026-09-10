@@ -409,6 +409,35 @@
               <tbody id="tvBody"></tbody>
             </table>
           </div>
+
+          <div class="card bg-dark border-secondary p-3 text-white mt-4">
+            <div
+              class="d-flex flex-wrap align-items-center justify-content-between gap-3"
+            >
+              <div class="d-flex align-items-center gap-2 flex-wrap">
+                <span data-i18n="label_remove_less_than"
+                  >Remove items with less than</span
+                >
+                <input
+                  type="number"
+                  id="inputRemoveThreshold"
+                  class="form-control bg-dark text-white border-secondary text-center"
+                  style="width: 75px"
+                  min="1"
+                  value="1"
+                />
+                <span data-i18n="label_clicks_text">clicks</span>
+              </div>
+              <button
+                type="button"
+                id="btnRemoveLowClicks"
+                class="btn btn-outline-danger"
+              >
+                <i class="bi bi-trash"></i>
+                <span data-i18n="btn_remove">Remove</span>
+              </button>
+            </div>
+          </div>
         </div>
 
         <div class="tab-pane fade" id="apps" role="tabpanel">
@@ -1296,7 +1325,7 @@
 
       // Adapter for I18nManager (loaded globally from js/i18n.js)
       const I18n = {
-        t: (key) => I18nManager.getString(key),
+        t: (key, params = {}) => I18nManager.getString(key, params),
       };
 
       // Load Data
@@ -2543,6 +2572,54 @@
             saveData(EVENTS_KEY, filteredEvents);
             loadEventsManager();
             showAlert(I18n.t("alert_past_removed"), "success");
+          });
+        }
+
+        const btnRemoveLowClicks = document.getElementById("btnRemoveLowClicks");
+        if (btnRemoveLowClicks) {
+          btnRemoveLowClicks.addEventListener("click", () => {
+            const input = document.getElementById("inputRemoveThreshold");
+            const threshold = parseInt(input ? input.value : "1", 10);
+            if (isNaN(threshold) || threshold < 1) {
+              showAlert(I18n.t("alert_invalid_clicks"), "warning");
+              return;
+            }
+
+            const confirmMsg = I18n.t("confirm_remove_low_clicks", {
+              count: threshold,
+            });
+            if (!confirm(confirmMsg)) return;
+
+            const { stats } = getData();
+            let removedCount = 0;
+
+            for (const key of Object.keys(stats)) {
+              const item = stats[key];
+              const count =
+                typeof item === "number"
+                  ? item
+                  : item && typeof item.count === "number"
+                  ? item.count
+                  : 0;
+              if (count < threshold) {
+                delete stats[key];
+                removedCount++;
+              }
+            }
+
+            if (removedCount > 0) {
+              saveData(STATS_KEY, stats);
+              renderStats();
+              showAlert(
+                I18n.t("alert_items_removed", { count: removedCount }),
+                "success",
+              );
+            } else {
+              showAlert(
+                I18n.t("alert_no_items_removed", { count: threshold }),
+                "info",
+              );
+            }
           });
         }
 
