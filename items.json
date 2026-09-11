@@ -483,6 +483,12 @@
     "title": "Discord"
   },
   {
+    "name": "Slack",
+    "url": "https://app.slack.com/client",
+    "icon": "slack",
+    "title": "Slack"
+  },
+  {
     "name": "Bluesky",
     "url": "https://bsky.app/",
     "icon": "bluesky",

@@ -190,11 +190,6 @@
   background-size: 75%;
 }
 
-.item a.phcode {
-  background-color: white;
-  background-image: url(images/app_phcode.webp);
-}
-
 .item a.localbitcoins {
   background-image: url(https://play-lh.googleusercontent.com/sRWNV14Ue-hXbyFxHSIDOqbr4O6-t3OuTFVtGRUBPUUh8O-B66j6wOA4mwjlRTei7ec);
 }
@@ -336,7 +331,7 @@
 }
 
 .item a.phcode {
-  background-image: url(https://phcode.dev/assets/phoenix-splash/images/phoenix-logo.svg);
+  background-image: url(images/app_phcode.webp);
   background-color: white;
   background-position: center;
   background-repeat: no-repeat;
@@ -642,4 +637,8 @@
   background-size: 80%;
   background-position: center;
   background-repeat: no-repeat;
+}
+
+.item a.slack {
+  background-image: url(images/app_slack.webp);
 }
