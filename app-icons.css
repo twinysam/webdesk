@@ -500,6 +500,7 @@
 
 .item a.azure {
   background-image: url(images/app_azure.webp);
+  background-color: white;
 }
 
 .item a.crunchyroll {
