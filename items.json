@@ -758,6 +758,12 @@
     "title": "Box"
   },
   {
+    "name": "Microsoft Azure",
+    "url": "https://portal.azure.com",
+    "icon": "azure",
+    "title": "Microsoft Azure"
+  },
+  {
     "name": "iCloud",
     "url": "https://www.icloud.com",
     "icon": "icloud",

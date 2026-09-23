@@ -498,6 +498,10 @@
   background-image: url(images/app_box.webp);
 }
 
+.item a.azure {
+  background-image: url(images/app_azure.webp);
+}
+
 .item a.crunchyroll {
   background-image: url(images/app_crunchyroll.webp);
 }
