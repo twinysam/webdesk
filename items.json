@@ -241,6 +241,12 @@
     "title": "Soundcloud"
   },
   {
+    "name": "Mixcloud",
+    "url": "https://www.mixcloud.com/",
+    "icon": "mixcloud",
+    "title": "Mixcloud"
+  },
+  {
     "name": "Radio Garden",
     "url": "https://radio.garden/",
     "icon": "radiogarden",
@@ -263,6 +269,12 @@
     "url": "https://www.hbomax.com",
     "icon": "hbo-max",
     "title": "HBO Max"
+  },
+  {
+    "name": "Jellyfin",
+    "url": "http://localhost:8096",
+    "icon": "jellyfin",
+    "title": "Jellyfin"
   },
   {
     "name": "Paramount+",
@@ -343,6 +355,12 @@
     "title": "NBA"
   },
   {
+    "name": "PGA Tour",
+    "url": "https://www.pgatour.com/",
+    "icon": "pgatour",
+    "title": "PGA Tour"
+  },
+  {
     "name": "MLB",
     "url": "https://www.mlb.com/",
     "icon": "mlb",
@@ -395,6 +413,18 @@
     "url": "https://www.cinemarkhoyts.com.ar/",
     "icon": "cinemark",
     "title": "Cinemark Hoyts"
+  },
+  {
+    "name": "AMC Theatres",
+    "url": "https://www.amctheatres.com/",
+    "icon": "amctheaters",
+    "title": "AMC Theatres"
+  },
+  {
+    "name": "Regal Cinemas",
+    "url": "https://www.regmovies.com/",
+    "icon": "regalcinemas",
+    "title": "Regal Cinemas"
   },
 
   {
@@ -487,6 +517,12 @@
     "url": "https://app.slack.com/client",
     "icon": "slack",
     "title": "Slack"
+  },
+  {
+    "name": "Zoom",
+    "url": "https://zoom.us/",
+    "icon": "zoom",
+    "title": "Zoom"
   },
   {
     "name": "Bluesky",
@@ -653,6 +689,12 @@
     "url": "https://www.aliexpress.com/",
     "icon": "aliexpress",
     "title": "AliExpress"
+  },
+  {
+    "name": "SHEIN",
+    "url": "https://us.shein.com/",
+    "icon": "shein",
+    "title": "SHEIN"
   },
   {
     "name": "Etsy",

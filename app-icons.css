@@ -642,3 +642,31 @@
 .item a.slack {
   background-image: url(images/app_slack.webp);
 }
+
+.item a.amctheaters {
+  background-image: url(images/app_amctheaters.webp);
+}
+
+.item a.jellyfin {
+  background-image: url(images/app_jellyfin.webp);
+}
+
+.item a.mixcloud {
+  background-image: url(images/app_mixcloud.webp);
+}
+
+.item a.pgatour {
+  background-image: url(images/app_pgatour.webp);
+}
+
+.item a.regalcinemas {
+  background-image: url(images/app_regalcinemas.webp);
+}
+
+.item a.shein {
+  background-image: url(images/app_shein.webp);
+}
+
+.item a.zoom {
+  background-image: url(images/app_zoom.webp);
+}
