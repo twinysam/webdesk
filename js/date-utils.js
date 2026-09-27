@@ -63,6 +63,19 @@
       ],
       MOON_PHASE_EMOJIS: ["🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"],
 
+      // ΔT = TT − UTC, exact for the current era (not an approximation):
+      // TT is defined as TAI + 32.184s exactly, and TAI − UTC has been 37
+      // leap seconds since 2017-01-01, reconfirmed as still 37s with no
+      // change scheduled for 2026-12-31 by IERS Bulletin C 72 (2026-07-06).
+      // 32.184 + 37 = 69.184s. This only needs bumping by ±1 if/when IERS
+      // announces a new leap second (Bulletin C, issued every Jun/Dec) —
+      // check https://hpiers.obspm.fr/eop-pc/ if this ever looks stale.
+      DELTA_T_SECONDS: 69.184,
+
+      // Current moment as a Terrestrial Time Julian Date — matches the
+      // frame new_moons_tt / moon_phases_tt are stored in.
+      _nowTT: () => Date.now() / 86400000 + 2440587.5 + scope.DateUtils.DELTA_T_SECONDS / 86400,
+
       _findLunationBounds: (nowJd, newMoons) => {
         // Binary search: sorted ascending, find the pair straddling nowJd.
         let lo = 0, hi = newMoons.length - 1;
@@ -96,7 +109,7 @@
       // cached lunation boundary has actually been crossed (~once/month) —
       // every other call (e.g. the 5-min greeting refresh) is free.
       ensureLunarPhase: async () => {
-        const nowJd = Date.now() / 86400000 + 2440587.5;
+        const nowJd = scope.DateUtils._nowTT();
         const cached = JSON.parse(localStorage.getItem("lunar_phase_bounds") || "null");
         if (cached && nowJd >= cached.prev && nowJd < cached.next) return;
 
@@ -125,7 +138,7 @@
         const cached = JSON.parse(localStorage.getItem("lunar_phase_bounds") || "null");
         if (!cached) return null;
 
-        const nowJd = Date.now() / 86400000 + 2440587.5;
+        const nowJd = scope.DateUtils._nowTT();
         const { prev, next } = cached;
         if (nowJd < prev || nowJd >= next) return null; // stale, waiting on next ensureLunarPhase()
 
