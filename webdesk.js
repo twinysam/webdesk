@@ -403,6 +403,8 @@ document.addEventListener("DOMContentLoaded", function () {
   // Dynamic header messages and visuals
   // ==========================================================================
   window.GreetingManager = {
+    _moonTooltipInstance: null,
+
     specialDates: {
       "14/03": '<i class="bi bi-infinity"></i> Happy π Day!',
       "25/05":
@@ -443,6 +445,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // 2. Overrides
       const { season, isFirstDay } = DateUtils.getSeason(now);
+      let isSpecialOverride = false;
 
       // User Birthday Check
       const userBirthday = ProfileManager.getBirthday();
@@ -451,30 +454,65 @@ document.addEventListener("DOMContentLoaded", function () {
         const bday = dayjs(userBirthday);
         if (bday.date() === now.date() && bday.month() === now.month()) {
           message = `<i class="bi bi-balloon-fill"></i> ${t("birthday")}`;
+          isSpecialOverride = true;
         }
       }
 
       if (dayOfYear === 88) {
         message = "🎹 Happy Piano Day";
+        isSpecialOverride = true;
       } else if (DateUtils.isTodayEaster(now.toDate())) {
         message = '<i class="bi bi-egg-fill"></i> Happy Easter!';
+        isSpecialOverride = true;
       } else if (DateUtils.isTodayChineseNewYear(now.toDate())) {
         const info = DateUtils.getChineseNewYearInfo(now.year());
         message = `${info.elementEmoji}${info.zodiacEmoji} ${t("lunar_new_year")} (${info.ganzhi})`;
+        isSpecialOverride = true;
       } else if (isFirstDay) {
         const emojis = { spring: "🌸", summer: "🏖️", fall: "🍂", winter: "❄️" };
         message = `${emojis[season]} Happy first day of ${season}!`;
+        isSpecialOverride = true;
       } else if (GreetingManager.specialDates[todayStr]) {
         message = GreetingManager.specialDates[todayStr];
+        isSpecialOverride = true;
       } else if (todayStr === "31/12") {
         message = `Goodbye ${now.format("YYYY")}`;
+        isSpecialOverride = true;
       } else if (todayStr === "01/01") {
         message = `Happy New Year! Hello ${now.format("YYYY")}`;
+        isSpecialOverride = true;
+      }
+
+      // 3. Moon phase (evening / late-late-show only, and only on the plain greeting —
+      // special-day overrides above take the icon slot instead)
+      if (!isSpecialOverride && ["evening", "latelateshow"].includes(timeKey)) {
+        const moon = DateUtils.getLunarPhaseData && DateUtils.getLunarPhaseData();
+        if (moon) {
+          const tooltipText = t("moon_tooltip", {
+            phase: t(moon.phaseKey),
+            illum: moon.illumination,
+            event: t(moon.eventKey),
+            days: moon.daysToEvent,
+          });
+          message = `<span class="moon-phase-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${tooltipText}">${moon.emoji}</span> ${message}`;
+        }
       }
 
       const politeElem = document.getElementById("polite");
       if (politeElem) {
+        // Dispose the previous tooltip instance before the node it's
+        // attached to gets thrown away, so we don't leak Popper instances.
+        if (GreetingManager._moonTooltipInstance) {
+          GreetingManager._moonTooltipInstance.dispose();
+          GreetingManager._moonTooltipInstance = null;
+        }
+
         politeElem.innerHTML = message;
+
+        const moonIcon = politeElem.querySelector(".moon-phase-icon");
+        if (moonIcon && window.bootstrap) {
+          GreetingManager._moonTooltipInstance = new bootstrap.Tooltip(moonIcon);
+        }
       }
     },
 
@@ -1458,6 +1496,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Initialize other non-gating managers in parallel/early
         EventsManager.init();
         LinksManager.init();
+        DateUtils.ensureLunarPhase(); // fire-and-forget; re-renders the greeting once resolved
 
         // Wait for Apps to be fetched and rendered
         return DesktopAppRenderer.init();

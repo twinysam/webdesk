@@ -50,6 +50,79 @@
         };
       },
 
+      // --------------------------------------------------------------------
+      // Lunar PHASE (for the greeting emoji) — reuses new_moons_tt, the same
+      // real ephemeris data already fetched for the Chinese calendar above.
+      // No external library needed: these are true computed new-moon
+      // instants (Skyfield / JPL DE440-441), not an averaged synodic month.
+      // --------------------------------------------------------------------
+      MOON_PHASE_KEYS: [
+        "moon_phase_new", "moon_phase_waxing_crescent", "moon_phase_first_quarter",
+        "moon_phase_waxing_gibbous", "moon_phase_full", "moon_phase_waning_gibbous",
+        "moon_phase_last_quarter", "moon_phase_waning_crescent"
+      ],
+      MOON_PHASE_EMOJIS: ["🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"],
+
+      _findLunationBounds: (nowJd, newMoons) => {
+        // Binary search: sorted ascending, find the pair straddling nowJd.
+        let lo = 0, hi = newMoons.length - 1;
+        while (lo < hi) {
+          const mid = (lo + hi + 1) >> 1;
+          if (newMoons[mid] <= nowJd) lo = mid; else hi = mid - 1;
+        }
+        return { prev: newMoons[lo], next: newMoons[lo + 1] };
+      },
+
+      // Call once at startup. Cheap: only re-fetches the JSON when the
+      // cached lunation boundary has actually been crossed (~once/month) —
+      // every other call (e.g. the 5-min greeting refresh) is free.
+      ensureLunarPhase: async () => {
+        const nowJd = Date.now() / 86400000 + 2440587.5;
+        const cached = JSON.parse(localStorage.getItem("lunar_phase_bounds") || "null");
+        if (cached && nowJd >= cached.prev && nowJd < cached.next) return;
+
+        try {
+          const res = await fetch("webdesk-tt-2027-3000.json");
+          const { new_moons_tt } = await res.json();
+          const bounds = scope.DateUtils._findLunationBounds(nowJd, new_moons_tt);
+          localStorage.setItem("lunar_phase_bounds", JSON.stringify(bounds));
+          if (window.GreetingManager) window.GreetingManager.updateMessage();
+        } catch (e) {
+          console.error("Error computing lunar phase:", e);
+        }
+      },
+
+      // Synchronous — reads the cached {prev, next} new-moon pair only.
+      // Returns null until ensureLunarPhase() has resolved at least once.
+      getLunarPhaseData: () => {
+        const cached = JSON.parse(localStorage.getItem("lunar_phase_bounds") || "null");
+        if (!cached) return null;
+
+        const nowJd = Date.now() / 86400000 + 2440587.5;
+        const { prev, next } = cached;
+        if (nowJd < prev || nowJd >= next) return null; // stale, waiting on next ensureLunarPhase()
+
+        const frac = (nowJd - prev) / (next - prev);
+        const idx = Math.floor(((frac + 1 / 16) % 1) * 8);
+        // Standard phase-angle approximation of illuminated fraction.
+        const illumination = Math.round(((1 - Math.cos(2 * Math.PI * frac)) / 2) * 100);
+
+        // Full moon isn't in the dataset (only new moons + solar terms), so
+        // we approximate it as the lunation midpoint — accurate to within
+        // a few hours, plenty for a "days until" figure.
+        const isWaxing = frac < 0.5;
+        const fullMoonJd = prev + (next - prev) / 2;
+        const daysToEvent = Math.max(0, Math.round(isWaxing ? fullMoonJd - nowJd : next - nowJd));
+
+        return {
+          emoji: scope.DateUtils.MOON_PHASE_EMOJIS[idx],
+          phaseKey: scope.DateUtils.MOON_PHASE_KEYS[idx],
+          illumination,
+          eventKey: isWaxing ? "moon_event_full" : "moon_event_new",
+          daysToEvent,
+        };
+      },
+
       ensureLunarComputed: async (year) => {
           const cached = localStorage.getItem("cny_data_" + year);
           if (cached) {
