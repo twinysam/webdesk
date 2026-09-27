@@ -73,6 +73,25 @@
         return { prev: newMoons[lo], next: newMoons[lo + 1] };
       },
 
+      // Optional upgrade: once webdesk-tt-2027-3000.json includes
+      // moon_phases_tt ([tt, phase] pairs, phase 2 = Full Moon — see
+      // backfill_moon_phases.py), find the real Full Moon inside a given
+      // lunation instead of assuming it falls at the midpoint. A lunation
+      // has exactly 4 of these events, so scanning a few entries from the
+      // binary-search insertion point is enough.
+      _findFullMoonInLunation: (prevNewMoon, nextNewMoon, moonPhases) => {
+        if (!moonPhases || !moonPhases.length) return null;
+        let lo = 0, hi = moonPhases.length - 1;
+        while (lo < hi) {
+          const mid = (lo + hi + 1) >> 1;
+          if (moonPhases[mid][0] <= prevNewMoon) lo = mid; else hi = mid - 1;
+        }
+        for (let i = lo; i < moonPhases.length && moonPhases[i][0] < nextNewMoon; i++) {
+          if (moonPhases[i][1] === 2) return moonPhases[i][0];
+        }
+        return null;
+      },
+
       // Call once at startup. Cheap: only re-fetches the JSON when the
       // cached lunation boundary has actually been crossed (~once/month) —
       // every other call (e.g. the 5-min greeting refresh) is free.
@@ -83,8 +102,16 @@
 
         try {
           const res = await fetch("webdesk-tt-2027-3000.json");
-          const { new_moons_tt } = await res.json();
+          const { new_moons_tt, moon_phases_tt } = await res.json();
           const bounds = scope.DateUtils._findLunationBounds(nowJd, new_moons_tt);
+
+          // If the (optional) precise phase data is present, resolve the
+          // real Full Moon for this lunation instead of the midpoint guess.
+          const fullMoon = scope.DateUtils._findFullMoonInLunation(
+            bounds.prev, bounds.next, moon_phases_tt
+          );
+          if (fullMoon != null) bounds.fullMoon = fullMoon;
+
           localStorage.setItem("lunar_phase_bounds", JSON.stringify(bounds));
           if (window.GreetingManager) window.GreetingManager.updateMessage();
         } catch (e) {
@@ -92,7 +119,7 @@
         }
       },
 
-      // Synchronous — reads the cached {prev, next} new-moon pair only.
+      // Synchronous — reads the cached {prev, next, fullMoon?} pair only.
       // Returns null until ensureLunarPhase() has resolved at least once.
       getLunarPhaseData: () => {
         const cached = JSON.parse(localStorage.getItem("lunar_phase_bounds") || "null");
@@ -107,11 +134,11 @@
         // Standard phase-angle approximation of illuminated fraction.
         const illumination = Math.round(((1 - Math.cos(2 * Math.PI * frac)) / 2) * 100);
 
-        // Full moon isn't in the dataset (only new moons + solar terms), so
-        // we approximate it as the lunation midpoint — accurate to within
-        // a few hours, plenty for a "days until" figure.
+        // Real Full Moon timestamp if webdesk-tt-2027-3000.json has been
+        // regenerated with moon_phases_tt; otherwise fall back to the
+        // lunation-midpoint approximation (off by at most a few hours).
         const isWaxing = frac < 0.5;
-        const fullMoonJd = prev + (next - prev) / 2;
+        const fullMoonJd = cached.fullMoon != null ? cached.fullMoon : prev + (next - prev) / 2;
         const daysToEvent = Math.max(0, Math.round(isWaxing ? fullMoonJd - nowJd : next - nowJd));
 
         return {
