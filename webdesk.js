@@ -160,6 +160,10 @@ document.addEventListener("DOMContentLoaded", function () {
       body.style.setProperty("--link-hover-color", prefs.linkHoverColor || "#c4eafd");
       body.style.setProperty("--fecha-highlight", prefs.highlightColor || "#93007c");
 
+      // Background animation speed. Declared here (before the lazy-load block
+      // below) because that block's async onload callback also reads it.
+      const speed = prefs.bgScrollSpeed ?? 10;
+
       // Set Patterns - Use cached values if available to avoid loading bg-patterns.js
       const cachedLight = localStorage.getItem("cachedBgImageLight");
       const cachedDark = localStorage.getItem("cachedBgImageDark");
@@ -231,8 +235,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const patternObj = typeof bgPatterns !== "undefined" ? bgPatterns.find((p) => p.name === prefs.bgPattern) : null;
       let width = cachedSize || (patternObj ? patternObj.width || patternObj.size : null);
       let height = cachedSizeY || (patternObj ? patternObj.height || patternObj.size : width);
-      
-      const speed = prefs.bgScrollSpeed ?? 10;
+
       console.log('Background Physics:', (width && height) ? 'Precise' : 'Estimated', 'Dim:', (width || 100) + 'x' + (height || width || 100), 'Speed:', speed);
 
       if (width || prefs.bgPattern !== "none") {
@@ -269,10 +272,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const currentSeasonData = DateUtils.getSeason();
         const season = currentSeasonData.season === "fall" ? "autumn" : currentSeasonData.season;
         const preset = DateUtils.THEME_PRESETS[season];
-        
+
         if (preset && (
-            prefs.bgColorLight !== preset.bg || 
-            prefs.linkColor !== preset.link || 
+            prefs.bgColorLight !== preset.bg ||
+            prefs.linkColor !== preset.link ||
             prefs.highlightColor !== preset.highlight
         )) {
           const oldPatternColor = prefs.patternColorLight || "#014669";
@@ -281,13 +284,13 @@ document.addEventListener("DOMContentLoaded", function () {
           prefs.linkColor = preset.link;
           prefs.linkHoverColor = preset.linkHover;
           prefs.highlightColor = preset.highlight;
-          
+
           localStorage.setItem(PreferencesManager.STORAGE_KEY, JSON.stringify(prefs));
           localStorage.setItem("cachedBgColorLight", preset.bg);
           localStorage.setItem("cachedLinkColor", preset.link);
           localStorage.setItem("cachedLinkHoverColor", preset.linkHover);
           localStorage.setItem("cachedHighlightColor", preset.highlight);
-          
+
           let cachedLight = localStorage.getItem("cachedBgImageLight");
           if (cachedLight && cachedLight !== "none") {
             cachedLight = cachedLight.replace(encodeURIComponent(oldPatternColor), encodeURIComponent(preset.pattern));
@@ -349,7 +352,7 @@ document.addEventListener("DOMContentLoaded", function () {
         let stats = StatsManager.getStats();
         let changed = false;
         const currentBaseUrl = window.location.href.split('#')[0];
-        
+
         for (const key of Object.keys(stats)) {
           if (
             key === "https://twinysam.github.io/webdesk/#" ||
@@ -384,8 +387,8 @@ document.addEventListener("DOMContentLoaded", function () {
             // Avoid tracking base URLs or hash-only links
             const currentBaseUrl = window.location.href.split('#')[0];
             if (
-              appName.endsWith("#") || 
-              appName === window.location.href || 
+              appName.endsWith("#") ||
+              appName === window.location.href ||
               appName === currentBaseUrl ||
               appName === currentBaseUrl + "#"
             ) {
@@ -414,8 +417,8 @@ document.addEventListener("DOMContentLoaded", function () {
       "16/12":
         '<i class="bi bi-music-note-beamed"></i> Happy birthday <a href="https://peanuts.fandom.com/wiki/Beethoven%27s_birthday" target="_blank">Ludwig!</a>',
       "31/10": '<i class="bi bi-magic"></i> Happy Halloween!',
-      "24/12": '<i class="bi.bi-tree-fill"></i> Christmas Eve!',
-      "25/12": '<i class="bi.bi-tree-fill"></i> Merry Christmas!',
+      "24/12": '<i class="bi bi-tree-fill"></i> Christmas Eve!',
+      "25/12": '<i class="bi bi-tree-fill"></i> Merry Christmas!',
     },
 
     updateMessage: () => {
@@ -986,7 +989,7 @@ document.addEventListener("DOMContentLoaded", function () {
         sibling.remove();
         sibling = next;
       }
-      
+
       const fragment = document.createDocumentFragment();
       let currentContainer = container;
 
@@ -1001,10 +1004,10 @@ document.addEventListener("DOMContentLoaded", function () {
             hr.insertAdjacentElement("afterend", newContainer);
             currentContainer = newContainer;
           }
-          
+
           const div = document.createElement("div");
           div.className = "item";
-          
+
           const a = document.createElement("a");
           a.href = item.url;
           a.target = "_blank";
@@ -1013,7 +1016,7 @@ document.addEventListener("DOMContentLoaded", function () {
           a.dataset.bsPlacement = "bottom";
           a.title = item.title;
           a.textContent = item.name;
-          
+
           div.appendChild(a);
           fragment.appendChild(div);
         });
@@ -1022,7 +1025,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // Add Meta-App at the end
       const metaItem = document.createElement("div");
       metaItem.className = "item";
-      
+
       const metaBtn = document.createElement("a");
       metaBtn.href = "#";
       metaBtn.className = "bg-secondary text-white manage-apps-btn";
@@ -1043,7 +1046,7 @@ document.addEventListener("DOMContentLoaded", function () {
       fragment.appendChild(metaItem);
 
       currentContainer.appendChild(fragment);
-      
+
       // Re-init tooltips
       Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]')).forEach(
         (el) => new bootstrap.Tooltip(el)
@@ -1263,7 +1266,7 @@ document.addEventListener("DOMContentLoaded", function () {
             start: d.format("YYYY-MM-DD"),
             allDay: true,
             url: e.url || "",
-            className: "bg-success border-success text-white" 
+            className: "bg-success border-success text-white"
           });
         }
       });
@@ -1381,10 +1384,10 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!wrapper) {
         const hr = document.createElement("hr");
         caja.appendChild(hr);
-        
+
         wrapper = document.createElement("div");
         wrapper.id = "calendar-wrapper";
-        
+
         const titleText = I18nManager.getString("title_calendar") || "Calendar";
         const manageTitle = I18nManager.getString("header_manage_events") || "Manage Events";
         wrapper.innerHTML = `
@@ -1403,7 +1406,7 @@ document.addEventListener("DOMContentLoaded", function () {
               font-size: clamp(1rem, 2vh, 1.3rem) !important;
               color: var(--calc-input-color);
             }
-            #calendar-container a.fc-col-header-cell-cushion, 
+            #calendar-container a.fc-col-header-cell-cushion,
             #calendar-container a.fc-daygrid-day-number {
               color: var(--calc-input-color);
               text-decoration: none;
@@ -1465,7 +1468,7 @@ document.addEventListener("DOMContentLoaded", function () {
           initialView: 'dayGridMonth',
           themeSystem: 'bootstrap5',
           events: events,
-          firstDay: 1, 
+          firstDay: 1,
           height: calHeight,
           dayMaxEvents: true, // Limits events per day and shows "+X more" to prevent vertical stretching
           eventClick: function(info) {
