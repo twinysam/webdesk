@@ -110,8 +110,9 @@ window.LinksManager = (() => {
     links.forEach((link) => {
       const li = document.createElement("li");
       const a = document.createElement("a");
-      a.href = link.url;
+      a.href = SafeLink.url(link.url) || "#";
       a.target = "_blank";
+      a.rel = "noopener noreferrer";
       a.textContent = link.name || link.url;
       li.appendChild(a);
       ul.appendChild(li);
@@ -134,10 +135,11 @@ window.LinksManager = (() => {
         ? `<button class="btn btn-sm btn-outline-info btn-move-top" onclick="LinksManager.moveLinkToTop(${index})"><i class="bi bi-arrow-up"></i></button>`
         : "";
 
+      const safeUrl = SafeLink.url(link.url);
       tr.innerHTML = `
         <td><i class="bi bi-list text-secondary sort-handle"></i></td>
-        <td>${link.name || '<em class="text-secondary" data-i18n="value_none">No Name</em>'}</td>
-        <td><a href="${link.url}" target="_blank" class="text-info text-decoration-none">${link.url}</a></td>
+        <td>${link.name ? SafeLink.escape(link.name) : '<em class="text-secondary" data-i18n="value_none">No Name</em>'}</td>
+        <td>${safeUrl ? `<a href="${SafeLink.escape(safeUrl)}" target="_blank" rel="noopener noreferrer" class="text-info text-decoration-none">${SafeLink.escape(link.url)}</a>` : `<span class="text-secondary">${SafeLink.escape(link.url || "")}</span>`}</td>
         <td class="text-end">
           <div class="links-action-cell">
             ${upBtn}
@@ -239,8 +241,8 @@ window.LinksManager = (() => {
           <div class="d-flex align-items-center gap-2 text-truncate overlay-card-info">
             <i class="bi bi-list sort-handle text-secondary"></i>
             <div class="text-truncate overlay-card-info">
-              <strong class="d-block text-white text-truncate overlay-card-name">${link.name || link.url}</strong>
-              <small class="text-white-50 text-truncate d-block overlay-card-url">${link.url}</small>
+              <strong class="d-block text-white text-truncate overlay-card-name">${SafeLink.escape(link.name || link.url)}</strong>
+              <small class="text-white-50 text-truncate d-block overlay-card-url">${SafeLink.escape(link.url)}</small>
             </div>
           </div>
           <div class="links-action-cell">

@@ -4,6 +4,7 @@ const ASSETS_TO_CACHE = [
   "index.html",
   "style.css",
   "webdesk.js",
+  "js/sanitize.js",
   "app-icons.css",
   "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css",
   "https://fonts.googleapis.com/css2?family=Exo:wght@100;200&family=Inconsolata&family=Nunito:ital@0;1&display=swap",

@@ -730,9 +730,11 @@ window.EventManager = (() => {
         const monthName = monthNames[ev.month - 1] || "";
         const formattedDateDisplay = `${ev.day} ${monthName}${ev.type === "custom" ? ` ${ev.year}` : ""}`;
 
-        const nameDisplay = ev.url
-          ? `<a href="${ev.url}" target="_blank" class="text-info text-decoration-none fw-bold">${ev.name} <i class="bi bi-box-arrow-up-right small"></i></a>`
-          : `<span class="fw-bold">${ev.name}</span>`;
+        const safeUrl = SafeLink.url(ev.url);
+        const safeName = SafeLink.escape(ev.name);
+        const nameDisplay = safeUrl
+          ? `<a href="${SafeLink.escape(safeUrl)}" target="_blank" rel="noopener noreferrer" class="text-info text-decoration-none fw-bold">${safeName} <i class="bi bi-box-arrow-up-right small"></i></a>`
+          : `<span class="fw-bold">${safeName}</span>`;
 
         let actionButtons = "";
         if (ev.readOnly) {
@@ -756,7 +758,7 @@ window.EventManager = (() => {
               <div class="d-flex align-items-center gap-2 mb-1">
                 ${typeBadge}
                 ${countdownBadge}
-                <span class="text-white-50 small"><i class="bi bi-calendar"></i> ${formattedDateDisplay} (${ev.displayDate})</span>
+                <span class="text-white-50 small"><i class="bi bi-calendar"></i> ${formattedDateDisplay} (${SafeLink.escape(ev.displayDate)})</span>
               </div>
               <div class="fs-6">${nameDisplay}</div>
             </div>
@@ -867,8 +869,8 @@ window.EventManager = (() => {
     sorted.forEach((bday) => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>${bday.birthday}</td>
-        <td>${bday.name}</td>
+        <td>${SafeLink.escape(bday.birthday)}</td>
+        <td>${SafeLink.escape(bday.name)}</td>
         <td class="text-end">
           <button class="btn btn-sm btn-${bday.countdown ? "warning" : "outline-warning"} me-1 btn-toggle-cd" title="${t("tooltip_countdown", "Toggle Countdown")}"><i class="bi bi-stopwatch"></i></button>
           <button class="btn btn-sm btn-danger btn-del-bday"><i class="bi bi-trash"></i></button>
@@ -903,10 +905,11 @@ window.EventManager = (() => {
 
     sorted.forEach((evt) => {
       const tr = document.createElement("tr");
+      const safeUrl = SafeLink.url(evt.url);
       tr.innerHTML = `
-        <td>${evt.date}</td>
-        <td>${evt.name}</td>
-        <td>${evt.url ? `<a href="${evt.url}" target="_blank" class="text-info"><i class="bi bi-link-45deg"></i> Link</a>` : "-"}</td>
+        <td>${SafeLink.escape(evt.date)}</td>
+        <td>${SafeLink.escape(evt.name)}</td>
+        <td>${safeUrl ? `<a href="${SafeLink.escape(safeUrl)}" target="_blank" rel="noopener noreferrer" class="text-info"><i class="bi bi-link-45deg"></i> Link</a>` : "-"}</td>
         <td class="text-end">
           <button class="btn btn-sm btn-${evt.countdown ? "warning" : "outline-warning"} me-1 btn-toggle-cd" title="${t("tooltip_countdown", "Toggle Countdown")}"><i class="bi bi-stopwatch"></i></button>
           <button class="btn btn-sm btn-danger btn-del-annual"><i class="bi bi-trash"></i></button>
@@ -941,10 +944,11 @@ window.EventManager = (() => {
 
     sorted.forEach((evt) => {
       const tr = document.createElement("tr");
+      const safeUrl = SafeLink.url(evt.url);
       tr.innerHTML = `
-        <td>${evt.date}</td>
-        <td>${evt.name}</td>
-        <td>${evt.url ? `<a href="${evt.url}" target="_blank" class="text-info"><i class="bi bi-link-45deg"></i> Link</a>` : "-"}</td>
+        <td>${SafeLink.escape(evt.date)}</td>
+        <td>${SafeLink.escape(evt.name)}</td>
+        <td>${safeUrl ? `<a href="${SafeLink.escape(safeUrl)}" target="_blank" rel="noopener noreferrer" class="text-info"><i class="bi bi-link-45deg"></i> Link</a>` : "-"}</td>
         <td class="text-end">
           <button class="btn btn-sm btn-${evt.countdown ? "warning" : "outline-warning"} me-1 btn-toggle-cd" title="${t("tooltip_countdown", "Toggle Countdown")}"><i class="bi bi-stopwatch"></i></button>
           <button class="btn btn-sm btn-danger btn-del-custom"><i class="bi bi-trash"></i></button>

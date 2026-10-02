@@ -411,11 +411,11 @@ document.addEventListener("DOMContentLoaded", function () {
     specialDates: {
       "14/03": '<i class="bi bi-infinity"></i> Happy π Day!',
       "25/05":
-        '🇦🇷 Feliz <a href="https://es.wikipedia.org/wiki/Revoluci%C3%B3n_de_Mayo" target="_blank">25 de Mayo!</a>',
+        '🇦🇷 Feliz <a href="https://es.wikipedia.org/wiki/Revoluci%C3%B3n_de_Mayo" target="_blank" rel="noopener noreferrer">25 de Mayo!</a>',
       "09/07":
-        '🇦🇷 Feliz día de la <a href="https://es.wikipedia.org/wiki/Declaraci%C3%B3n_de_independencia_de_la_Argentina" target="_blank">independencia</a>!',
+        '🇦🇷 Feliz día de la <a href="https://es.wikipedia.org/wiki/Declaraci%C3%B3n_de_independencia_de_la_Argentina" target="_blank" rel="noopener noreferrer">independencia</a>!',
       "16/12":
-        '<i class="bi bi-music-note-beamed"></i> Happy birthday <a href="https://peanuts.fandom.com/wiki/Beethoven%27s_birthday" target="_blank">Ludwig!</a>',
+        '<i class="bi bi-music-note-beamed"></i> Happy birthday <a href="https://peanuts.fandom.com/wiki/Beethoven%27s_birthday" target="_blank" rel="noopener noreferrer">Ludwig!</a>',
       "31/10": '<i class="bi bi-magic"></i> Happy Halloween!',
       "24/12": '<i class="bi bi-tree-fill"></i> Christmas Eve!',
       "25/12": '<i class="bi bi-tree-fill"></i> Merry Christmas!',
@@ -427,7 +427,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const todayStr = DateUtils.getTodayStr();
       const dayOfYear = now.dayOfYear();
 
-      const name = ProfileManager.getName();
+      const rawName = ProfileManager.getName();
+      const safeName = SafeLink.escape(rawName);
       const t = I18nManager.getString;
 
       let message;
@@ -436,14 +437,15 @@ document.addEventListener("DOMContentLoaded", function () {
       let timeKey = I18nManager.getGreetingTime(now);
       if (time < 5) timeKey = "latelateshow"; // Late Late Show override
 
-      const greetingText = t(`greeting_${timeKey}`, { name: name });
+      const greetingText = t(`greeting_${timeKey}`, { name: rawName });
 
       // If the localized string already contains the name (checked by presence of {name} placeholder in source),
       // t() handles it if we passed params. If it's a standard greeting without placeholder, we append name.
-      if (greetingText.includes(name)) {
-        message = greetingText;
+      // Re-render with the escaped name so a profile name from an imported backup can't inject markup.
+      if (greetingText.includes(rawName)) {
+        message = t(`greeting_${timeKey}`, { name: safeName });
       } else {
-        message = `${greetingText}, <span class="name-highlight">${name}</span>`;
+        message = `${greetingText}, <span class="name-highlight">${safeName}</span>`;
       }
 
       // 2. Overrides
@@ -678,21 +680,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
           // 4. Check Dates
           allBirthdays.forEach((b) => {
+            const name = SafeLink.escape(b.name);
             if (b.birthday === today)
-              matches.cumplesToday.push(`<span>${b.name}</span>`);
-            if (b.birthday === tomorrow) matches.cumplesTomorrow.push(b.name);
+              matches.cumplesToday.push(`<span>${name}</span>`);
+            if (b.birthday === tomorrow) matches.cumplesTomorrow.push(name);
           });
 
           // --- ANNUAL EVENTS (Treat as regular events for display) ---
           const annualEvents =
             JSON.parse(localStorage.getItem("annualEvents")) || [];
           annualEvents.forEach((e) => {
-            const nameHtml = e.url
-              ? `<a href="${e.url}" target="_blank"><span>${e.name}</span></a>`
-              : `<span>${e.name}</span>`;
-            const nameText = e.url
-              ? `<a href="${e.url}" target="_blank">${e.name}</a>`
-              : e.name;
+            const url = SafeLink.url(e.url);
+            const name = SafeLink.escape(e.name);
+            const nameHtml = url
+              ? `<a href="${SafeLink.escape(url)}" target="_blank" rel="noopener noreferrer"><span>${name}</span></a>`
+              : `<span>${name}</span>`;
+            const nameText = url
+              ? `<a href="${SafeLink.escape(url)}" target="_blank" rel="noopener noreferrer">${name}</a>`
+              : name;
             if (e.date === today) matches.eventsToday.push(nameHtml);
             if (e.date === tomorrow) matches.eventsTomorrow.push(nameText);
           });
@@ -710,12 +715,14 @@ document.addEventListener("DOMContentLoaded", function () {
           const allEvents = Array.from(eventMap.values());
 
           allEvents.forEach((e) => {
-            const nameHtml = e.url
-              ? `<a href="${e.url}" target="_blank"><span>${e.name}</span></a>`
-              : `<span>${e.name}</span>`;
-            const nameText = e.url
-              ? `<a href="${e.url}" target="_blank">${e.name}</a>`
-              : e.name;
+            const url = SafeLink.url(e.url);
+            const name = SafeLink.escape(e.name);
+            const nameHtml = url
+              ? `<a href="${SafeLink.escape(url)}" target="_blank" rel="noopener noreferrer"><span>${name}</span></a>`
+              : `<span>${name}</span>`;
+            const nameText = url
+              ? `<a href="${SafeLink.escape(url)}" target="_blank" rel="noopener noreferrer">${name}</a>`
+              : name;
             if (e.date === todayFull) matches.eventsToday.push(nameHtml);
             if (e.date === tomorrowFull) matches.eventsTomorrow.push(nameText);
           });
@@ -860,7 +867,7 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
         <div class="input-group mb-3">
           <span class="input-group-text">${t("calcDate")}</span>
-          <input type="date" class="form-control dias-calc-date" min="${calcMinDate}" max="${dayjs().format(
+          <input type="date" class="form-control dias-calc-date" min="${SafeLink.escape(calcMinDate)}" max="${dayjs().format(
             "YYYY-MM-DD",
           )}">
           <span class="ms-3 dias-calc-dia"></span>
@@ -1009,8 +1016,9 @@ document.addEventListener("DOMContentLoaded", function () {
           div.className = "item";
 
           const a = document.createElement("a");
-          a.href = item.url;
+          a.href = SafeLink.url(item.url) || "#";
           a.target = "_blank";
+          a.rel = "noopener noreferrer";
           a.className = item.icon;
           a.dataset.bsToggle = "tooltip";
           a.dataset.bsPlacement = "bottom";
@@ -1473,8 +1481,9 @@ document.addEventListener("DOMContentLoaded", function () {
           dayMaxEvents: true, // Limits events per day and shows "+X more" to prevent vertical stretching
           eventClick: function(info) {
             info.jsEvent.preventDefault();
-            if (info.event.url) {
-              window.open(info.event.url, "_blank");
+            const url = SafeLink.url(info.event.url);
+            if (url) {
+              window.open(url, "_blank", "noopener,noreferrer");
             }
           }
         });
