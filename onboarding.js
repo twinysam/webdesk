@@ -6,6 +6,9 @@ window.OnboardingManager = {
     selectedApps: [],
   },
 
+  // Guard against duplicate initialization (index.html also calls init()).
+  _initialized: false,
+
   // Data for apps loaded from items.json
   catalog: [],
 
@@ -13,6 +16,10 @@ window.OnboardingManager = {
   strings: {},
 
   init: async () => {
+    // Idempotent: both onboarding.js and index.html's SafeInit call init().
+    if (OnboardingManager._initialized) return;
+    OnboardingManager._initialized = true;
+
     // Check if profile exists
     if (localStorage.getItem("userProfile")) {
       return; // Already set up
@@ -90,7 +97,7 @@ window.OnboardingManager = {
     const idx1 = document.getElementById("dob-1");
     const idx2 = document.getElementById("dob-2");
 
-    if (l === "es") {
+    if (OnboardingManager.config.lang === "es") {
       idx1.placeholder = "DD";
       idx2.placeholder = "MM";
     } else {
@@ -219,52 +226,49 @@ window.OnboardingManager = {
     if (year.length !== 4) return false;
 
     const isEs = OnboardingManager.config.lang === "es";
+    const day = isEs ? p1 : p2;
+    const month = isEs ? p2 : p1;
 
-    let day, month;
-    if (isEs) {
-      day = p1;
-      month = p2;
-    } else {
-      month = p1;
-      day = p2;
-    }
+    const m = parseInt(month, 10);
+    const d = parseInt(day, 10);
+    const y = parseInt(year, 10);
 
-    // Check logical ranges
-    const m = parseInt(month);
-    const d = parseInt(day);
-    const y = parseInt(year);
-
+    if (!Number.isInteger(m) || !Number.isInteger(d) || !Number.isInteger(y)) return false;
     if (m < 1 || m > 12) return false;
     if (d < 1 || d > 31) return false;
     if (y < 1900 || y > new Date().getFullYear()) return false;
 
-    const iso = `${year}-${month}-${day}`;
-    const dob = new Date(iso);
-    if (isNaN(dob.getTime())) return false;
+    // Reject impossible calendar dates (e.g. 31/02) via a UTC round-trip.
+    const dt = new Date(Date.UTC(y, m - 1, d));
+    if (
+      dt.getUTCFullYear() !== y ||
+      dt.getUTCMonth() !== m - 1 ||
+      dt.getUTCDate() !== d
+    ) {
+      return false;
+    }
 
+    const iso = `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
     OnboardingManager.config.birthday = iso;
     return true;
   },
 
   // --- STEP 3: APPS ---
   goToStep3: () => {
-    // 1. Capture and Save DOB
+    // 1. Validate the entered date before advancing.
+    //    validateDate() also stores config.birthday (ISO) when valid.
     const d1 = document.getElementById("dob-1").value;
     const d2 = document.getElementById("dob-2").value;
     const d3 = document.getElementById("dob-3").value;
 
-    let day, month;
-    if (OnboardingManager.config.lang === "es") {
-        day = d1;
-        month = d2;
-    } else {
-        month = d1;
-        day = d2;
+    if (!OnboardingManager.validateDate(`${d1}/${d2}/${d3}`)) {
+      const hint = document.getElementById("hint-dob");
+      if (hint) {
+        hint.classList.remove("hidden");
+        hint.classList.add("fade-in", "visible");
+      }
+      return;
     }
-    const year = d3;
-    
-    // Save standard ISO format
-    OnboardingManager.config.birthday = `${year}-${month}-${day}`;
 
     // 2. Pagination & Transition
     document.getElementById("ob-pagination").innerText = "3/4";
@@ -572,11 +576,12 @@ window.OnboardingManager = {
     localStorage.setItem("myApps", JSON.stringify(selectedApps));
     localStorage.setItem("appConfig", JSON.stringify(config));
 
-    // Save Config
+    // Save Profile (persist hemisphere permanently alongside the rest)
     const profile = {
       name: OnboardingManager.config.name,
       birthday: OnboardingManager.config.birthday, // YYYY-MM-DD
       lang: OnboardingManager.config.lang,
+      isSetup: true,
       // Infer and store hemisphere preference permanently
       hemisphere: typeof DateUtils !== 'undefined' ? DateUtils.detectHemisphere() : 'southern'
     };
@@ -584,11 +589,13 @@ window.OnboardingManager = {
     localStorage.setItem("userProfile", JSON.stringify(profile));
     localStorage.setItem("userLang", OnboardingManager.config.lang);
 
-    // Save Profile
-    ProfileManager.setProfile(name, birthday, lang);
-
     // Record setup time for backup reminder tracking
     localStorage.setItem("setupTime", new Date().toISOString());
+
+    // Profile is fully persisted above. Previously this delegated to
+    // ProfileManager.setProfile(), which rewrote it without `hemisphere`
+    // and lost it until the next-load migration. Reload to boot the desk.
+    location.reload();
   },
 
   handleImport: (event) => {
