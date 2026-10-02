@@ -1263,6 +1263,8 @@
       dayjs.extend(window.dayjs_plugin_customParseFormat);
       dayjs.extend(window.dayjs_plugin_utc);
       dayjs.extend(window.dayjs_plugin_localizedFormat);
+      // Apply the saved language so date formatting (e.g. "MMMM") is localized.
+      dayjs.locale(localStorage.getItem("userLang") || "en");
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.min.js"></script>
     <script src="js/sanitize.js"></script>

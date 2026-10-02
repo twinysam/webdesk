@@ -1055,10 +1055,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
       currentContainer.appendChild(fragment);
 
-      // Re-init tooltips
-      Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]')).forEach(
-        (el) => new bootstrap.Tooltip(el)
-      );
+      // (Re)initialise tooltips without stacking instances if renderGrid reruns.
+      // NB: index.html loads Bootstrap 5.0.0 JS, which predates
+      // Tooltip.getOrCreateInstance (added in 5.1) — use getInstance + new.
+      if (window.bootstrap && bootstrap.Tooltip) {
+        Array.from(
+          document.querySelectorAll('[data-bs-toggle="tooltip"]'),
+        ).forEach((el) => {
+          if (!bootstrap.Tooltip.getInstance(el)) new bootstrap.Tooltip(el);
+        });
+      }
     },
 
     init: async () => {
@@ -1101,7 +1107,8 @@ document.addEventListener("DOMContentLoaded", function () {
     eventsRenderTimeout = setTimeout(() => {
       EventsManager.checkDailyEvents();
       const prefs = JSON.parse(localStorage.getItem("userPreferences") || "{}");
-      if (prefs.enableCalendar !== false) {
+      // Keep this consistent with startup: the calendar is opt-in.
+      if (prefs.enableCalendar === true) {
         CalendarManager.init();
       }
     }, 50);
@@ -1569,8 +1576,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     startWebDesk();
   } else {
-    if (window.OnboardingManager) {
-      OnboardingManager.start();
+    if (window.OnboardingManager && typeof OnboardingManager.init === "function") {
+      OnboardingManager.init(); // No profile yet — run onboarding (idempotent)
     } else {
       console.error("OnboardingManager not found");
       startWebDesk(); // Fallback

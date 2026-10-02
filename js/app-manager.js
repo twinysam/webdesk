@@ -1,5 +1,6 @@
 window.AppManager = (() => {
   const MYAPPS_KEY = "myApps";
+  const CATALOG_CACHE_KEY = "catalogCache";
   let _catalog = null;
   let sortablePromise = null;
   let sortableInstance = null;
@@ -12,9 +13,21 @@ window.AppManager = (() => {
       const res = await fetch("items.json");
       const apps = await res.json();
       _catalog = apps.sort((a, b) => a.name.localeCompare(b.name));
+      // Persist so a later transient fetch failure or offline load can still
+      // hydrate the desk instead of rendering it empty.
+      try {
+        localStorage.setItem(CATALOG_CACHE_KEY, JSON.stringify(_catalog));
+      } catch (e) {}
       return _catalog;
     } catch (e) {
       console.error("Failed to load items.json", e);
+      try {
+        const cached = JSON.parse(localStorage.getItem(CATALOG_CACHE_KEY));
+        if (Array.isArray(cached) && cached.length) {
+          _catalog = cached;
+          return _catalog;
+        }
+      } catch (e2) {}
       return [];
     }
   }
@@ -96,6 +109,20 @@ window.AppManager = (() => {
 
   async function showOverlay() {
     await loadSortable();
+
+    // If an overlay is already open (e.g. a double invocation), tear it down
+    // first so we don't stack wrappers or orphan the previous AbortController.
+    if (abortController) {
+      abortController.abort();
+      abortController = null;
+    }
+    if (sortableInstance) {
+      sortableInstance.destroy();
+      sortableInstance = null;
+    }
+    const existingOverlay = document.getElementById("appOverlayWrapper");
+    if (existingOverlay) existingOverlay.remove();
+
     const catalog = await getCatalog();
     let userApps = await getApps();
 
@@ -125,10 +152,12 @@ window.AppManager = (() => {
     `;
 
     // Dismiss every open Bootstrap tooltip before mounting the overlay
-    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
-      const tip = bootstrap.Tooltip.getInstance(el);
-      if (tip) tip.hide();
-    });
+    if (window.bootstrap && bootstrap.Tooltip) {
+      document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+        const tip = bootstrap.Tooltip.getInstance(el);
+        if (tip) tip.hide();
+      });
+    }
 
     const wrapper = document.createElement('div');
     wrapper.id = "appOverlayWrapper";

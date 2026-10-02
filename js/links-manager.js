@@ -6,6 +6,7 @@ window.LinksManager = (() => {
   const STORAGE_KEY = "userLinks";
   let sortablePromise = null;
   let sortableInstance = null;
+  let tableSortableInstance = null;
   let abortController = null;
 
   function getLinks() {
@@ -153,7 +154,13 @@ window.LinksManager = (() => {
     if (window.I18nManager) window.I18nManager.applyToPage();
 
     if (typeof Sortable !== 'undefined') {
-      new Sortable(tbody, {
+      // Re-rendering replaces the rows; drop the previous instance first so
+      // instances/listeners don't accumulate across renders.
+      if (tableSortableInstance) {
+        tableSortableInstance.destroy();
+        tableSortableInstance = null;
+      }
+      tableSortableInstance = new Sortable(tbody, {
         handle: ".sort-handle",
         animation: 150,
         onEnd: () => {
@@ -172,6 +179,18 @@ window.LinksManager = (() => {
 
   async function showOverlay() {
     await loadSortable();
+
+    // Tear down any overlay already open so wrappers/instances don't stack.
+    if (abortController) {
+      abortController.abort();
+      abortController = null;
+    }
+    if (sortableInstance) {
+      sortableInstance.destroy();
+      sortableInstance = null;
+    }
+    const existingOverlay = document.getElementById("linksOverlayWrapper");
+    if (existingOverlay) existingOverlay.remove();
 
     abortController = new AbortController();
     const { signal } = abortController;
@@ -209,10 +228,12 @@ window.LinksManager = (() => {
     `;
 
     // Dismiss tooltip
-    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
-      const tip = bootstrap.Tooltip.getInstance(el);
-      if (tip) tip.hide();
-    });
+    if (window.bootstrap && bootstrap.Tooltip) {
+      document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+        const tip = bootstrap.Tooltip.getInstance(el);
+        if (tip) tip.hide();
+      });
+    }
 
     const wrapper = document.createElement('div');
     wrapper.id = "linksOverlayWrapper";

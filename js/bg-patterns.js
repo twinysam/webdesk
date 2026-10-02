@@ -631,8 +631,13 @@ function generatePatternUri(patternName, color, opacity) {
     svg = svg.replace(/fill=["']#[a-fA-F0-9]{3,6}["']/g, `fill='${color}'`);
     
     // 3. Consistently Inject User Opacity
-    // We inject fill-opacity into all path elements to ensure it overrides everything
-    svg = svg.replace(/<path/g, `<path fill-opacity='${opacity}'`);
+    // Inject fill-opacity into every shape element, not just <path>: patterns
+    // drawn with <circle>/<rect>/<polygon>/etc. would otherwise ignore the
+    // user's opacity setting (e.g. "Polka Dots").
+    svg = svg.replace(
+        /<(path|circle|rect|polygon|ellipse|line|polyline)\b/g,
+        `<$1 fill-opacity='${opacity}'`
+    );
 
     // 4. Data URI Encoding
     // Standard cleanup for CSS url() usage
