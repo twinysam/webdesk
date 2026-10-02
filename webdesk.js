@@ -600,15 +600,10 @@ document.addEventListener("DOMContentLoaded", function () {
     },
 
     checkDailyEvents: () => {
-      Promise.all([
-        fetch("cumples.json")
-          .then((res) => res.json())
-          .catch(() => []),
-        fetch("events.json")
-          .then((res) => res.json())
-          .catch(() => []),
-      ])
-        .then(([cumplesFile, eventsData]) => {
+      // cumples.json and events.json were retired: birthdays and events now
+      // live entirely in localStorage (userBirthdays / annualEvents /
+      // customEvents). No file fetch; run the merge synchronously.
+      Promise.resolve().then(() => {
           const today = DateUtils.getTodayStr();
           const tomorrow = DateUtils.getTomorrowStr();
           const todayFull = DateUtils.getTodayFull();
@@ -658,25 +653,10 @@ document.addEventListener("DOMContentLoaded", function () {
             eventsTomorrow: [],
           };
 
-          // --- MERGE BIRTHDAYS (File + LocalStorage) ---
-          // 1. Get File Data
-          let fileBirthdays = [];
-          if (
-            Array.isArray(cumplesFile) &&
-            cumplesFile.length > 0 &&
-            cumplesFile[0].people
-          ) {
-            fileBirthdays = cumplesFile[0].people;
-          } else if (Array.isArray(cumplesFile)) {
-            fileBirthdays = cumplesFile;
-          }
-
-          // 2. Get Local Storage Data
+          // --- BIRTHDAYS (localStorage only) ---
           const userBirthdays =
             JSON.parse(localStorage.getItem("userBirthdays")) || [];
-
-          // 3. Combine
-          const allBirthdays = [...fileBirthdays, ...userBirthdays];
+          const allBirthdays = [...userBirthdays];
 
           // 4. Check Dates
           allBirthdays.forEach((b) => {
@@ -702,12 +682,12 @@ document.addEventListener("DOMContentLoaded", function () {
             if (e.date === tomorrow) matches.eventsTomorrow.push(nameText);
           });
 
-          // --- MERGE EVENTS ---
+          // --- EVENTS (localStorage only) ---
           const customEvents =
             JSON.parse(localStorage.getItem("customEvents")) || [];
           const eventMap = new Map();
 
-          [...eventsData, ...customEvents].forEach((e) => {
+          customEvents.forEach((e) => {
             const key = `${e.date}|${e.name}`;
             eventMap.set(key, e);
           });
@@ -1254,21 +1234,9 @@ document.addEventListener("DOMContentLoaded", function () {
       const customEvents = JSON.parse(localStorage.getItem("customEvents")) || [];
       const userBirthdays = JSON.parse(localStorage.getItem("userBirthdays")) || [];
       const annualEvents = JSON.parse(localStorage.getItem("annualEvents")) || [];
-      let cumplesFile = [];
 
-      try {
-        const res = await fetch("cumples.json");
-        const data = await res.json();
-        if (Array.isArray(data) && data.length > 0 && data[0].people) {
-          cumplesFile = data[0].people;
-        } else if (Array.isArray(data)) {
-          cumplesFile = data;
-        }
-      } catch (e) {
-        console.warn("Could not load cumples.json for calendar", e);
-      }
-
-      const allBirthdays = [...cumplesFile, ...userBirthdays];
+      // cumples.json was retired; birthdays come from localStorage only.
+      const allBirthdays = [...userBirthdays];
       const fcEvents = [];
 
       // Custom Events (DD/MM/YYYY)
