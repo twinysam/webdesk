@@ -54,8 +54,11 @@
       })();
     </script>
     <style>
+      /* ======================================================================
+         LAYOUT (settings sidebar redesign)
+         ====================================================================== */
       .settings-container {
-        max-width: 900px;
+        max-width: 1120px;
         margin: 2rem auto;
         background: rgba(0, 0, 0, 0.8);
         padding: 2rem;
@@ -63,22 +66,124 @@
         color: white;
       }
       h1 {
-        font-size: 3rem;
-        text-align: center;
-        margin-bottom: 2rem;
+        font-size: 1.75rem;
+        text-align: left;
+        margin-bottom: 1.5rem;
         border-bottom: none;
       }
-      .nav-tabs .nav-link {
-        color: #ddd;
-        font-size: 1.2rem;
+      .settings-layout {
+        display: grid;
+        grid-template-columns: 230px minmax(0, 1fr);
+        gap: 2rem;
+        align-items: start;
       }
-      .nav-tabs .nav-link.active {
+      .settings-sidebar {
+        position: sticky;
+        top: 1.5rem;
+      }
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #fff;
+        font-size: 1rem;
+        text-decoration: none;
+        margin-bottom: 1rem;
+        transition: color 0.2s;
+      }
+      .back-link:hover,
+      .back-link:focus-visible {
+        color: var(--link-color, #83d3fa);
+      }
+      .settings-nav .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        color: #ddd;
+        font-size: 1.05rem;
+        text-align: left;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+      }
+      .settings-nav .nav-link i {
+        width: 1.2em;
+        text-align: center;
+      }
+      .settings-nav .nav-link:hover {
+        color: #fff;
+        background-color: rgba(255, 255, 255, 0.08);
+      }
+      .settings-nav .nav-link.active {
         background-color: var(--bg-color-light, #016293);
         color: white;
-        border-color: var(--bg-color-light, #016293);
+      }
+      .settings-nav .nav-link:focus-visible,
+      .back-link:focus-visible {
+        outline: 2px solid var(--link-color, #83d3fa);
+        outline-offset: 2px;
+      }
+      .settings-content {
+        min-width: 0;
+      }
+      .settings-content-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        min-height: 2.25rem;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid #444;
+      }
+      .settings-section-title {
+        font-family: "Exo", sans-serif;
+        font-size: 1.35rem;
+        font-weight: 200;
+        margin: 0;
+      }
+      .save-status {
+        font-size: 0.85rem;
+        color: #adb5bd;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        white-space: nowrap;
+      }
+      .save-status.is-visible {
+        opacity: 1;
+      }
+      .save-status.is-error {
+        color: #f28b82;
       }
       .tab-content {
-        padding: 2rem 0;
+        padding: 0 0 2rem;
+      }
+      .setting-error {
+        color: #f28b82;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        min-height: 1.1em;
+      }
+      .form-control.is-invalid,
+      .form-select.is-invalid {
+        border-color: #f28b82;
+      }
+      .apps-pane-scroll {
+        height: 520px;
+        overflow-y: auto;
+      }
+      /* Safety net only: below ~900px the sidebar stacks above the content. */
+      @media (max-width: 900px) {
+        .settings-layout {
+          grid-template-columns: 1fr;
+        }
+        .settings-sidebar {
+          position: static;
+        }
+        .settings-nav {
+          flex-direction: row !important;
+          flex-wrap: wrap;
+          gap: 0.25rem;
+        }
       }
 
       /* Sortable List Styles */
@@ -145,14 +250,6 @@
           transform: translateY(0);
         }
       }
-      .home-btn {
-        color: white;
-        font-size: 2rem;
-        transition: color 0.2s;
-      }
-      .home-btn:hover {
-        color: var(--link-color, #83d3fa);
-      }
 
       /* Coloris: visible text in color inputs and correct swatch after programmatic value */
       #inputBgColorLight,
@@ -178,144 +275,158 @@
   </head>
   <body>
     <div class="caja settings-container">
-      <div class="d-flex align-items-center mb-3">
-        <a
-          href="#"
-          onclick="goHome(event)"
-          class="home-btn text-decoration-none me-auto"
-        >
-          <i class="bi bi-arrow-left-circle-fill"></i>
-        </a>
-      </div>
       <div id="alertContainer" class="mb-3"></div>
       <h1>
         <i class="bi bi-gear-fill"></i>
-        <span data-i18n="settings_title">Settings & Stats</span>
+        <span data-i18n="settings_title">Settings</span>
       </h1>
 
-      <ul class="nav nav-tabs nav-fill" id="settingsTabs" role="tablist">
-        <li class="nav-item" role="presentation">
-          <button
-            class="nav-link"
-            id="profile-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#profile"
-            type="button"
-            role="tab"
+      <div class="settings-layout">
+        <aside class="settings-sidebar">
+          <a href="#" onclick="goHome(event)" class="back-link">
+            <i class="bi bi-arrow-left-circle-fill"></i>
+            <span data-i18n="back_to_desk">Back to desk</span>
+          </a>
+          <nav
+            class="nav nav-pills flex-column settings-nav"
+            id="settingsTabs"
+            role="tablist"
+            aria-orientation="vertical"
           >
-            <i class="bi bi-person-fill"></i>
-            <span data-i18n="tab_profile">Profile</span>
-          </button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button
-            class="nav-link active"
-            id="stats-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#stats"
-            type="button"
-            role="tab"
-          >
-            <i class="bi bi-bar-chart-fill"></i>
-            <span data-i18n="tab_stats">Statistics</span>
-          </button>
-        </li>
+            <button
+              class="nav-link active"
+              id="general-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#general"
+              type="button"
+              role="tab"
+              aria-controls="general"
+            >
+              <i class="bi bi-person-fill"></i>
+              <span data-i18n="tab_general">General</span>
+            </button>
+            <button
+              class="nav-link"
+              id="events-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#events"
+              type="button"
+              role="tab"
+              aria-controls="events"
+            >
+              <i class="bi bi-calendar-event"></i>
+              <span id="label-events-tab" data-i18n="tab_schedule"
+                >Schedule</span
+              >
+            </button>
+            <button
+              class="nav-link"
+              id="birthdays-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#birthdays"
+              type="button"
+              role="tab"
+              aria-controls="birthdays"
+            >
+              <i class="bi bi-balloon-fill"></i>
+              <span data-i18n="tab_birthdays">Birthdays</span>
+            </button>
+            <button
+              class="nav-link"
+              id="links-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#links"
+              type="button"
+              role="tab"
+              aria-controls="links"
+            >
+              <i class="bi bi-link-45deg"></i>
+              <span data-i18n="tab_links">Links</span>
+            </button>
+            <button
+              class="nav-link"
+              id="apps-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#apps"
+              type="button"
+              role="tab"
+              aria-controls="apps"
+            >
+              <i class="bi bi-grid-3x3-gap-fill"></i>
+              <span data-i18n="tab_apps">Apps</span>
+            </button>
+            <button
+              class="nav-link"
+              id="appearance-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#appearance"
+              type="button"
+              role="tab"
+              aria-controls="appearance"
+            >
+              <i class="bi bi-palette-fill"></i>
+              <span data-i18n="tab_appearance">Appearance</span>
+            </button>
+            <button
+              class="nav-link"
+              id="usage-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#usage"
+              type="button"
+              role="tab"
+              aria-controls="usage"
+            >
+              <i class="bi bi-bar-chart-fill"></i>
+              <span data-i18n="tab_usage">Usage</span>
+            </button>
+            <button
+              class="nav-link"
+              id="preferences-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#preferences"
+              type="button"
+              role="tab"
+              aria-controls="preferences"
+            >
+              <i class="bi bi-sliders"></i>
+              <span data-i18n="tab_preferences">Preferences</span>
+            </button>
+            <button
+              class="nav-link"
+              id="data-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#data"
+              type="button"
+              role="tab"
+              aria-controls="data"
+            >
+              <i class="bi bi-hdd-fill"></i>
+              <span data-i18n="tab_data">Data</span>
+            </button>
+          </nav>
+        </aside>
 
-        <li class="nav-item" role="presentation">
-          <button
-            class="nav-link"
-            id="apps-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#apps"
-            type="button"
-            role="tab"
-          >
-            <i class="bi bi-grid-3x3-gap-fill"></i>
-            <span data-i18n="tab_apps">Apps</span>
-          </button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button
-            class="nav-link"
-            id="links-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#links"
-            type="button"
-            role="tab"
-          >
-            <i class="bi bi-link-45deg"></i>
-            <span data-i18n="tab_links">Links</span>
-          </button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button
-            class="nav-link"
-            id="events-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#events"
-            type="button"
-            role="tab"
-          >
-            <i class="bi bi-calendar-event"></i>
-            <span id="label-events-tab" data-i18n="tab_schedule">Schedule</span>
-          </button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button
-            class="nav-link"
-            id="birthdays-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#birthdays"
-            type="button"
-            role="tab"
-          >
-            <i class="bi bi-balloon-fill"></i>
-            <span data-i18n="tab_birthdays">Birthdays</span>
-          </button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button
-            class="nav-link"
-            id="appearance-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#appearance"
-            type="button"
-            role="tab"
-          >
-            <i class="bi bi-palette-fill"></i>
-            <span data-i18n="tab_appearance">Appearance</span>
-          </button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button
-            class="nav-link"
-            id="preferences-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#preferences"
-            type="button"
-            role="tab"
-          >
-            <i class="bi bi-sliders"></i>
-            <span data-i18n="tab_preferences">Preferences</span>
-          </button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button
-            class="nav-link"
-            id="data-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#data"
-            type="button"
-            role="tab"
-          >
-            <i class="bi bi-hdd-fill"></i>
-            <span data-i18n="tab_backup">Backup</span>
-          </button>
-        </li>
-      </ul>
+        <div class="settings-content">
+          <div class="settings-content-header">
+            <h2 class="settings-section-title" id="settingsSectionTitle">
+              General
+            </h2>
+            <div
+              id="saveStatus"
+              class="save-status"
+              role="status"
+              aria-live="polite"
+            ></div>
+          </div>
 
-      <div class="tab-content" id="settingsTabsContent">
-        <div class="tab-pane fade" id="profile" role="tabpanel">
+          <div class="tab-content" id="settingsTabsContent">
+
+        <div
+          class="tab-pane fade show active"
+          id="general"
+          role="tabpanel"
+          aria-labelledby="general-tab"
+        >
           <div class="card bg-dark border-secondary p-4 text-white">
             <h4 class="mb-4" data-i18n="profile_header">User Profile</h4>
             <div class="mb-3">
@@ -371,7 +482,12 @@
           </div>
         </div>
 
-        <div class="tab-pane fade show active" id="stats" role="tabpanel">
+        <div
+          class="tab-pane fade"
+          id="usage"
+          role="tabpanel"
+          aria-labelledby="usage-tab"
+        >
           <h3 class="mt-2">
             <i class="bi bi-grid-fill"></i>
             <span data-i18n="header_apps">Apps</span>
@@ -440,7 +556,12 @@
           </div>
         </div>
 
-        <div class="tab-pane fade" id="apps" role="tabpanel">
+        <div
+          class="tab-pane fade"
+          id="apps"
+          role="tabpanel"
+          aria-labelledby="apps-tab"
+        >
           <p class="text-light mb-3">
             <i class="bi bi-info-circle"></i>
             <span data-i18n="text_catalog_info"
@@ -465,7 +586,7 @@
               />
               <div
                 id="catalog-list"
-                style="height: 500px; overflow-y: auto"
+                class="apps-pane-scroll"
               ></div>
             </div>
             <div class="col-md-6">
@@ -477,14 +598,18 @@
               </h5>
               <div
                 id="myapp-list"
-                class="list-group"
-                style="height: 546px; overflow-y: auto"
+                class="list-group apps-pane-scroll"
               ></div>
             </div>
           </div>
         </div>
 
-        <div class="tab-pane fade" id="links" role="tabpanel">
+        <div
+          class="tab-pane fade"
+          id="links"
+          role="tabpanel"
+          aria-labelledby="links-tab"
+        >
           <div class="card bg-dark border-secondary p-4 text-white">
             <h4 class="mb-4" data-i18n="header_custom_links">
               Manage Custom Links
@@ -540,7 +665,12 @@
           </div>
         </div>
 
-        <div class="tab-pane fade" id="birthdays" role="tabpanel">
+        <div
+          class="tab-pane fade"
+          id="birthdays"
+          role="tabpanel"
+          aria-labelledby="birthdays-tab"
+        >
           <div class="card bg-dark border-secondary p-4 text-white">
             <h4 class="mb-4" data-i18n="header_birthdays">Birthdays</h4>
             <p class="text-muted small" data-i18n="text_birthdays_sub">
@@ -716,7 +846,12 @@
           </div>
         </div>
 
-        <div class="tab-pane fade" id="events" role="tabpanel">
+        <div
+          class="tab-pane fade"
+          id="events"
+          role="tabpanel"
+          aria-labelledby="events-tab"
+        >
           <div class="card bg-dark border-secondary p-4 text-white">
             <h4 class="mb-4" data-i18n="header_onetime">One-Time Events</h4>
             <p class="text-muted small" data-i18n="text_onetime_sub">
@@ -792,7 +927,12 @@
           </div>
         </div>
 
-        <div class="tab-pane fade" id="appearance" role="tabpanel">
+        <div
+          class="tab-pane fade"
+          id="appearance"
+          role="tabpanel"
+          aria-labelledby="appearance-tab"
+        >
           <div class="card bg-dark border-secondary p-4 text-white">
             <h4 class="mb-4" data-i18n="header_appearance">Appearance</h4>
 
@@ -1038,7 +1178,12 @@
           </div>
         </div>
 
-        <div class="tab-pane fade" id="preferences" role="tabpanel">
+        <div
+          class="tab-pane fade"
+          id="preferences"
+          role="tabpanel"
+          aria-labelledby="preferences-tab"
+        >
           <div class="card bg-dark border-secondary p-4 text-white">
             <h4 class="mb-4" data-i18n="header_preferences">Preferences</h4>
 
@@ -1226,7 +1371,12 @@
           </div>
         </div>
 
-        <div class="tab-pane fade" id="data" role="tabpanel">
+        <div
+          class="tab-pane fade"
+          id="data"
+          role="tabpanel"
+          aria-labelledby="data-tab"
+        >
           <div class="text-center p-5">
             <p class="mb-4" data-i18n="text_backup_info">
               Backup your stats, settings, birthdays, events, and links in a
@@ -1249,7 +1399,12 @@
             <p id="lastBackupText" class="mt-3 fst-italic"></p>
           </div>
         </div>
+          </div>
+          <!-- /#settingsTabsContent -->
+        </div>
+        <!-- /.settings-content -->
       </div>
+      <!-- /.settings-layout -->
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
@@ -1410,6 +1565,131 @@
             trigger.close();
           }
         }, 3000);
+      }
+
+      // ======================================================================
+      // SHELL: sidebar navigation, hash routing and the section header
+      // ======================================================================
+      const LAST_SECTION_KEY = "settingsLastSection";
+
+      // Old tab ids/hashes keep working after the redesign.
+      const SECTION_HASH_ALIASES = {
+        profile: "general",
+        stats: "usage",
+        statistics: "usage",
+        schedule: "events",
+        backup: "data",
+      };
+      const DEFAULT_SECTION = "general";
+
+      // bootstrap@5.0.0 has no Tab.getOrCreateInstance(); keep both paths so a
+      // newer Bootstrap keeps working too.
+      function getTabInstance(btn) {
+        const Tab = window.bootstrap && window.bootstrap.Tab;
+        if (!Tab) return null;
+        if (typeof Tab.getOrCreateInstance === "function") {
+          return Tab.getOrCreateInstance(btn);
+        }
+        return Tab.getInstance(btn) || new Tab(btn);
+      }
+
+      function getSectionButtons() {
+        return Array.from(
+          document.querySelectorAll("#settingsTabs [data-bs-toggle='tab']"),
+        );
+      }
+
+      function sectionIdFromHash(hash) {
+        const raw = String(hash || "").replace(/^#/, "").trim();
+        if (!raw) return null;
+        const id = SECTION_HASH_ALIASES[raw] || raw;
+        const btn = document.getElementById(id + "-tab");
+        return btn && btn.dataset.bsTarget ? id : null;
+      }
+
+      function readLastSection() {
+        try {
+          const id = localStorage.getItem(LAST_SECTION_KEY);
+          return id && document.getElementById(id + "-tab") ? id : null;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function updateSectionHeader(btn) {
+        const title = document.getElementById("settingsSectionTitle");
+        if (!title || !btn) return;
+        const label = btn.querySelector("[data-i18n]") || btn;
+        title.textContent = (label.textContent || "").trim();
+      }
+
+      // Idempotent: called both by showSection() and by the "shown" event, which
+      // Bootstrap fires asynchronously for panes with the .fade class.
+      function onSectionShown(btn) {
+        if (!btn || !btn.id) return;
+        const id = btn.id.replace(/-tab$/, "");
+        updateSectionHeader(btn);
+        try {
+          localStorage.setItem(LAST_SECTION_KEY, id);
+        } catch (e) {
+          /* private mode: remembering the section is best-effort */
+        }
+        if (location.hash !== "#" + id) {
+          try {
+            history.replaceState(null, "", "#" + id);
+          } catch (e) {
+            /* file:// or sandboxed contexts can refuse replaceState */
+          }
+        }
+      }
+
+      function showSection(id) {
+        const btn = document.getElementById(id + "-tab");
+        if (!btn || !btn.dataset.bsTarget) return false;
+        const instance = getTabInstance(btn);
+        if (instance) instance.show();
+        onSectionShown(btn);
+        return true;
+      }
+
+      function initShellRouting() {
+        const nav = document.getElementById("settingsTabs");
+        if (!nav) return;
+
+        nav.addEventListener("shown.bs.tab", (e) => onSectionShown(e.target));
+
+        // Vertical tablist keyboard support (Bootstrap 5.0.0 has none).
+        nav.addEventListener("keydown", (e) => {
+          const keys = ["ArrowDown", "ArrowUp", "Home", "End"];
+          if (!keys.includes(e.key)) return;
+          const buttons = getSectionButtons();
+          const current = buttons.indexOf(document.activeElement);
+          if (current === -1) return;
+          e.preventDefault();
+          let next = current;
+          if (e.key === "ArrowDown") next = (current + 1) % buttons.length;
+          else if (e.key === "ArrowUp") {
+            next = (current - 1 + buttons.length) % buttons.length;
+          } else if (e.key === "Home") next = 0;
+          else if (e.key === "End") next = buttons.length - 1;
+          const target = buttons[next];
+          target.focus();
+          showSection(target.id.replace(/-tab$/, ""));
+        });
+
+        window.addEventListener("hashchange", () => {
+          const id = sectionIdFromHash(location.hash);
+          if (!id) return;
+          const btn = document.getElementById(id + "-tab");
+          if (btn && !btn.classList.contains("active")) showSection(id);
+        });
+
+        // Priority: URL hash, then last visited section, then General.
+        const initial =
+          sectionIdFromHash(location.hash) ||
+          readLastSection() ||
+          DEFAULT_SECTION;
+        showSection(initial);
       }
 
       // --- TAB 0: PROFILE ---
@@ -1818,6 +2098,7 @@
         }
 
         I18nManager.applyToPage();
+        initShellRouting();
         loadPreferencesManager();
         updateLastBackupText();
         checkStorage(); // Check persistence
