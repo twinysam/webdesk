@@ -124,6 +124,41 @@
       }
       .settings-content {
         min-width: 0;
+        font-size: 0.95rem;
+      }
+      .settings-content .tab-pane {
+        font-size: 0.95rem;
+      }
+      .settings-content .tab-pane :is(.form-control, .form-select, .form-label, .form-text, .form-check-label, .table, .btn) {
+        font-size: 0.95rem;
+      }
+      .settings-content .tab-pane .btn-sm {
+        font-size: 0.875rem;
+      }
+      #links .table {
+        width: 100%;
+        table-layout: fixed;
+      }
+      #links .links-drag-col,
+      #linksListBody td:first-child {
+        width: 2.5rem;
+      }
+      #links .links-actions-col {
+        width: 6rem;
+      }
+      #linksListBody td:nth-child(2),
+      #linksListBody td:nth-child(3) {
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+      #links .links-action-cell .btn {
+        flex: 0 0 2rem;
+        width: 2rem;
+        height: 2rem;
+        padding: 0;
+      }
+      #links .links-action-cell .btn i {
+        line-height: 1;
       }
       .settings-content-header {
         display: flex;
@@ -707,7 +742,7 @@
                     <th class="links-drag-col"></th>
                     <th data-i18n="col_name">Name</th>
                     <th data-i18n="col_url">URL</th>
-                    <th class="text-end" data-i18n="col_action">Action</th>
+                    <th class="text-end links-actions-col" data-i18n="col_action">Action</th>
                   </tr>
                 </thead>
                 <tbody id="linksListBody"></tbody>

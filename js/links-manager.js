@@ -141,7 +141,7 @@ window.LinksManager = (() => {
         <td><i class="bi bi-list text-secondary sort-handle"></i></td>
         <td>${link.name ? SafeLink.escape(link.name) : '<em class="text-secondary" data-i18n="value_none">No Name</em>'}</td>
         <td>${safeUrl ? `<a href="${SafeLink.escape(safeUrl)}" target="_blank" rel="noopener noreferrer" class="text-info text-decoration-none">${SafeLink.escape(link.url)}</a>` : `<span class="text-secondary">${SafeLink.escape(link.url || "")}</span>`}</td>
-        <td class="text-end">
+        <td class="text-end links-actions-col">
           <div class="links-action-cell">
             ${upBtn}
             <button class="btn btn-sm btn-danger btn-delete-link" onclick="${window.settingsDeleteLink ? `window.settingsDeleteLink(${index})` : `LinksManager.deleteLink(${index})`}"><i class="bi bi-trash"></i></button>
