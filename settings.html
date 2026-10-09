@@ -171,6 +171,58 @@
         height: 520px;
         overflow-y: auto;
       }
+      /* Dates list */
+      .date-row {
+        border-bottom: 1px solid #3a3f44;
+      }
+      .date-row:last-child {
+        border-bottom: none;
+      }
+      .date-row-name {
+        font-weight: 600;
+      }
+      .date-row-meta {
+        color: #adb5bd;
+      }
+      .date-row-editing {
+        background-color: rgba(255, 255, 255, 0.06);
+      }
+      .date-row-highlight {
+        animation: dateHighlight 1.4s ease-out 1;
+      }
+      @keyframes dateHighlight {
+        from {
+          background-color: rgba(131, 211, 250, 0.35);
+        }
+        to {
+          background-color: transparent;
+        }
+      }
+      /* Undo toast (fixed; never steals focus) */
+      .settings-toast-container {
+        position: fixed;
+        bottom: 1.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1080;
+        max-width: 90%;
+      }
+      .settings-toast {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: #212529;
+        color: #fff;
+        border: 1px solid #495057;
+        border-radius: 0.5rem;
+        padding: 0.6rem 1rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        animation: slideDown 0.3s ease-out forwards;
+      }
+      .settings-toast:focus-within {
+        outline: 2px solid var(--link-color, #83d3fa);
+        outline-offset: 2px;
+      }
       /* Safety net only: below ~900px the sidebar stacks above the content. */
       @media (max-width: 900px) {
         .settings-layout {
@@ -276,6 +328,7 @@
   <body>
     <div class="caja settings-container">
       <div id="alertContainer" class="mb-3"></div>
+      <div id="toastContainer" class="settings-toast-container"></div>
       <h1>
         <i class="bi bi-gear-fill"></i>
         <span data-i18n="settings_title">Settings</span>
@@ -307,29 +360,15 @@
             </button>
             <button
               class="nav-link"
-              id="events-tab"
+              id="dates-tab"
               data-bs-toggle="tab"
-              data-bs-target="#events"
+              data-bs-target="#dates"
               type="button"
               role="tab"
-              aria-controls="events"
+              aria-controls="dates"
             >
               <i class="bi bi-calendar-event"></i>
-              <span id="label-events-tab" data-i18n="tab_schedule"
-                >Schedule</span
-              >
-            </button>
-            <button
-              class="nav-link"
-              id="birthdays-tab"
-              data-bs-toggle="tab"
-              data-bs-target="#birthdays"
-              type="button"
-              role="tab"
-              aria-controls="birthdays"
-            >
-              <i class="bi bi-balloon-fill"></i>
-              <span data-i18n="tab_birthdays">Birthdays</span>
+              <span data-i18n="tab_dates">Dates</span>
             </button>
             <button
               class="nav-link"
@@ -690,263 +729,242 @@
 
         <div
           class="tab-pane fade"
-          id="birthdays"
+          id="dates"
           role="tabpanel"
-          aria-labelledby="birthdays-tab"
+          aria-labelledby="dates-tab"
         >
-          <div class="card bg-dark border-secondary p-4 text-white">
-            <h4 class="mb-4" data-i18n="header_birthdays">Birthdays</h4>
-            <p class="text-muted small" data-i18n="text_birthdays_sub">
-              Celebrations with balloons!
-            </p>
-            <form id="birthdayForm" class="row g-3 mb-4">
-              <div class="col-md-6">
-                <label for="bdayName" class="form-label" data-i18n="label_name"
-                  >Name</label
-                >
+          <!-- ADD FORM: one compact row, type-aware -->
+          <div class="card bg-dark border-secondary p-3 text-white">
+            <form id="dateForm" novalidate>
+              <span
+                class="visually-hidden"
+                id="dateTypeGroupLabel"
+                data-i18n="label_event_type"
+                >Event Type</span
+              >
+              <div
+                class="btn-group w-100 mb-3"
+                role="radiogroup"
+                aria-labelledby="dateTypeGroupLabel"
+              >
                 <input
-                  type="text"
-                  class="form-control bg-dark text-white border-secondary"
-                  id="bdayName"
-                  required
-                  placeholder="Name of person or event"
-                  data-i18n="[placeholder]placeholder_bday_name"
+                  type="radio"
+                  class="btn-check"
+                  name="dateType"
+                  id="dateTypeBirthday"
+                  value="birthday"
+                  checked
                 />
+                <label class="btn btn-outline-info" for="dateTypeBirthday">
+                  <i class="bi bi-balloon-fill"></i>
+                  <span data-i18n="type_birthday">Birthday</span>
+                </label>
+                <input
+                  type="radio"
+                  class="btn-check"
+                  name="dateType"
+                  id="dateTypeAnnual"
+                  value="annual"
+                />
+                <label class="btn btn-outline-warning" for="dateTypeAnnual">
+                  <i class="bi bi-arrow-repeat"></i>
+                  <span data-i18n="type_annual">Annual Event</span>
+                </label>
+                <input
+                  type="radio"
+                  class="btn-check"
+                  name="dateType"
+                  id="dateTypeOnetime"
+                  value="onetime"
+                />
+                <label class="btn btn-outline-success" for="dateTypeOnetime">
+                  <i class="bi bi-calendar-check"></i>
+                  <span data-i18n="type_unique">Unique Event</span>
+                </label>
               </div>
-              <div class="col-md-2">
-                <label
-                  for="bdayMonth"
-                  class="form-label"
-                  data-i18n="label_month"
-                  >Month</label
-                >
-                <select
-                  id="bdayMonth"
-                  class="form-select bg-dark text-white border-secondary"
-                >
-                  <option value="01">January</option>
-                  <option value="02">February</option>
-                  <option value="03">March</option>
-                  <option value="04">April</option>
-                  <option value="05">May</option>
-                  <option value="06">June</option>
-                  <option value="07">July</option>
-                  <option value="08">August</option>
-                  <option value="09">September</option>
-                  <option value="10">October</option>
-                  <option value="11">November</option>
-                  <option value="12">December</option>
-                </select>
-              </div>
-              <div class="col-md-2">
-                <label for="bdayDay" class="form-label" data-i18n="label_day"
-                  >Day</label
-                >
-                <select
-                  id="bdayDay"
-                  class="form-select bg-dark text-white border-secondary"
-                ></select>
-              </div>
-              <div class="col-md-2 d-flex align-items-end">
-                <button type="submit" class="btn btn-success w-100">
-                  <i class="bi bi-plus-lg"></i>
-                  <span data-i18n="btn_add">Add</span>
-                </button>
-              </div>
-            </form>
 
-            <div
-              class="table-responsive"
-              style="max-height: 500px; overflow-y: auto"
-            >
-              <table class="table table-dark table-striped table-hover">
-                <thead>
-                  <tr>
-                    <th data-i18n="col_date">Date</th>
-                    <th data-i18n="col_name">Name</th>
-                    <th class="text-end" data-i18n="col_action">Action</th>
-                  </tr>
-                </thead>
-                <tbody id="birthdaysListBody"></tbody>
-              </table>
-            </div>
+              <div class="row g-2 align-items-end">
+                <div class="col-md-4">
+                  <label class="form-label" for="dateName" data-i18n="label_name"
+                    >Name</label
+                  >
+                  <input
+                    type="text"
+                    id="dateName"
+                    class="form-control bg-dark text-white border-secondary"
+                    autocomplete="off"
+                    required
+                  />
+                </div>
+                <div class="col-md-4" id="dateMonthDayFields">
+                  <div class="row g-2">
+                    <div class="col-7">
+                      <label
+                        class="form-label"
+                        for="dateMonth"
+                        data-i18n="label_month"
+                        >Month</label
+                      >
+                      <select
+                        id="dateMonth"
+                        class="form-select bg-dark text-white border-secondary"
+                      ></select>
+                    </div>
+                    <div class="col-5">
+                      <label
+                        class="form-label"
+                        for="dateDay"
+                        data-i18n="label_day"
+                        >Day</label
+                      >
+                      <select
+                        id="dateDay"
+                        class="form-select bg-dark text-white border-secondary"
+                      ></select>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4 d-none" id="dateFullDateField">
+                  <label
+                    class="form-label"
+                    for="dateFull"
+                    data-i18n="label_date"
+                    >Date</label
+                  >
+                  <input
+                    type="date"
+                    id="dateFull"
+                    class="form-control bg-dark text-white border-secondary"
+                  />
+                </div>
+                <div class="col-md-4 d-none" id="dateUrlField">
+                  <label
+                    class="form-label"
+                    for="dateUrl"
+                    data-i18n="label_url_optional"
+                    >URL (Optional)</label
+                  >
+                  <input
+                    type="url"
+                    id="dateUrl"
+                    class="form-control bg-dark text-white border-secondary"
+                    placeholder="https://..."
+                  />
+                </div>
+                <div class="col-md-4 col-lg-2">
+                  <button type="submit" class="btn btn-success w-100">
+                    <i class="bi bi-plus-lg"></i>
+                    <span data-i18n="btn_add">Add</span>
+                  </button>
+                </div>
+              </div>
+              <div
+                class="setting-error"
+                id="dateFormError"
+                aria-live="polite"
+              ></div>
+            </form>
           </div>
 
-          <!-- ANNUAL EVENTS SECTION -->
-          <div class="card bg-dark border-secondary p-4 text-white mt-4">
-            <h4 class="mb-4" data-i18n="header_annual">Annual Events</h4>
-            <p class="text-muted small" data-i18n="text_annual_sub">
-              Anniversaries and yearly reminders (no balloons).
-            </p>
-            <form id="annualEventForm" class="row g-3 mb-4">
-              <div class="col-md-4">
-                <label
-                  for="annualName"
-                  class="form-label"
-                  data-i18n="label_name"
-                  >Name</label
-                >
-                <input
-                  type="text"
-                  class="form-control bg-dark text-white border-secondary"
-                  id="annualName"
-                  required
-                  placeholder="Event Name"
-                  data-i18n="[placeholder]placeholder_event_name"
-                />
-              </div>
-              <div class="col-md-3">
-                <label
-                  for="annualUrl"
-                  class="form-label"
-                  data-i18n="label_url_optional"
-                  >URL (Optional)</label
-                >
-                <input
-                  type="url"
-                  class="form-control bg-dark text-white border-secondary"
-                  id="annualUrl"
-                  placeholder="https://..."
-                />
-              </div>
-              <div class="col-md-2">
-                <label
-                  for="annualMonth"
-                  class="form-label"
-                  data-i18n="label_month"
-                  >Month</label
-                >
-                <select
-                  id="annualMonth"
-                  class="form-select bg-dark text-white border-secondary"
-                >
-                  <option value="01">January</option>
-                  <option value="02">February</option>
-                  <option value="03">March</option>
-                  <option value="04">April</option>
-                  <option value="05">May</option>
-                  <option value="06">June</option>
-                  <option value="07">July</option>
-                  <option value="08">August</option>
-                  <option value="09">September</option>
-                  <option value="10">October</option>
-                  <option value="11">November</option>
-                  <option value="12">December</option>
-                </select>
-              </div>
-              <div class="col-md-2">
-                <label for="annualDay" class="form-label" data-i18n="label_day"
-                  >Day</label
-                >
-                <select
-                  id="annualDay"
-                  class="form-select bg-dark text-white border-secondary"
-                ></select>
-              </div>
-              <div class="col-md-2 d-flex align-items-end">
-                <button type="submit" class="btn btn-warning w-100">
-                  <i class="bi bi-plus-lg"></i>
-                  <span data-i18n="btn_add">Add</span>
-                </button>
-              </div>
-            </form>
-
-            <div
-              class="table-responsive"
-              style="max-height: 500px; overflow-y: auto"
+          <!-- ONE LIST, THREE TYPES -->
+          <div class="card bg-dark border-secondary p-3 text-white mt-4">
+            <span
+              class="visually-hidden"
+              id="dateFiltersLabel"
+              data-i18n="tab_filters"
+              >Filters</span
             >
-              <table class="table table-dark table-striped table-hover">
-                <thead>
-                  <tr>
-                    <th data-i18n="col_date">Date</th>
-                    <th data-i18n="col_name">Name</th>
-                    <th class="text-end" data-i18n="col_action">Action</th>
-                  </tr>
-                </thead>
-                <tbody id="annualEventsListBody"></tbody>
-              </table>
+            <div
+              class="d-flex flex-wrap gap-2 mb-3"
+              id="dateFilters"
+              role="group"
+              aria-labelledby="dateFiltersLabel"
+            >
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-light active"
+                data-date-filter="all"
+                aria-pressed="true"
+              >
+                <span data-i18n="filter_all">All</span>
+                <span class="badge text-bg-secondary" data-count="all">0</span>
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-info"
+                data-date-filter="birthday"
+                aria-pressed="false"
+              >
+                <i class="bi bi-balloon-fill"></i>
+                <span data-i18n="filter_birthdays">Birthdays</span>
+                <span class="badge text-bg-secondary" data-count="birthday"
+                  >0</span
+                >
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-warning"
+                data-date-filter="annual"
+                aria-pressed="false"
+              >
+                <i class="bi bi-arrow-repeat"></i>
+                <span data-i18n="filter_annual">Annual</span>
+                <span class="badge text-bg-secondary" data-count="annual"
+                  >0</span
+                >
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-success"
+                data-date-filter="onetime"
+                aria-pressed="false"
+              >
+                <i class="bi bi-calendar-check"></i>
+                <span data-i18n="filter_onetime">One-time</span>
+                <span class="badge text-bg-secondary" data-count="onetime"
+                  >0</span
+                >
+              </button>
             </div>
-          </div>
-        </div>
 
-        <div
-          class="tab-pane fade"
-          id="events"
-          role="tabpanel"
-          aria-labelledby="events-tab"
-        >
-          <div class="card bg-dark border-secondary p-4 text-white">
-            <h4 class="mb-4" data-i18n="header_onetime">One-Time Events</h4>
-            <p class="text-muted small" data-i18n="text_onetime_sub">
-              Specific dates (e.g., Doctor appointment, Concert).
+            <h5 class="border-bottom pb-2" data-i18n="header_upcoming">
+              Upcoming
+            </h5>
+            <ul class="list-unstyled mb-0" id="datesUpcomingList"></ul>
+            <p
+              class="text-light small mb-0 d-none"
+              id="datesEmpty"
+              data-i18n="text_dates_empty"
+            >
+              Nothing here yet. Add your first date above.
             </p>
-            <form id="eventForm" class="row g-3 mb-4">
-              <div class="col-md-4">
-                <label
-                  for="eventName"
-                  class="form-label"
-                  data-i18n="label_event_name"
-                  >Event Name</label
-                >
-                <input
-                  type="text"
-                  class="form-control bg-dark text-white border-secondary"
-                  id="eventName"
-                  required
-                />
-              </div>
-              <div class="col-md-3">
-                <label for="eventDate" class="form-label" data-i18n="label_date"
-                  >Date</label
-                >
-                <input
-                  type="date"
-                  class="form-control bg-dark text-white border-secondary"
-                  id="eventDate"
-                  required
-                />
-              </div>
-              <div class="col-md-4">
-                <label
-                  for="eventUrl"
-                  class="form-label"
-                  data-i18n="label_url_optional"
-                  >URL (Optional)</label
-                >
-                <input
-                  type="url"
-                  class="form-control bg-dark text-white border-secondary"
-                  id="eventUrl"
-                  placeholder="https://..."
-                />
-              </div>
-              <div class="col-md-2 d-flex align-items-end gap-2">
-                <button type="submit" class="btn btn-success flex-grow-1">
-                  <i class="bi bi-plus-lg"></i>
-                </button>
-                <!-- Export button removed -->
+
+            <div class="mt-4 d-none" id="datesPastGroup">
+              <div
+                class="d-flex flex-wrap align-items-center justify-content-between gap-2 border-bottom pb-2"
+              >
                 <button
                   type="button"
-                  id="btnCleanEvents"
-                  class="btn btn-outline-danger"
-                  title="Remove expired events"
+                  class="btn btn-sm btn-link text-light text-decoration-none px-0"
+                  id="togglePast"
+                  aria-expanded="false"
+                  aria-controls="datesPastList"
+                >
+                  <i class="bi bi-chevron-right" id="togglePastIcon"></i>
+                  <span data-i18n="header_past">Past</span>
+                  <span class="badge text-bg-secondary" id="pastCount">0</span>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-danger"
+                  id="btnClearExpired"
                 >
                   <i class="bi bi-calendar-x"></i>
+                  <span data-i18n="btn_clear_expired">Clear expired</span>
                 </button>
               </div>
-            </form>
-
-            <table class="table table-dark table-striped table-hover">
-              <thead>
-                <tr>
-                  <th data-i18n="col_date">Date</th>
-                  <th data-i18n="col_name">Name</th>
-                  <th data-i18n="col_url">URL</th>
-                  <th class="text-end" data-i18n="col_action">Action</th>
-                </tr>
-              </thead>
-              <tbody id="eventsListBody"></tbody>
-            </table>
+              <ul class="list-unstyled mt-2 mb-0 collapse" id="datesPastList"></ul>
+            </div>
           </div>
         </div>
 
@@ -1600,7 +1618,9 @@
         profile: "general",
         stats: "usage",
         statistics: "usage",
-        schedule: "events",
+        schedule: "dates",
+        events: "dates",
+        birthdays: "dates",
         backup: "data",
       };
       const DEFAULT_SECTION = "general";
@@ -1954,6 +1974,132 @@
       const appearanceHooks = { refreshSeason: null };
 
       // ======================================================================
+      // FEEDBACK: undo toast + confirm modal for bulk and destructive actions
+      // ======================================================================
+      let undoToastTimer = null;
+
+      /**
+       * Bottom-centre toast with an Undo button. It is announced politely and
+       * never takes focus; it disappears after six seconds.
+       */
+      function showUndoToast(message, onUndo) {
+        const container = document.getElementById("toastContainer");
+        if (!container) return;
+        clearTimeout(undoToastTimer);
+        container.innerHTML = "";
+
+        const toast = document.createElement("div");
+        toast.className = "settings-toast";
+        const text = document.createElement("span");
+        text.setAttribute("role", "status");
+        text.setAttribute("aria-live", "polite");
+        text.textContent = message;
+        const undoBtn = document.createElement("button");
+        undoBtn.type = "button";
+        undoBtn.className = "btn btn-sm btn-primary";
+        undoBtn.textContent = I18n.t("btn_undo");
+        undoBtn.addEventListener("click", () => {
+          clearTimeout(undoToastTimer);
+          container.innerHTML = "";
+          try {
+            onUndo();
+          } catch (e) {
+            console.error("Undo failed", e);
+          }
+        });
+        toast.appendChild(text);
+        toast.appendChild(undoBtn);
+        container.appendChild(toast);
+
+        undoToastTimer = setTimeout(() => {
+          container.innerHTML = "";
+        }, 6000);
+      }
+
+      /**
+       * Confirmation dialog that always states how many items are affected and
+       * lists their names (collapsed after ten).
+       */
+      function showConfirmModal(options) {
+        const opts = Object.assign(
+          { title: "", intro: "", names: [], confirmLabel: "", onConfirm: null },
+          options,
+        );
+
+        let modalEl = document.getElementById("settingsConfirmModal");
+        if (!modalEl) {
+          modalEl = document.createElement("div");
+          modalEl.id = "settingsConfirmModal";
+          modalEl.className = "modal fade";
+          modalEl.tabIndex = -1;
+          modalEl.innerHTML = `
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+              <div class="modal-content bg-dark text-white border-secondary">
+                <div class="modal-header border-secondary">
+                  <h5 class="modal-title" data-role="title"></h5>
+                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" data-i18n-ignore aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <p data-role="intro" class="mb-2"></p>
+                  <ul class="small text-light mb-0" data-role="names"></ul>
+                </div>
+                <div class="modal-footer border-secondary">
+                  <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal" data-role="cancel"></button>
+                  <button type="button" class="btn btn-danger" data-role="confirm"></button>
+                </div>
+              </div>
+            </div>`;
+          document.body.appendChild(modalEl);
+        }
+
+        modalEl.querySelector('[data-role="title"]').textContent = opts.title;
+        modalEl.querySelector('[data-role="intro"]').textContent = opts.intro;
+        modalEl.querySelector('[data-role="cancel"]').textContent =
+          I18n.t("btn_cancel_edit");
+
+        const list = modalEl.querySelector('[data-role="names"]');
+        list.innerHTML = "";
+        const shown = opts.names.slice(0, 10);
+        shown.forEach((name) => {
+          const li = document.createElement("li");
+          li.textContent = name;
+          list.appendChild(li);
+        });
+        if (opts.names.length > shown.length) {
+          const li = document.createElement("li");
+          li.className = "fst-italic";
+          li.textContent = I18n.t("text_and_more", {
+            count: opts.names.length - shown.length,
+          });
+          list.appendChild(li);
+        }
+
+        // Replace the confirm button so listeners from a previous dialog are gone.
+        const oldBtn = modalEl.querySelector('[data-role="confirm"]');
+        const newBtn = oldBtn.cloneNode(true);
+        newBtn.textContent = opts.confirmLabel;
+        oldBtn.replaceWith(newBtn);
+
+        const Modal = window.bootstrap && window.bootstrap.Modal;
+        const modal = Modal
+          ? Modal.getInstance(modalEl) || new Modal(modalEl)
+          : null;
+        newBtn.addEventListener("click", () => {
+          if (modal) modal.hide();
+          else modalEl.classList.remove("show");
+          if (opts.onConfirm) {
+            try {
+              opts.onConfirm();
+            } catch (e) {
+              console.error("Confirmed action failed", e);
+            }
+          }
+        });
+        if (modal) modal.show();
+        else modalEl.classList.add("show");
+      }
+
+      // ======================================================================
       // SECTION: General (profile, language and region)
       // ======================================================================
       function isRealDate(value) {
@@ -2200,32 +2346,811 @@
         if (tvSection) tvSection.style.display = "none";
       }
 
-      // --- TAB 4: EVENTS ---
-      function loadEventsManager() {
-        if (window.EventManager) {
-          EventManager.renderCustomEventsTable("eventsListBody");
+      // ======================================================================
+      // SECTION: Dates — birthdays, annual events and one-time events
+      // merged into one filterable list. Writes always go back to the original
+      // store (userBirthdays / annualEvents / customEvents) and to the original
+      // array position, so index.html keeps reading exactly what it read before
+      // and items keep every field they had (countdown included).
+      // ======================================================================
+      const DATE_TYPE_META = {
+        birthday: {
+          icon: "bi-balloon-fill",
+          color: "text-info",
+          filterKey: "filter_birthdays",
+        },
+        annual: {
+          icon: "bi-arrow-repeat",
+          color: "text-warning",
+          filterKey: "filter_annual",
+        },
+        onetime: {
+          icon: "bi-calendar-check",
+          color: "text-success",
+          filterKey: "filter_onetime",
+        },
+      };
+
+      const dateView = { filter: "all", pastOpen: false, highlight: null };
+
+      function currentLang() {
+        const { profile } = getData();
+        return profile.lang || I18nManager.getLang() || "en";
+      }
+
+      /** ["January", …] in the active language, via Intl rather than hardcoded. */
+      function monthNames() {
+        const fmt = new Intl.DateTimeFormat(currentLang(), { month: "long" });
+        return Array.from({ length: 12 }, (_, i) => fmt.format(new Date(2000, i, 1)));
+      }
+
+      function pad2(value) {
+        return String(value).padStart(2, "0");
+      }
+
+      /** "DD/MM" -> { month, day } (null when it is not a usable date). */
+      function parseMonthDay(value) {
+        const m = /^(\d{1,2})\/(\d{1,2})$/.exec(String(value == null ? "" : value).trim());
+        if (!m) return null;
+        const day = parseInt(m[1], 10);
+        const month = parseInt(m[2], 10);
+        if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+        // 31/02 and friends are not dates.
+        const probe = new Date(2000, month - 1, day);
+        if (probe.getMonth() !== month - 1 || probe.getDate() !== day) return null;
+        return { month, day };
+      }
+
+      /** "DD/MM/YYYY" -> { year, month, day }. */
+      function parseFullDate(value) {
+        const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(String(value == null ? "" : value).trim());
+        if (!m) return null;
+        const md = parseMonthDay(`${m[1]}/${m[2]}`);
+        if (!md) return null;
+        return { year: parseInt(m[3], 10), month: md.month, day: md.day };
+      }
+
+      /** "YYYY-MM-DD" (an <input type="date"> value) split by hand, never by Date(string). */
+      function parseInputDate(value) {
+        const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value == null ? "" : value).trim());
+        if (!m) return null;
+        const year = parseInt(m[1], 10);
+        const month = parseInt(m[2], 10);
+        const day = parseInt(m[3], 10);
+        const probe = new Date(year, month - 1, day);
+        if (
+          probe.getFullYear() !== year ||
+          probe.getMonth() !== month - 1 ||
+          probe.getDate() !== day
+        ) {
+          return null;
+        }
+        return { year, month, day };
+      }
+
+      function isLeapYear(year) {
+        return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+      }
+
+      /**
+       * Feb 29 has no date in a non-leap year. The desk's countdown resolves it
+       * to Mar 1 (dayjs normalises 29/02/2025 to 2025-03-01), so the list uses
+       * the same rule rather than inventing a second one.
+       */
+      function annualDateIn(year, month, day) {
+        if (month === 2 && day === 29 && !isLeapYear(year)) {
+          return new Date(year, 2, 1);
+        }
+        return new Date(year, month - 1, day);
+      }
+
+      function startOfToday() {
+        const now = new Date();
+        return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      }
+
+      function daysBetween(from, to) {
+        return Math.round((to.getTime() - from.getTime()) / 86400000);
+      }
+
+      /** Read-only merge of the three stores into view models. */
+      function buildDateItems() {
+        const today = startOfToday();
+        const items = [];
+        const sources = [
+          { type: "birthday", list: EventManager.getBirthdays(), field: "birthday" },
+          { type: "annual", list: EventManager.getAnnualEvents(), field: "date" },
+          { type: "onetime", list: EventManager.getCustomEvents(), field: "date" },
+        ];
+
+        sources.forEach(({ type, list, field }) => {
+          (Array.isArray(list) ? list : []).forEach((item, index) => {
+            if (!item || typeof item !== "object") return;
+            const raw = item[field];
+            const parsed =
+              type === "onetime" ? parseFullDate(raw) : parseMonthDay(raw);
+            const vm = {
+              type,
+              index,
+              key: `${type}:${index}`,
+              name: item.name || "",
+              url: item.url || "",
+              countdown: !!item.countdown,
+              raw: raw,
+              valid: !!parsed,
+              month: parsed ? parsed.month : null,
+              day: parsed ? parsed.day : null,
+            };
+            if (vm.valid) {
+              if (type === "onetime") {
+                vm.next = new Date(parsed.year, parsed.month - 1, parsed.day);
+                vm.daysUntil = daysBetween(today, vm.next);
+                vm.isPast = vm.daysUntil < 0;
+              } else {
+                let next = annualDateIn(today.getFullYear(), vm.month, vm.day);
+                if (daysBetween(today, next) < 0) {
+                  next = annualDateIn(today.getFullYear() + 1, vm.month, vm.day);
+                }
+                vm.next = next;
+                vm.daysUntil = daysBetween(today, next);
+                vm.isPast = false;
+              }
+            } else {
+              vm.daysUntil = null;
+              vm.isPast = false;
+            }
+            items.push(vm);
+          });
+        });
+
+        return items;
+      }
+
+      function compareUpcoming(a, b) {
+        if (a.valid !== b.valid) return a.valid ? -1 : 1;
+        if (a.valid && b.valid && a.daysUntil !== b.daysUntil) {
+          return a.daysUntil - b.daysUntil;
+        }
+        return a.name.localeCompare(b.name, currentLang());
+      }
+
+      function comparePast(a, b) {
+        return b.next.getTime() - a.next.getTime();
+      }
+
+      /** Localized, human-readable date for a row. */
+      function formatItemDate(vm) {
+        if (!vm.valid) return vm.raw == null ? "" : String(vm.raw);
+        const opts =
+          vm.type === "onetime"
+            ? { day: "numeric", month: "long", year: "numeric" }
+            : { day: "numeric", month: "long" };
+        // Recurring dates are formatted in a leap year so 29/02 keeps its own name.
+        const base =
+          vm.type === "onetime"
+            ? new Date(vm.next)
+            : new Date(2000, vm.month - 1, vm.day);
+        try {
+          return new Intl.DateTimeFormat(currentLang(), opts).format(base);
+        } catch (e) {
+          return `${vm.day}/${vm.month}`;
         }
       }
 
-      // --- TAB BIRTHDAYS ---
-      function loadBirthdaysManager() {
-        if (window.EventManager) {
-          EventManager.renderBirthdaysTable("birthdaysListBody");
+      /** "in 12 days" / "en 12 días", straight from Intl. */
+      function formatRelative(vm) {
+        if (!vm.valid || vm.daysUntil === null) return I18n.t("text_invalid_date");
+        let rtf;
+        try {
+          rtf = new Intl.RelativeTimeFormat(currentLang(), { numeric: "auto" });
+        } catch (e) {
+          return "";
+        }
+        const days = vm.daysUntil;
+        const abs = Math.abs(days);
+        if (abs < 31) return rtf.format(days, "day");
+        if (abs < 365) return rtf.format(Math.round(days / 30), "month");
+        return rtf.format(Math.round(days / 365), "year");
+      }
+
+      function shortDateLabel(vm) {
+        if (!vm.valid) return vm.raw == null ? "" : String(vm.raw);
+        return `${pad2(vm.day)}/${pad2(vm.month)}`;
+      }
+
+      // --- rows -------------------------------------------------------------
+      function renderDateRow(vm) {
+        const meta = DATE_TYPE_META[vm.type];
+        const li = document.createElement("li");
+        li.className = "date-row d-flex align-items-center gap-3 py-2";
+        li.dataset.dateKey = vm.key;
+
+        if (dateView.highlight === vm.key) {
+          li.classList.add("date-row-highlight");
+          dateView.highlight = null;
+        }
+
+        const icon = document.createElement("i");
+        icon.className = `bi ${meta.icon} ${meta.color} fs-5`;
+        icon.setAttribute("aria-hidden", "true");
+
+        const main = document.createElement("div");
+        main.className = "flex-grow-1 min-w-0";
+
+        const titleRow = document.createElement("div");
+        titleRow.className = "d-flex align-items-center gap-2";
+        const nameEl = document.createElement("span");
+        nameEl.className = "date-row-name text-truncate";
+        nameEl.textContent = vm.name;
+        titleRow.appendChild(nameEl);
+
+        const safeUrl = SafeLink.url(vm.url);
+        if (safeUrl) {
+          const link = document.createElement("a");
+          link.href = safeUrl;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.className = "text-info";
+          link.title = safeUrl;
+          link.innerHTML = '<i class="bi bi-link-45deg"></i>';
+          titleRow.appendChild(link);
+        }
+
+        const metaRow = document.createElement("div");
+        metaRow.className = "date-row-meta small";
+        const dateSpan = document.createElement("span");
+        dateSpan.textContent = formatItemDate(vm);
+        const relSpan = document.createElement("span");
+        relSpan.className = vm.valid ? "" : "text-danger";
+        relSpan.textContent = ` · ${formatRelative(vm)}`;
+        metaRow.appendChild(dateSpan);
+        metaRow.appendChild(relSpan);
+
+        main.appendChild(titleRow);
+        main.appendChild(metaRow);
+
+        const actions = document.createElement("div");
+        actions.className = "d-flex gap-1";
+        const editBtn = document.createElement("button");
+        editBtn.type = "button";
+        editBtn.className = "btn btn-sm btn-outline-light btn-edit-date";
+        editBtn.innerHTML = '<i class="bi bi-pencil"></i>';
+        editBtn.title = I18n.t("btn_edit");
+        editBtn.setAttribute("aria-label", `${I18n.t("btn_edit")}: ${vm.name}`);
+        editBtn.addEventListener("click", () => startDateEdit(li, vm));
+        const delBtn = document.createElement("button");
+        delBtn.type = "button";
+        delBtn.className = "btn btn-sm btn-danger btn-delete-date";
+        delBtn.innerHTML = '<i class="bi bi-trash"></i>';
+        delBtn.title = I18n.t("btn_delete");
+        delBtn.setAttribute("aria-label", `${I18n.t("btn_delete")}: ${vm.name}`);
+        delBtn.addEventListener("click", () => deleteDateItem(vm));
+        actions.appendChild(editBtn);
+        actions.appendChild(delBtn);
+
+        li.appendChild(icon);
+        li.appendChild(main);
+        li.appendChild(actions);
+        return li;
+      }
+
+      function renderDates() {
+        const upcomingList = document.getElementById("datesUpcomingList");
+        const pastList = document.getElementById("datesPastList");
+        if (!upcomingList || !pastList) return;
+
+        const items = buildDateItems();
+        const counts = { all: items.length, birthday: 0, annual: 0, onetime: 0 };
+        items.forEach((item) => {
+          counts[item.type] += 1;
+        });
+        document.querySelectorAll("#dateFilters [data-count]").forEach((el) => {
+          const key = el.dataset.count;
+          el.textContent = counts[key] === undefined ? 0 : counts[key];
+        });
+        document.querySelectorAll("#dateFilters [data-date-filter]").forEach((btn) => {
+          const isActive = btn.dataset.dateFilter === dateView.filter;
+          btn.classList.toggle("active", isActive);
+          btn.setAttribute("aria-pressed", isActive ? "true" : "false");
+        });
+
+        const visible =
+          dateView.filter === "all"
+            ? items
+            : items.filter((item) => item.type === dateView.filter);
+        const upcoming = visible.filter((item) => !item.isPast).sort(compareUpcoming);
+        const past = visible.filter((item) => item.isPast).sort(comparePast);
+
+        upcomingList.innerHTML = "";
+        upcoming.forEach((vm) => upcomingList.appendChild(renderDateRow(vm)));
+        pastList.innerHTML = "";
+        past.forEach((vm) => pastList.appendChild(renderDateRow(vm)));
+
+        const empty = document.getElementById("datesEmpty");
+        if (empty) {
+          empty.classList.toggle("d-none", upcoming.length + past.length > 0);
+        }
+
+        const pastGroup = document.getElementById("datesPastGroup");
+        const pastCount = document.getElementById("pastCount");
+        if (pastGroup) pastGroup.classList.toggle("d-none", past.length === 0);
+        if (pastCount) pastCount.textContent = past.length;
+
+        const clearBtn = document.getElementById("btnClearExpired");
+        if (clearBtn) clearBtn.disabled = past.length === 0;
+
+        const pastListEl = document.getElementById("datesPastList");
+        if (pastListEl) {
+          pastListEl.classList.toggle("show", dateView.pastOpen);
+        }
+        const toggleIcon = document.getElementById("togglePastIcon");
+        if (toggleIcon) {
+          toggleIcon.className = dateView.pastOpen
+            ? "bi bi-chevron-down"
+            : "bi bi-chevron-right";
+        }
+        const toggleBtn = document.getElementById("togglePast");
+        if (toggleBtn) {
+          toggleBtn.setAttribute("aria-expanded", dateView.pastOpen ? "true" : "false");
         }
       }
 
-      // --- TAB ANNUAL EVENTS ---
-      function loadAnnualEventsManager() {
-        if (window.EventManager) {
-          EventManager.renderAnnualEventsTable("annualEventsListBody");
-        }
+      // --- add --------------------------------------------------------------
+      function selectedDateType() {
+        const checked = document.querySelector('input[name="dateType"]:checked');
+        return checked ? checked.value : "birthday";
       }
 
-      window.addEventListener('webdesk:eventsUpdated', () => {
-        loadEventsManager();
-        loadBirthdaysManager();
-        loadAnnualEventsManager();
+      function updateDateFormForType(type) {
+        const monthDay = document.getElementById("dateMonthDayFields");
+        const full = document.getElementById("dateFullDateField");
+        const urlField = document.getElementById("dateUrlField");
+        if (monthDay) monthDay.classList.toggle("d-none", type === "onetime");
+        if (full) full.classList.toggle("d-none", type !== "onetime");
+        if (urlField) urlField.classList.toggle("d-none", type === "birthday");
+      }
+
+      function populateMonthSelect() {
+        const select = document.getElementById("dateMonth");
+        if (!select) return;
+        const previous = select.value;
+        const names = monthNames();
+        select.innerHTML = "";
+        names.forEach((name, i) => {
+          const opt = document.createElement("option");
+          opt.value = pad2(i + 1);
+          opt.textContent = name;
+          select.appendChild(opt);
+        });
+        select.value = previous && /^\d{2}$/.test(previous) ? previous : "01";
+      }
+
+      /** Day options follow the month; February always offers 29. */
+      function populateDaySelect(preferred) {
+        const monthEl = document.getElementById("dateMonth");
+        const dayEl = document.getElementById("dateDay");
+        if (!monthEl || !dayEl) return;
+        const month = parseInt(monthEl.value, 10);
+        let maxDays = 31;
+        if ([4, 6, 9, 11].includes(month)) maxDays = 30;
+        else if (month === 2) maxDays = 29;
+        const wanted = preferred || dayEl.value;
+        dayEl.innerHTML = "";
+        for (let i = 1; i <= maxDays; i++) {
+          const opt = document.createElement("option");
+          opt.value = pad2(i);
+          opt.textContent = String(i);
+          dayEl.appendChild(opt);
+        }
+        if (wanted && parseInt(wanted, 10) <= maxDays) dayEl.value = pad2(parseInt(wanted, 10));
+      }
+
+      function setDateFormError(message) {
+        const el = document.getElementById("dateFormError");
+        if (el) el.textContent = message || "";
+      }
+
+      function clearDateForm() {
+        const nameEl = document.getElementById("dateName");
+        const urlEl = document.getElementById("dateUrl");
+        const fullEl = document.getElementById("dateFull");
+        if (nameEl) nameEl.value = "";
+        if (urlEl) urlEl.value = "";
+        if (fullEl) fullEl.value = "";
+        const dayEl = document.getElementById("dateDay");
+        if (dayEl) dayEl.value = "01";
+        setDateFormError("");
+      }
+
+      function addDateItem() {
+        const type = selectedDateType();
+        const nameEl = document.getElementById("dateName");
+        const name = nameEl ? nameEl.value.trim() : "";
+        if (!name) {
+          setDateFormError(I18n.t("error_name_required"));
+          if (nameEl) nameEl.focus();
+          return null;
+        }
+
+        let payload;
+        if (type === "onetime") {
+          const fullEl = document.getElementById("dateFull");
+          const parsed = parseInputDate(fullEl ? fullEl.value : "");
+          if (!parsed) {
+            setDateFormError(I18n.t("error_date_required"));
+            return null;
+          }
+          payload = {
+            name,
+            date: `${pad2(parsed.day)}/${pad2(parsed.month)}/${parsed.year}`,
+            url: (document.getElementById("dateUrl") || {}).value || "",
+          };
+        } else {
+          const month = parseInt((document.getElementById("dateMonth") || {}).value, 10);
+          const day = parseInt((document.getElementById("dateDay") || {}).value, 10);
+          if (!month || !day) {
+            setDateFormError(I18n.t("error_date_required"));
+            return null;
+          }
+          if (type === "birthday") {
+            payload = { name, birthday: `${pad2(day)}/${pad2(month)}` };
+          } else {
+            payload = {
+              name,
+              date: `${pad2(day)}/${pad2(month)}`,
+              url: (document.getElementById("dateUrl") || {}).value || "",
+            };
+          }
+        }
+
+        const list = readStoreList(type);
+        // Match the shape the rest of the app writes, keeping any extra fields.
+        const item = Object.assign(
+          { name: payload.name, url: payload.url || "", countdown: false },
+          type === "birthday"
+            ? { birthday: payload.birthday }
+            : { date: payload.date },
+        );
+        if (type === "birthday") delete item.url;
+        list.push(item);
+
+        if (!saveDateList(type, list)) return null;
+
+        dateView.highlight = `${type}:${list.length - 1}`;
+        clearDateForm();
+        renderDates();
+        if (nameEl) nameEl.focus();
+        return item;
+      }
+
+      function readStoreList(type) {
+        const list =
+          type === "birthday"
+            ? EventManager.getBirthdays()
+            : type === "annual"
+              ? EventManager.getAnnualEvents()
+              : EventManager.getCustomEvents();
+        return Array.isArray(list) ? list : [];
+      }
+
+      function saveDateList(type, list) {
+        return saveThrough(() => {
+          if (type === "birthday") EventManager.saveBirthdays(list);
+          else if (type === "annual") EventManager.saveAnnualEvents(list);
+          else EventManager.saveCustomEvents(list);
+        });
+      }
+
+      // --- delete with undo -------------------------------------------------
+      function deleteDateItem(vm, options) {
+        const opts = options || {};
+        const list = readStoreList(vm.type);
+        if (!list[vm.index]) return false;
+        const removed = list.splice(vm.index, 1)[0];
+        if (!saveDateList(vm.type, list)) return false;
+        renderDates();
+        if (opts.silent) return true;
+
+        const meta = DATE_TYPE_META[vm.type];
+        const label = `${I18n.t(meta.filterKey)}: ${vm.name || shortDateLabel(vm)}`;
+        showUndoToast(I18n.t("toast_deleted", { item: label }), () => {
+          const restored = readStoreList(vm.type);
+          restored.splice(Math.min(vm.index, restored.length), 0, removed);
+          if (saveDateList(vm.type, restored)) {
+            dateView.highlight = `${vm.type}:${vm.index}`;
+            renderDates();
+          }
+        });
+        return true;
+      }
+
+      // --- inline edit ------------------------------------------------------
+      function startDateEdit(li, vm) {
+        if (!li || li.classList.contains("date-row-editing")) return;
+        const meta = DATE_TYPE_META[vm.type];
+        const isOneTime = vm.type === "onetime";
+
+        li.innerHTML = "";
+        li.classList.add("date-row-editing");
+
+        const icon = document.createElement("i");
+        icon.className = `bi ${meta.icon} ${meta.color} fs-5`;
+        icon.setAttribute("aria-hidden", "true");
+
+        const editor = document.createElement("div");
+        editor.className = "flex-grow-1";
+        const row = document.createElement("div");
+        row.className = "row g-2 align-items-end";
+
+        const nameCol = document.createElement("div");
+        nameCol.className = "col-md-4";
+        const nameLabel = document.createElement("label");
+        nameLabel.className = "form-label visually-hidden";
+        nameLabel.textContent = I18n.t("label_name");
+        const nameInput = document.createElement("input");
+        nameInput.type = "text";
+        nameInput.className = "form-control form-control-sm bg-dark text-white border-secondary";
+        nameInput.value = vm.name;
+        nameLabel.appendChild(nameInput);
+        nameCol.appendChild(nameLabel);
+
+        const dateCol = document.createElement("div");
+        dateCol.className = "col-md-4";
+        let monthSelect = null;
+        let daySelect = null;
+        let fullInput = null;
+        if (isOneTime) {
+          fullInput = document.createElement("input");
+          fullInput.type = "date";
+          fullInput.className = "form-control form-control-sm bg-dark text-white border-secondary";
+          fullInput.value = `${vm.next.getFullYear()}-${pad2(vm.month)}-${pad2(vm.day)}`;
+          fullInput.setAttribute("aria-label", I18n.t("label_date"));
+          dateCol.appendChild(fullInput);
+        } else {
+          const inner = document.createElement("div");
+          inner.className = "row g-2";
+          const mCol = document.createElement("div");
+          mCol.className = "col-7";
+          monthSelect = document.createElement("select");
+          monthSelect.className = "form-select form-select-sm bg-dark text-white border-secondary";
+          monthSelect.setAttribute("aria-label", I18n.t("label_month"));
+          monthNames().forEach((name, i) => {
+            const opt = document.createElement("option");
+            opt.value = pad2(i + 1);
+            opt.textContent = name;
+            monthSelect.appendChild(opt);
+          });
+          monthSelect.value = pad2(vm.month);
+          const dCol = document.createElement("div");
+          dCol.className = "col-5";
+          daySelect = document.createElement("select");
+          daySelect.className = "form-select form-select-sm bg-dark text-white border-secondary";
+          daySelect.setAttribute("aria-label", I18n.t("label_day"));
+          const fillDays = (preferred) => {
+            const month = parseInt(monthSelect.value, 10);
+            let maxDays = 31;
+            if ([4, 6, 9, 11].includes(month)) maxDays = 30;
+            else if (month === 2) maxDays = 29;
+            daySelect.innerHTML = "";
+            for (let i = 1; i <= maxDays; i++) {
+              const opt = document.createElement("option");
+              opt.value = pad2(i);
+              opt.textContent = String(i);
+              daySelect.appendChild(opt);
+            }
+            daySelect.value = pad2(Math.min(preferred || 1, maxDays));
+          };
+          fillDays(vm.day);
+          monthSelect.addEventListener("change", () => fillDays(parseInt(daySelect.value, 10)));
+          mCol.appendChild(monthSelect);
+          dCol.appendChild(daySelect);
+          inner.appendChild(mCol);
+          inner.appendChild(dCol);
+          dateCol.appendChild(inner);
+        }
+
+        const urlCol = document.createElement("div");
+        urlCol.className = vm.type === "birthday" ? "col-md-3 d-none" : "col-md-3";
+        const urlInput = document.createElement("input");
+        urlInput.type = "url";
+        urlInput.className = "form-control form-control-sm bg-dark text-white border-secondary";
+        urlInput.value = vm.url || "";
+        urlInput.placeholder = I18n.t("label_url_optional");
+        urlInput.setAttribute("aria-label", I18n.t("label_url_optional"));
+        urlCol.appendChild(urlInput);
+
+        const btnCol = document.createElement("div");
+        btnCol.className = "col-md-1 d-flex gap-1";
+        const saveBtn = document.createElement("button");
+        saveBtn.type = "button";
+        saveBtn.className = "btn btn-sm btn-success";
+        saveBtn.innerHTML = '<i class="bi bi-check-lg"></i>';
+        saveBtn.title = I18n.t("btn_save_changes");
+        saveBtn.setAttribute("aria-label", I18n.t("btn_save_changes"));
+        const cancelBtn = document.createElement("button");
+        cancelBtn.type = "button";
+        cancelBtn.className = "btn btn-sm btn-outline-light";
+        cancelBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
+        cancelBtn.title = I18n.t("btn_cancel_edit");
+        cancelBtn.setAttribute("aria-label", I18n.t("btn_cancel_edit"));
+        btnCol.appendChild(saveBtn);
+        btnCol.appendChild(cancelBtn);
+
+        row.appendChild(nameCol);
+        row.appendChild(dateCol);
+        row.appendChild(urlCol);
+        row.appendChild(btnCol);
+        editor.appendChild(row);
+
+        const errorEl = document.createElement("div");
+        errorEl.className = "setting-error";
+        errorEl.setAttribute("aria-live", "polite");
+        editor.appendChild(errorEl);
+
+        li.appendChild(icon);
+        li.appendChild(editor);
+        nameInput.focus();
+        nameInput.select();
+
+        const cancel = () => renderDates();
+        const commit = () => {
+          const name = nameInput.value.trim();
+          if (!name) {
+            errorEl.textContent = I18n.t("error_name_required");
+            nameInput.focus();
+            return;
+          }
+          const nextUrl = urlInput.value.trim();
+          if (nextUrl && !SafeLink.url(nextUrl)) {
+            errorEl.textContent = I18n.t("error_url_invalid");
+            urlInput.focus();
+            return;
+          }
+
+          const list = readStoreList(vm.type);
+          const item = list[vm.index];
+          if (!item) {
+            renderDates();
+            return;
+          }
+          const updated = Object.assign({}, item, { name });
+          if (vm.type !== "birthday") updated.url = nextUrl;
+          if (isOneTime) {
+            const parsed = parseInputDate(fullInput.value);
+            if (!parsed) {
+              errorEl.textContent = I18n.t("error_date_required");
+              return;
+            }
+            updated.date = `${pad2(parsed.day)}/${pad2(parsed.month)}/${parsed.year}`;
+          } else {
+            const month = parseInt(monthSelect.value, 10);
+            const day = parseInt(daySelect.value, 10);
+            const field = vm.type === "birthday" ? "birthday" : "date";
+            updated[field] = `${pad2(day)}/${pad2(month)}`;
+          }
+          list[vm.index] = updated;
+          if (saveDateList(vm.type, list)) {
+            dateView.highlight = vm.key;
+            renderDates();
+          }
+        };
+
+        saveBtn.addEventListener("click", commit);
+        cancelBtn.addEventListener("click", cancel);
+        li.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" && e.target.tagName !== "BUTTON") {
+            e.preventDefault();
+            commit();
+          } else if (e.key === "Escape") {
+            e.preventDefault();
+            cancel();
+          }
+        });
+        // Blur inside the row keeps editing; leaving the row commits, like the
+        // text fields in General.
+        li.addEventListener("focusout", (e) => {
+          if (!li.contains(e.relatedTarget)) commit();
+        });
+      }
+
+      // --- clear expired ----------------------------------------------------
+      function clearExpiredDates() {
+        const past = buildDateItems()
+          .filter((item) => item.isPast)
+          .sort(comparePast);
+        if (past.length === 0) return;
+
+        showConfirmModal({
+          title: I18n.t("btn_clear_expired"),
+          intro: I18n.t("confirm_clear_expired", { count: past.length }),
+          names: past.map((item) => item.name || shortDateLabel(item)),
+          confirmLabel: I18n.t("btn_clear_expired"),
+          onConfirm: () => {
+            // Only one-time events can expire; recurring dates never do.
+            const expiredIndexes = past.map((item) => item.index);
+            const list = readStoreList("onetime");
+            const removed = [];
+            const kept = list.filter((item, index) => {
+              if (expiredIndexes.includes(index)) {
+                removed.push({ index, item });
+                return false;
+              }
+              return true;
+            });
+            if (!saveDateList("onetime", kept)) return;
+            renderDates();
+            showUndoToast(
+              I18n.t("toast_items_removed", { count: removed.length }),
+              () => {
+                const restored = readStoreList("onetime");
+                removed
+                  .slice()
+                  .sort((a, b) => a.index - b.index)
+                  .forEach(({ index, item }) => {
+                    restored.splice(Math.min(index, restored.length), 0, item);
+                  });
+                if (saveDateList("onetime", restored)) renderDates();
+              },
+            );
+          },
+        });
+      }
+
+      function initDatesSection() {
+        const form = document.getElementById("dateForm");
+        if (!form) return;
+
+        populateMonthSelect();
+        populateDaySelect();
+        updateDateFormForType("birthday");
+        const fullEl = document.getElementById("dateFull");
+        if (fullEl) fullEl.min = todayInputValue();
+
+        document.querySelectorAll('input[name="dateType"]').forEach((radio) => {
+          radio.addEventListener("change", () => {
+            updateDateFormForType(selectedDateType());
+            setDateFormError("");
+          });
+        });
+
+        const monthEl = document.getElementById("dateMonth");
+        if (monthEl) {
+          monthEl.addEventListener("change", () => populateDaySelect());
+        }
+
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          addDateItem();
+        });
+
+        const filters = document.getElementById("dateFilters");
+        if (filters) {
+          filters.addEventListener("click", (e) => {
+            const btn = e.target.closest("[data-date-filter]");
+            if (!btn) return;
+            dateView.filter = btn.dataset.dateFilter;
+            renderDates();
+          });
+        }
+
+        const togglePast = document.getElementById("togglePast");
+        if (togglePast) {
+          togglePast.addEventListener("click", () => {
+            dateView.pastOpen = !dateView.pastOpen;
+            renderDates();
+          });
+        }
+
+        const clearBtn = document.getElementById("btnClearExpired");
+        if (clearBtn) clearBtn.addEventListener("click", clearExpiredDates);
+
+        renderDates();
+      }
+
+      window.addEventListener("webdesk:eventsUpdated", () => {
+        renderDates();
       });
+
 
       // --- TAB 5: CUSTOM LINKS ---
       function loadLinksManager() {
@@ -2420,10 +3345,8 @@
         initGeneralSection();
         loadAppManager();
         renderStats();
-        loadEventsManager();
+        initDatesSection();
         loadLinksManager();
-        loadBirthdaysManager();
-        loadAnnualEventsManager();
         try {
           loadAppearanceManager();
         } catch (e) {
@@ -2439,101 +3362,6 @@
         // Update Tab Label - No longer needed manually as I18n handles it
         // if (profile.lang === "es") { ... }
 
-        // Restrict date picker to today+
-        const dateInput = document.getElementById("eventDate");
-        if (dateInput) dateInput.min = dayjs().format("YYYY-MM-DD");
-
-        // Event Listeners (Safely inside DOMLoaded)
-
-        // Birthday Form
-        const birthdayForm = document.getElementById("birthdayForm");
-        const monthSelect = document.getElementById("bdayMonth");
-        const daySelect = document.getElementById("bdayDay");
-
-        if (birthdayForm && monthSelect && daySelect) {
-          const updateDays = (monthEl, dayEl, val) => {
-            const month = parseInt(monthEl.value);
-            let maxDays = 31;
-            if (month === 4 || month === 6 || month === 9 || month === 11)
-              maxDays = 30;
-            else if (month === 2) maxDays = 29; // Assume leap year for safety
-
-            dayEl.innerHTML = "";
-            for (let i = 1; i <= maxDays; i++) {
-              const d = i < 10 ? "0" + i : i;
-              const opt = document.createElement("option");
-              opt.value = d;
-              opt.textContent = i;
-              dayEl.appendChild(opt);
-            }
-            if (val && parseInt(val) <= maxDays) dayEl.value = val;
-          };
-
-          monthSelect.addEventListener("change", () =>
-            updateDays(monthSelect, daySelect, daySelect.value),
-          );
-          updateDays(monthSelect, daySelect);
-
-          birthdayForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const name = document.getElementById("bdayName").value.trim();
-            const month = monthSelect.value;
-            const day = daySelect.value;
-            if (window.EventManager) {
-              EventManager.addEvent("birthday", { name, month, day });
-            }
-            birthdayForm.reset();
-            monthSelect.value = "01";
-            updateDays(monthSelect, daySelect);
-          });
-
-          // Annual Events Form Logic
-          const annualForm = document.getElementById("annualEventForm");
-          const annualMonth = document.getElementById("annualMonth");
-          const annualDay = document.getElementById("annualDay");
-
-          if (annualForm && annualMonth && annualDay) {
-            annualMonth.addEventListener("change", () =>
-              updateDays(annualMonth, annualDay, annualDay.value),
-            );
-            updateDays(annualMonth, annualDay);
-
-            annualForm.addEventListener("submit", (e) => {
-              e.preventDefault();
-
-              const name = document.getElementById("annualName").value.trim();
-              const url = document.getElementById("annualUrl").value.trim();
-              const month = annualMonth.value;
-              const day = annualDay.value;
-
-              if (window.EventManager) {
-                EventManager.addEvent("annual", { name, month, day, url });
-              }
-
-              annualForm.reset();
-              annualMonth.value = "01";
-              updateDays(annualMonth, annualDay);
-            });
-          }
-        }
-
-        // Events
-        const eventForm = document.getElementById("eventForm");
-        if (eventForm) {
-          eventForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const name = document.getElementById("eventName").value.trim();
-            const date = document.getElementById("eventDate").value;
-            const url = document.getElementById("eventUrl").value.trim();
-
-            if (window.EventManager) {
-              EventManager.addEvent("custom", { name, date, url });
-            }
-
-            e.target.reset();
-          });
-        }
-
         // Links
         const linkForm = document.getElementById("linkForm");
         if (linkForm) {
@@ -2546,6 +3374,7 @@
             linkForm.reset();
           });
         }
+
 
         // Listeners for Appearance (Auto-Save removed in favor of Save Button pattern to simplify)
         // ... except theme which might need preview? No, let's stick to Save button for all appearance to be consistent.
@@ -3171,25 +4000,6 @@
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
             showAlert(I18n.t("alert_events_exported"), "success");
-          });
-        }
-
-        const btnCleanEvents = document.getElementById("btnCleanEvents");
-        if (btnCleanEvents) {
-          btnCleanEvents.addEventListener("click", () => {
-            if (!confirm("Are you sure you want to remove all past events?"))
-              return;
-
-            const { customEvents } = getData();
-            const today = dayjs().startOf("day");
-            const filteredEvents = customEvents.filter((evt) => {
-              const eventDate = dayjs(evt.date, "DD/MM/YYYY").startOf("day");
-              return eventDate.isSameOrAfter(today);
-            });
-
-            saveData(EVENTS_KEY, filteredEvents);
-            loadEventsManager();
-            showAlert(I18n.t("alert_past_removed"), "success");
           });
         }
 
