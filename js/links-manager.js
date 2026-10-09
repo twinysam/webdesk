@@ -144,7 +144,7 @@ window.LinksManager = (() => {
         <td class="text-end">
           <div class="links-action-cell">
             ${upBtn}
-            <button class="btn btn-sm btn-danger btn-delete-link" onclick="LinksManager.deleteLink(${index})"><i class="bi bi-trash"></i></button>
+            <button class="btn btn-sm btn-danger btn-delete-link" onclick="${window.settingsDeleteLink ? `window.settingsDeleteLink(${index})` : `LinksManager.deleteLink(${index})`}"><i class="bi bi-trash"></i></button>
           </div>
         </td>
       `;
@@ -171,7 +171,8 @@ window.LinksManager = (() => {
               url: tr.dataset.url,
             });
           });
-          saveLinks(newLinks);
+          if (window.settingsSaveLinks) window.settingsSaveLinks(newLinks);
+          else saveLinks(newLinks);
         },
       });
     }

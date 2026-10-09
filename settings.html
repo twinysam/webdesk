@@ -420,18 +420,6 @@
             </button>
             <button
               class="nav-link"
-              id="preferences-tab"
-              data-bs-toggle="tab"
-              data-bs-target="#preferences"
-              type="button"
-              role="tab"
-              aria-controls="preferences"
-            >
-              <i class="bi bi-sliders"></i>
-              <span data-i18n="tab_preferences">Preferences</span>
-            </button>
-            <button
-              class="nav-link"
               id="data-tab"
               data-bs-toggle="tab"
               data-bs-target="#data"
@@ -612,7 +600,7 @@
                 class="btn btn-outline-danger"
               >
                 <i class="bi bi-trash"></i>
-                <span data-i18n="btn_remove">Remove</span>
+                <span id="removeLowClicksLabel">Remove 0 items</span>
               </button>
             </div>
           </div>
@@ -624,6 +612,7 @@
           role="tabpanel"
           aria-labelledby="apps-tab"
         >
+          <!-- Planned for removal; this pane remains independent of section state. -->
           <p class="text-light mb-3">
             <i class="bi bi-info-circle"></i>
             <span data-i18n="text_catalog_info"
@@ -1266,11 +1255,9 @@
         <div
           class="tab-pane fade"
           id="preferences"
-          role="tabpanel"
-          aria-labelledby="preferences-tab"
         >
           <div class="card bg-dark border-secondary p-4 text-white">
-            <h4 class="mb-4" data-i18n="header_preferences">Preferences</h4>
+            <h4 class="mb-4" data-i18n="header_features">Features</h4>
 
             <!-- STORAGE SECTION -->
             <h5
@@ -1449,10 +1436,6 @@
               >
             </div>
 
-            <button id="btnSavePreferences" class="btn btn-primary">
-              <i class="bi bi-save"></i>
-              <span data-i18n="btn_save_preferences">Save Preferences</span>
-            </button>
           </div>
         </div>
 
@@ -1777,6 +1760,27 @@
           readLastSection() ||
           DEFAULT_SECTION;
         showSection(initial);
+      }
+
+      // Preferences remain addressable by their existing control ids, but are
+      // presented as the Features card in General instead of a separate tab.
+      function foldPreferencesIntoGeneral() {
+        const pane = document.getElementById("preferences");
+        const general = document.getElementById("general");
+        const card = pane && pane.querySelector(":scope > .card");
+        if (!pane || !general || !card) return;
+        card.classList.add("mt-4");
+        const storageCard = document.createElement("div");
+        storageCard.className = "card bg-dark border-secondary p-4 text-white mt-4";
+        [
+          card.querySelector('[data-i18n="header_storage"]'),
+          card.querySelector('[data-i18n="text_storage_explanation"]'),
+          card.querySelector("#btnPersistentStorage"),
+          card.querySelector("#textPersistentStorageActive"),
+        ].filter(Boolean).forEach((element) => storageCard.appendChild(element));
+        general.appendChild(card);
+        general.appendChild(storageCard);
+        pane.remove();
       }
 
       // ======================================================================
@@ -2333,6 +2337,66 @@
         }
       });
 
+      const deferredStorageRefresh = new Set();
+      const storageRefreshControls = {
+        userProfile: ["setting-name", "setting-dob", "setting-lang", "setting-hemisphere"],
+        userLang: ["setting-lang"],
+        userPreferences: ["prefEveningStart", "prefLateGreeting", "prefTreeToggle", "checkAutoDeleteEvents", "checkEnableCalculator", "checkEnableCalendar", "selectTheme", "checkFullWidth", "selectBgPattern", "presetThemeSelect", "autoSeasonToggle", "inputBgColorLight", "inputBgColorDark", "inputPatternColorLight", "inputPatternColorDark", "rangePatternOpacity", "rangeBgScrollSpeed"],
+        appConfig: ["checkHideNeverClicked", "inputMinClicks"],
+        clickStats: ["inputRemoveThreshold"],
+      };
+
+      function refreshForStorageKey(key) {
+        if (key === "userProfile" || key === "userLang") {
+          const { profile } = getData();
+          if (profile.lang && profile.lang !== I18nManager.getLang()) {
+            location.reload();
+            return;
+          }
+          loadGeneralSection();
+          loadPreferencesManager();
+          appearanceHooks.refreshSeason && appearanceHooks.refreshSeason();
+        } else if (key === "userPreferences") {
+          loadPreferencesManager();
+          if (location.hash === "#appearance") location.reload();
+        } else if (key === "appConfig") {
+          loadPreferencesManager();
+          renderCatalog(document.getElementById("catalog-search").value);
+        } else if (key === "clickStats") {
+          renderStats();
+        } else if (key === "userBirthdays" || key === "annualEvents" || key === "customEvents") {
+          renderDates();
+        } else if (key === "userLinks") {
+          loadLinksManager();
+        } else if (key === MYAPPS_KEY) {
+          renderCatalog(document.getElementById("catalog-search").value);
+          renderMyApps();
+        } else if (key && key.startsWith("cachedBg")) {
+          if (location.hash === "#appearance") location.reload();
+        } else if (["lastBackupTime", "changesSinceBackup"].includes(key)) {
+          updateLastBackupText();
+        }
+      }
+
+      window.addEventListener("storage", (event) => {
+        if (!event.key) return;
+        const focused = document.activeElement;
+        if (focused && storageRefreshControls[event.key]?.includes(focused.id)) {
+          deferredStorageRefresh.add(event.key);
+          return;
+        }
+        refreshForStorageKey(event.key);
+      });
+      document.addEventListener("focusout", (event) => {
+        const key = Object.keys(storageRefreshControls).find((candidate) =>
+          storageRefreshControls[candidate].includes(event.target && event.target.id),
+        );
+        if (key && deferredStorageRefresh.has(key)) {
+          deferredStorageRefresh.delete(key);
+          refreshForStorageKey(key);
+        }
+      });
+
       document
         .getElementById("catalog-search")
         .addEventListener("input", (e) => {
@@ -2369,12 +2433,12 @@
           let dateStr = "-";
           if (item.lastClick) {
             dateStr = dayjs(item.lastClick)
-              .locale("es")
+              .locale(I18nManager.getLang() || "en")
               .format("DD/MM/YYYY HH:mm");
           }
           row.innerHTML = `
             <th scope="row">${index + 1}</th>
-            <td>${item.name}</td>
+            <td>${SafeLink.escape(String(item.name || ""))}</td>
             <td>${dateStr}</td>
             <td class="text-end">${item.count}</td>
           `;
@@ -2383,11 +2447,44 @@
 
         if (apps.length === 0)
           appsBody.innerHTML =
-            '<tr><td colspan="4" class="text-center text-white">No data</td></tr>';
+            `<tr><td colspan="4" class="text-center text-white">${SafeLink.escape(I18n.t("text_no_data"))}</td></tr>`;
         else apps.forEach((item, i) => renderRow(item, i, appsBody));
 
+        const tvBody = document.getElementById("tvBody");
         const tvSection = document.getElementById("tvStatsSection");
-        if (tvSection) tvSection.style.display = "none";
+        const channels = allItems.filter((item) => item.category === "tv").sort(sortFn);
+        if (tvBody) {
+          tvBody.innerHTML = "";
+          if (!channels.length) {
+            tvBody.innerHTML = `<tr><td colspan="4" class="text-center text-white">${SafeLink.escape(I18n.t("text_no_data"))}</td></tr>`;
+          } else {
+            channels.forEach((item, i) => renderRow(item, i, tvBody));
+          }
+        }
+        if (tvSection) tvSection.style.display = "";
+        updateLowClickCount();
+      }
+
+      function lowClickTargets(threshold) {
+        const { stats } = getData();
+        return Object.entries(stats).filter(([, item]) => {
+          const count = typeof item === "number"
+            ? item
+            : item && typeof item.count === "number" ? item.count : 0;
+          return count < threshold;
+        });
+      }
+
+      function updateLowClickCount() {
+        const input = document.getElementById("inputRemoveThreshold");
+        const button = document.getElementById("btnRemoveLowClicks");
+        const label = document.getElementById("removeLowClicksLabel");
+        if (!input || !button || !label) return;
+        const threshold = Number(input.value);
+        const targets = Number.isInteger(threshold) && threshold >= 1
+          ? lowClickTargets(threshold) : [];
+        label.textContent = I18n.t("btn_remove_count", { count: targets.length });
+        button.disabled = targets.length === 0;
       }
 
       // ======================================================================
@@ -3005,19 +3102,12 @@
 
         const btnCol = document.createElement("div");
         btnCol.className = "col-md-1 d-flex gap-1";
-        const saveBtn = document.createElement("button");
-        saveBtn.type = "button";
-        saveBtn.className = "btn btn-sm btn-success";
-        saveBtn.innerHTML = '<i class="bi bi-check-lg"></i>';
-        saveBtn.title = I18n.t("btn_save_changes");
-        saveBtn.setAttribute("aria-label", I18n.t("btn_save_changes"));
         const cancelBtn = document.createElement("button");
         cancelBtn.type = "button";
         cancelBtn.className = "btn btn-sm btn-outline-light";
         cancelBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
         cancelBtn.title = I18n.t("btn_cancel_edit");
         cancelBtn.setAttribute("aria-label", I18n.t("btn_cancel_edit"));
-        btnCol.appendChild(saveBtn);
         btnCol.appendChild(cancelBtn);
 
         row.appendChild(nameCol);
@@ -3079,7 +3169,6 @@
           }
         };
 
-        saveBtn.addEventListener("click", commit);
         cancelBtn.addEventListener("click", cancel);
         li.addEventListener("keydown", (e) => {
           if (e.key === "Enter" && e.target.tagName !== "BUTTON") {
@@ -3201,6 +3290,25 @@
         LinksManager.renderTable("linksListBody");
       }
 
+      function persistSettingsLinks(links) {
+        if (!saveSetting("userLinks", links)) return false;
+        window.dispatchEvent(new CustomEvent("webdesk:linksUpdated", { detail: links }));
+        return true;
+      }
+
+      window.settingsSaveLinks = persistSettingsLinks;
+      window.settingsDeleteLink = (index) => {
+        const links = LinksManager.getLinks();
+        if (index < 0 || index >= links.length) return;
+        const [removed] = links.splice(index, 1);
+        if (!persistSettingsLinks(links)) return;
+        showUndoToast(I18n.t("toast_deleted_item", { item: removed.name || removed.url }), () => {
+          const restored = LinksManager.getLinks();
+          restored.splice(Math.min(index, restored.length), 0, removed);
+          persistSettingsLinks(restored);
+        });
+      };
+
       window.addEventListener('webdesk:linksUpdated', () => {
         loadLinksManager();
       });
@@ -3254,6 +3362,9 @@
         document.getElementById("checkEnableCalendar").checked =
           preferences.enableCalendar === true;
 
+        const autoDelete = document.getElementById("checkAutoDeleteEvents");
+        if (autoDelete) autoDelete.checked = preferences.autoDeleteEvents !== false;
+
         // Tree Toggle
         document.getElementById("prefTreeToggle").checked =
           preferences.treeEnabled !== false; // Default true
@@ -3290,45 +3401,50 @@
         }
       }
 
-      document
-        .getElementById("btnSavePreferences")
-        .addEventListener("click", () => {
-          const { preferences, config } = getData();
+      function initPreferencesAutosave() {
+        const bindPref = (id, key, options = {}) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          bindAutosave(el, {
+            event: options.event || "change",
+            debounceMs: options.debounceMs || 0,
+            read: options.read || ((control) =>
+              control.type === "checkbox" ? control.checked : control.value),
+            validate: options.validate || (() => null),
+            commit: (value) =>
+              updatePrefs({ [key]: options.transform ? options.transform(value) : value }),
+          });
+        };
 
-          // Save Filter Settings
-          config.filters.hideNeverClicked = document.getElementById(
-            "checkHideNeverClicked",
-          ).checked;
-          config.filters.minClicks =
-            parseInt(document.getElementById("inputMinClicks").value) || 0;
-          saveData(CONFIG_KEY, config);
-
-          const eveningVal = parseInt(
-            document.getElementById("prefEveningStart").value,
-          );
-          const treeEnabled = document.getElementById("prefTreeToggle").checked;
-          const calculatorEnabled = document.getElementById(
-            "checkEnableCalculator",
-          ).checked;
-          const calendarEnabled = document.getElementById(
-            "checkEnableCalendar",
-          ).checked;
-          const lateGreeting = document
-            .getElementById("prefLateGreeting")
-            .value.trim();
-
-          preferences.eveningStart = eveningVal;
-          preferences.treeEnabled = treeEnabled;
-          preferences.enableCalculator = calculatorEnabled;
-          preferences.enableCalendar = calendarEnabled;
-          preferences.customLateGreeting = lateGreeting;
-
-          saveData(PREFERENCES_KEY, preferences);
-          showAlert(I18n.t("alert_preferences_saved"), "success");
-          // Since visuals might change, maybe reload? Or just alert.
-          // Let's reload to be safe and consistent with Profile
-          setTimeout(() => location.reload(), 1000);
+        bindAutosave(document.getElementById("checkHideNeverClicked"), {
+          event: "change",
+          read: (el) => el.checked,
+          commit: (value) => saveSetting(CONFIG_KEY, (current) => ({
+            ...(current || {}),
+            filters: { ...((current && current.filters) || {}), hideNeverClicked: value },
+          })),
         });
+        bindAutosave(document.getElementById("inputMinClicks"), {
+          event: "change",
+          read: (el) => Number(el.value),
+          validate: (value) => Number.isInteger(value) && value >= 0
+            ? null : I18n.t("error_min_clicks"),
+          commit: (value) => saveSetting(CONFIG_KEY, (current) => ({
+            ...(current || {}),
+            filters: { ...((current && current.filters) || {}), minClicks: value },
+          })),
+        });
+        bindPref("prefEveningStart", "eveningStart", { transform: Number });
+        bindPref("prefTreeToggle", "treeEnabled", { read: (el) => el.checked });
+        bindPref("checkAutoDeleteEvents", "autoDeleteEvents", { read: (el) => el.checked });
+        bindPref("checkEnableCalculator", "enableCalculator", { read: (el) => el.checked });
+        bindPref("checkEnableCalendar", "enableCalendar", { read: (el) => el.checked });
+        bindPref("prefLateGreeting", "customLateGreeting", {
+          event: "input",
+          debounceMs: 500,
+          read: (el) => el.value.trim(),
+        });
+      }
 
       // Storage Persistence
       const btnPersistent = document.getElementById("btnPersistentStorage");
@@ -3385,6 +3501,7 @@
           await I18nManager.loadLocale(userLang);
         }
 
+        foldPreferencesIntoGeneral();
         loadGeneralSection();
         initGeneralSection();
         loadAppManager();
@@ -3395,6 +3512,7 @@
         I18nManager.applyToPage();
         initShellRouting();
         loadPreferencesManager();
+        initPreferencesAutosave();
         updateLastBackupText();
         checkStorage(); // Check persistence
 
@@ -3407,9 +3525,15 @@
           linkForm.addEventListener("submit", (e) => {
             e.preventDefault();
             const name = document.getElementById("linkName").value.trim();
-            const url = document.getElementById("linkUrl").value.trim();
-
-            LinksManager.addLink(name, url);
+            const urlEl = document.getElementById("linkUrl");
+            const url = urlEl.value.trim();
+            if (!urlEl.validity.valid) {
+              showFieldError(urlEl, I18n.t("error_url_invalid"));
+              urlEl.focus();
+              return;
+            }
+            clearFieldError(urlEl);
+            saveThrough(() => LinksManager.addLink(name, url));
             linkForm.reset();
           });
         }
@@ -4059,50 +4183,35 @@
         }
 
         const btnRemoveLowClicks = document.getElementById("btnRemoveLowClicks");
+        const inputRemoveThreshold = document.getElementById("inputRemoveThreshold");
+        if (inputRemoveThreshold) {
+          inputRemoveThreshold.addEventListener("input", updateLowClickCount);
+          inputRemoveThreshold.addEventListener("change", updateLowClickCount);
+        }
         if (btnRemoveLowClicks) {
           btnRemoveLowClicks.addEventListener("click", () => {
             const input = document.getElementById("inputRemoveThreshold");
-            const threshold = parseInt(input ? input.value : "1", 10);
-            if (isNaN(threshold) || threshold < 1) {
+            const threshold = Number(input ? input.value : "1");
+            if (!Number.isInteger(threshold) || threshold < 1) {
               showAlert(I18n.t("alert_invalid_clicks"), "warning");
               return;
             }
-
-            const confirmMsg = I18n.t("confirm_remove_low_clicks", {
-              count: threshold,
+            const targets = lowClickTargets(threshold);
+            if (!targets.length) return updateLowClickCount();
+            showConfirmModal({
+              title: I18n.t("confirm_usage_title"),
+              intro: I18n.t("confirm_usage_remove", { count: targets.length }),
+              names: targets.map(([name]) => name),
+              confirmLabel: I18n.t("btn_remove_count", { count: targets.length }),
+              onConfirm: () => {
+                const { stats } = getData();
+                targets.forEach(([name]) => delete stats[name]);
+                if (saveSetting(STATS_KEY, stats)) {
+                  renderStats();
+                  showAlert(I18n.t("alert_items_removed", { count: targets.length }), "success");
+                }
+              },
             });
-            if (!confirm(confirmMsg)) return;
-
-            const { stats } = getData();
-            let removedCount = 0;
-
-            for (const key of Object.keys(stats)) {
-              const item = stats[key];
-              const count =
-                typeof item === "number"
-                  ? item
-                  : item && typeof item.count === "number"
-                  ? item.count
-                  : 0;
-              if (count < threshold) {
-                delete stats[key];
-                removedCount++;
-              }
-            }
-
-            if (removedCount > 0) {
-              saveData(STATS_KEY, stats);
-              renderStats();
-              showAlert(
-                I18n.t("alert_items_removed", { count: removedCount }),
-                "success",
-              );
-            } else {
-              showAlert(
-                I18n.t("alert_no_items_removed", { count: threshold }),
-                "info",
-              );
-            }
           });
         }
 
@@ -4140,9 +4249,7 @@
           const file = e.target.files[0];
           if (!file) return;
 
-          if (
-            !confirm("Overwrite EVERYTHING (Stats, Settings, Events, Apps)?")
-          ) {
+          if (!confirm(I18n.t("confirm_import_overwrite"))) {
             e.target.value = "";
             return;
           }
@@ -4152,10 +4259,19 @@
             try {
               const data = JSON.parse(event.target.result);
               BackupManager.importData(data);
-              showAlert("Restored data successfully!", "success");
+              loadGeneralSection();
+              loadPreferencesManager();
+              renderStats();
+              renderDates();
+              loadLinksManager();
+              loadAppManager();
+              loadAppearanceSection();
+              applyAppearanceVisuals();
+              I18nManager.applyToPage();
+              showAlert(I18n.t("alert_data_restored"), "success");
               setTimeout(() => location.reload(), 1500);
             } catch (err) {
-              showAlert("Error: " + err.message, "danger");
+              showAlert(I18n.t("error_import_failed", { message: err.message }), "danger");
             }
           };
           reader.readAsText(file);
