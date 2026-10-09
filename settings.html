@@ -428,10 +428,49 @@
           aria-labelledby="general-tab"
         >
           <div class="card bg-dark border-secondary p-4 text-white">
-            <h4 class="mb-4" data-i18n="profile_header">User Profile</h4>
+            <h4 class="mb-4" data-i18n="header_you">You</h4>
             <div class="mb-3">
-              <label class="form-label" data-i18n="label_lang"
-                >Language / Idioma</label
+              <label class="form-label" for="setting-name" data-i18n="label_name"
+                >Name</label
+              >
+              <input
+                type="text"
+                id="setting-name"
+                class="form-control bg-dark text-white border-secondary"
+                autocomplete="off"
+              />
+              <div class="form-text text-light" data-i18n="text_name_help">
+                Used in the greeting on your desk.
+              </div>
+            </div>
+            <div class="mb-3">
+              <label
+                class="form-label"
+                for="setting-dob"
+                data-i18n="label_birthday"
+                >Birthday</label
+              >
+              <input
+                type="date"
+                id="setting-dob"
+                class="form-control bg-dark text-white border-secondary"
+              />
+              <div class="form-text text-light" data-i18n="text_dob_help">
+                Used for the day counter and your birthday greeting.
+              </div>
+            </div>
+          </div>
+
+          <div class="card bg-dark border-secondary p-4 text-white mt-4">
+            <h4 class="mb-4" data-i18n="header_lang_region">
+              Language and region
+            </h4>
+            <div class="mb-3">
+              <label
+                class="form-label"
+                for="setting-lang"
+                data-i18n="label_lang"
+                >Language</label
               >
               <select
                 id="setting-lang"
@@ -442,7 +481,10 @@
               </select>
             </div>
             <div class="mb-3">
-              <label class="form-label" data-i18n="label_hemisphere"
+              <label
+                class="form-label"
+                for="setting-hemisphere"
+                data-i18n="label_hemisphere"
                 >Hemisphere</label
               >
               <select
@@ -456,29 +498,10 @@
                   Northern (North America, Europe, Asia)
                 </option>
               </select>
+              <div class="form-text text-light" data-i18n="text_hemisphere_help">
+                Decides the seasons and the tree on your desk.
+              </div>
             </div>
-            <div class="mb-3">
-              <label class="form-label" data-i18n="label_name">Name</label>
-              <input
-                type="text"
-                id="setting-name"
-                class="form-control bg-dark text-white border-secondary"
-              />
-            </div>
-            <div class="mb-3">
-              <label class="form-label" data-i18n="label_birthday"
-                >Birthday</label
-              >
-              <input
-                type="date"
-                id="setting-dob"
-                class="form-control bg-dark text-white border-secondary"
-              />
-            </div>
-            <button id="btnSaveProfile" class="btn btn-primary">
-              <i class="bi bi-save"></i>
-              <span data-i18n="btn_save_profile">Save Profile</span>
-            </button>
           </div>
         </div>
 
@@ -1692,47 +1715,350 @@
         showSection(initial);
       }
 
-      // --- TAB 0: PROFILE ---
-      function loadProfile() {
-        const { profile } = getData();
-        document.getElementById("setting-name").value = profile.name || "";
-        document.getElementById("setting-dob").value = profile.birthday || "";
-        document.getElementById("setting-lang").value = profile.lang || "en";
-        // Default to detected hemisphere if not set (legacy profiles)
-        document.getElementById("setting-hemisphere").value =
-          profile.hemisphere || DateUtils.getHemisphere();
+      // ======================================================================
+      // AUTOSAVE: one write path, one status indicator, one flush registry
+      // ======================================================================
+      const pendingSaves = new Set();
+
+      const SaveStatus = {
+        el: null,
+        _showTimer: null,
+        _hideTimer: null,
+        _isError: false,
+
+        init() {
+          this.el = document.getElementById("saveStatus");
+        },
+
+        // "Saving…" only appears when a write takes longer than 150 ms.
+        pending() {
+          if (!this.el) return;
+          this._isError = false;
+          clearTimeout(this._hideTimer);
+          clearTimeout(this._showTimer);
+          this._showTimer = setTimeout(() => {
+            this._render("save_saving", false);
+          }, 150);
+        },
+
+        ok() {
+          clearTimeout(this._showTimer);
+          this._render("save_saved", false);
+          clearTimeout(this._hideTimer);
+          this._hideTimer = setTimeout(() => this.clear(), 2000);
+        },
+
+        // Errors stay visible until the next successful save.
+        fail(detail) {
+          clearTimeout(this._showTimer);
+          clearTimeout(this._hideTimer);
+          this._isError = true;
+          this._render("save_error", true, detail);
+        },
+
+        clear() {
+          if (!this.el) return;
+          this.el.textContent = "";
+          this.el.classList.remove("is-visible", "is-error");
+        },
+
+        _render(key, isError, detail) {
+          if (!this.el) return;
+          const text = I18n.t(key);
+          this.el.textContent = detail ? `${text} (${detail})` : text;
+          this.el.classList.add("is-visible");
+          this.el.classList.toggle("is-error", !!isError);
+        },
+      };
+
+      function readStoredJSON(key, fallback) {
+        try {
+          const raw = localStorage.getItem(key);
+          return raw ? JSON.parse(raw) : fallback;
+        } catch (e) {
+          console.error("Could not parse " + key, e);
+          return fallback;
+        }
       }
 
-      document
-        .getElementById("btnSaveProfile")
-        .addEventListener("click", () => {
-          const name = document.getElementById("setting-name").value;
-          const birthday = document.getElementById("setting-dob").value;
-          const lang = document.getElementById("setting-lang").value;
-          const hemisphere =
-            document.getElementById("setting-hemisphere").value;
+      /**
+       * Single write path for anything outside the shared managers.
+       * `value` may be a function that receives the value currently in storage
+       * and returns the next one, so a change made in another tab is not
+       * overwritten by a stale in-memory copy.
+       */
+      function saveSetting(key, value) {
+        SaveStatus.pending();
+        try {
+          const next =
+            typeof value === "function"
+              ? value(readStoredJSON(key, null))
+              : value;
+          saveData(key, next); // localStorage.setItem + BackupManager.recordChange
+          SaveStatus.ok();
+          return true;
+        } catch (err) {
+          console.error("Save failed for " + key, err);
+          SaveStatus.fail(
+            err && err.name === "QuotaExceededError" ? "storage full" : undefined,
+          );
+          return false;
+        }
+      }
 
-          if (!name || !birthday)
-            return showAlert(I18n.t("alert_fill_fields"), "danger");
+      function updatePrefs(patch) {
+        return saveSetting(PREFERENCES_KEY, (current) =>
+          Object.assign({}, current || {}, patch),
+        );
+      }
 
-          const { profile } = getData();
-          const oldLang = profile.lang;
+      function updateProfile(patch) {
+        return saveSetting(PROFILE_KEY, (current) =>
+          Object.assign(
+            { name: "", birthday: "", lang: localStorage.getItem("userLang") || "en" },
+            current || {},
+            patch,
+          ),
+        );
+      }
 
-          profile.name = name;
-          profile.birthday = birthday;
-          profile.lang = lang;
-          profile.hemisphere = hemisphere;
+      // Wraps a write performed by one of the shared managers (they own their
+      // own setItem calls) so it still reports through the status indicator.
+      function saveThrough(fn) {
+        SaveStatus.pending();
+        try {
+          fn();
+          SaveStatus.ok();
+          return true;
+        } catch (err) {
+          console.error("Save failed", err);
+          SaveStatus.fail(
+            err && err.name === "QuotaExceededError" ? "storage full" : undefined,
+          );
+          return false;
+        }
+      }
 
-          saveData(PROFILE_KEY, profile);
-          localStorage.setItem("userLang", lang);
+      function fieldErrorEl(control) {
+        const parent = control.parentElement;
+        if (!parent) return null;
+        let el = parent.querySelector(":scope > .setting-error");
+        if (!el) {
+          el = document.createElement("div");
+          el.className = "setting-error";
+          el.setAttribute("aria-live", "polite");
+          control.insertAdjacentElement("afterend", el);
+        }
+        return el;
+      }
 
-          if (oldLang !== lang) {
-            showAlert(I18n.t("alert_profile_saved"), "success");
-            setTimeout(() => location.reload(), 1000);
+      function showFieldError(control, message) {
+        const el = fieldErrorEl(control);
+        if (el) el.textContent = message;
+        control.classList.add("is-invalid");
+        control.setAttribute("aria-invalid", "true");
+      }
+
+      function clearFieldError(control) {
+        const parent = control.parentElement;
+        const el = parent && parent.querySelector(":scope > .setting-error");
+        if (el) el.textContent = "";
+        control.classList.remove("is-invalid");
+        control.removeAttribute("aria-invalid");
+      }
+
+      /**
+       * Wires one control to the autosave path.
+       *   read      -> current value from the control
+       *   validate  -> error message, or null when the value may be stored
+       *   commit    -> called only with a valid value
+       * Returns { flush, destroy }.
+       */
+      function bindAutosave(control, options) {
+        if (!control) return null;
+        const opts = Object.assign(
+          {
+            event: "change",
+            debounceMs: 0,
+            read: (el) => el.value,
+            validate: () => null,
+            commit: null,
+          },
+          options,
+        );
+
+        let timer = null;
+        let dirty = false;
+
+        function commitNow() {
+          clearTimeout(timer);
+          timer = null;
+          dirty = false;
+          const value = opts.read(control);
+          const error = opts.validate ? opts.validate(value, control) : null;
+          if (error) {
+            showFieldError(control, error);
+            return false;
+          }
+          clearFieldError(control);
+          if (opts.commit) opts.commit(value, control);
+          return true;
+        }
+
+        function onChange() {
+          if (opts.debounceMs > 0) {
+            dirty = true;
+            clearTimeout(timer);
+            timer = setTimeout(commitNow, opts.debounceMs);
           } else {
-            showAlert(I18n.t("alert_profile_saved_simple"), "success");
+            commitNow();
+          }
+        }
+
+        const api = {
+          flush() {
+            if (dirty || timer) commitNow();
+          },
+          destroy() {
+            clearTimeout(timer);
+            control.removeEventListener(opts.event, onChange);
+            control.removeEventListener("blur", api.flush);
+            pendingSaves.delete(api);
+          },
+        };
+
+        control.addEventListener(opts.event, onChange);
+        if (opts.debounceMs > 0) control.addEventListener("blur", api.flush);
+        pendingSaves.add(api);
+        return api;
+      }
+
+      function flushAllSaves() {
+        pendingSaves.forEach((save) => {
+          try {
+            save.flush();
+          } catch (e) {
+            console.error("Flush failed", e);
           }
         });
+      }
+
+      // Closing the tab must never lose a typed value.
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "hidden") flushAllSaves();
+      });
+      window.addEventListener("pagehide", flushAllSaves);
+
+      // Filled in by the Appearance section; used when the hemisphere changes so
+      // a season-dependent theme recomputes without a reload.
+      const appearanceHooks = { refreshSeason: null };
+
+      // ======================================================================
+      // SECTION: General (profile, language and region)
+      // ======================================================================
+      function isRealDate(value) {
+        const parts = String(value).split("-");
+        if (parts.length !== 3) return false;
+        const [y, m, d] = parts.map((p) => parseInt(p, 10));
+        if (!y || !m || !d) return false;
+        // Rejects 31/02, 32/01 and friends without going through UTC parsing.
+        const date = new Date(y, m - 1, d);
+        return (
+          date.getFullYear() === y &&
+          date.getMonth() === m - 1 &&
+          date.getDate() === d
+        );
+      }
+
+      function todayInputValue() {
+        const now = new Date();
+        return [
+          now.getFullYear(),
+          String(now.getMonth() + 1).padStart(2, "0"),
+          String(now.getDate()).padStart(2, "0"),
+        ].join("-");
+      }
+
+      function loadGeneralSection() {
+        const { profile } = getData();
+        const nameEl = document.getElementById("setting-name");
+        const dobEl = document.getElementById("setting-dob");
+        const langEl = document.getElementById("setting-lang");
+        const hemiEl = document.getElementById("setting-hemisphere");
+
+        if (nameEl) nameEl.value = profile.name || "";
+        if (dobEl) {
+          dobEl.value = profile.birthday || "";
+          dobEl.max = todayInputValue();
+        }
+        if (langEl) langEl.value = profile.lang || "en";
+        if (hemiEl) {
+          // Default to the detected hemisphere for legacy profiles.
+          hemiEl.value = profile.hemisphere || DateUtils.getHemisphere();
+        }
+      }
+
+      function initGeneralSection() {
+        const nameEl = document.getElementById("setting-name");
+        const dobEl = document.getElementById("setting-dob");
+        const langEl = document.getElementById("setting-lang");
+        const hemiEl = document.getElementById("setting-hemisphere");
+
+        bindAutosave(nameEl, {
+          event: "input",
+          debounceMs: 500,
+          validate: (value) =>
+            value.trim()
+              ? null
+              : I18n.t("error_name_required"),
+          commit: (value) => {
+            updateProfile({ name: value.trim() });
+          },
+        });
+
+        bindAutosave(dobEl, {
+          validate: (value) => {
+            if (!value) return I18n.t("error_dob_required");
+            if (!isRealDate(value)) return I18n.t("error_dob_invalid");
+            if (value > todayInputValue()) return I18n.t("error_dob_future");
+            return null;
+          },
+          commit: (value) => {
+            updateProfile({ birthday: value });
+          },
+        });
+
+        bindAutosave(langEl, {
+          validate: (value) => (value === "en" || value === "es" ? null : "?"),
+          commit: (value) => {
+            const saved = updateProfile({ lang: value });
+            if (!saved) return;
+            // userLang drives dayjs and the locale fetch on load, so the page
+            // reloads (this is what the old Save Profile button did too).
+            try {
+              localStorage.setItem("userLang", value);
+            } catch (e) {
+              console.error(e);
+            }
+            flushAllSaves();
+            window.location.reload();
+          },
+        });
+
+        bindAutosave(hemiEl, {
+          commit: (value) => {
+            updateProfile({ hemisphere: value });
+            // The season (and the auto-season theme) depends on it.
+            if (appearanceHooks.refreshSeason) {
+              try {
+                appearanceHooks.refreshSeason();
+              } catch (e) {
+                console.error(e);
+              }
+            }
+          },
+        });
+      }
 
       // --- TAB 1: APP MANAGER ---
       async function loadAppManager() {
@@ -2073,8 +2399,14 @@
       // --- INIT ---
       document.addEventListener("DOMContentLoaded", async () => {
         if (typeof Coloris !== "undefined") {
-          Coloris({ alpha: false });
+          try {
+            Coloris({ alpha: false });
+          } catch (e) {
+            console.error("Coloris init failed:", e);
+          }
         }
+
+        SaveStatus.init();
 
         // Init I18n first so translations are available for dynamically rendered components
         const { profile } = getData();
@@ -2084,7 +2416,8 @@
           await I18nManager.loadLocale(userLang);
         }
 
-        loadProfile();
+        loadGeneralSection();
+        initGeneralSection();
         loadAppManager();
         renderStats();
         loadEventsManager();
