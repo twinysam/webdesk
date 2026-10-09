@@ -975,21 +975,7 @@
           aria-labelledby="appearance-tab"
         >
           <div class="card bg-dark border-secondary p-4 text-white">
-            <h4 class="mb-4" data-i18n="header_appearance">Appearance</h4>
-
-            <div class="form-check form-switch mb-4">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="checkFullWidth"
-              />
-              <label
-                class="form-check-label"
-                for="checkFullWidth"
-                data-i18n="label_fullwidth"
-                >Enable full width</label
-              >
-            </div>
+            <h4 class="mb-4" data-i18n="header_theme">Theme</h4>
 
             <div class="mb-4">
               <label
@@ -1014,10 +1000,68 @@
                 Choose your preferred theme.
               </div>
             </div>
+
+            <div class="form-check form-switch">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="checkFullWidth"
+              />
+              <label
+                class="form-check-label"
+                for="checkFullWidth"
+                data-i18n="label_fullwidth"
+                >Enable full width</label
+              >
+            </div>
           </div>
 
           <div class="card bg-dark border-secondary p-4 text-white mt-4">
-            <h5 class="mb-4 text-white border-bottom pb-2">Background</h5>
+            <h5 class="mb-4 text-white border-bottom pb-2" data-i18n="header_background">
+              Background
+            </h5>
+
+            <!-- Which mode's colours are being edited -->
+            <div class="mb-4">
+              <span
+                class="form-label d-block"
+                id="editModeLabel"
+                data-i18n="label_editing_mode"
+                >Editing</span
+              >
+              <div
+                class="btn-group"
+                role="radiogroup"
+                aria-labelledby="editModeLabel"
+              >
+                <input
+                  type="radio"
+                  class="btn-check"
+                  name="appearanceMode"
+                  id="editModeLight"
+                  value="light"
+                />
+                <label class="btn btn-sm btn-outline-light" for="editModeLight">
+                  <i class="bi bi-sun-fill"></i>
+                  <span data-i18n="value_light">Light</span>
+                </label>
+                <input
+                  type="radio"
+                  class="btn-check"
+                  name="appearanceMode"
+                  id="editModeDark"
+                  value="dark"
+                />
+                <label class="btn btn-sm btn-outline-light" for="editModeDark">
+                  <i class="bi bi-moon-fill"></i>
+                  <span data-i18n="value_dark">Dark</span>
+                </label>
+              </div>
+              <div class="form-text text-light" data-i18n="text_edit_mode_help">
+                Each mode keeps its own colours; this only picks the one you are
+                editing.
+              </div>
+            </div>
 
             <!-- Pattern Selector (Global) -->
             <div class="mb-3">
@@ -1048,7 +1092,7 @@
               >
             </div>
 
-            <!-- Color Theme Presets (Light Mode only) -->
+            <!-- Colour theme presets -->
             <div class="mb-3">
               <label
                 for="presetThemeSelect"
@@ -1098,7 +1142,9 @@
 
             <!-- LIGHT MODE SETTINGS -->
             <div id="lightModeSection">
-              <h6 class="text-white mt-3 border-bottom pb-1">Light Mode</h6>
+              <h6 class="text-white mt-3 border-bottom pb-1" data-i18n="header_light_mode">
+                Light Mode
+              </h6>
               <div class="row mb-3">
                 <div class="col-md-6 mb-3">
                   <label
@@ -1136,7 +1182,9 @@
 
             <!-- DARK MODE SETTINGS -->
             <div id="darkModeSection">
-              <h6 class="text-white mt-3 border-bottom pb-1">Dark Mode</h6>
+              <h6 class="text-white mt-3 border-bottom pb-1" data-i18n="header_dark_mode">
+                Dark Mode
+              </h6>
               <div class="row mb-3">
                 <div class="col-md-6 mb-3">
                   <label
@@ -1212,10 +1260,6 @@
                 <span id="labelBgScrollSpeedVal">20</span>
               </div>
             </div>
-            <button id="btnSaveAppearance" class="btn btn-primary">
-              <i class="bi bi-save"></i>
-              <span data-i18n="btn_save_preferences">Save Preferences</span>
-            </button>
           </div>
         </div>
 
@@ -3347,11 +3391,6 @@
         renderStats();
         initDatesSection();
         loadLinksManager();
-        try {
-          loadAppearanceManager();
-        } catch (e) {
-          console.error("Appearance Manager failed:", e);
-        }
 
         I18nManager.applyToPage();
         initShellRouting();
@@ -3376,613 +3415,629 @@
         }
 
 
-        // Listeners for Appearance (Auto-Save removed in favor of Save Button pattern to simplify)
-        // ... except theme which might need preview? No, let's stick to Save button for all appearance to be consistent.
+        // ==================================================================
+        // SECTION: Appearance (theme + background). Every control autosaves;
+        // preferences and the cachedBg* keys are written by one function so
+        // the head script never paints a stale colour.
+        // ==================================================================
 
-        function loadAppearanceManager() {
+        const APPEARANCE_COLOR_IDS = [
+          "inputBgColorLight",
+          "inputBgColorDark",
+          "inputPatternColorLight",
+          "inputPatternColorDark",
+        ];
 
-          const { preferences } = getData();
-          console.log('Loaded Pattern from Storage:', preferences.bgPattern);
-          const autoToggle = document.getElementById("autoSeasonToggle");
-          const presetSelect = document.getElementById("presetThemeSelect");
+        const appearanceState = { editMode: "light", patternsLoaded: false };
 
-          const autoSeasonEnabled = preferences.autoSeason || false;
-          if (autoToggle) autoToggle.checked = autoSeasonEnabled;
+        function rafThrottle(fn) {
+          let queued = false;
+          return function throttled() {
+            if (queued) return;
+            queued = true;
+            const run = () => {
+              queued = false;
+              fn();
+            };
+            if (window.requestAnimationFrame) window.requestAnimationFrame(run);
+            else setTimeout(run, 16);
+          };
+        }
 
-          let activePreset = preferences.selectedPreset || (presetSelect ? presetSelect.value : "custom");
-          if (presetSelect) presetSelect.value = activePreset !== "custom" ? activePreset : "custom";
+        function appearanceEl(id) {
+          return document.getElementById(id);
+        }
 
-          // If automatic mode is ON, calculate season from date-utils.js
+        /** Theme "system" resolves through matchMedia. */
+        function effectiveIsDark() {
+          const themeEl = appearanceEl("selectTheme");
+          const theme = themeEl ? themeEl.value : "system";
+          if (theme === "dark") return true;
+          if (theme === "light") return false;
+          return !!(
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+          );
+        }
+
+        function syncColorisSwatches() {
+          document.querySelectorAll(".clr-field").forEach((field) => {
+            const input = field.querySelector("input");
+            if (input) field.style.color = input.value;
+          });
+        }
+
+        function updatePatternVisibility() {
+          const patternSelect = appearanceEl("selectBgPattern");
+          const isNone = !patternSelect || patternSelect.value === "none";
+          ["patternSettingsLight", "patternSettingsDark"].forEach((id) => {
+            const el = appearanceEl(id);
+            if (el) el.style.visibility = isNone ? "hidden" : "visible";
+          });
+        }
+
+        function updateOpacityLabel() {
+          const range = appearanceEl("rangePatternOpacity");
+          const label = appearanceEl("labelPatternOpacityVal");
+          if (range && label) label.textContent = range.value + "%";
+        }
+
+        function updateSpeedLabel() {
+          const range = appearanceEl("rangeBgScrollSpeed");
+          const label = appearanceEl("labelBgScrollSpeedVal");
+          if (!range || !label) return;
+          const value = parseInt(range.value, 10);
+          label.textContent =
+            value === 0 ? I18n.t("text_speed_disabled") : String(value);
+        }
+
+        /** Which mode's colour block is visible (view state, not a setting). */
+        function renderAppearanceMode() {
+          const isDark = appearanceState.editMode === "dark";
+          const lightSection = appearanceEl("lightModeSection");
+          const darkSection = appearanceEl("darkModeSection");
+          if (lightSection) lightSection.classList.toggle("d-none", isDark);
+          if (darkSection) darkSection.classList.toggle("d-none", !isDark);
+          const lightRadio = appearanceEl("editModeLight");
+          const darkRadio = appearanceEl("editModeDark");
+          if (lightRadio) lightRadio.checked = !isDark;
+          if (darkRadio) darkRadio.checked = isDark;
+        }
+
+        function followEffectiveTheme() {
+          appearanceState.editMode = effectiveIsDark() ? "dark" : "light";
+          renderAppearanceMode();
+        }
+
+        function applyPresetPaletteToLightPickers(presetName) {
+          const preset = DateUtils.THEME_PRESETS[presetName];
+          if (!preset) return;
+          const bgLight = appearanceEl("inputBgColorLight");
+          const patternLight = appearanceEl("inputPatternColorLight");
+          if (bgLight) bgLight.value = preset.bg;
+          if (patternLight) patternLight.value = preset.pattern;
+          syncColorisSwatches();
+        }
+
+        /**
+         * A hand-edited colour means the preset (or the season) no longer owns
+         * the palette — both would silently overwrite the edit on the next load,
+         * which would look like autosave losing data. The two controls it
+         * affects are visible in the same card, so nothing happens off-screen.
+         */
+        function markCustomTheme() {
+          const presetSelect = appearanceEl("presetThemeSelect");
+          const autoToggle = appearanceEl("autoSeasonToggle");
+          if (presetSelect && presetSelect.value !== "custom") {
+            presetSelect.value = "custom";
+          }
           if (autoToggle && autoToggle.checked) {
-            const currentSeasonData = DateUtils.getSeason(); // Returns { season: 'winter', ... }
-            // Note: date-utils returns 'fall', but our preset is 'autumn'
-            activePreset =
-              currentSeasonData.season === "fall"
-                ? "autumn"
-                : currentSeasonData.season;
-
-            // Visually update the (disabled) dropdown to show the current auto-detected season
-            if (presetSelect) {
-              presetSelect.value = activePreset;
-              presetSelect.disabled = true;
-              presetSelect.classList.add("opacity-50");
-            }
-          } else if (presetSelect) {
-            presetSelect.disabled = false;
-            presetSelect.classList.remove("opacity-50");
-          }
-
-          // If a preset is active, update the color pickers to match the preset palette
-          if (activePreset !== "custom" && DateUtils.THEME_PRESETS[activePreset]) {
-            const preset = DateUtils.THEME_PRESETS[activePreset];
-            const bgLight = document.getElementById("inputBgColorLight");
-            const patternLight = document.getElementById("inputPatternColorLight");
-            if (bgLight && patternLight) {
-              bgLight.value = preset.bg;
-              patternLight.value = preset.pattern;
-              bgLight.dispatchEvent(new Event("input", { bubbles: true }));
-              patternLight.dispatchEvent(new Event("input", { bubbles: true }));
-            }
-
-            // Update Coloris swatches visually
-            document.querySelectorAll(".clr-field").forEach((field) => {
-              const input = field.querySelector("input");
-              if (input) field.style.color = input.value;
-            });
-          }
-
-          // Theme
-          const currentTheme = preferences.theme || "system";
-          document.getElementById("selectTheme").value = currentTheme;
-
-          // Full width
-          document.getElementById("checkFullWidth").checked =
-            preferences.fullWidth === true;
-
-          // Bg Color & Pattern Colors (dispatch input so Coloris swatch updates)
-          document.getElementById("inputBgColorLight").value =
-            preferences.bgColorLight || "#016293";
-          document.getElementById("inputBgColorDark").value =
-            preferences.bgColorDark || "#131313";
-          document.getElementById("inputPatternColorLight").value =
-            preferences.patternColorLight || "#014669";
-          document.getElementById("inputPatternColorDark").value =
-            preferences.patternColorDark || "#313131";
-          [
-            "inputBgColorLight",
-            "inputBgColorDark",
-            "inputPatternColorLight",
-            "inputPatternColorDark",
-          ].forEach((id) => {
-            const el = document.getElementById(id);
-            if (el) el.dispatchEvent(new Event("input", { bubbles: true }));
-          });
-
-          // Patterns
-          const patternSelect = document.getElementById("selectBgPattern");
-          
-          function populatePatterns(preferedValue) {
-            if (typeof bgPatterns === "undefined") return;
-            const currentVal = preferedValue || patternSelect.value || preferences.bgPattern;
-            patternSelect.innerHTML = `<option value="none" data-i18n="value_none">${I18n.t("value_none") || "None"}</option>`;
-            bgPatterns.forEach((p) => {
-              const opt = document.createElement("option");
-              opt.value = p.name;
-              opt.textContent = p.name;
-              patternSelect.appendChild(opt);
-            });
-            patternSelect.value = currentVal || "Endless Clouds";
-            console.log("[Patterns] Populated list. Restored value:", patternSelect.value);
-          }
-
-          if (typeof bgPatterns !== "undefined") {
-            populatePatterns();
-          }
-
-          const currentPattern = preferences.bgPattern || "Endless Clouds";
-          
-          // Temporary Option Guard: If the saved pattern is missing (e.g., because bg-patterns.js hasn't loaded),
-          // add it as a temporary option so the dropdown can correctly reflect the stored state.
-          if (currentPattern && currentPattern !== "none" && ![...patternSelect.options].some(opt => opt.value === currentPattern)) {
-            const tempOpt = document.createElement("option");
-            tempOpt.value = currentPattern;
-            tempOpt.textContent = currentPattern;
-            patternSelect.appendChild(tempOpt);
-          }
-
-          patternSelect.value = currentPattern;
-          console.log('Dropdown Value after setting:', patternSelect.value);
-          console.log("[Patterns] Initialized with:", currentPattern, "Actual value:", patternSelect.value);
-
-          // Pattern Settings visibility
-          const patternSettingsLight = document.getElementById(
-            "patternSettingsLight",
-          );
-          const patternSettingsDark = document.getElementById(
-            "patternSettingsDark",
-          );
-
-          const updatePatternVisibility = () => {
-            const isNone = patternSelect.value === "none";
-            if (patternSettingsLight)
-              patternSettingsLight.style.visibility = isNone
-                ? "hidden"
-                : "visible";
-            if (patternSettingsDark)
-              patternSettingsDark.style.visibility = isNone
-                ? "hidden"
-                : "visible";
-          };
-          updatePatternVisibility();
-
-          const opacityPercent = Math.round(
-            (preferences.patternOpacity ?? 0.2) * 100,
-          );
-          document.getElementById("rangePatternOpacity").value = opacityPercent;
-          const opacityValLabel = document.getElementById(
-            "labelPatternOpacityVal",
-          );
-          if (opacityValLabel)
-            opacityValLabel.textContent = opacityPercent + "%";
-
-          document.getElementById("rangeBgScrollSpeed").value =
-            preferences.bgScrollSpeed ?? 10;
-          const scrollSpeedValLabel = document.getElementById(
-            "labelBgScrollSpeedVal",
-          );
-          if (scrollSpeedValLabel) {
-            const currentSpeed = preferences.bgScrollSpeed ?? 10;
-            scrollSpeedValLabel.textContent =
-              currentSpeed === 0 ? "0 (Disabled)" : currentSpeed;
-          }
-
-          // Color Theme Presets are now initialized at the top 
-          // of loadAppearanceManager for instant reflection
-
-          // Live preview + instant autosave: read form, apply to body, persist preferences and cache
-          function applyLiveBackground(skipSave = false) {
-            const theme = document.getElementById("selectTheme").value;
-            let isDark = false;
-            if (theme === "dark") isDark = true;
-            else if (theme === "light") isDark = false;
-            else {
-              isDark =
-                window.matchMedia &&
-                window.matchMedia("(prefers-color-scheme: dark)").matches;
-            }
-
-            // Explicit theme → which color inputs to read
-            const activeBgColorId = isDark
-              ? "inputBgColorDark"
-              : "inputBgColorLight";
-            const activePatternColorId = isDark
-              ? "inputPatternColorDark"
-              : "inputPatternColorLight";
-            const bgColor = document.getElementById(activeBgColorId).value;
-            const patternColor =
-              document.getElementById(activePatternColorId).value;
-
-            const patternName = patternSelect.value;
-
-            if (!skipSave) {
-              console.log('Saving Pattern:', patternName);
-            }
-            const opacityRaw = parseInt(
-              document.getElementById("rangePatternOpacity").value,
-              10,
-            );
-            const opacityDecimal = opacityRaw / 100;
-
-            if (opacityValLabel) opacityValLabel.textContent = opacityRaw + "%";
-
-            const speed = parseInt(
-              document.getElementById("rangeBgScrollSpeed").value,
-              10,
-            );
-
-            document.body.style.setProperty(
-              "--bg-color-light",
-              document.getElementById("inputBgColorLight").value,
-            );
-            document.body.style.setProperty(
-              "--bg-color-dark",
-              document.getElementById("inputBgColorDark").value,
-            );
-
-            let uri = "";
-            if (
-              patternName &&
-              patternName !== "none" &&
-              typeof generatePatternUri !== "undefined"
-            ) {
-              uri = generatePatternUri(
-                patternName,
-                patternColor || (isDark ? "#313131" : "#014669"),
-                opacityDecimal,
-              );
-              document.body.style.setProperty(
-                "--bg-image-light",
-                `url("${
-                  generatePatternUri(
-                    patternName,
-                    document.getElementById("inputPatternColorLight").value,
-                    opacityDecimal,
-                  ) || ""
-                }")`,
-              );
-              document.body.style.setProperty(
-                "--bg-image-dark",
-                `url("${
-                  generatePatternUri(
-                    patternName,
-                    document.getElementById("inputPatternColorDark").value,
-                    opacityDecimal,
-                  ) || ""
-                }")`,
-              );
-            } else if (patternName === "none") {
-              document.body.style.setProperty("--bg-image-light", "none");
-              document.body.style.setProperty("--bg-image-dark", "none");
-            } else if (patternName === "Endless Clouds") {
-              // If it's the default pattern but generator is missing, do NOT clear it.
-              // We'll let the hardcoded URL in style.css take over.
-              // Note: We don't explicitly set it to none, we just don't override the CSS default vars if we can't generate.
-              // However, since we might have set them previously, we'll only do nothing if they are already at default.
-              // Actually, to be safe, if generator is missing, we just don't touch --bg-image-light/dark
-            } else {
-              // Any other pattern that requires generator? Clear it so it's not confusing.
-              document.body.style.setProperty("--bg-image-light", "none");
-              document.body.style.setProperty("--bg-image-dark", "none");
-            }
-
-            if (uri) {
-              document.body.style.backgroundImage = `url("${uri}")`;
-            } else if (patternName === "none") {
-              document.body.style.backgroundImage = "none";
-            } else if (patternName === "Endless Clouds") {
-              // Let style.css handle it if we can't generate it yet
-              document.body.style.removeProperty("background-image");
-            }
-
-            document.body.style.backgroundColor = bgColor;
-
-            // Calculate duration for constant speed
-            const patternObj =
-              typeof bgPatterns !== "undefined" &&
-              bgPatterns.find((p) => p.name === patternName);
-            let width = patternObj ? patternObj.width || patternObj.size : null;
-            let height = patternObj ? patternObj.height || patternObj.size : width;
-
-            console.log('Background Physics:', (width && height) ? 'Precise' : 'Estimated', 'Dim:', (width || 100) + 'x' + (height || width || 100), 'Speed:', speed);
-
-            if (width || (patternName !== "none" && patternName)) {
-              const sizeForDuration = width || 100;
-              const heightForLoop = height || sizeForDuration;
-
-              document.body.style.setProperty(
-                "--bg-size",
-                sizeForDuration + "px",
-              );
-              // Set loop distances for perfect alignment
-              document.body.style.setProperty(
-                "--bg-pattern-width",
-                sizeForDuration + "px",
-              );
-              document.body.style.setProperty(
-                "--bg-pattern-height",
-                heightForLoop + "px",
-              );
-
-              if (speed > 0) {
-                document.body.classList.remove("paused");
-                document.body.style.setProperty(
-                  "--bg-animate-duration",
-                  sizeForDuration / speed + "s",
-                );
-              } else {
-                document.body.classList.add("paused");
-                document.body.style.removeProperty("--bg-animate-duration");
-              }
-            } else {
-              document.body.style.removeProperty("--bg-size");
-              document.body.style.removeProperty("--bg-pattern-width");
-              document.body.style.removeProperty("--bg-pattern-height");
-              document.body.style.removeProperty("--bg-animate-duration");
-            }
-
-            document.body.classList.remove("light-mode", "dark-mode");
-            if (isDark) document.body.classList.add("dark-mode");
-            else document.body.classList.add("light-mode");
-
-            const presetSel = document.getElementById("presetThemeSelect");
-            const activeP = presetSel ? presetSel.value : "custom";
-            if (activeP !== "custom" && typeof DateUtils !== "undefined" && DateUtils.THEME_PRESETS[activeP]) {
-               const p = DateUtils.THEME_PRESETS[activeP];
-               document.body.style.setProperty("--link-color", p.link);
-               document.body.style.setProperty("--link-hover-color", p.linkHover);
-               document.body.style.setProperty("--fecha-highlight", p.highlight);
-            } else {
-               const prefTemp = getData().preferences || {};
-               document.body.style.setProperty("--link-color", prefTemp.linkColor || "#83d3fa");
-               document.body.style.setProperty("--link-hover-color", prefTemp.linkHoverColor || "#c4eafd");
-               document.body.style.setProperty("--fecha-highlight", prefTemp.highlightColor || "#93007c");
-            }
-
-            const { preferences } = getData();
-            preferences.theme = theme;
-            preferences.fullWidth =
-              document.getElementById("checkFullWidth").checked;
-            preferences.bgPattern = patternName;
-            preferences.patternOpacity = opacityDecimal;
-            preferences.bgScrollSpeed = speed;
-            preferences.bgColorLight =
-              document.getElementById("inputBgColorLight").value;
-            preferences.bgColorDark =
-              document.getElementById("inputBgColorDark").value;
-            preferences.patternColorLight = document.getElementById(
-              "inputPatternColorLight",
-            ).value;
-            preferences.patternColorDark = document.getElementById(
-              "inputPatternColorDark",
-            ).value;
-            delete preferences.bgColor;
-            delete preferences.patternColor;
-
-            if (activeP !== "custom" && typeof DateUtils !== "undefined" && DateUtils.THEME_PRESETS[activeP]) {
-               const p = DateUtils.THEME_PRESETS[activeP];
-               preferences.linkColor = p.link;
-               preferences.linkHoverColor = p.linkHover;
-               preferences.highlightColor = p.highlight;
-            }
-
-            // Safety check: Don't overwrite if dropdown is empty but storage has a pattern
-            if (!patternName && preferences.bgPattern) {
-              console.warn('[Patterns] Blocking save: Dropdown is empty but storage has a pattern preference.');
-              return;
-            }
-
-            if (skipSave) return;
-            saveData(PREFERENCES_KEY, preferences);
-            
-            // Cache everything index.html needs to render without bg-patterns.js
-            const pOpacity = preferences.patternOpacity || 0.2;
-            const pColorLight = preferences.patternColorLight || "#014669";
-            const pColorDark = preferences.patternColorDark || "#313131";
-            
-            let uriLight = "none";
-            let uriDark = "none";
-            let pSize = "";
-            let pSizeY = "";
-
-            if (patternName && patternName !== "none" && typeof generatePatternUri !== "undefined") {
-              uriLight = generatePatternUri(patternName, pColorLight, pOpacity) || "none";
-              uriDark = generatePatternUri(patternName, pColorDark, pOpacity) || "none";
-              const pObj = bgPatterns.find(p => p.name === patternName);
-              if (pObj) {
-                  pSize = (pObj.width || pObj.size).toString();
-                  pSizeY = (pObj.height || pObj.size).toString();
-              }
-            }
-
-            localStorage.setItem("cachedBgImageLight", uriLight);
-            localStorage.setItem("cachedBgImageDark", uriDark);
-            localStorage.setItem("cachedBgSize", pSize);
-            localStorage.setItem("cachedBgSizeY", pSizeY);
-            localStorage.setItem("cachedBgColorLight", preferences.bgColorLight || "#016293");
-            localStorage.setItem("cachedBgColorDark", preferences.bgColorDark || "#131313");
-            
-            if (preferences.linkColor) {
-               localStorage.setItem("cachedLinkColor", preferences.linkColor);
-               localStorage.setItem("cachedLinkHoverColor", preferences.linkHoverColor);
-               localStorage.setItem("cachedHighlightColor", preferences.highlightColor);
-            }
-
-            // Legacy keys for backward compatibility/other parts of the app
-            localStorage.setItem("cachedBgPattern", uri || "");
-            localStorage.setItem("cachedBgColor", bgColor || "");
-          }
-
-          // Helper: thin wrapper so Save button can call one place; applyLiveBackground does visual + persist
-          const saveAppearanceSettings = () => applyLiveBackground();
-
-          // Listeners: applyLiveBackground does live preview + autosave
-          patternSelect.addEventListener("change", () => {
-            updatePatternVisibility();
-            applyLiveBackground();
-          });
-
-          const rangeOpp = document.getElementById("rangePatternOpacity");
-          if (rangeOpp) {
-            rangeOpp.addEventListener("input", () => applyLiveBackground());
-          }
-
-          const rangeSpeed = document.getElementById("rangeBgScrollSpeed");
-          if (rangeSpeed) {
-            rangeSpeed.addEventListener("input", (e) => {
-              const val = parseInt(e.target.value, 10);
-              if (scrollSpeedValLabel)
-                scrollSpeedValLabel.textContent =
-                  val === 0 ? "0 (Disabled)" : val;
-              applyLiveBackground();
-            });
-          }
-
-          [
-            "inputBgColorLight",
-            "inputBgColorDark",
-            "inputPatternColorLight",
-            "inputPatternColorDark",
-          ].forEach((id) => {
-            const el = document.getElementById(id);
-            if (el) el.addEventListener("input", applyLiveBackground);
-          });
-
-          const themeSelect = document.getElementById("selectTheme");
-          if (themeSelect) {
-            themeSelect.addEventListener("change", () => {
-              // Update color inputs to show active mode colors
-              updateColorInputsForTheme();
-              applyLiveBackground();
-            });
-          }
-
-          // Helper: update visible color inputs based on current theme (light vs dark)
-          const updateColorInputsForTheme = () => {
-            // Both light and dark mode sections are always visible
-            // This allows users to customize colors for both modes simultaneously
-          };
-
-          // Listen for changes to system prefers-color-scheme when theme is set to "system"
-          if (window.matchMedia) {
-            const darkModeQuery = window.matchMedia(
-              "(prefers-color-scheme: dark)",
-            );
-            const handleDarkModeChange = () => {
-              const theme = document.getElementById("selectTheme").value;
-              if (theme === "system") {
-                updateColorInputsForTheme();
-                applyLiveBackground();
-              }
-            };
-            // Modern API: addEventListener
-            if (darkModeQuery.addEventListener) {
-              darkModeQuery.addEventListener("change", handleDarkModeChange);
-            }
-            // Fallback for older browsers: addListener
-            else if (darkModeQuery.addListener) {
-              darkModeQuery.addListener(handleDarkModeChange);
-            }
-          }
-
-          const presetThemeSelect =
-            document.getElementById("presetThemeSelect");
-          if (presetThemeSelect) {
-            presetThemeSelect.addEventListener("change", () => {
-              const value = presetThemeSelect.value;
-              if (value === "custom") return;
-              const preset = THEME_PRESETS[value];
-              if (!preset) return;
-              const bgLight = document.getElementById("inputBgColorLight");
-              const patternLight = document.getElementById(
-                "inputPatternColorLight",
-              );
-              if (bgLight && patternLight) {
-                bgLight.value = preset.bg;
-                patternLight.value = preset.pattern;
-                bgLight.dispatchEvent(new Event("input", { bubbles: true }));
-                patternLight.dispatchEvent(
-                  new Event("input", { bubbles: true }),
-                );
-                applyLiveBackground();
-              }
-            });
-          }
-
-          if (autoToggle) {
-            autoToggle.addEventListener("change", () => {
-              if (autoToggle.checked) {
-                if (presetSelect) {
-                  presetSelect.disabled = true;
-                  presetSelect.classList.add("opacity-50");
-                }
-                const currentSeasonData = DateUtils.getSeason();
-                const season = currentSeasonData.season === "fall" ? "autumn" : currentSeasonData.season;
-                if (presetSelect) presetSelect.value = season;
-
-                const preset = DateUtils.THEME_PRESETS[season];
-                if (preset) {
-                  const bgLight = document.getElementById("inputBgColorLight");
-                  const patternLight = document.getElementById("inputPatternColorLight");
-                  if (bgLight && patternLight) {
-                    bgLight.value = preset.bg;
-                    patternLight.value = preset.pattern;
-                    bgLight.dispatchEvent(new Event("input", { bubbles: true }));
-                    patternLight.dispatchEvent(new Event("input", { bubbles: true }));
-                    applyLiveBackground();
-                  }
-                }
-              } else {
-                if (presetSelect) {
-                  presetSelect.disabled = false;
-                  presetSelect.classList.remove("opacity-50");
-                }
-              }
-            });
-          }
-
-          const fullWidthCheck = document.getElementById("checkFullWidth");
-          if (fullWidthCheck) {
-            fullWidthCheck.addEventListener("change", () =>
-              applyLiveBackground(),
-            );
-          }
-
-          const btnSaveAppearance =
-            document.getElementById("btnSaveAppearance");
-          if (btnSaveAppearance) {
-            btnSaveAppearance.addEventListener("click", () => {
-              // Ensure visual apply + autosave runs
-              saveAppearanceSettings();
-
-              // Also ensure specific preference keys are set as requested
-              const { preferences } = getData();
-              const patternSelect = document.getElementById("selectBgPattern");
-              preferences.bgPattern = patternSelect
-                ? patternSelect.value
-                : preferences.bgPattern;
-              preferences.bgColorLight =
-                document.getElementById("inputBgColorLight").value;
-              preferences.patternColorLight = document.getElementById(
-                "inputPatternColorLight",
-              ).value;
-
-              const presetSelect = document.getElementById("presetThemeSelect");
-              preferences.selectedPreset = presetSelect
-                ? presetSelect.value
-                : preferences.selectedPreset;
-              const autoToggle = document.getElementById("autoSeasonToggle");
-              preferences.autoSeason = autoToggle
-                ? autoToggle.checked
-                : preferences.autoSeason || false;
-
-              saveData(PREFERENCES_KEY, preferences);
-
-              showAlert(I18n.t("alert_settings_saved"), "success");
-            });
-          }
-
-          applyLiveBackground(true); // Initial load: skip save
-          updateColorInputsForTheme();
-
-          // Manage Pattern Library Loading
-          let bgPatternsLoaded = typeof bgPatterns !== "undefined";
-          const loadPatternsScript = () => {
-            if (bgPatternsLoaded) return;
-            bgPatternsLoaded = true; // Mark as loading to avoid duplicate triggers
-            const script = document.createElement("script");
-            script.src = "js/bg-patterns.js";
-            script.onload = () => {
-              console.log("[Patterns] script loaded.");
-              populatePatterns(preferences.bgPattern); // Explicitly restore
-              // Refresh visuals with the generator function now available
-              console.log("[Patterns] Refreshing visuals and recalculating speed after script load.");
-              applyLiveBackground(true); // Refresh preview: skip save
-            };
-            document.head.appendChild(script);
-          };
-
-          // Lazy-load when Appearance tab is shown (original behavior)
-          const appearanceTab = document.getElementById("appearance-tab");
-          if (appearanceTab) {
-            appearanceTab.addEventListener("shown.bs.tab", loadPatternsScript);
-          }
-
-          // Eager-load if we have an active pattern (new optimization)
-          if (preferences.bgPattern && preferences.bgPattern !== "none") {
-            console.log("[Patterns] Active pattern detected. Initiating conditional eager load.");
-            loadPatternsScript();
+            autoToggle.checked = false;
+            presetSelect && (presetSelect.disabled = false);
+            presetSelect && presetSelect.classList.remove("opacity-50");
           }
         }
+
+        /** Every appearance preference in one patch, read from the controls. */
+        function readAppearancePrefs() {
+          const value = (id) => {
+            const el = appearanceEl(id);
+            return el ? el.value : undefined;
+          };
+          const preset = DateUtils.THEME_PRESETS[value("presetThemeSelect")] || null;
+          const patch = {
+            theme: value("selectTheme") || "system",
+            fullWidth: !!(appearanceEl("checkFullWidth") || {}).checked,
+            bgPattern: value("selectBgPattern") || "none",
+            patternOpacity: (parseInt(value("rangePatternOpacity"), 10) || 0) / 100,
+            bgScrollSpeed: parseInt(value("rangeBgScrollSpeed"), 10) || 0,
+            bgColorLight: value("inputBgColorLight"),
+            bgColorDark: value("inputBgColorDark"),
+            patternColorLight: value("inputPatternColorLight"),
+            patternColorDark: value("inputPatternColorDark"),
+            selectedPreset: value("presetThemeSelect") || "custom",
+            autoSeason: !!(appearanceEl("autoSeasonToggle") || {}).checked,
+          };
+          if (preset) {
+            patch.linkColor = preset.link;
+            patch.linkHoverColor = preset.linkHover;
+            patch.highlightColor = preset.highlight;
+          }
+          return patch;
+        }
+
+        /**
+         * Everything index.html paints from before its own scripts run. Kept in
+         * the same function as the preference write so the two never disagree.
+         */
+        function writeAppearanceCache(prefs) {
+          const patternName = prefs.bgPattern;
+          const opacity = prefs.patternOpacity == null ? 0.2 : prefs.patternOpacity;
+          const pColorLight = prefs.patternColorLight || "#014669";
+          const pColorDark = prefs.patternColorDark || "#313131";
+
+          let uriLight = "none";
+          let uriDark = "none";
+          let uri = "";
+          let size = "";
+          let sizeY = "";
+
+          if (
+            patternName &&
+            patternName !== "none" &&
+            typeof generatePatternUri !== "undefined"
+          ) {
+            uri = generatePatternUri(patternName, pColorLight, opacity) || "";
+            uriLight = generatePatternUri(patternName, pColorLight, opacity) || "none";
+            uriDark = generatePatternUri(patternName, pColorDark, opacity) || "none";
+            if (typeof bgPatterns !== "undefined") {
+              const pObj = bgPatterns.find((p) => p.name === patternName);
+              if (pObj) {
+                size = String(pObj.width || pObj.size || "");
+                sizeY = String(pObj.height || pObj.size || "");
+              }
+            }
+          }
+
+          localStorage.setItem("cachedBgImageLight", uriLight);
+          localStorage.setItem("cachedBgImageDark", uriDark);
+          localStorage.setItem("cachedBgSize", size);
+          localStorage.setItem("cachedBgSizeY", sizeY);
+          localStorage.setItem("cachedBgColorLight", prefs.bgColorLight || "#016293");
+          localStorage.setItem("cachedBgColorDark", prefs.bgColorDark || "#131313");
+          if (prefs.linkColor) {
+            localStorage.setItem("cachedLinkColor", prefs.linkColor);
+            localStorage.setItem("cachedLinkHoverColor", prefs.linkHoverColor);
+            localStorage.setItem("cachedHighlightColor", prefs.highlightColor);
+          }
+          // Legacy write-only keys other builds may still read.
+          localStorage.setItem("cachedBgPattern", uri);
+          localStorage.setItem("cachedBgColor", prefs.bgColorLight || "");
+        }
+
+        /** Preferences + cache in one guarded write. */
+        function commitAppearance() {
+          const patch = readAppearancePrefs();
+          return saveThrough(() => {
+            const current = readStoredJSON(PREFERENCES_KEY, {}) || {};
+            const next = Object.assign({}, current, patch);
+            delete next.bgColor; // legacy fields today's save also drops
+            delete next.patternColor;
+            saveData(PREFERENCES_KEY, next);
+            writeAppearanceCache(next);
+          });
+        }
+
+        /** Visual preview only — never writes. */
+        function applyAppearanceVisuals() {
+          const isDark = effectiveIsDark();
+          const value = (id) => (appearanceEl(id) || {}).value || "";
+          const bgColor = value(isDark ? "inputBgColorDark" : "inputBgColorLight");
+          const patternColor = value(
+            isDark ? "inputPatternColorDark" : "inputPatternColorLight",
+          );
+          const patternSelect = appearanceEl("selectBgPattern");
+          const patternName = patternSelect ? patternSelect.value : "none";
+          const opacityRaw = parseInt(value("rangePatternOpacity"), 10) || 0;
+          const opacityDecimal = opacityRaw / 100;
+          const speed = parseInt(value("rangeBgScrollSpeed"), 10) || 0;
+
+          updateOpacityLabel();
+          updateSpeedLabel();
+
+          document.body.style.setProperty("--bg-color-light", value("inputBgColorLight"));
+          document.body.style.setProperty("--bg-color-dark", value("inputBgColorDark"));
+
+          let uri = "";
+          if (
+            patternName &&
+            patternName !== "none" &&
+            typeof generatePatternUri !== "undefined"
+          ) {
+            uri = generatePatternUri(
+              patternName,
+              patternColor || (isDark ? "#313131" : "#014669"),
+              opacityDecimal,
+            );
+            document.body.style.setProperty(
+              "--bg-image-light",
+              `url("${generatePatternUri(patternName, value("inputPatternColorLight"), opacityDecimal) || ""}")`,
+            );
+            document.body.style.setProperty(
+              "--bg-image-dark",
+              `url("${generatePatternUri(patternName, value("inputPatternColorDark"), opacityDecimal) || ""}")`,
+            );
+          } else if (patternName === "none") {
+            document.body.style.setProperty("--bg-image-light", "none");
+            document.body.style.setProperty("--bg-image-dark", "none");
+          }
+          // "Endless Clouds" with no generator yet: leave style.css defaults alone.
+
+          if (uri) {
+            document.body.style.backgroundImage = `url("${uri}")`;
+          } else if (patternName === "none") {
+            document.body.style.backgroundImage = "none";
+          } else if (patternName === "Endless Clouds") {
+            document.body.style.removeProperty("background-image");
+          }
+
+          document.body.style.backgroundColor = bgColor;
+
+          const patternObj =
+            typeof bgPatterns !== "undefined" && patternName !== "none"
+              ? bgPatterns.find((p) => p.name === patternName)
+              : null;
+          const width = patternObj ? patternObj.width || patternObj.size : null;
+          const height = patternObj ? patternObj.height || patternObj.size : width;
+
+          if (width || (patternName && patternName !== "none")) {
+            const sizeForDuration = width || 100;
+            const heightForLoop = height || sizeForDuration;
+            document.body.style.setProperty("--bg-size", sizeForDuration + "px");
+            document.body.style.setProperty("--bg-pattern-width", sizeForDuration + "px");
+            document.body.style.setProperty("--bg-pattern-height", heightForLoop + "px");
+            if (speed > 0) {
+              document.body.classList.remove("paused");
+              document.body.style.setProperty(
+                "--bg-animate-duration",
+                sizeForDuration / speed + "s",
+              );
+            } else {
+              document.body.classList.add("paused");
+              document.body.style.removeProperty("--bg-animate-duration");
+            }
+          } else {
+            document.body.style.removeProperty("--bg-size");
+            document.body.style.removeProperty("--bg-pattern-width");
+            document.body.style.removeProperty("--bg-pattern-height");
+            document.body.style.removeProperty("--bg-animate-duration");
+          }
+
+          document.body.classList.remove("light-mode", "dark-mode");
+          document.body.classList.add(isDark ? "dark-mode" : "light-mode");
+
+          const presetSelect = appearanceEl("presetThemeSelect");
+          const activePreset = presetSelect ? presetSelect.value : "custom";
+          const preset =
+            activePreset !== "custom" ? DateUtils.THEME_PRESETS[activePreset] : null;
+          const stored = readStoredJSON(PREFERENCES_KEY, {}) || {};
+          document.body.style.setProperty(
+            "--link-color",
+            (preset && preset.link) || stored.linkColor || "#83d3fa",
+          );
+          document.body.style.setProperty(
+            "--link-hover-color",
+            (preset && preset.linkHover) || stored.linkHoverColor || "#c4eafd",
+          );
+          document.body.style.setProperty(
+            "--fecha-highlight",
+            (preset && preset.highlight) || stored.highlightColor || "#93007c",
+          );
+        }
+
+        /** Season preset (used by auto-season, including after a hemisphere change). */
+        function applySeasonPreset() {
+          const seasonData = DateUtils.getSeason();
+          const season =
+            seasonData.season === "fall" ? "autumn" : seasonData.season;
+          const presetSelect = appearanceEl("presetThemeSelect");
+          if (presetSelect && DateUtils.THEME_PRESETS[season]) {
+            presetSelect.value = season;
+          }
+          applyPresetPaletteToLightPickers(season);
+        }
+
+        function setAutoSeasonUI(enabled) {
+          const presetSelect = appearanceEl("presetThemeSelect");
+          if (!presetSelect) return;
+          presetSelect.disabled = enabled;
+          presetSelect.classList.toggle("opacity-50", enabled);
+        }
+
+        function populatePatterns(preferredValue) {
+          const patternSelect = appearanceEl("selectBgPattern");
+          if (!patternSelect || typeof bgPatterns === "undefined") return;
+          const stored = readStoredJSON(PREFERENCES_KEY, {}) || {};
+          const wanted =
+            preferredValue || patternSelect.value || stored.bgPattern;
+          patternSelect.innerHTML = "";
+          const noneOpt = document.createElement("option");
+          noneOpt.value = "none";
+          noneOpt.textContent = I18n.t("value_none") || "None";
+          patternSelect.appendChild(noneOpt);
+          bgPatterns.forEach((p) => {
+            const opt = document.createElement("option");
+            opt.value = p.name;
+            opt.textContent = p.name;
+            patternSelect.appendChild(opt);
+          });
+          const finalValue = wanted || "Endless Clouds";
+          if (![...patternSelect.options].some((o) => o.value === finalValue)) {
+            const tempOpt = document.createElement("option");
+            tempOpt.value = finalValue;
+            tempOpt.textContent = finalValue;
+            patternSelect.appendChild(tempOpt);
+          }
+          patternSelect.value = finalValue;
+        }
+
+        function loadPatternLibrary() {
+          if (appearanceState.patternsLoaded) return;
+          appearanceState.patternsLoaded = true;
+          const script = document.createElement("script");
+          script.src = "js/bg-patterns.js";
+          script.onload = () => {
+            const stored = readStoredJSON(PREFERENCES_KEY, {}) || {};
+            populatePatterns(stored.bgPattern);
+            updatePatternVisibility();
+            applyAppearanceVisuals();
+          };
+          document.head.appendChild(script);
+        }
+
+        function loadAppearanceSection() {
+          const { preferences } = getData();
+
+          const themeSelect = appearanceEl("selectTheme");
+          if (themeSelect) themeSelect.value = preferences.theme || "system";
+          const fullWidth = appearanceEl("checkFullWidth");
+          if (fullWidth) fullWidth.checked = preferences.fullWidth === true;
+
+          const bgLight = appearanceEl("inputBgColorLight");
+          if (bgLight) bgLight.value = preferences.bgColorLight || "#016293";
+          const bgDark = appearanceEl("inputBgColorDark");
+          if (bgDark) bgDark.value = preferences.bgColorDark || "#131313";
+          const patLight = appearanceEl("inputPatternColorLight");
+          if (patLight) patLight.value = preferences.patternColorLight || "#014669";
+          const patDark = appearanceEl("inputPatternColorDark");
+          if (patDark) patDark.value = preferences.patternColorDark || "#313131";
+
+          const presetSelect = appearanceEl("presetThemeSelect");
+          const savedPreset = preferences.selectedPreset || "custom";
+          if (presetSelect) {
+            presetSelect.value =
+              savedPreset !== "custom" ? savedPreset : "custom";
+          }
+
+          const autoToggle = appearanceEl("autoSeasonToggle");
+          if (autoToggle) autoToggle.checked = preferences.autoSeason === true;
+          setAutoSeasonUI(preferences.autoSeason === true);
+
+          // The season owns the palette while auto-season is on.
+          if (preferences.autoSeason === true) {
+            applySeasonPreset();
+          } else if (savedPreset !== "custom" && DateUtils.THEME_PRESETS[savedPreset]) {
+            applyPresetPaletteToLightPickers(savedPreset);
+          }
+
+          const patternSelect = appearanceEl("selectBgPattern");
+          const storedPattern = preferences.bgPattern || "Endless Clouds";
+          if (typeof bgPatterns !== "undefined") {
+            populatePatterns(storedPattern);
+          } else if (patternSelect) {
+            // Guard until js/bg-patterns.js arrives, so the dropdown still
+            // reflects what is stored.
+            if (
+              storedPattern !== "none" &&
+              ![...patternSelect.options].some((o) => o.value === storedPattern)
+            ) {
+              const tempOpt = document.createElement("option");
+              tempOpt.value = storedPattern;
+              tempOpt.textContent = storedPattern;
+              patternSelect.appendChild(tempOpt);
+            }
+            patternSelect.value = storedPattern;
+          }
+
+          const opacity = appearanceEl("rangePatternOpacity");
+          if (opacity) {
+            opacity.value = Math.round((preferences.patternOpacity ?? 0.2) * 100);
+          }
+          const speed = appearanceEl("rangeBgScrollSpeed");
+          if (speed) speed.value = preferences.bgScrollSpeed ?? 10;
+
+          updateOpacityLabel();
+          updateSpeedLabel();
+          updatePatternVisibility();
+          syncColorisSwatches();
+
+          // Which block is being edited: the effective theme.
+          followEffectiveTheme();
+
+          applyAppearanceVisuals();
+        }
+
+        function initAppearanceSection() {
+          if (!appearanceEl("selectTheme")) return;
+
+          const previewAndCommit = () => {
+            markCustomTheme();
+            applyAppearanceVisuals();
+            commitAppearance();
+          };
+
+          // --- colours: live preview on input, commit on change -------------
+          APPEARANCE_COLOR_IDS.forEach((id) => {
+            const el = appearanceEl(id);
+            if (!el) return;
+            bindAutosave(el, {
+              event: "input",
+              debounceMs: 300,
+              read: (node) => node.value,
+              commit: previewAndCommit,
+            });
+            el.addEventListener(
+              "input",
+              rafThrottle(() => {
+                markCustomTheme();
+                applyAppearanceVisuals();
+              }),
+            );
+            el.addEventListener("change", () => {
+              clearFieldError(el);
+              previewAndCommit();
+            });
+          });
+
+          // --- pattern ------------------------------------------------------
+          const patternSelect = appearanceEl("selectBgPattern");
+          if (patternSelect) {
+            patternSelect.addEventListener("change", () => {
+              updatePatternVisibility();
+              applyAppearanceVisuals();
+              commitAppearance();
+            });
+          }
+
+          // --- ranges: live preview, commit as it settles -------------------
+          const opacityRange = appearanceEl("rangePatternOpacity");
+          if (opacityRange) {
+            bindAutosave(opacityRange, {
+              event: "input",
+              debounceMs: 250,
+              read: (node) => node.value,
+              commit: () => {
+                applyAppearanceVisuals();
+                commitAppearance();
+              },
+            });
+            opacityRange.addEventListener(
+              "input",
+              rafThrottle(() => {
+                updateOpacityLabel();
+                applyAppearanceVisuals();
+              }),
+            );
+          }
+
+          const speedRange = appearanceEl("rangeBgScrollSpeed");
+          if (speedRange) {
+            bindAutosave(speedRange, {
+              event: "input",
+              debounceMs: 250,
+              read: (node) => node.value,
+              commit: () => {
+                applyAppearanceVisuals();
+                commitAppearance();
+              },
+            });
+            speedRange.addEventListener(
+              "input",
+              rafThrottle(() => {
+                updateSpeedLabel();
+                applyAppearanceVisuals();
+              }),
+            );
+          }
+
+          // --- theme --------------------------------------------------------
+          const themeSelect = appearanceEl("selectTheme");
+          if (themeSelect) {
+            themeSelect.addEventListener("change", () => {
+              followEffectiveTheme();
+              applyAppearanceVisuals();
+              commitAppearance();
+            });
+          }
+
+          const fullWidth = appearanceEl("checkFullWidth");
+          if (fullWidth) {
+            fullWidth.addEventListener("change", () => commitAppearance());
+          }
+
+          // --- presets ------------------------------------------------------
+          const presetSelect = appearanceEl("presetThemeSelect");
+          if (presetSelect) {
+            presetSelect.addEventListener("change", () => {
+              const value = presetSelect.value;
+              if (value !== "custom") applyPresetPaletteToLightPickers(value);
+              applyAppearanceVisuals();
+              commitAppearance();
+            });
+          }
+
+          const autoToggle = appearanceEl("autoSeasonToggle");
+          if (autoToggle) {
+            autoToggle.addEventListener("change", () => {
+              setAutoSeasonUI(autoToggle.checked);
+              if (autoToggle.checked) applySeasonPreset();
+              applyAppearanceVisuals();
+              commitAppearance();
+            });
+          }
+
+          // --- which mode is being edited ------------------------------------
+          document.querySelectorAll('input[name="appearanceMode"]').forEach((radio) => {
+            radio.addEventListener("change", () => {
+              appearanceState.editMode = radio.value === "dark" ? "dark" : "light";
+              renderAppearanceMode();
+            });
+          });
+
+          // Follow the OS while the theme is "system".
+          if (window.matchMedia) {
+            const query = window.matchMedia("(prefers-color-scheme: dark)");
+            const onSystemThemeChange = () => {
+              const theme = (appearanceEl("selectTheme") || {}).value;
+              if (theme === "system") {
+                followEffectiveTheme();
+                applyAppearanceVisuals();
+              }
+            };
+            if (query.addEventListener) query.addEventListener("change", onSystemThemeChange);
+            else if (query.addListener) query.addListener(onSystemThemeChange);
+          }
+
+          // A hemisphere change can move the season, which owns the palette
+          // whenever auto-season is on.
+          appearanceHooks.refreshSeason = () => {
+            const auto = appearanceEl("autoSeasonToggle");
+            if (!auto || !auto.checked) return;
+            applySeasonPreset();
+            applyAppearanceVisuals();
+            commitAppearance();
+          };
+
+          // Lazy-load the pattern library when the section is shown; load it
+          // eagerly when a pattern is already in use.
+          const appearanceTab = document.getElementById("appearance-tab");
+          if (appearanceTab) {
+            appearanceTab.addEventListener("shown.bs.tab", loadPatternLibrary);
+          }
+          const { preferences } = getData();
+          if (
+            preferences.bgPattern &&
+            preferences.bgPattern !== "none" &&
+            typeof bgPatterns === "undefined"
+          ) {
+            loadPatternLibrary();
+          }
+        }
+
+        // Runs here (not from the init list above) because both functions touch
+        // values declared in this block.
+        loadAppearanceSection();
+        initAppearanceSection();
 
         const btnExportEvents = document.getElementById("btnExportEvents");
         if (btnExportEvents) {
