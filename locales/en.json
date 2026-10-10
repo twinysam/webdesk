@@ -245,7 +245,10 @@
     "moon_phase_waning_crescent": "Waning Crescent",
     "moon_event_full": "Full moon",
     "moon_event_new": "New moon",
-    "moon_tooltip": "{phase} — {illum}% illuminated. {event} in {days} days."
+    "moon_tooltip_now": "{phase} — {illum}% illuminated. {event} right now!",
+    "moon_tooltip_today": "{phase} — {illum}% illuminated. {event} today",
+    "moon_tooltip_day": "{phase} — {illum}% illuminated. {event} in {days} day",
+    "moon_tooltip_days": "{phase} — {illum}% illuminated. {event} in {days} days"
   },
   "greetingRules": {
     "morningStart": 5,

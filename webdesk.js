@@ -493,7 +493,15 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!isSpecialOverride && ["evening", "latelateshow"].includes(timeKey)) {
         const moon = DateUtils.getLunarPhaseData && DateUtils.getLunarPhaseData();
         if (moon) {
-          const tooltipText = t("moon_tooltip", {
+          const hoursToEvent = (moon.eventTimestamp - Date.now()) / 3600000;
+          const tooltipKey = hoursToEvent >= 0 && hoursToEvent <= 1
+            ? "moon_tooltip_now"
+            : moon.daysToEvent === 0
+              ? "moon_tooltip_today"
+              : moon.daysToEvent === 1
+                ? "moon_tooltip_day"
+                : "moon_tooltip_days";
+          const tooltipText = t(tooltipKey, {
             phase: t(moon.phaseKey),
             illum: moon.illumination,
             event: t(moon.eventKey),

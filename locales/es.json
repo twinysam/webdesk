@@ -245,7 +245,10 @@
     "moon_phase_waning_crescent": "Luna Menguante",
     "moon_event_full": "Luna llena",
     "moon_event_new": "Luna nueva",
-    "moon_tooltip": "{phase} — {illum}% iluminada. {event} en {days} días."
+    "moon_tooltip_now": "{phase} — {illum}% iluminada. ¡{event} ahora mismo!",
+    "moon_tooltip_today": "{phase} — {illum}% iluminada. {event} hoy",
+    "moon_tooltip_day": "{phase} — {illum}% iluminada. {event} en {days} día",
+    "moon_tooltip_days": "{phase} — {illum}% iluminada. {event} en {days} días"
   },
   "greetingRules": {
     "morningStart": 5,

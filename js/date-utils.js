@@ -195,7 +195,13 @@
         // since new→full and full→new don't take equal time).
         const isWaxing = elong < 180;
         const fullMoonJd = cached.fullMoon != null ? cached.fullMoon : prev + (next - prev) / 2;
-        const daysToEvent = Math.max(0, Math.round(isWaxing ? fullMoonJd - nowJd : next - nowJd));
+        const eventJd = isWaxing ? fullMoonJd : next;
+        // The ephemeris timestamps are in TT; convert to a Unix timestamp
+        // (UTC) for local-calendar-day and time-until-event comparisons.
+        const eventTimestamp = (eventJd - 2440587.5) * 86400000
+          - scope.DateUtils.DELTA_T_SECONDS * 1000;
+        const now = dayjs();
+        const daysToEvent = Math.max(0, dayjs(eventTimestamp).startOf("day").diff(now.startOf("day"), "day"));
 
         return {
           emoji: scope.DateUtils.MOON_PHASE_EMOJIS[idx],
@@ -203,6 +209,7 @@
           illumination,
           eventKey: isWaxing ? "moon_event_full" : "moon_event_new",
           daysToEvent,
+          eventTimestamp,
         };
       },
 
