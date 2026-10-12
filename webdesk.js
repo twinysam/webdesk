@@ -451,6 +451,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // 2. Overrides
       const { season, isFirstDay } = DateUtils.getSeason(now);
       let isSpecialOverride = false;
+      let moonForIcon = null;
 
       // User Birthday Check
       const userBirthday = ProfileManager.getBirthday();
@@ -507,7 +508,9 @@ document.addEventListener("DOMContentLoaded", function () {
             event: t(moon.eventKey),
             days: moon.daysToEvent,
           });
-          message = `<span class="moon-phase-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${tooltipText}">${moon.emoji}</span> ${message}`;
+          moonForIcon = moon;
+          const hemisphereClass = DateUtils.getHemisphere() === "southern" ? " moon-south" : "";
+          message = `<span class="moon-phase-icon${hemisphereClass}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${tooltipText}">${moon.emoji}</span> ${message}`;
         }
       }
 
@@ -525,6 +528,25 @@ document.addEventListener("DOMContentLoaded", function () {
         const moonIcon = politeElem.querySelector(".moon-phase-icon");
         if (moonIcon && window.bootstrap) {
           GreetingManager._moonTooltipInstance = new bootstrap.Tooltip(moonIcon);
+        }
+        if (moonIcon && window.MoonRenderer && moonForIcon && moonForIcon.elong !== undefined) {
+          const tooltipText = moonIcon.getAttribute("title")
+            || moonIcon.getAttribute("data-bs-original-title")
+            || "Moon phase";
+          MoonRenderer.load().then((loaded) => {
+            if (!loaded || !moonIcon.isConnected) return;
+
+            const canvas = document.createElement("canvas");
+            canvas.setAttribute("role", "img");
+            canvas.setAttribute("aria-label", tooltipText);
+            moonIcon.appendChild(canvas);
+
+            if (MoonRenderer.draw(canvas, moonForIcon.elong)) {
+              moonIcon.replaceChildren(canvas);
+            } else {
+              canvas.remove();
+            }
+          });
         }
       }
     },

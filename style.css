@@ -68,6 +68,17 @@ body {
   animation-play-state: running;
 }
 
+.moon-phase-icon canvas {
+  display: inline-block;
+  width: 1.3em;
+  height: 1.3em;
+  vertical-align: -0.25em;
+}
+
+.moon-south canvas {
+  transform: rotate(180deg);
+}
+
 body.paused {
   animation-play-state: paused;
 }

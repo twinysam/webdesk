@@ -16,6 +16,8 @@
 - A dynamic countdown feature that occasionally highlights how many days are left until your upcoming birthdays or custom events.
 - A little tree at the bottom that reflects the current season.
 
+Moon imagery: NASA's Scientific Visualization Studio ([CGI Moon Kit](https://svs.gsfc.nasa.gov/4720)).
+
 ## Privacy
 
 By design, WebDesk has no backend. There are no tracking pixels, no telemetry, and no synchronization scripts. It's all kept in your browser using [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage), so privacy isn't a promise, it's a fact (which you can confirm by looking at the code).

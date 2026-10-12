@@ -206,6 +206,8 @@
         return {
           emoji: scope.DateUtils.MOON_PHASE_EMOJIS[idx],
           phaseKey: scope.DateUtils.MOON_PHASE_KEYS[idx],
+          elong,
+          waxing: isWaxing,
           illumination,
           eventKey: isWaxing ? "moon_event_full" : "moon_event_new",
           daysToEvent,
