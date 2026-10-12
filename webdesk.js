@@ -495,9 +495,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const moon = DateUtils.getLunarPhaseData && DateUtils.getLunarPhaseData();
         if (moon) {
           const hoursToEvent = (moon.eventTimestamp - Date.now()) / 3600000;
-          const tooltipKey = hoursToEvent >= 0 && hoursToEvent <= 1
+          const tooltipKey = moon.hasPreciseFullMoon && hoursToEvent >= 0 && hoursToEvent <= 1
             ? "moon_tooltip_now"
-            : moon.daysToEvent === 0
+            : moon.hasPreciseFullMoon && moon.daysToEvent === 0
               ? "moon_tooltip_today"
               : moon.daysToEvent === 1
                 ? "moon_tooltip_day"
@@ -510,7 +510,7 @@ document.addEventListener("DOMContentLoaded", function () {
           });
           moonForIcon = moon;
           const hemisphereClass = DateUtils.getHemisphere() === "southern" ? " moon-south" : "";
-          message = `<span class="moon-phase-icon${hemisphereClass}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${tooltipText}">${moon.emoji}</span> ${message}`;
+          message = `<span class="moon-phase-icon${hemisphereClass}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${SafeLink.escape(tooltipText)}">${moon.emoji}</span> ${message}`;
         }
       }
 

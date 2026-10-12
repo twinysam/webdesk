@@ -212,6 +212,7 @@
           eventKey: isWaxing ? "moon_event_full" : "moon_event_new",
           daysToEvent,
           eventTimestamp,
+          hasPreciseFullMoon: cached.fullMoon != null,
         };
       },
 
@@ -248,9 +249,14 @@
           // TT timestamps are absolute. For the Chinese Calendar, the day starts at Beijing midnight (UTC+8).
           // We convert JD to an integer representing the Beijing calendar day before comparing, ensuring that if a 
           // new moon and a solar term occur on the same true calendar day, they fall into the correct relative month.
-          const getJdDay = (jd) => Math.floor(jd + 8 / 24 + 0.5);
+          const getJdDay = (jd) => Math.floor(
+              jd - scope.DateUtils.DELTA_T_SECONDS / 86400 + 8 / 24 + 0.5
+          );
           
-          const getJdMs = (jd) => (jd - 2440587.5) * 86400000 + 28800000;
+          const getJdMs = (jd) =>
+              (jd - 2440587.5) * 86400000
+              - scope.DateUtils.DELTA_T_SECONDS * 1000
+              + 28800000;
           const jdToDayjsStr = (jd) => {
               const ms = getJdMs(jd);
               const d = new Date(ms);
@@ -363,8 +369,11 @@
                   timeZone.includes("Wellington") ||
                   timeZone.includes("America/Lima") ||
                   timeZone.includes("America/La_Paz") ||
+                  timeZone.includes("America/Manaus") ||
+                  timeZone.includes("Pacific/Fiji") ||
                   timeZone.includes("Africa/Johannesburg") ||
-                  timeZone.includes("Africa/Cape_Town");
+                  timeZone.includes("Africa/Cape_Town") ||
+                  timeZone.includes("Africa/Maputo");
                 
               return isSouthern ? "southern" : "northern";
           } catch (e) {

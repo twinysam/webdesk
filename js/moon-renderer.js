@@ -87,7 +87,7 @@
           if (radiusSquared > 1 || alpha === 0) continue;
 
           const lit = sunX * x + sunZ * Math.sqrt(1 - radiusSquared);
-          const brightness = 0.1 + 0.9 * smoothstep(-0.03, 0.06, lit);
+          const brightness = 0.1 + 0.9 * smoothstep(-0.045, 0.045, lit);
           output[offset] = source[offset] * brightness;
           output[offset + 1] = source[offset + 1] * brightness;
           output[offset + 2] = source[offset + 2] * brightness;
