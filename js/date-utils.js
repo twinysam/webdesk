@@ -193,8 +193,8 @@
         // regenerated with moon_phases_tt; otherwise fall back to the
         // lunation-midpoint approximation (can be off by up to about a day,
         // since new→full and full→new don't take equal time).
-        const isWaxing = elong < 180;
         const fullMoonJd = cached.fullMoon != null ? cached.fullMoon : prev + (next - prev) / 2;
+        const isWaxing = cached.fullMoon != null ? nowJd < fullMoonJd : elong < 180;
         const eventJd = isWaxing ? fullMoonJd : next;
         // The ephemeris timestamps are in TT; convert to a Unix timestamp
         // (UTC) for local-calendar-day and time-until-event comparisons.
