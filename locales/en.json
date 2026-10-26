@@ -3,6 +3,7 @@
     "greeting_morning": "<i class=\"bi bi-brightness-alt-high-fill\"></i> Good morning",
     "greeting_afternoon": "<i class=\"bi bi-brightness-high-fill\"></i> Good afternoon",
     "greeting_evening": "Good evening",
+    "greeting_full_moon": "Tonight is a full moon",
     "greeting_latelateshow": "{name}'s Late Late Show",
     "greeting_generic": "Hello",
     "birthday": "Happy Birthday!",

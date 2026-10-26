@@ -3,6 +3,7 @@
     "greeting_morning": "<i class=\"bi bi-brightness-alt-high-fill\"></i> Buenos días",
     "greeting_afternoon": "<i class=\"bi bi-brightness-high-fill\"></i> Buenas tardes",
     "greeting_evening": "Buenas noches",
+    "greeting_full_moon": "Esta noche hay luna llena",
     "greeting_latelateshow": "El teatro nocturno de {name}",
     "greeting_generic": "Hola",
     "birthday": "¡Feliz Cumpleaños!",

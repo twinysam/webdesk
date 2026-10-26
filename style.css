@@ -76,6 +76,14 @@ body {
   vertical-align: -0.1em;
 }
 
+.moon-full {
+  text-shadow: 0 0 0.45em rgba(255, 255, 255, 0.8);
+}
+
+.moon-full canvas {
+  filter: drop-shadow(0 0 0.35em rgba(255, 255, 255, 0.8));
+}
+
 .moon-south canvas {
   transform: rotate(180deg);
 }

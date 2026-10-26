@@ -510,7 +510,10 @@ document.addEventListener("DOMContentLoaded", function () {
           });
           moonForIcon = moon;
           const hemisphereClass = DateUtils.getHemisphere() === "southern" ? " moon-south" : "";
-          message = `<span class="moon-phase-icon${hemisphereClass}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${SafeLink.escape(tooltipText)}">${moon.emoji}</span> ${message}`;
+          const isFullMoon = moon.illumination === 100;
+          if (isFullMoon) message = t("greeting_full_moon");
+          const fullMoonClass = isFullMoon ? " moon-full" : "";
+          message = `<span class="moon-phase-icon${hemisphereClass}${fullMoonClass}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${SafeLink.escape(tooltipText)}">${moon.emoji}</span> ${message}`;
         }
       }
 
