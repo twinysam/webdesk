@@ -1,0 +1,162 @@
+/* Halloween decorations live with page content, not the viewport. */
+.caja {
+  position: relative;
+}
+
+.halloween-decorations {
+  display: none;
+  pointer-events: none;
+}
+
+html.halloween-theme .halloween-decorations {
+  display: contents;
+}
+
+html.halloween-theme .caja {
+  isolation: isolate;
+}
+
+html.halloween-theme h1 {
+  border-bottom-color: #c65d00;
+}
+
+.halloween-ghost {
+  position: absolute;
+  z-index: 2;
+  width: clamp(48px, 5.5vw, 78px);
+  height: auto;
+  opacity: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 0 12px rgba(190, 225, 255, 0.24));
+  will-change: transform, opacity;
+}
+
+.halloween-headstone {
+  display: none;
+}
+
+html.halloween-theme .tree {
+  position: relative;
+  align-items: flex-end;
+}
+
+html.halloween-theme .halloween-headstone {
+  display: block;
+  position: absolute;
+  z-index: 1;
+  left: calc(50% - 122px);
+  bottom: 0;
+  width: clamp(58px, 6vw, 76px);
+  height: auto;
+  pointer-events: none;
+}
+
+.halloween-spider-line {
+  position: fixed;
+  z-index: 2;
+  top: 0;
+  right: 21%;
+  width: 1px;
+  height: 82px;
+  background: linear-gradient(rgba(220, 225, 235, 0.75), rgba(220, 225, 235, 0.05));
+  transform-origin: top center;
+  animation: halloween-spider-sway 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Keep the usual palette in light mode; tint the greeting and date in dark mode. */
+html.halloween-theme.dark-mode #polite,
+html.halloween-theme.dark-mode #fecha,
+html.halloween-theme.dark-mode #reminder,
+html.halloween-theme body.dark-mode #polite,
+html.halloween-theme body.dark-mode #fecha,
+html.halloween-theme body.dark-mode #reminder {
+  color: #ff9f1c;
+}
+
+html.halloween-theme.dark-mode #polite a,
+html.halloween-theme.dark-mode #fecha a,
+html.halloween-theme.dark-mode #reminder a,
+html.halloween-theme.dark-mode #fecha a span,
+html.halloween-theme.dark-mode #fecha a:visited span,
+html.halloween-theme body.dark-mode #polite a,
+html.halloween-theme body.dark-mode #fecha a,
+html.halloween-theme body.dark-mode #reminder a,
+html.halloween-theme body.dark-mode #fecha a span,
+html.halloween-theme body.dark-mode #fecha a:visited span {
+  color: #ffd166;
+}
+
+html.halloween-theme.dark-mode #fecha a:has(span),
+html.halloween-theme.dark-mode #fecha a:visited:has(span),
+html.halloween-theme body.dark-mode #fecha a:has(span),
+html.halloween-theme body.dark-mode #fecha a:visited:has(span) {
+  text-decoration-color: #ffd166;
+}
+
+@media (prefers-color-scheme: dark) {
+  html.halloween-theme:not(.light-mode):not(.dark-mode) #polite,
+  html.halloween-theme:not(.light-mode):not(.dark-mode) #fecha,
+  html.halloween-theme:not(.light-mode):not(.dark-mode) #reminder {
+    color: #ff9f1c;
+  }
+
+  html.halloween-theme:not(.light-mode):not(.dark-mode) #polite a,
+  html.halloween-theme:not(.light-mode):not(.dark-mode) #fecha a,
+  html.halloween-theme:not(.light-mode):not(.dark-mode) #reminder a,
+  html.halloween-theme:not(.light-mode):not(.dark-mode) #fecha a span,
+  html.halloween-theme:not(.light-mode):not(.dark-mode) #fecha a:visited span {
+    color: #ffd166;
+  }
+
+  html.halloween-theme:not(.light-mode):not(.dark-mode) #fecha a:has(span),
+  html.halloween-theme:not(.light-mode):not(.dark-mode) #fecha a:visited:has(span) {
+    text-decoration-color: #ffd166;
+  }
+}
+
+.halloween-spider-line img {
+  position: absolute;
+  right: -17px;
+  bottom: -5px;
+  width: 34px;
+  height: 34px;
+}
+
+html.halloween-motion-paused .halloween-spider-line {
+  visibility: hidden;
+  animation-play-state: paused;
+}
+
+@keyframes halloween-spider-sway {
+  0%, 100% { transform: rotate(4deg); }
+  50% { transform: rotate(-4deg); }
+}
+
+@media (max-width: 700px) {
+  .halloween-ghost {
+    width: 44px;
+  }
+
+  .halloween-ghost-three,
+  .halloween-ghost-four {
+    display: none;
+  }
+
+  .halloween-spider-line { right: 12%; }
+
+  html.halloween-theme .halloween-headstone {
+    left: calc(50% - 112px);
+    width: 58px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .halloween-ghost {
+    will-change: auto;
+  }
+
+  .halloween-spider-line {
+    animation: none;
+  }
+}

@@ -171,6 +171,8 @@
     "text_edit_mode_help": "Cada modo tiene sus propios colores; esto solo elige cuál estás editando.",
     "text_speed_disabled": "0 (Desactivado)",
     "label_fullwidth": "Habilitar ancho completo",
+    "label_disable_halloween_decorations": "Desactivar las decoraciones de Halloween",
+    "text_disable_halloween_decorations": "Oculta las decoraciones de temporada y restaura el patrón de fondo que elegiste.",
     "label_theme": "Tema",
     "value_system": "Sistema",
     "value_light": "Claro",

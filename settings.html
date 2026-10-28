@@ -1038,6 +1038,11 @@
                 >Enable full width</label
               >
             </div>
+            <div id="halloweenAppearanceSetting" class="form-check form-switch mt-3 d-none">
+              <input class="form-check-input" type="checkbox" id="checkDisableHalloweenDecorations" />
+              <label class="form-check-label" for="checkDisableHalloweenDecorations" data-i18n="label_disable_halloween_decorations">Disable Halloween decorations</label>
+              <div class="form-text text-light" data-i18n="text_disable_halloween_decorations">Hides the seasonal decorations and restores your selected background pattern.</div>
+            </div>
           </div>
 
           <div class="card bg-dark border-secondary p-4 text-white mt-4">
@@ -1580,6 +1585,7 @@
         bgScrollSpeed: 10,
         selectedPreset: "winter", // Color theme preset
         autoSeason: false, // Auto-detect season for theme
+        disableHalloweenDecorations: false,
       };
 
       // Global Catalog Cache
@@ -3606,6 +3612,14 @@
         function appearanceEl(id) {
           return document.getElementById(id);
         }
+        function isHalloweenSettingsActive() {
+          const requestedTheme = new URLSearchParams(window.location.search).get("theme");
+          if (requestedTheme === "none") return false;
+          if (requestedTheme === "halloween") return true;
+          const now = new Date();
+          const monthDay = (now.getMonth() + 1) * 100 + now.getDate();
+          return monthDay >= 1015 && monthDay <= 1101;
+        }
 
         /** Theme "system" resolves through matchMedia. */
         function effectiveIsDark() {
@@ -3717,6 +3731,10 @@
             selectedPreset: value("presetThemeSelect") || "custom",
             autoSeason: !!(appearanceEl("autoSeasonToggle") || {}).checked,
           };
+          const halloweenToggle = appearanceEl("checkDisableHalloweenDecorations");
+          if (isHalloweenSettingsActive() && halloweenToggle) {
+            patch.disableHalloweenDecorations = halloweenToggle.checked;
+          }
           if (preset) {
             patch.linkColor = preset.link;
             patch.linkHoverColor = preset.linkHover;
@@ -3962,6 +3980,11 @@
           const fullWidth = appearanceEl("checkFullWidth");
           if (fullWidth) fullWidth.checked = preferences.fullWidth === true;
 
+          const halloweenSetting = appearanceEl("halloweenAppearanceSetting");
+          const halloweenToggle = appearanceEl("checkDisableHalloweenDecorations");
+          if (halloweenSetting) halloweenSetting.classList.toggle("d-none", !isHalloweenSettingsActive());
+          if (halloweenToggle) halloweenToggle.checked = preferences.disableHalloweenDecorations === true;
+
           const bgLight = appearanceEl("inputBgColorLight");
           if (bgLight) bgLight.value = preferences.bgColorLight || "#016293";
           const bgDark = appearanceEl("inputBgColorDark");
@@ -4145,6 +4168,12 @@
             });
           }
 
+          const halloweenToggle = appearanceEl("checkDisableHalloweenDecorations");
+          if (halloweenToggle) {
+            halloweenToggle.addEventListener("change", () => {
+              commitAppearance();
+            });
+          }
           // --- which mode is being edited ------------------------------------
           document.querySelectorAll('input[name="appearanceMode"]').forEach((radio) => {
             radio.addEventListener("change", () => {

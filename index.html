@@ -4,6 +4,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WebDesk</title>
+    <script>
+      // Halloween decorations run automatically from October 15 through November 1.
+      // Use ?theme=halloween to preview any time, or ?theme=none to turn them off.
+      (function () {
+        const requestedTheme = new URLSearchParams(window.location.search).get("theme");
+        const now = new Date();
+        const monthDay = (now.getMonth() + 1) * 100 + now.getDate();
+        const inHalloweenSeason = monthDay >= 1015 && monthDay <= 1101;
+        let decorationsDisabled = false;
+        try {
+          const preferences = JSON.parse(localStorage.getItem("userPreferences") || "{}");
+          decorationsDisabled = preferences.disableHalloweenDecorations === true;
+        } catch (error) {}
+        if (!decorationsDisabled && (requestedTheme === "halloween" || (!requestedTheme && inHalloweenSeason))) {
+          document.documentElement.classList.add("halloween-theme");
+        }
+      })();
+    </script>
     <meta name="Author" content="Santiago Mendez" />
     <link rel="shortcut icon" href="icons/Coda.ico" />
     <link
@@ -22,6 +40,7 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@latest/font/bootstrap-icons.css"
     />
     <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" type="text/css" href="halloween.css" />
     <link rel="stylesheet" type="text/css" href="app-icons.css" />
     <link rel="stylesheet" type="text/css" href="tv-icons.css" />
     <link rel="stylesheet" type="text/css" href="onboarding.css" />
@@ -120,9 +139,20 @@
 
       <!-- Dynamic Links Container -->
       <div id="custom-links-container" class="custom-links-container"></div>
+      <div class="halloween-decorations" aria-hidden="true">
+        <img class="halloween-ghost halloween-ghost-one" src="images/halloween/ghost_1f47b.png" alt="" />
+        <img class="halloween-ghost halloween-ghost-two" src="images/halloween/ghost_1f47b.png" alt="" />
+        <img class="halloween-ghost halloween-ghost-three" src="images/halloween/ghost_1f47b.png" alt="" />
+        <img class="halloween-ghost halloween-ghost-four" src="images/halloween/ghost_1f47b.png" alt="" />
+        <img class="halloween-ghost halloween-ghost-five" src="images/halloween/ghost_1f47b.png" alt="" />
+        <img class="halloween-ghost halloween-ghost-six" src="images/halloween/ghost_1f47b.png" alt="" />
+        <img class="halloween-ghost halloween-ghost-seven" src="images/halloween/ghost_1f47b.png" alt="" />
+        <span class="halloween-spider-line"><img src="images/halloween/spider_1f577-fe0f.png" alt="" /></span>
+      </div>
     </div>
     <div class="tree d-none">
       <img id="season-tree" />
+      <img class="halloween-headstone" src="images/halloween/headstone_1faa6.png" alt="" />
     </div>
 
     <!-- ONBOARDING OVERLAY -->
@@ -310,5 +340,6 @@
     <script src="js/links-manager.js"></script>
     <script src="js/events-manager.js"></script>
     <script src="webdesk.js"></script>
+    <script src="halloween.js"></script>
   </body>
 </html>

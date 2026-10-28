@@ -580,8 +580,22 @@ document.addEventListener("DOMContentLoaded", function () {
           document.body.classList.add("paused");
         else document.body.classList.remove("paused");
       };
+      const syncAnimationState = () => {
+        let backgroundMotionEnabled = true;
+        try {
+          const preferences = JSON.parse(localStorage.getItem("userPreferences") || "{}");
+          backgroundMotionEnabled = (preferences.bgScrollSpeed ?? 10) > 0;
+        } catch (error) {}
+        setAnim(
+          document.hidden || !document.hasFocus() || !backgroundMotionEnabled
+            ? "paused"
+            : "running",
+        );
+      };
       window.addEventListener("blur", () => setAnim("paused"));
-      window.addEventListener("focus", () => setAnim("running"));
+      window.addEventListener("focus", syncAnimationState);
+      document.addEventListener("visibilitychange", syncAnimationState);
+      syncAnimationState();
     },
 
     init: () => {
@@ -1521,10 +1535,11 @@ document.addEventListener("DOMContentLoaded", function () {
         // Wait for Apps to be fetched and rendered
         return DesktopAppRenderer.init();
       })
-      .then(() => {
+      .then(async () => {
         // Once apps are ready, initialize visuals
         GreetingManager.updateVisuals(); // Set tree image (starts load)
         PreferencesManager.init(); // Apply prefs (might reveal tree container)
+        if (window.HalloweenManager) await window.HalloweenManager.applySeasonalBackground();
 
         const prefs = PreferencesManager.getPreferences();
 

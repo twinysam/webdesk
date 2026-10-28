@@ -171,6 +171,8 @@
     "text_edit_mode_help": "Each mode keeps its own colours; this only picks the one you are editing.",
     "text_speed_disabled": "0 (Disabled)",
     "label_fullwidth": "Enable full width",
+    "label_disable_halloween_decorations": "Disable Halloween decorations",
+    "text_disable_halloween_decorations": "Hides the seasonal decorations and restores your selected background pattern.",
     "label_theme": "Theme",
     "value_system": "System",
     "value_light": "Light",
