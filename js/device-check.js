@@ -58,7 +58,7 @@
                 body {
                     background-color: var(--bg-color-dark, #131313);
                     color: #ffffff;
-                    font-family: "Nunito", sans-serif;
+                    font-family: var(--font-body);
                     height: 100vh;
                     margin: 0;
                     display: flex;
@@ -82,7 +82,7 @@
                     margin-bottom: 16px;
                     display: block;
                 }
-                h1 { font-family: "Exo", sans-serif; font-size: 22px; margin-bottom: 12px; color: #ffffff; }
+                h1 { font-family: var(--font-headings); font-size: 22px; margin-bottom: 12px; color: #ffffff; }
                 p { font-size: 15px; line-height: 1.5; color: rgba(255,255,255,0.85); margin-bottom: 22px; }
                 .btn-share {
                     background: var(--bg-color, #3498db);

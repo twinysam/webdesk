@@ -64,7 +64,16 @@ const BackupManager = {
     if (data.userLinks) write(K.LINKS, data.userLinks);
     if (data.userBirthdays) write(K.BIRTHDAYS, data.userBirthdays);
     if (data.annualEvents) write(K.ANNUAL_EVENTS, data.annualEvents);
-    if (data.preferences) write(K.PREFERENCES, data.preferences);
+    if (data.preferences) {
+      let preferences = data.preferences;
+      if (preferences && typeof preferences === "object" && !Array.isArray(preferences)) {
+        const fonts = globalThis.FontManager
+          ? globalThis.FontManager.normalize(preferences.fonts)
+          : { headings: "exo", date: "inconsolata", body: "nunito" };
+        preferences = { ...preferences, fonts };
+      }
+      write(K.PREFERENCES, preferences);
+    }
 
     // 2. Legacy format: bare stats object (very old backups)
     if (!data.config && !data.stats && !data.profile) {

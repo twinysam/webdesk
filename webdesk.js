@@ -68,7 +68,10 @@ document.addEventListener("DOMContentLoaded", function () {
     STORAGE_KEY: "userPreferences",
 
     getPreferences: () => {
-      const prefs = JSON.parse(localStorage.getItem(PreferencesManager.STORAGE_KEY)) || {};
+      let prefs = {};
+      try {
+        prefs = JSON.parse(localStorage.getItem(PreferencesManager.STORAGE_KEY) || "{}") || {};
+      } catch (_) {}
       return {
         bgPattern: "Endless Clouds",
         bgScrollSpeed: 10,
@@ -1133,7 +1136,8 @@ document.addEventListener("DOMContentLoaded", function () {
     clearTimeout(eventsRenderTimeout);
     eventsRenderTimeout = setTimeout(() => {
       EventsManager.checkDailyEvents();
-      const prefs = JSON.parse(localStorage.getItem("userPreferences") || "{}");
+      let prefs = {};
+      try { prefs = JSON.parse(localStorage.getItem("userPreferences") || "{}"); } catch (_) {}
       // Keep this consistent with startup: the calendar is opt-in.
       if (prefs.enableCalendar === true) {
         CalendarManager.init();

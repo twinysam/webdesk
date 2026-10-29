@@ -1,5 +1,8 @@
 /* THEME VARIABLES */
 :root {
+  --font-headings: "Exo", sans-serif;
+  --font-date: "Inconsolata", monospace;
+  --font-body: "Nunito", sans-serif;
   /* Default fallbacks set by JS or hardcoded */
   --bg-color-light: #016293;
   --bg-color-dark: #131313;
@@ -55,7 +58,7 @@ body {
   background-color: var(--bg-color);
   background-image: var(--bg-image);
   color: white;
-  font-family: "Nunito", sans-serif;
+  font-family: var(--font-body);
   background-repeat: repeat;
   background-size: initial;
   font-size: 1.5em;
@@ -115,7 +118,7 @@ body.xmas {
 #fecha,
 #reminder {
   display: inline-block;
-  font-family: "Inconsolata", monospace;
+  font-family: var(--font-date);
   font-size: 1.4em;
   line-height: 40px;
   margin-top: 7px;
@@ -144,7 +147,7 @@ body.xmas {
 }
 
 h1 {
-  font-family: "Exo", sans-serif;
+  font-family: var(--font-headings);
   font-size: 5rem;
   font-weight: 200;
   margin-bottom: 0px;
@@ -155,7 +158,7 @@ h1 {
 }
 
 h2 {
-  font-family: "Exo", sans-serif;
+  font-family: var(--font-headings);
   font-size: 3rem;
   font-weight: 600;
 }
@@ -949,7 +952,7 @@ ul.columns {
   padding: 12px;
   border-radius: 8px;
   font-size: 0.9rem;
-  font-family: "Nunito", sans-serif;
+  font-family: var(--font-body);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
   z-index: 1001;
   display: flex;

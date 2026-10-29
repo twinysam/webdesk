@@ -9,7 +9,7 @@
     background-color: #131313;
     z-index: 9999;
     
-    font-family: 'Exo', sans-serif;
+    font-family: var(--font-headings);
     color: white;
     
     display: flex; /* Centering Container */
@@ -22,7 +22,7 @@
     top: 30px;
     right: 40px;
     font-size: 1.5rem;
-    font-family: 'Exo', sans-serif;
+    font-family: var(--font-headings);
     color: rgba(255, 255, 255, 0.5);
     z-index: 200;
 }
@@ -134,15 +134,15 @@
   margin-bottom: 2rem;
   line-height: 1.2;
   border-bottom: none !important; /* Override style.css */
-  font-family: "Exo", sans-serif !important;
+  font-family: var(--font-headings) !important;
 }
 
 #onboarding-overlay .font-exo {
-  font-family: "Exo", sans-serif !important;
+  font-family: var(--font-headings) !important;
 }
 
 #onboarding-overlay .font-nunito {
-  font-family: "Nunito", sans-serif !important;
+  font-family: var(--font-body) !important;
 }
 
 /* Inputs - Scoped */
@@ -152,7 +152,7 @@
   border-bottom: 2px solid #555;
   color: white;
   font-size: 8rem;
-  font-family: "Exo", sans-serif;
+  font-family: var(--font-headings);
   font-weight: 200;
   text-align: center;
   width: 80%;
@@ -190,7 +190,7 @@
   border-bottom: 2px solid #555 !important;
   color: white;
   font-size: 8rem;
-  font-family: "Exo", sans-serif;
+  font-family: var(--font-headings);
   font-weight: 200;
   text-align: center;
   outline: none;
@@ -241,7 +241,7 @@
   font-size: 1.2rem;
   color: #fff;
   margin-top: 2rem;
-  font-family: "Nunito", sans-serif;
+  font-family: var(--font-body);
   padding-top: 1rem;
   display: inline-block;
   max-width: 600px;
@@ -277,7 +277,7 @@
   left: 0; 
   width: 100%;
   justify-content: center;
-  font-family: "Nunito", sans-serif;
+  font-family: var(--font-body);
   font-size: 1.5rem;
   display: flex;
   align-items: center;
@@ -445,5 +445,5 @@
   font-size: 2rem;
   color: #83d3fa;
   margin-bottom: 0.5rem;
-  font-family: 'Exo', sans-serif;
+  font-family: var(--font-headings);
 }
