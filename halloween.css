@@ -124,7 +124,6 @@ html.halloween-theme body.dark-mode #fecha a:visited:has(span) {
 }
 
 html.halloween-motion-paused .halloween-spider-line {
-  visibility: hidden;
   animation-play-state: paused;
 }
 

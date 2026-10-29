@@ -2,11 +2,13 @@
   const root = document.documentElement;
   const container = document.querySelector(".caja");
   const ghosts = Array.from(document.querySelectorAll(".halloween-ghost"));
-  const timers = new Set();
+  const timers = new Map();
   const flights = new Map();
   let runId = 0;
   let resizeTimer = null;
   let patternLibraryPromise = null;
+  let paused = false;
+  let started = false;
 
   function pageIsFocused() {
     return !document.hidden && (!document.hasFocus || document.hasFocus());
@@ -14,7 +16,7 @@
 
   function stop() {
     runId++;
-    timers.forEach(clearTimeout);
+    timers.forEach(timer => clearTimeout(timer.id));
     timers.clear();
     flights.forEach(flight => flight.cancel());
     flights.clear();
@@ -24,11 +26,48 @@
   }
 
   function later(callback, delay) {
-    const timer = setTimeout(function () {
+    const timer = { callback, remaining: delay, id: null, dueAt: 0 };
+    timers.set(timer, timer);
+    if (!paused) armTimer(timer);
+  }
+
+  function armTimer(timer) {
+    timer.dueAt = performance.now() + timer.remaining;
+    timer.id = setTimeout(function () {
       timers.delete(timer);
-      callback();
-    }, delay);
-    timers.add(timer);
+      timer.id = null;
+      timer.callback();
+    }, timer.remaining);
+  }
+
+  function pause() {
+    if (paused) return;
+    paused = true;
+    root.classList.add("halloween-motion-paused");
+    const now = performance.now();
+    timers.forEach(function (timer) {
+      if (timer.id !== null) {
+        clearTimeout(timer.id);
+        timer.id = null;
+        timer.remaining = Math.max(0, timer.dueAt - now);
+      }
+    });
+    flights.forEach(flight => flight.pause());
+  }
+
+  function resume() {
+    if (!root.classList.contains("halloween-theme") || !pageIsFocused()) return;
+    if (!started) {
+      start();
+      return;
+    }
+    if (!paused) return;
+    paused = false;
+    root.classList.remove("halloween-motion-paused");
+    flights.forEach(flight => flight.play());
+    timers.forEach(timer => {
+      if (timer.id === null) armTimer(timer);
+    });
   }
 
   function placeRandomly(ghost) {
@@ -91,13 +130,13 @@
 
   function start() {
     stop();
+    started = false;
     if (!root.classList.contains("halloween-theme")) return;
-    if (!pageIsFocused()) {
-      root.classList.add("halloween-motion-paused");
-      return;
-    }
 
-    root.classList.remove("halloween-motion-paused");
+    paused = false;
+    started = true;
+    if (!pageIsFocused()) pause();
+    else root.classList.remove("halloween-motion-paused");
     const run = runId;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -134,16 +173,6 @@
     }
 
     waitForLayout(0);
-  }
-
-  function pause() {
-    root.classList.add("halloween-motion-paused");
-    stop();
-  }
-
-  function resume() {
-    root.classList.remove("halloween-motion-paused");
-    start();
   }
 
   function scheduleRestart() {
