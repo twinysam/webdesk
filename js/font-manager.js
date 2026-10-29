@@ -81,7 +81,7 @@
   const requested = new Map();
   let stylesheet;
   function weightsFor(font) {
-    const wanted = font.role === "headings" ? [200, 400, 600] : font.role === "date" ? [400] : [400, 700];
+    const wanted = font.role === "headings" ? [200, 400, 480] : font.role === "date" ? [400] : [400, 700];
     const available = font.weights;
     const nearest = (target) => available.reduce((best, n) => Math.abs(n - target) < Math.abs(best - target) ? n : best, available[0]);
     return [...new Set(wanted.map(nearest))].sort((a, b) => a - b);
