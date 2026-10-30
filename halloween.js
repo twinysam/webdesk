@@ -7,6 +7,7 @@
   let runId = 0;
   let resizeTimer = null;
   let patternLibraryPromise = null;
+  let visibilityObserver = null;
   let paused = false;
   let started = false;
 
@@ -16,6 +17,10 @@
 
   function stop() {
     runId++;
+    if (visibilityObserver) {
+      visibilityObserver.disconnect();
+      visibilityObserver = null;
+    }
     timers.forEach(timer => clearTimeout(timer.id));
     timers.clear();
     flights.forEach(flight => flight.cancel());
@@ -147,21 +152,36 @@
         return;
       }
 
-      ghosts.forEach(function (ghost) {
-        placeRandomly(ghost);
+      const initialAppearancesStarted = new Set();
+      const initialRadii = new Map();
+
+      function startGhost(ghost) {
+        if (run !== runId || initialAppearancesStarted.has(ghost)) return;
+        initialAppearancesStarted.add(ghost);
 
         if (reducedMotion) {
           ghost.style.opacity = "0.45";
           return;
         }
 
+        let isInitialAppearance = true;
         function appear() {
           if (run !== runId || !pageIsFocused() || !root.classList.contains("halloween-theme")) return;
+          if (isInitialAppearance) {
+            const bounds = ghost.getBoundingClientRect();
+            const inViewport = bounds.bottom > 0 && bounds.right > 0 &&
+              bounds.top < window.innerHeight && bounds.left < window.innerWidth;
+            if (!inViewport) {
+              initialAppearancesStarted.delete(ghost);
+              return;
+            }
+          }
           const previousFlight = flights.get(ghost);
           if (previousFlight) previousFlight.cancel();
           flights.delete(ghost);
 
-          const radius = placeRandomly(ghost);
+          const radius = isInitialAppearance ? initialRadii.get(ghost) : placeRandomly(ghost);
+          isInitialAppearance = false;
           const duration = 4200 + Math.random() * 2200;
           const peakOpacity = (35 + Math.random() * 40) / 100;
           startFlight(ghost, radius, duration, peakOpacity);
@@ -169,7 +189,24 @@
         }
 
         later(appear, 300 + Math.random() * 8500);
-      });
+      }
+
+      if ("IntersectionObserver" in window) {
+        visibilityObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) startGhost(entry.target);
+          });
+        });
+        ghosts.forEach(function (ghost) {
+          initialRadii.set(ghost, placeRandomly(ghost));
+          visibilityObserver.observe(ghost);
+        });
+      } else {
+        ghosts.forEach(function (ghost) {
+          initialRadii.set(ghost, placeRandomly(ghost));
+          startGhost(ghost);
+        });
+      }
     }
 
     waitForLayout(0);
