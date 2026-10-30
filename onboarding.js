@@ -32,6 +32,7 @@ window.OnboardingManager = {
 
     // Show Overlay Immediately (with empty text, or wait? Better show it to cover content)
     document.getElementById("onboarding-overlay").classList.remove("d-none");
+    if (window.FontManager) FontManager.loadOnboardingDefaults();
 
     // Fetch Strings
     try {

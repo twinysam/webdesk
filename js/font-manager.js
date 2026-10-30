@@ -78,8 +78,8 @@
     }
   }
 
-  const requested = new Map();
-  let stylesheet;
+  const roleStylesheets = new Map();
+  let stylesheetSequence = 0;
   function weightsFor(font) {
     const wanted = font.role === "headings" ? [200, 400] : font.role === "date" ? [400] : [400, 700];
     const available = font.weights;
@@ -87,27 +87,52 @@
     return [...new Set(wanted.map(nearest))].sort((a, b) => a - b);
   }
 
+  function familySpec(font, weights) {
+    const name = encodeURIComponent(font.family).replace(/%20/g, "+");
+    if (!font.italics) return `family=${name}:wght@${weights.slice().sort((a, b) => a - b).join(";")}`;
+    const axes = [
+      ...weights.map((weight) => [0, weight]),
+      ...weights.map((weight) => [1, weight])
+    ].sort(([styleA, weightA], [styleB, weightB]) => styleA - styleB || weightA - weightB);
+    return `family=${name}:ital,wght@${axes.map(([style, weight]) => `${style},${weight}`).join(";")}`;
+  }
+
   function load(font) {
     const weights = weightsFor(font);
     const key = `${font.family}|${weights.join(",")}|${font.italics}`;
-    if (requested.has(key)) return;
-    requested.set(key, { font, weights });
-    if (!stylesheet) {
-      stylesheet = document.createElement("link");
-      stylesheet.rel = "stylesheet";
-      stylesheet.id = "webdesk-selected-fonts";
-      document.head.appendChild(stylesheet);
-    }
-    const families = [...requested.values()].map(({ font: item, weights: values }) => {
-      const name = encodeURIComponent(item.family).replace(/%20/g, "+");
-      const axisValues = item.italics
-        ? [...values.map((weight) => `0,${weight}`), ...values.map((weight) => `1,${weight}`)].sort().join(";")
-        : values.join(";");
-      return item.italics
-        ? `family=${name}:ital,wght@${axisValues}`
-        : `family=${name}:wght@${axisValues}`;
-    });
-    stylesheet.href = `https://fonts.googleapis.com/css2?${families.join("&")}&display=swap`;
+    const current = roleStylesheets.get(font.role);
+    if (current && current.dataset.fontKey === key) return;
+
+    const stylesheet = document.createElement("link");
+    stylesheet.rel = "stylesheet";
+    stylesheet.id = `webdesk-selected-font-${font.role}-${++stylesheetSequence}`;
+    stylesheet.dataset.webdeskFontRole = font.role;
+    stylesheet.dataset.fontKey = key;
+    roleStylesheets.set(font.role, stylesheet);
+    stylesheet.onload = () => {
+      if (roleStylesheets.get(font.role) !== stylesheet) {
+        stylesheet.remove();
+        return;
+      }
+      document.querySelectorAll(`[data-webdesk-font-role="${font.role}"]`).forEach((oldLink) => {
+        if (oldLink !== stylesheet) oldLink.remove();
+      });
+    };
+    stylesheet.onerror = () => {
+      stylesheet.remove();
+      if (roleStylesheets.get(font.role) === stylesheet) roleStylesheets.delete(font.role);
+    };
+    stylesheet.href = `https://fonts.googleapis.com/css2?${familySpec(font, weights)}&display=swap`;
+    document.head.appendChild(stylesheet);
+  }
+
+  function loadOnboardingDefaults() {
+    if (document.getElementById("webdesk-onboarding-fonts")) return;
+    const stylesheet = document.createElement("link");
+    stylesheet.id = "webdesk-onboarding-fonts";
+    stylesheet.rel = "stylesheet";
+    stylesheet.href = "https://fonts.googleapis.com/css2?family=Exo:wght@100;200;400&family=Nunito:wght@400;700&display=swap";
+    document.head.appendChild(stylesheet);
   }
 
   function apply(preferences, role) {
@@ -123,6 +148,14 @@
     return normalized;
   }
 
-  global.FontManager = Object.freeze({ DEFAULTS, CATALOG: Object.freeze(CATALOG), normalize, readPreferences, apply, getFont: (id) => entries[id] || null });
+  global.FontManager = Object.freeze({
+    DEFAULTS,
+    CATALOG: Object.freeze(CATALOG),
+    normalize,
+    readPreferences,
+    apply,
+    loadOnboardingDefaults,
+    getFont: (id) => Object.prototype.hasOwnProperty.call(entries, id) ? entries[id] : null
+  });
   apply(readPreferences());
 })(window);

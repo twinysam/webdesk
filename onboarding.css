@@ -1,5 +1,7 @@
 /* GLOBAL RESET FOR ONBOARDING OVERLAY ONLY */
 #onboarding-overlay {
+    --font-headings: "Exo", sans-serif;
+    --font-body: "Nunito", sans-serif;
   position: fixed;
   top: 0;
     left: 0;
@@ -221,6 +223,7 @@
 
 #onboarding-overlay .split-separator {
   font-size: 6rem;
+  font-family: var(--font-headings);
   color: rgba(255, 255, 255, 0.8);
   margin: 0 5px;
   font-weight: 100;
