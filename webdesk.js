@@ -481,8 +481,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const emojis = { spring: "🌸", summer: "🏖️", fall: "🍂", winter: "❄️" };
         message = `${emojis[season]} Happy first day of ${season}!`;
         isSpecialOverride = true;
-      } else if (GreetingManager.specialDates[todayStr]) {
-        message = GreetingManager.specialDates[todayStr];
+      } else if (
+        (todayStr === "01/11" && time < (I18nManager.data?.greetingRules?.morningStart ?? 5)) ||
+        GreetingManager.specialDates[todayStr]
+      ) {
+        message = GreetingManager.specialDates[todayStr] || GreetingManager.specialDates["31/10"];
         isSpecialOverride = true;
       } else if (todayStr === "31/12") {
         message = `Goodbye ${now.format("YYYY")}`;
