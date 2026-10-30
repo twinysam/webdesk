@@ -3670,9 +3670,7 @@
           const requestedTheme = new URLSearchParams(window.location.search).get("theme");
           if (requestedTheme === "none") return false;
           if (requestedTheme === "halloween") return true;
-          const now = new Date();
-          const monthDay = (now.getMonth() + 1) * 100 + now.getDate();
-          return monthDay >= 1015 && monthDay <= 1101;
+          return I18nManager.isHalloweenSeasonActive();
         }
 
         /** Theme "system" resolves through matchMedia. */

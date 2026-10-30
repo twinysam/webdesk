@@ -4,25 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WebDesk</title>
-    <script>
-      // Halloween decorations run automatically from October 15 through 4:59 a.m. on November 1.
-      // Use ?theme=halloween to preview any time, or ?theme=none to turn them off.
-      (function () {
-        const requestedTheme = new URLSearchParams(window.location.search).get("theme");
-        const now = new Date();
-        const monthDay = (now.getMonth() + 1) * 100 + now.getDate();
-        const isHalloweenMorning = monthDay === 1101 && now.getHours() < 5;
-        const inHalloweenSeason = (monthDay >= 1015 && monthDay <= 1031) || isHalloweenMorning;
-        let decorationsDisabled = false;
-        try {
-          const preferences = JSON.parse(localStorage.getItem("userPreferences") || "{}");
-          decorationsDisabled = preferences.disableHalloweenDecorations === true;
-        } catch (error) {}
-        if (!decorationsDisabled && (requestedTheme === "halloween" || (!requestedTheme && inHalloweenSeason))) {
-          document.documentElement.classList.add("halloween-theme");
-        }
-      })();
-    </script>
     <meta name="Author" content="Santiago Mendez" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

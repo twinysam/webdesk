@@ -72,6 +72,27 @@ window.I18nManager = {
 
     getLang: () => localStorage.getItem("userLang") || "en",
 
+    getMorningStart: () => Number(window.I18nManager.data?.greetingRules?.morningStart ?? 5),
+
+    isHalloweenSeasonActive: (now = new Date()) => {
+      const monthDay = (now.getMonth() + 1) * 100 + now.getDate();
+      return (monthDay >= 1015 && monthDay <= 1031) ||
+        (monthDay === 1101 && now.getHours() < window.I18nManager.getMorningStart());
+    },
+
+    applyHalloweenTheme: () => {
+      const requestedTheme = new URLSearchParams(window.location.search).get("theme");
+      let decorationsDisabled = false;
+      try {
+        const preferences = JSON.parse(localStorage.getItem("userPreferences") || "{}");
+        decorationsDisabled = preferences.disableHalloweenDecorations === true;
+      } catch (_) {}
+
+      const shouldApply = requestedTheme === "halloween" ||
+        (!requestedTheme && window.I18nManager.isHalloweenSeasonActive());
+      document.documentElement.classList.toggle("halloween-theme", !decorationsDisabled && shouldApply);
+    },
+
     loadLocale: async (lang) => {
       try {
         // Always fetch fresh data.

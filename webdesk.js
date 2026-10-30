@@ -438,7 +438,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // 1. Time-based defaults
       let timeKey = I18nManager.getGreetingTime(now);
-      if (time < 5) timeKey = "latelateshow"; // Late Late Show override
+      if (time < I18nManager.getMorningStart()) timeKey = "latelateshow"; // Late Late Show override
 
       const greetingText = t(`greeting_${timeKey}`, { name: rawName });
 
@@ -482,7 +482,7 @@ document.addEventListener("DOMContentLoaded", function () {
         message = `${emojis[season]} Happy first day of ${season}!`;
         isSpecialOverride = true;
       } else if (
-        (todayStr === "01/11" && time < (I18nManager.data?.greetingRules?.morningStart ?? 5)) ||
+        (todayStr === "01/11" && time < I18nManager.getMorningStart()) ||
         GreetingManager.specialDates[todayStr]
       ) {
         message = GreetingManager.specialDates[todayStr] || GreetingManager.specialDates["31/10"];
@@ -1534,6 +1534,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const startWebDesk = () => {
     I18nManager.init()
       .then(() => {
+        I18nManager.applyHalloweenTheme();
         // Initialize other non-gating managers in parallel/early
         EventsManager.init();
         LinksManager.init();

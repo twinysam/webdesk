@@ -7,7 +7,6 @@
   let runId = 0;
   let resizeTimer = null;
   let patternLibraryPromise = null;
-  let visibilityObserver = null;
   let paused = false;
   let started = false;
 
@@ -17,10 +16,6 @@
 
   function stop() {
     runId++;
-    if (visibilityObserver) {
-      visibilityObserver.disconnect();
-      visibilityObserver = null;
-    }
     timers.forEach(timer => clearTimeout(timer.id));
     timers.clear();
     flights.forEach(flight => flight.cancel());
@@ -78,16 +73,44 @@
   function placeRandomly(ghost) {
     const halfWidth = ghost.offsetWidth / 2;
     const halfHeight = ghost.offsetHeight / 2;
-    const radiusLimit = Math.max(0, Math.min(
-      (container.clientWidth - ghost.offsetWidth) / 2,
-      (container.clientHeight - ghost.offsetHeight) / 2
-    ) - 8);
-    const maxRadius = Math.min(72, radiusLimit);
+    const bounds = container.getBoundingClientRect();
+    const scaleX = container.clientWidth / bounds.width;
+    const scaleY = container.clientHeight / bounds.height;
+    const visibleSlice = {
+      left: Math.max(0, -bounds.left * scaleX),
+      top: Math.max(0, -bounds.top * scaleY),
+      right: Math.min(container.clientWidth, (window.innerWidth - bounds.left) * scaleX),
+      bottom: Math.min(container.clientHeight, (window.innerHeight - bounds.top) * scaleY)
+    };
+
+    function fitSlice(slice) {
+      const width = slice.right - slice.left;
+      const height = slice.bottom - slice.top;
+      const radiusLimit = Math.min(
+        (width - ghost.offsetWidth) / 2,
+        (height - ghost.offsetHeight) / 2
+      ) - 8;
+      if (radiusLimit < 0) return null;
+
+      return { ...slice, width, height, radiusLimit };
+    }
+
+    // Prefer a placement fully inside the visible part of the container. If the
+    // viewport slice is too narrow, use the whole container when it can fit.
+    const slice = fitSlice(visibleSlice) || fitSlice({
+      left: 0,
+      top: 0,
+      right: container.clientWidth,
+      bottom: container.clientHeight
+    });
+    if (!slice) return null;
+
+    const maxRadius = Math.min(72, slice.radiusLimit);
     const radius = maxRadius < 22 ? maxRadius : 22 + Math.random() * (maxRadius - 22);
-    const minX = halfWidth + radius;
-    const minY = halfHeight + radius;
-    const maxX = Math.max(minX, container.clientWidth - halfWidth - radius);
-    const maxY = Math.max(minY, container.clientHeight - halfHeight - radius);
+    const minX = slice.left + halfWidth + radius;
+    const minY = slice.top + halfHeight + radius;
+    const maxX = slice.right - halfWidth - radius;
+    const maxY = slice.bottom - halfHeight - radius;
     const centerX = minX + Math.random() * (maxX - minX);
     const centerY = minY + Math.random() * (maxY - minY);
 
@@ -152,36 +175,25 @@
         return;
       }
 
-      const initialAppearancesStarted = new Set();
-      const initialRadii = new Map();
-
       function startGhost(ghost) {
-        if (run !== runId || initialAppearancesStarted.has(ghost)) return;
-        initialAppearancesStarted.add(ghost);
-
-        if (reducedMotion) {
-          ghost.style.opacity = "0.45";
-          return;
-        }
-
-        let isInitialAppearance = true;
+        if (run !== runId) return;
         function appear() {
           if (run !== runId || !pageIsFocused() || !root.classList.contains("halloween-theme")) return;
-          if (isInitialAppearance) {
-            const bounds = ghost.getBoundingClientRect();
-            const inViewport = bounds.bottom > 0 && bounds.right > 0 &&
-              bounds.top < window.innerHeight && bounds.left < window.innerWidth;
-            if (!inViewport) {
-              initialAppearancesStarted.delete(ghost);
-              return;
-            }
+          const radius = placeRandomly(ghost);
+          if (radius === null) {
+            later(appear, 1000);
+            return;
           }
+
+          if (reducedMotion) {
+            ghost.style.opacity = "0.45";
+            return;
+          }
+
           const previousFlight = flights.get(ghost);
           if (previousFlight) previousFlight.cancel();
           flights.delete(ghost);
 
-          const radius = isInitialAppearance ? initialRadii.get(ghost) : placeRandomly(ghost);
-          isInitialAppearance = false;
           const duration = 4200 + Math.random() * 2200;
           const peakOpacity = (35 + Math.random() * 40) / 100;
           startFlight(ghost, radius, duration, peakOpacity);
@@ -191,22 +203,7 @@
         later(appear, 300 + Math.random() * 8500);
       }
 
-      if ("IntersectionObserver" in window) {
-        visibilityObserver = new IntersectionObserver(function (entries) {
-          entries.forEach(function (entry) {
-            if (entry.isIntersecting) startGhost(entry.target);
-          });
-        });
-        ghosts.forEach(function (ghost) {
-          initialRadii.set(ghost, placeRandomly(ghost));
-          visibilityObserver.observe(ghost);
-        });
-      } else {
-        ghosts.forEach(function (ghost) {
-          initialRadii.set(ghost, placeRandomly(ghost));
-          startGhost(ghost);
-        });
-      }
+      ghosts.forEach(startGhost);
     }
 
     waitForLayout(0);
