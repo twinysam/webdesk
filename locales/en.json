@@ -6,6 +6,7 @@
     "greeting_full_moon": "Tonight is a full moon",
     "greeting_latelateshow": "{name}'s Late Late Show",
     "greeting_generic": "Hello",
+    "greeting_halloween": "<img class=\"halloween-greeting-icon\" src=\"images/halloween/jack-o-lantern_1f383c.png\" alt=\"\"> Happy Halloween!",
     "birthday": "Happy Birthday!",
     "lunar_new_year": "Happy New Lunar Year!",
     "day": "Day",

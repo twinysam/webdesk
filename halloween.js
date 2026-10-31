@@ -4,8 +4,10 @@
   const ghosts = Array.from(document.querySelectorAll(".halloween-ghost"));
   const timers = new Map();
   const flights = new Map();
+  const activeGhosts = new Set();
   let runId = 0;
   let resizeTimer = null;
+  let ghostObserver = null;
   let patternLibraryPromise = null;
   let paused = false;
   let started = false;
@@ -20,15 +22,36 @@
     timers.clear();
     flights.forEach(flight => flight.cancel());
     flights.clear();
+    activeGhosts.clear();
+    if (ghostObserver) {
+      ghostObserver.disconnect();
+      ghostObserver = null;
+    }
     ghosts.forEach(ghost => {
       ghost.style.opacity = "0";
+      ghost.classList.remove("is-active");
     });
   }
 
-  function later(callback, delay) {
-    const timer = { callback, remaining: delay, id: null, dueAt: 0 };
+  function later(callback, delay, ghost = null) {
+    const timer = { callback, remaining: delay, id: null, dueAt: 0, ghost };
     timers.set(timer, timer);
     if (!paused) armTimer(timer);
+  }
+
+  function stopGhost(ghost) {
+    timers.forEach(function (timer) {
+      if (timer.ghost === ghost) {
+        if (timer.id !== null) clearTimeout(timer.id);
+        timers.delete(timer);
+      }
+    });
+    const flight = flights.get(ghost);
+    if (flight) flight.cancel();
+    flights.delete(ghost);
+    activeGhosts.delete(ghost);
+    ghost.style.opacity = "0";
+    ghost.classList.remove("is-active");
   }
 
   function armTimer(timer) {
@@ -70,7 +93,7 @@
     });
   }
 
-  function placeRandomly(ghost) {
+  function placeRandomly(ghost, pageWide = false) {
     const halfWidth = ghost.offsetWidth / 2;
     const halfHeight = ghost.offsetHeight / 2;
     const bounds = container.getBoundingClientRect();
@@ -95,14 +118,23 @@
       return { ...slice, width, height, radiusLimit };
     }
 
-    // Prefer a placement fully inside the visible part of the container. If the
-    // viewport slice is too narrow, use the whole container when it can fit.
-    const slice = fitSlice(visibleSlice) || fitSlice({
+    const fullPageSlice = {
       left: 0,
       top: 0,
       right: container.clientWidth,
-      bottom: container.clientHeight
-    });
+      bottom: container.scrollHeight
+    };
+
+    // Late in the season, keep ghosts in the visible viewport. Earlier in the
+    // season, distribute them across the page and activate them near the viewport.
+    const slice = pageWide
+      ? fitSlice(fullPageSlice)
+      : fitSlice(visibleSlice) || fitSlice({
+          left: 0,
+          top: 0,
+          right: container.clientWidth,
+          bottom: container.clientHeight
+        });
     if (!slice) return null;
 
     const maxRadius = Math.min(72, slice.radiusLimit);
@@ -167,6 +199,10 @@
     else root.classList.remove("halloween-motion-paused");
     const run = runId;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const now = new Date();
+    const monthDay = (now.getMonth() + 1) * 100 + now.getDate();
+    const viewportOnly = monthDay === 1031 ||
+      (monthDay === 1101 && now.getHours() < window.I18nManager.getMorningStart());
 
     function waitForLayout(attempt) {
       if (run !== runId) return;
@@ -175,13 +211,21 @@
         return;
       }
 
+      const pageWideRadii = new Map();
+
       function startGhost(ghost) {
         if (run !== runId) return;
+        if (activeGhosts.has(ghost)) return;
+        activeGhosts.add(ghost);
+        ghost.classList.add("is-active");
+
         function appear() {
           if (run !== runId || !pageIsFocused() || !root.classList.contains("halloween-theme")) return;
-          const radius = placeRandomly(ghost);
+          const radius = viewportOnly
+            ? placeRandomly(ghost)
+            : pageWideRadii.get(ghost);
           if (radius === null) {
-            later(appear, 1000);
+            later(appear, 1000, ghost);
             return;
           }
 
@@ -197,13 +241,29 @@
           const duration = 4200 + Math.random() * 2200;
           const peakOpacity = (35 + Math.random() * 40) / 100;
           startFlight(ghost, radius, duration, peakOpacity);
-          later(appear, duration + 10000);
+          later(appear, duration + 10000, ghost);
         }
 
-        later(appear, 300 + Math.random() * 8500);
+        later(appear, 300 + Math.random() * 8500, ghost);
       }
 
-      ghosts.forEach(startGhost);
+      if (viewportOnly) {
+        ghosts.forEach(startGhost);
+      } else if ("IntersectionObserver" in window) {
+        ghosts.forEach(ghost => pageWideRadii.set(ghost, placeRandomly(ghost, true)));
+        ghostObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) startGhost(entry.target);
+            else stopGhost(entry.target);
+          });
+        }, { rootMargin: "120px 0px" });
+        ghosts.forEach(ghost => ghostObserver.observe(ghost));
+      } else {
+        ghosts.forEach(function (ghost) {
+          pageWideRadii.set(ghost, placeRandomly(ghost, true));
+          startGhost(ghost);
+        });
+      }
     }
 
     waitForLayout(0);

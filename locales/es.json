@@ -6,6 +6,7 @@
     "greeting_full_moon": "Esta noche hay luna llena",
     "greeting_latelateshow": "El teatro nocturno de {name}",
     "greeting_generic": "Hola",
+    "greeting_halloween": "<img class=\"halloween-greeting-icon\" src=\"images/halloween/jack-o-lantern_1f383c.png\" alt=\"\"> Feliz <a href=\"https://es.wikipedia.org/wiki/Halloween\" target=\"_blank\" rel=\"noopener noreferrer\">Halloween</a>!",
     "birthday": "¡Feliz Cumpleaños!",
     "lunar_new_year": "¡Feliz Año Nuevo Lunar!",
     "day": "Día",

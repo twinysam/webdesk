@@ -28,6 +28,9 @@ html.halloween-theme h1 {
   opacity: 0;
   pointer-events: none;
   filter: drop-shadow(0 0 12px rgba(190, 225, 255, 0.24));
+}
+
+.halloween-ghost.is-active {
   will-change: transform, opacity;
 }
 

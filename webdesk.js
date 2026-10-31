@@ -485,7 +485,9 @@ document.addEventListener("DOMContentLoaded", function () {
         (todayStr === "01/11" && time < I18nManager.getMorningStart()) ||
         GreetingManager.specialDates[todayStr]
       ) {
-        message = GreetingManager.specialDates[todayStr] || GreetingManager.specialDates["31/10"];
+        message = todayStr === "31/10" || todayStr === "01/11"
+          ? t("greeting_halloween")
+          : GreetingManager.specialDates[todayStr] || GreetingManager.specialDates["31/10"];
         isSpecialOverride = true;
       } else if (todayStr === "31/12") {
         message = `Goodbye ${now.format("YYYY")}`;
