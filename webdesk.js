@@ -482,12 +482,16 @@ document.addEventListener("DOMContentLoaded", function () {
         message = `${emojis[season]} Happy first day of ${season}!`;
         isSpecialOverride = true;
       } else if (
-        (todayStr === "01/11" && time < I18nManager.getMorningStart()) ||
+        todayStr === "01/11" ||
         GreetingManager.specialDates[todayStr]
       ) {
-        message = todayStr === "31/10" || todayStr === "01/11"
-          ? t("greeting_halloween")
-          : GreetingManager.specialDates[todayStr] || GreetingManager.specialDates["31/10"];
+        if (todayStr === "01/11") {
+          message = t("greeting_day_of_dead");
+        } else if (todayStr === "31/10") {
+          message = t("greeting_halloween");
+        } else {
+          message = GreetingManager.specialDates[todayStr] || GreetingManager.specialDates["31/10"];
+        }
         isSpecialOverride = true;
       } else if (todayStr === "31/12") {
         message = `Goodbye ${now.format("YYYY")}`;

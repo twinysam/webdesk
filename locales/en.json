@@ -7,6 +7,7 @@
     "greeting_latelateshow": "{name}'s Late Late Show",
     "greeting_generic": "Hello",
     "greeting_halloween": "<img class=\"halloween-greeting-icon\" src=\"images/halloween/jack-o-lantern_1f383c.png\" alt=\"\"> Happy Halloween!",
+    "greeting_day_of_dead": "<img class=\"special-date-icon\" src=\"icons/Painted%20Skull%202.ico\" alt=\"\"> <a href=\"https://en.wikipedia.org/wiki/Day_of_the_Dead\" target=\"_blank\" rel=\"noopener noreferrer\">Day of the Dead</a>",
     "birthday": "Happy Birthday!",
     "lunar_new_year": "Happy New Lunar Year!",
     "day": "Day",

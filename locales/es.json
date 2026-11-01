@@ -7,6 +7,7 @@
     "greeting_latelateshow": "El teatro nocturno de {name}",
     "greeting_generic": "Hola",
     "greeting_halloween": "<img class=\"halloween-greeting-icon\" src=\"images/halloween/jack-o-lantern_1f383c.png\" alt=\"\"> Feliz <a href=\"https://es.wikipedia.org/wiki/Halloween\" target=\"_blank\" rel=\"noopener noreferrer\">Halloween</a>!",
+    "greeting_day_of_dead": "<img class=\"special-date-icon\" src=\"icons/Painted%20Skull%202.ico\" alt=\"\"> <a href=\"https://es.wikipedia.org/wiki/D%C3%ADa_de_Muertos\" target=\"_blank\" rel=\"noopener noreferrer\">Día de Muertos</a>",
     "birthday": "¡Feliz Cumpleaños!",
     "lunar_new_year": "¡Feliz Año Nuevo Lunar!",
     "day": "Día",
