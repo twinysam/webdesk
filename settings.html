@@ -3994,12 +3994,16 @@
           noneOpt.value = "none";
           noneOpt.textContent = I18n.t("value_none") || "None";
           patternSelect.appendChild(noneOpt);
-          bgPatterns.forEach((p) => {
-            const opt = document.createElement("option");
-            opt.value = p.name;
-            opt.textContent = p.name;
-            patternSelect.appendChild(opt);
-          });
+          [...bgPatterns]
+            .sort((a, b) =>
+              a.name.localeCompare(b.name, undefined, { sensitivity: "base" }),
+            )
+            .forEach((p) => {
+              const opt = document.createElement("option");
+              opt.value = p.name;
+              opt.textContent = p.name;
+              patternSelect.appendChild(opt);
+            });
           const finalValue = wanted || "Endless Clouds";
           if (![...patternSelect.options].some((o) => o.value === finalValue)) {
             const tempOpt = document.createElement("option");
